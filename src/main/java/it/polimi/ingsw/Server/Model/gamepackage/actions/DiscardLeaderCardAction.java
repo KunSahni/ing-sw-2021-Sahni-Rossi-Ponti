@@ -7,16 +7,15 @@ package GamePackage.Actions;
 
 import java.util.*;
 import java.time.*;
-import src.main.java.model.personalboardpackage.*;
 
 
 
-// ----------- << imports@AAAAAAF4OBhDzRm4tOk= >>
+// ----------- << imports@AAAAAAF4OBhuVRtxMP8= >>
 // ----------- >>
 
-// ----------- << class.annotations@AAAAAAF4OBhDzRm4tOk= >>
+// ----------- << class.annotations@AAAAAAF4OBhuVRtxMP8= >>
 // ----------- >>
-public class ActivateLeaderCardAction implements GamePackage.Actions.Action {
+public class DiscardLeaderCardAction implements Action {
     @Override
     // ----------- << method.annotations@AAAAAAF4QLWE+DkUwpU= >>
     // ----------- >>
@@ -28,12 +27,12 @@ public class ActivateLeaderCardAction implements GamePackage.Actions.Action {
     * @param position
     */
 
-    // ----------- << method.annotations@AAAAAAF4Re/Imhgf0lY= >>
+    // ----------- << method.annotations@AAAAAAF4RfHuFGGSy40= >>
     // ----------- >>
     public void performAction(int position) {
-    // ----------- << method.body@AAAAAAF4Re/Imhgf0lY= >>
+    // ----------- << method.body@AAAAAAF4RfHuFGGSy40= >>
     // ----------- >>
     }
-// ----------- << class.extras@AAAAAAF4OBhDzRm4tOk= >>
+// ----------- << class.extras@AAAAAAF4OBhuVRtxMP8= >>
 // ----------- >>
 }

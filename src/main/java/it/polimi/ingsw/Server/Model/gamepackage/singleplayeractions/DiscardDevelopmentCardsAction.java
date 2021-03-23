@@ -3,20 +3,20 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage.Actions;
+package GamePackage.SinglePlayerActions;
 
 import java.util.*;
 import java.time.*;
-import src.main.java.model.personalboardpackage.*;
 
 
-
-// ----------- << imports@AAAAAAF4OBhDzRm4tOk= >>
+import Color;
+import GamePackage.Actions.Action;
+// ----------- << imports@AAAAAAF4OBiSVR0qvNc= >>
 // ----------- >>
 
-// ----------- << class.annotations@AAAAAAF4OBhDzRm4tOk= >>
+// ----------- << class.annotations@AAAAAAF4OBiSVR0qvNc= >>
 // ----------- >>
-public class ActivateLeaderCardAction implements GamePackage.Actions.Action {
+public class DiscardDevelopmentCardsAction implements Action {
     @Override
     // ----------- << method.annotations@AAAAAAF4QLWE+DkUwpU= >>
     // ----------- >>
@@ -25,15 +25,15 @@ public class ActivateLeaderCardAction implements GamePackage.Actions.Action {
     // ----------- >>
     }
     /**
-    * @param position
+    * @param color
     */
 
-    // ----------- << method.annotations@AAAAAAF4Re/Imhgf0lY= >>
+    // ----------- << method.annotations@AAAAAAF4SlpproWG7zg= >>
     // ----------- >>
-    public void performAction(int position) {
-    // ----------- << method.body@AAAAAAF4Re/Imhgf0lY= >>
+    public void performAction(Color color) {
+    // ----------- << method.body@AAAAAAF4SlpproWG7zg= >>
     // ----------- >>
     }
-// ----------- << class.extras@AAAAAAF4OBhDzRm4tOk= >>
+// ----------- << class.extras@AAAAAAF4OBiSVR0qvNc= >>
 // ----------- >>
 }
