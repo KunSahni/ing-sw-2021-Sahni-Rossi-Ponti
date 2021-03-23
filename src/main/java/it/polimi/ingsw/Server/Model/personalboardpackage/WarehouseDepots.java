@@ -3,13 +3,11 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package PersonalBoardPackage;
+package it.polimi.ingsw.server.model.personalboardpackage;
 
 import java.util.*;
 import java.time.*;
-
-
-import StorageElement;
+import it.polimi.ingsw.server.model.*;
 // ----------- << imports@AAAAAAF4NpEhsXLIxwg= >>
 // ----------- >>
 

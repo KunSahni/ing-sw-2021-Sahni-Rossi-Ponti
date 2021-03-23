@@ -3,7 +3,7 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GameStates;
+package it.polimi.ingsw.server.model.gamestates;
 
 import java.util.*;
 import java.time.*;

@@ -3,13 +3,12 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage.SinglePlayerTurnStates;
+package it.polimi.ingsw.server.model.gamepackage.singleplayerturnstates;
 
 import java.util.*;
 import java.time.*;
+import it.polimi.ingsw.server.model.gamepackage.turnstates.AbstractTurnState;
 
-
-import GamePackage.TurnStates.AbstractTurnState;
 // ----------- << imports@AAAAAAF4QTBmatwkim8= >>
 // ----------- >>
 

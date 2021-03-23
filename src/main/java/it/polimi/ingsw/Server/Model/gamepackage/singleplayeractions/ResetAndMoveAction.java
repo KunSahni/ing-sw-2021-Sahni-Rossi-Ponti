@@ -3,13 +3,13 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage.SinglePlayerActions;
+package it.polimi.ingsw.server.model.gamepackage.singleplayeractions;
 
 import java.util.*;
 import java.time.*;
+import it.polimi.ingsw.server.model.Color;
+import it.polimi.ingsw.server.model.gamepackage.actions.Action;
 
-
-import GamePackage.Actions.Action;
 // ----------- << imports@AAAAAAF4QTHzzRDw4jQ= >>
 // ----------- >>
 

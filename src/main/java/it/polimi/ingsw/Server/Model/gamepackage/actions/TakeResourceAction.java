@@ -3,10 +3,9 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage.Actions;
+package it.polimi.ingsw.server.model.gamepackage.actions;
 
 import java.util.*;
-import java.time.*;
 
 
 import LeaderCard;

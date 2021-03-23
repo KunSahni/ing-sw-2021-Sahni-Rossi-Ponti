@@ -3,14 +3,13 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage;
+package it.polimi.ingsw.server.model.gamepackage;
 
 import java.util.*;
 import java.time.*;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
-
-import LeaderCard;
-import PersonalBoardPackage.PersonalBoard;
 // ----------- << imports@AAAAAAF4No+h8XExIUI= >>
 // ----------- >>
 

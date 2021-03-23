@@ -3,14 +3,13 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage;
+package it.polimi.ingsw.server.model.gamepackage;
 
 import java.util.*;
 import java.time.*;
+import it.polimi.ingsw.server.model.gamepackage.actions.Action;
+import it.polimi.ingsw.server.model.gamepackage.turnstates.AbstractTurnState;
 
-
-import GamePackage.Actions.Action;
-import GamePackage.TurnStates.AbstractTurnState;
 // ----------- << imports@AAAAAAF4N+hWLu4rQCY= >>
 // ----------- >>
 

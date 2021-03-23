@@ -3,17 +3,13 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage;
+package it.polimi.ingsw.server.model.gamepackage;
 
 import java.util.*;
 import java.time.*;
+import it.polimi.ingsw.server.model.*;
+import it.polimi.ingsw.server.model.gamestates.*;
 
-
-import ActionTokenDeck;
-import DevelopmentCardsBoard;
-import GameStates.AbstractGameState;
-import LeaderCardsDeck;
-import Market;
 // ----------- << imports@AAAAAAF4No7YsHDaamA= >>
 // ----------- >>
 

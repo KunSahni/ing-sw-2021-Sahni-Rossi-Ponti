@@ -3,12 +3,7 @@
 *
 * Drop us a line or two at feedback@archetypesoftware.com: we would love to hear from you!
 */
-package GamePackage.Actions;
-
-import java.util.*;
-import java.time.*;
-import src.main.java.model.personalboardpackage.*;
-
+package it.polimi.ingsw.server.model.gamepackage.actions;
 
 
 // ----------- << imports@AAAAAAF4OBhDzRm4tOk= >>
@@ -16,7 +11,7 @@ import src.main.java.model.personalboardpackage.*;
 
 // ----------- << class.annotations@AAAAAAF4OBhDzRm4tOk= >>
 // ----------- >>
-public class ActivateLeaderCardAction implements GamePackage.Actions.Action {
+public class ActivateLeaderCardAction implements Action {
     @Override
     // ----------- << method.annotations@AAAAAAF4QLWE+DkUwpU= >>
     // ----------- >>
