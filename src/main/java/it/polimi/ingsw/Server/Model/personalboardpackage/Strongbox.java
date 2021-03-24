@@ -5,52 +5,24 @@
 */
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import it.polimi.ingsw.server.model.*;
 import java.util.*;
 import java.time.*;
 
-
-import StorageElement;
 // ----------- << imports@AAAAAAF4NpED0XKe0hs= >>
 // ----------- >>
 
 // ----------- << class.annotations@AAAAAAF4NpED0XKe0hs= >>
 // ----------- >>
 public class Strongbox implements StorageElement {
-    // ----------- << attribute.annotations@AAAAAAF4QORetWGR1Ss= >>
-    // ----------- >>
-    private Map<Risource, Integer> storedResources;
+    private Map<Resource, Integer> storedResources;
 
-    // ----------- << attribute.annotations@AAAAAAF4Np5NaZMuRSU= >>
-    // ----------- >>
-    private PersonalBoard ;
-
-    public Map<Risource, Integer> getStoredResources() {
+    public Map<Resource, Integer> getStoredResources() {
         return storedResources;
     }
 
-    public PersonalBoard get() {
-        return ;
-    }
-
-    public void set(PersonalBoard ) {
-        this. = ;
-    }
-
-    public void link(PersonalBoard _) {
-        if (_ != null) {
-            _.unlinkStrongBox();
-            _.setStrongBox(this);
-        }
-
-        unlink();
-        set(_);
-    }
-
-    public void unlink() {
-        if (get() != null) {
-            get().setStrongBox(null);
-            set(null);
-        }
+    public PersonalBoard getPersonalBoard() {
+        return board;
     }
 
     /**
