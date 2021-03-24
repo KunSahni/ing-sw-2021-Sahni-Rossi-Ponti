@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.gamepackage.actions;
 
 import it.polimi.ingsw.server.model.LeaderCard;
+import it.polimi.ingsw.server.model.LeaderCardAbility;
 import it.polimi.ingsw.server.model.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.Resource;
 import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentSlot;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class ActivateProductionAction implements Action {
     PersonalBoard board;
@@ -21,8 +23,24 @@ public class ActivateProductionAction implements Action {
     public void performAction() {
     }
 
-    public List<List<Boolean>> possibleProductionCombinations() {
+    /**
+     * @return an object representing the possible productions that can be chosen
+     */
+    public PossibleProductions possibleProductions() {
+        List<DevelopmentSlot> possibleSlots = board.getDevelopmentSlots().stream().filter(
+                developmentSlot -> board.hasResources(developmentSlot.getInputResources())
+        );
 
+        List<ProduceLeaderCard> possibleLeaderCards = new ArrayList<ProduceLeaderCard>(){{
+            add((ProduceLeaderCard) board.getLeaderCard1());
+            add((ProduceLeaderCard) board.getLeaderCard2());
+        }}.stream().filter(
+                leaderCard -> leaderCard.getAbility().equals(LeaderCardAbility.PRODUCE)
+        ).filter(
+                leaderCard -> board.hasResource(leaderCard.getInputResource())
+        );
+
+        return new PossibleProductions(possibleSlots, possibleLeaderCards);
     }
 
     /**
@@ -48,13 +66,6 @@ public class ActivateProductionAction implements Action {
                 )
         );
 
-    }
-
-    /**
-    * @param request the resources that should be saved in the Strongbox
-    */
-    private void saveResources(Map<Resource, Integer> request) {
-        board.getStrongBox().storeResources(request);
     }
 
 }
