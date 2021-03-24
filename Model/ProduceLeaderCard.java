@@ -72,7 +72,9 @@ public class ProduceLeaderCard extends LeaderCard {
     // ----------- >>
     }
     /**
+     * moves on the faith track and produce the chosen resource
     * @param chosenResource
+     * @return the produced resource
     */
 
     // ----------- << method.annotations@AAAAAAF4O5h/3YsNbNE= >>
@@ -80,6 +82,8 @@ public class ProduceLeaderCard extends LeaderCard {
     public Resource produce(Resource chosenResource) {
     // ----------- << method.body@AAAAAAF4O5h/3YsNbNE= >>
     // ----------- >>
+        FaithTrack.moveMarker(); //controllare che si possa muovere solo di una posisione sul persorso fede
+        return ResourceBank.getResource(chosenResource);
     }
 // ----------- << class.extras@AAAAAAF4O3ciS0w4KpM= >>
 // ----------- >>
