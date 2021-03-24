@@ -18,6 +18,7 @@ import GamePackage.Game;
 public class ActionTokenDeck {
     // ----------- << attribute.annotations@AAAAAAF4QS0v2EFl6RA= >>
     // ----------- >>
+    private Stack<ActionToken> deck = new Stack<ActionToken>();
     private Set<ActionToken> fullDeck = new HashSet<>();
 
     // ----------- << attribute.annotations@AAAAAAF4RJCjdOZBNj8= >>
@@ -71,19 +72,47 @@ public class ActionTokenDeck {
     public ActionToken pop() {
     // ----------- << method.body@AAAAAAF4QSyr3zVNQ88= >>
     // ----------- >>
+        return deck.pop();
     }
     // ----------- << method.annotations@AAAAAAF4RISn0up7oLM= >>
     // ----------- >>
+
+    /**
+     * reset the deck at the beginning of the game and when MOVEANDSHUFFLE token is taken
+     */
     public void reset() {
     // ----------- << method.body@AAAAAAF4RISn0up7oLM= >>
     // ----------- >>
+        private int i;
+        private int rand;
+        private boolean[] sup = new boolean[7];
+        private ActionToken a = new ActionToken[7];
+
+        deck.clear();
+        a[0]=MOVEBYTWO;
+        a[1]=MOVEBYTWO;
+        a[2]=MOVEANDSHUFFLE;
+        a[3]=REMOVEGREEN;
+        a[4]=REMOVEPURPLE;
+        a[5]=REMOVEYELLOW;
+        a[6]=REMOVEBLUE;
+        for(i=0; i<7; i++){
+            sup[i]=false;
+        }
+        for (i=0; i<7; i++)
+        {
+            rand = random.nextInt(6);
+            while(sup[rand]==false){
+                rand++;
+                if (rand>6) rand=0;
+            }
+            deck.push(a[rand]);
+            sup[rand]=false;
+        }
     }
     // ----------- << method.annotations@AAAAAAF4QS0Bfjz3Arg= >>
     // ----------- >>
-    private void shuffle() {
-    // ----------- << method.body@AAAAAAF4QS0Bfjz3Arg= >>
-    // ----------- >>
-    }
+
 // ----------- << class.extras@AAAAAAF4QSwJqSkWtG4= >>
 // ----------- >>
 }
