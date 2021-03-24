@@ -132,15 +132,26 @@ public abstract class LeaderCard implements VictoryPointsElement {
 
     // ----------- << method.annotations@AAAAAAF4O4SLWMFonYU= >>
     // ----------- >>
+
+    /**
+     * set active true when the leader card is activated
+     */
     public void activate() {
     // ----------- << method.body@AAAAAAF4O4SLWMFonYU= >>
     // ----------- >>
+        active=true;
     }
     // ----------- << method.annotations@AAAAAAF4O5NAhU0ESoM= >>
     // ----------- >>
+
+    /**
+     *
+     * @return true if the leader card is active
+     */
     public boolean isActive() {
     // ----------- << method.body@AAAAAAF4O5NAhU0ESoM= >>
     // ----------- >>
+        return active;
     }
 // ----------- << class.extras@AAAAAAF4No/fY3GFeZE= >>
 // ----------- >>
