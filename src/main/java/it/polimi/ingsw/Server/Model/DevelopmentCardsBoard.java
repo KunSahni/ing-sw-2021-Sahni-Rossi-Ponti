@@ -5,28 +5,22 @@
 */
 package it.polimi.ingsw.server.model;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 import java.time.*;
-
+import com.fasterxml.jackson.dataformat.xml.xmlMapper;
 
 import GamePackage.Game;
-// ----------- << imports@AAAAAAF4NovSY28fwOM= >>
-// ----------- >>
+import jdk.internal.org.objectweb.asm.TypeReference;
 
-// ----------- << class.annotations@AAAAAAF4NovSY28fwOM= >>
-// ----------- >>
 public class DevelopmentCardsBoard {
-    // ----------- << attribute.annotations@AAAAAAF4NppTOnosivg= >>
-    // ----------- >>
+
     private DevelopmentCard ;
 
-    // ----------- << attribute.annotations@AAAAAAF4N/jwar3NmJE= >>
-    // ----------- >>
     private Game ;
 
-    // ----------- << attribute.annotations@AAAAAAF4N/ia5rjOmHg= >>
-    // ----------- >>
-    private Set<DevelopmentCardsDeck> board[4][3] = new HashSet<>();
+    private DevelopmentCardsDeck board[][] = new DevelopmentCardsDeck[4][3];
 
     public DevelopmentCard get() {
         return ;
@@ -92,49 +86,333 @@ public class DevelopmentCardsBoard {
     * @param color
     */
 
-    // ----------- << method.annotations@AAAAAAF4ODZRwRIIAYo= >>
-    // ----------- >>
+
     public DevelopmentCard pick(Level level, Color color) {
-    // ----------- << method.body@AAAAAAF4ODZRwRIIAYo= >>
-    // ----------- >>
+        private int line = new int;
+        private int column = new int;
+        switch (level) {
+            case "LEVEL1":
+                line = 2;
+                break;
+            case "LEVEL2":
+                line = 1;
+                break;
+            case "LEVEL3":
+                line = 0;
+                break;
+        }
+        switch (color) {
+            case "GREEN":
+                column = 0;
+                break;
+            case "BLUE":
+                column = 1;
+                break;
+            case "YELLOW":
+                column = 2;
+                break;
+            case "PURPLE":
+                column = 3;
+                break;
+        }
+        return board[line][column].pop();
     }
     /**
     * Loads the cards from an XML file and creates the related objects. Then it creates all the needed decks by calling the constructor and passing them the cards they need.
     */
 
-    // ----------- << method.annotations@AAAAAAF4O2AMpoj4OFk= >>
-    // ----------- >>
+
     private void loadDevelopmentCards() {
-    // ----------- << method.body@AAAAAAF4O2AMpoj4OFk= >>
-    // ----------- >>
+        private DevelopmentCard dc = new DevelopmentCard();
+        try {
+            ObjectMapper mapper = new XmlMapper();
+            InputStream inputStream = new FileInputStream(new File("/poszionedelfilexml")); //METTERRE LA POSIZIONE DEL FILE GIUSTA
+            TypeReference<List<DevelopmentCard>> typeReference = new TypeReference<List<DevelopmentCard>>() {};
+            List<DevelopmentCard> developmentCards = mapper.readValue(inputStream, typeReference);
+            for(DevelopmentCards d: developmentCards){
+                switch(d.getLevel()) {
+                    case "LEVEL1":
+                        switch(d.getType()) {
+                            case "GREEN":
+                                board[2][0].push(d);
+                                break;
+                            case "BLUE":
+                                board[2][1].push(d);
+                                break;
+                            case "YELLOW":
+                                board[2][2].push(d);
+                                break;
+                            case "PURPLE":
+                                board[2][3].push(d);
+                                break;
+                        }
+                    break;
+
+                    case "LEVEL2":
+                        switch(d.getType()) {
+                            case "GREEN":
+                                board[1][0].push(d);
+                                break;
+                            case "BLUE":
+                                board[1][1].push(d);
+                                break;
+                            case "YELLOW":
+                                board[1][2].push(d);
+                                break;
+                            case "PURPLE":
+                                board[1][3].push(d);
+                                break;
+                        }
+                    break;
+
+                    case "LEVEL3":
+                        switch(d.getType()) {
+                            case "GREEN":
+                                board[0][0].push(d);
+                                break;
+                            case "BLUE":
+                                board[0][1].push(d);
+                                break;
+                            case "YELLOW":
+                                board[0][2].push(d);
+                                break;
+                            case "PURPLE":
+                                board[0][3].push(d);
+                                break;
+                        }
+                    break;
+                }
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
     /**
     * @param level 
     * @param color
     */
 
-    // ----------- << method.annotations@AAAAAAF4QLyAYnRUhDQ= >>
-    // ----------- >>
+
     public DevelopmentCard peek(Level level, Color color) {
-    // ----------- << method.body@AAAAAAF4QLyAYnRUhDQ= >>
-    // ----------- >>
+        private int line = new int;
+        private int column = new int;
+        switch (level) {
+            case "LEVEL1":
+                line = 2;
+                break;
+            case "LEVEL2":
+                line = 1;
+                break;
+            case "LEVEL3":
+                line = 0;
+                break;
+        }
+        switch (color) {
+            case "GREEN":
+                column = 0;
+                break;
+            case "BLUE":
+                column = 1;
+                break;
+            case "YELLOW":
+                column = 2;
+                break;
+            case "PURPLE":
+                column = 3;
+                break;
+        }
+        return board[line][column].peek();
+
     }
-    // ----------- << method.annotations@AAAAAAF4QLyRDHaylDc= >>
-    // ----------- >>
-    public List<List<DevelopmentCard>> peekBoard() {
-    // ----------- << method.body@AAAAAAF4QLyRDHaylDc= >>
-    // ----------- >>
+
+    public DevelopmentCardsDeck[][] peekBoard() {
+        return board;
     }
     /**
     * @param color
     */
 
-    // ----------- << method.annotations@AAAAAAF4RH9tH61fT9Q= >>
-    // ----------- >>
+
     public void discardTwo(Color color) {
-    // ----------- << method.body@AAAAAAF4RH9tH61fT9Q= >>
-    // ----------- >>
+        switch (color) {
+            case "GREEN":
+                if (board[3][0].empty()){
+                    if (board[2][0].empty()){
+                        if (board[1][0].empty()){
+                            board[0][0].pop();
+                            board[0][0].pop();
+                        }
+                        else{
+                            board[1][0].pop();
+                            if (board[1][0].empty()){
+                                board[0][0].pop();
+                            }
+                            else{
+                                board[1][0].pop();
+                            }
+                        }
+                    }
+                    else{
+                        board[2][0].pop();
+                        if (board[2][0].empty()){
+                            if (board[1][0].empty()){
+                                board[0][0].pop();
+                            }
+                            else board[1][0].pop();
+                        }
+                        else{
+                            board[2][0].pop();
+                        }
+                    }
+                }
+                else {
+                    board[3][0].pop();
+                    if(board[3][0].empty()){
+                        if(board[2][0].empty()){
+                            if(board[1][0].empty()){
+                                board[0][0].pop();
+                            }
+                            else board[1][0].pop();
+                        }
+                        else board[2][0].pop();
+                    }
+                    else board[3][0].pop();
+                }
+                break;
+            case "BLUE":
+                if (board[3][1].empty()){
+                    if (board[2][1].empty()){
+                        if (board[1][1].empty()){
+                            board[0][1].pop();
+                            board[0][1.pop();
+                        }
+                        else{
+                            board[1][1].pop();
+                            if (board[1][1].empty()){
+                                board[0][1].pop();
+                            }
+                            else{
+                                board[1][1].pop();
+                            }
+                        }
+                    }
+                    else{
+                        board[2][1].pop();
+                        if (board[2][1].empty()){
+                            if (board[1][1].empty()){
+                                board[0][1].pop();
+                            }
+                            else board[1][1].pop();
+                        }
+                        else{
+                            board[2][1].pop();
+                        }
+                    }
+                }
+                else {
+                    board[3][1].pop();
+                    if(board[3][1].empty()){
+                        if(board[2][1].empty()){
+                            if(board[1][1].empty()){
+                                board[0][1].pop();
+                            }
+                            else board[1][1].pop();
+                        }
+                        else board[2][1].pop();
+                    }
+                    else board[3][1].pop();
+                }
+                break;
+            case "YELLOW":
+                if (board[3][2].empty()){
+                    if (board[2][2].empty()){
+                        if (board[1][2].empty()){
+                            board[0][2].pop();
+                            board[0][2].pop();
+                        }
+                        else{
+                            board[1][2].pop();
+                            if (board[1][2].empty()){
+                                board[0][2].pop();
+                            }
+                            else{
+                                board[1][2].pop();
+                            }
+                        }
+                    }
+                    else{
+                        board[2][2].pop();
+                        if (board[2][2].empty()){
+                            if (board[1][2].empty()){
+                                board[0][2].pop();
+                            }
+                            else board[1][2].pop();
+                        }
+                        else{
+                            board[2][2].pop();
+                        }
+                    }
+                }
+                else {
+                    board[3][2].pop();
+                    if(board[3][2].empty()){
+                        if(board[2][2].empty()){
+                            if(board[1][2].empty()){
+                                board[0][2].pop();
+                            }
+                            else board[1][2].pop();
+                        }
+                        else board[2][2].pop();
+                    }
+                    else board[3][2].pop();
+                }
+                break;
+            case "PURPLE":
+                if (board[3][3].empty()){
+                    if (board[2][3].empty()){
+                        if (board[1][3].empty()){
+                            board[0][3].pop();
+                            board[0][3].pop();
+                        }
+                        else{
+                            board[1][3.pop();
+                            if (board[1][3].empty()){
+                                board[0][3].pop();
+                            }
+                            else{
+                                board[1][3].pop();
+                            }
+                        }
+                    }
+                    else{
+                        board[2][3].pop();
+                        if (board[2][3].empty()){
+                            if (board[1][3].empty()){
+                                board[0][3].pop();
+                            }
+                            else board[1][3].pop();
+                        }
+                        else{
+                            board[2][3].pop();
+                        }
+                    }
+                }
+                else {
+                    board[3][3].pop();
+                    if(board[3][3].empty()){
+                        if(board[2][3].empty()){
+                            if(board[1][3].empty()){
+                                board[0][3].pop();
+                            }
+                            else board[1][3.pop();
+                        }
+                        else board[2][3].pop();
+                    }
+                    else board[3][3].pop();
+                }
+                break;
+        }
     }
-// ----------- << class.extras@AAAAAAF4NovSY28fwOM= >>
-// ----------- >>
+
 }

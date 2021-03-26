@@ -82,9 +82,9 @@ public class ActionTokenDeck {
     public void reset() {
     // ----------- << method.body@AAAAAAF4RISn0up7oLM= >>
     // ----------- >>
-        private int i;
-        private int rand;
-        private boolean[] sup = new boolean[7];
+        private int i = new Integer();
+        private int rand = new Integer();
+        private boolean[] sup = new Boolean()[7];
         private ActionToken a = new ActionToken[7];
 
         deck.clear();
@@ -106,7 +106,7 @@ public class ActionTokenDeck {
                 if (rand>6) rand=0;
             }
             deck.push(a[rand]);
-            sup[rand]=false;
+            sup[rand]=true;
         }
     }
     // ----------- << method.annotations@AAAAAAF4QS0Bfjz3Arg= >>
