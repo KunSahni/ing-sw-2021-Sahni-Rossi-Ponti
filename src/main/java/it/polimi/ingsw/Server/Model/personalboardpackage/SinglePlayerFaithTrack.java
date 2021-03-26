@@ -5,31 +5,35 @@
 */
 package it.polimi.ingsw.server.model.personalboardpackage;
 
-import java.util.*;
-import java.time.*;
 
-
-
-// ----------- << imports@AAAAAAF4NpKKlXOfTfQ= >>
-// ----------- >>
-
-// ----------- << class.annotations@AAAAAAF4NpKKlXOfTfQ= >>
-// ----------- >>
 public class SinglePlayerFaithTrack extends FaithTrack {
-    // ----------- << attribute.annotations@AAAAAAF4QUNikEjH8fc= >>
-    // ----------- >>
     private int blackCrossPosition;
+
+    /**
+     * @param position      is the starting position of the player
+     *                      calculated by game logic depending on
+     *                      its turn placement
+     * @param personalboard a reference to board is needed
+     *                      to call Game's moveOtherFaithMarkers
+     */
+    public SinglePlayerFaithTrack(int position, PersonalBoard personalboard) {
+        super(position, personalboard);
+        blackCrossPosition = 0;
+    }
 
     public int getBlackCrossPosition() {
         return blackCrossPosition;
     }
 
-    // ----------- << method.annotations@AAAAAAF4QUOg0U0Seoc= >>
-    // ----------- >>
+    /**
+     * Move Lorenzo's cross by one tile. In case a pope's place is
+     * reached, start a vatican report that will affect the only
+     * player
+     */
     public void moveBlackCross() {
-    // ----------- << method.body@AAAAAAF4QUOg0U0Seoc= >>
-    // ----------- >>
+        blackCrossPosition++;
+        if (checkVaticanReport(blackCrossPosition)){
+            flipPopesFavor(blackCrossPosition / 8);
+        }
     }
-// ----------- << class.extras@AAAAAAF4NpKKlXOfTfQ= >>
-// ----------- >>
 }
