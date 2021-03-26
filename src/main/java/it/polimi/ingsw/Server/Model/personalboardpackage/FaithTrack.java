@@ -6,77 +6,99 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
 import java.util.*;
-import java.time.*;
+import it.polimi.ingsw.server.model.VictoryPointsElement;
 
 
-import VictoryPointsElement;
-// ----------- << imports@AAAAAAF4NpFbmHLzM68= >>
-// ----------- >>
-
-// ----------- << class.annotations@AAAAAAF4NpFbmHLzM68= >>
-// ----------- >>
 public class FaithTrack implements VictoryPointsElement {
-    // ----------- << attribute.annotations@AAAAAAF4QTkyWk0vSxY= >>
-    // ----------- >>
     private int position;
-
-    // ----------- << attribute.annotations@AAAAAAF4QUFgy3mapfU= >>
-    // ----------- >>
-    private List<boolean> popesFavors;
-
-    // ----------- << attribute.annotations@AAAAAAF4Np7kUZYffbc= >>
-    // ----------- >>
-    private PersonalBoard ;
+    private List<FavorStatus> popesFavors; // TODO: why is this suggested to be final when it gets edited?
+    private final Map<Integer, Integer> victoryPointsSheet;
+    private final PersonalBoard personalboard;
 
     public int getPosition() {
         return position;
     }
 
-    public List<boolean> getPopesFavors() {
-        return popesFavors;
+    public List<FavorStatus> getPopesFavors() {
+        return new ArrayList(popesFavors);
     }
 
-    public PersonalBoard get() {
-        return ;
-    }
-
-    public void set(PersonalBoard ) {
-        this. = ;
-    }
-
+    /**
+     * Returns end-game victory points depending on the position
+     * on faith track and on the active pope's favors
+     */
     @Override
-    // ----------- << method.annotations@AAAAAAF4RjrUDX8u+pU= >>
-    // ----------- >>
     public int getVictoryPoints() {
-    // ----------- << method.body@AAAAAAF4RjrUDX8u+pU= >>
-    // ----------- >>
+        int popesFavorPoints = 0; // Victory points gained from vatican reports
+        // Victory points gained from pope's favors
+        final int positionPoints = victoryPointsSheet.get(position-(position%3));
+        for (FavorStatus singleFavor: popesFavors) {
+            if (singleFavor == FavorStatus.ACTIVE) {
+                popesFavorPoints+=(2+popesFavors.indexOf(singleFavor));
+            }
+        }
+        return positionPoints + popesFavorPoints;
     }
-    // ----------- << method.annotations@AAAAAAF4O6Nhw7GqeK0= >>
-    // ----------- >>
+
+    /**
+     * Moves faith marker by one position on the faith track
+     * When landing on a pope's place (with inactive status)
+     * a vatican report starts
+     */
     public void moveMarker() {
-    // ----------- << method.body@AAAAAAF4O6Nhw7GqeK0= >>
-    // ----------- >>
+        position++;
+        if (checkVaticanReport(position)){
+            flipPopesFavor(position / 8);
+            personalboard.getPlayer().getGame().flipOtherPopesFavor(position / 8);
+        }
+    }
+
+    /**
+     * @param pos indicates a position on the faith track, the method checks
+     *            if there is a vatican report that has not yet been invoked
+     *            on the given position's tile
+     */
+    protected boolean checkVaticanReport(int pos) {
+        return (pos % 8) == 0 && popesFavors.get(pos / 8) == FavorStatus.INACTIVE;
+    }
+
+    /**
+     * @param index can be 1,2 or 3. Activates or discards the selected
+     *              pope's favor depending on the position of the faith
+     *              cross
+     */
+    public void flipPopesFavor(int index) {
+        int vaticanReportSectionSize; // the 3 areas are respectively 4 5 and 6 tiles
+        vaticanReportSectionSize = 3 + index;
+        if(position > (index * 8) - vaticanReportSectionSize) {
+            popesFavors.set(index, FavorStatus.ACTIVE);
+        } else {
+            popesFavors.set(index, FavorStatus.DISCARDED);
+        }
     }
     /**
-    * @param int
+    * @param position       is the starting position of the player
+     *                      calculated by game logic depending on
+     *                      its turn placement
+     * @param personalboard a reference to board is needed
+     *                      to call Game's moveOtherFaithMarkers
     */
-
-    // ----------- << method.annotations@AAAAAAF4QUAmFnEJIS8= >>
-    // ----------- >>
-    public void flipPopesFavor(void int) {
-    // ----------- << method.body@AAAAAAF4QUAmFnEJIS8= >>
-    // ----------- >>
+    public FaithTrack(int position, PersonalBoard personalboard) {
+        this.position = position;
+        this.personalboard = personalboard;
+        popesFavors = new ArrayList<>(Arrays.asList(
+                FavorStatus.INACTIVE,
+                FavorStatus.INACTIVE,
+                FavorStatus.INACTIVE));
+        victoryPointsSheet = Map.of( // TODO: check if a hashmap is better?
+                0, 0,
+                3, 1,
+                6, 2,
+                9, 4,
+                12, 6,
+                15, 9,
+                18, 12,
+                21, 16,
+                24, 20);
     }
-    /**
-    * @param position
-    */
-
-    // ----------- << method.annotations@AAAAAAF4RYT5u/93RCE= >>
-    // ----------- >>
-    public FaithTrack(int position) {
-    // ----------- << method.body@AAAAAAF4RYT5u/93RCE= >>
-    // ----------- >>
-    }
-// ----------- << class.extras@AAAAAAF4NpFbmHLzM68= >>
-// ----------- >>
 }

@@ -1,46 +1,19 @@
 package it.polimi.ingsw.server.model.gamepackage.actions;
 
-import java.util.*;
-import it.polimi.ingsw.server.model.*;
-import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
-
 public class TakeResourceAction implements Action {
-    private final PersonalBoard board;
-    private final Market market;
-    private final LeaderCard leaderCard;
-    private final ResourceBank resourceBank;
+    private final int value;
+    private final boolean row;
 
-    public TakeResourceAction(PersonalBoard board, Market market, LeaderCard leaderCard, ResourceBank resourceBank) {
-        this.board = board;
-        this.market = market;
-        this.leaderCard = leaderCard;
-        this.resourceBank = resourceBank;
+    public TakeResourceAction(int value, boolean row) {
+        this.value = value;
+        this.row = row;
     }
 
-    @Override
-    public void performAction() {
+    public int getValue() {
+        return value;
     }
 
-    /**
-    * @param line the line from which the player wants to take resources from the market
-    */
-    public void chooseRow(int line) {
-        board.storeResources(
-                resourceBank.getResource(
-                        market.chooseRow(line)
-                )
-        );
+    public boolean isRow() {
+        return row;
     }
-
-    /**
-    * @param column the column from which the player wants to take resources from the market
-    */
-    public void chooseColumn(int column) {
-        board.storeResources(
-                resourceBank.getResource(
-                        market.chooseColumn(column)
-                )
-        );
-    }
-
 }
