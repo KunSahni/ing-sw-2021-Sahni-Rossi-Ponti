@@ -1,33 +1,30 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
 import java.util.*;
-import java.time.*;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.gamepackage.Player;
 
-public class PersonalBoard implements VictoryPointsElement, StorageElement {
-    private List<DevelopmentSlot> developmentSlots = new ArrayList<>();
-    private LeaderCard leaderCard1;
-    private LeaderCard leaderCard2;
-    private Player player;
-    private WarehouseDepots warehouseDepots;
-    private Strongbox strongBox;
-    private FaithTrack faithTrack;
+public class PersonalBoard implements VictoryPointsElement {
+    private final List<DevelopmentSlot> developmentSlots = new ArrayList<>();
+    private final List<LeaderCard> leaderCards = new ArrayList<>();
+    private final Player player;
+    private final WarehouseDepots warehouseDepots;
+    private final Strongbox strongbox;
+    private final FaithTrack faithTrack;
 
 
 
     public PersonalBoard(LeaderCard leaderCard1, LeaderCard leaderCard2, Player player) {
-        this.leaderCard1 = leaderCard1;
-        this.leaderCard2 = leaderCard2;
+        leaderCards.add(leaderCard1);
+        leaderCards.add(leaderCard2);
         this.player = player;
+        warehouseDepots = new WarehouseDepots();
+        strongbox = new Strongbox();
+        faithTrack = new FaithTrack(player.getPosition(), this);
     }
 
-    public LeaderCard getLeaderCard1() {
-        return leaderCard1;
-    }
-
-    public LeaderCard getLeaderCard2() {
-        return leaderCard2;
+    public List<LeaderCard> getLeaderCards() {
+        return new ArrayList(leaderCards);
     }
 
     public Player getPlayer() {
@@ -37,158 +34,88 @@ public class PersonalBoard implements VictoryPointsElement, StorageElement {
     public List<DevelopmentSlot> getDevelopmentSlots() {
         return developmentSlots;
     }
+
     public WarehouseDepots getWarehouseDepots() {
         return warehouseDepots;
     }
 
     public Strongbox getStrongBox() {
-        return strongBox;
+        return strongbox;
     }
 
     public FaithTrack getFaithTrack() {
         return faithTrack;
     }
 
-    public void linkLeaderCards(LeaderCard _leaderCards) {
-        if (_leaderCards != null) {
-            getLeaderCards().add(_leaderCards);
-        }
+    /**
+     * Calculates the number of resources in all storages collectively
+     * @return int representing the number of resources
+     */
+    private int getNumberOfResources() {
+        int totalResources = 0;
+
+        totalResources+=strongbox.peekResources()
+                .values()
+                .stream()
+                .reduce(0, Integer::sum);
+        totalResources+=warehouseDepots.peekResources()
+                .values()
+                .stream()
+                .reduce(0, Integer::sum);
+        totalResources+=leaderCards.stream()
+                .filter(x -> x instanceof StoreLeaderCard)
+                .map(x -> (StoreLeaderCard) x)
+                .map(StoreLeaderCard::peekResources)
+                .mapToInt(x -> x.values().iterator().next())
+                .sum();
+        return totalResources;
     }
 
-    public void linkActiveDevelopmentCards(DevelopmentCard _activeDevelopmentCards) {
-        if (_activeDevelopmentCards != null) {
-            getActiveDevelopmentCards().add(_activeDevelopmentCards);
-        }
-    }
-
-    public void linkWarehouseDepots(WarehouseDepots _warehouseDepots) {
-        if (_warehouseDepots != null) {
-            _warehouseDepots.unlink();
-            _warehouseDepots.set(this);
-        }
-
-        unlinkWarehouseDepots();
-        setWarehouseDepots(_warehouseDepots);
-    }
-
-    public void linkStrongBox(Strongbox _strongBox) {
-        if (_strongBox != null) {
-            _strongBox.unlink();
-            _strongBox.set(this);
-        }
-
-        unlinkStrongBox();
-        setStrongBox(_strongBox);
-    }
-
-    public void unlink() {
-        if (get() != null) {
-            get().set(null);
-            set(null);
-        }
-    }
-
-    public void unlinkLeaderCards(LeaderCard _leaderCards) {
-        if (_leaderCards != null) {
-            getLeaderCards().remove(_leaderCards);
-        }
-    }
-
-    public void unlinkLeaderCards(Iterator<LeaderCard> it) {
-        it.remove();
-    }
-
-    public void unlinkActiveDevelopmentCards(DevelopmentCard _activeDevelopmentCards) {
-        if (_activeDevelopmentCards != null) {
-            getActiveDevelopmentCards().remove(_activeDevelopmentCards);
-        }
-    }
-
-    public void unlinkActiveDevelopmentCards(Iterator<DevelopmentCard> it) {
-        it.remove();
-    }
-
-    public void unlinkWarehouseDepots() {
-        if (getWarehouseDepots() != null) {
-            getWarehouseDepots().set(null);
-            setWarehouseDepots(null);
-        }
-    }
-
-    public void unlinkStrongBox() {
-        if (getStrongBox() != null) {
-            getStrongBox().set(null);
-            setStrongBox(null);
-        }
-    }
-
+    /**
+     * The method calculates the sum of victory points obtained via faith track,
+     * development cards, leader cards and resource amount
+     * @return int representing the number of victory points
+     */
     @Override
-    // ----------- << method.annotations@AAAAAAF4RjrUDX8u+pU= >>
-    // ----------- >>
     public int getVictoryPoints() {
-    // ----------- << method.body@AAAAAAF4RjrUDX8u+pU= >>
-    // ----------- >>
-    }
-    /**
-    * @param addResources
-    */
+        int totalVictoryPoints = 0;
 
-    @Override
-    // ----------- << method.annotations@AAAAAAF4Wk109UDSeb8= >>
-    // ----------- >>
-    public void storeResources(Map<Resource, Integer> addResources) {
-    // ----------- << method.body@AAAAAAF4Wk109UDSeb8= >>
-    // ----------- >>
-    }
-    /**
-    * @param delResources
-    */
+        totalVictoryPoints+=getNumberOfResources()/5;
+        totalVictoryPoints+=faithTrack.getVictoryPoints();
+        totalVictoryPoints+=leaderCards.stream()
+                .mapToInt(LeaderCard::getVictoryPoints)
+                .sum();
+        totalVictoryPoints+=developmentSlots.stream()
+                .filter(x -> x instanceof DevelopmentCardSlot)
+                .map(x -> (DevelopmentCardSlot) x)
+                .mapToInt(DevelopmentCardSlot::getVictoryPoints)
+                .sum();
 
-    @Override
-    // ----------- << method.annotations@AAAAAAF4Wk3BUEnAsZ4= >>
-    // ----------- >>
-    public void discardResources(Map<Resource, Integer> delResources) {
-    // ----------- << method.body@AAAAAAF4Wk3BUEnAsZ4= >>
-    // ----------- >>
+        return totalVictoryPoints;
     }
-    @Override
-    // ----------- << method.annotations@AAAAAAF4Wk4Ui2QVgjg= >>
-    // ----------- >>
-    public Map<Resource, Integer> peekResources() {
-    // ----------- << method.body@AAAAAAF4Wk4Ui2QVgjg= >>
-    // ----------- >>
-    }
-    /**
-    * @param card
-    */
 
-    // ----------- << method.annotations@AAAAAAF4QTY3Z7I65n8= >>
-    // ----------- >>
+    /**
+     * Delegates arrangement selection to controller which will update
+     * all storage elements.
+     * @param addedResources incoming resources from the market
+     */
+    public void storeResources(Map<Resource, Integer> addedResources) {
+        // controller.dispatchStoreResources(addedResources, currentResourceArrangement)
+        // currentResourceArrangement is an object of class ResourceArrangement
+        // used to communicate the availability of resource slots with the controller
+    }
+
+    /**
+    * @param card gets removed from the board's card list
+    */
     public void discardLeaderCard(LeaderCard card) {
-    // ----------- << method.body@AAAAAAF4QTY3Z7I65n8= >>
-    // ----------- >>
+        leaderCards.remove(card);
     }
     /**
-    * @param card 
-    * @param position
+    * @param card has just been purchased and will be placed on the personal board
+    * @param position will define which position the card will occupy
     */
-
-    // ----------- << method.annotations@AAAAAAF4RebhDbspqKc= >>
-    // ----------- >>
     public void placeDevelopmentCard(DevelopmentCard card, int position) {
-    // ----------- << method.body@AAAAAAF4RebhDbspqKc= >>
-    // ----------- >>
-    }
-    /**
-    * @param card
-    */
 
-    // ----------- << method.annotations@AAAAAAF4Rekthd6lY+Y= >>
-    // ----------- >>
-    public List<Boolean> availableDevelopmentCardSlots(DevelopmentCard card) {
-    // ----------- << method.body@AAAAAAF4Rekthd6lY+Y= >>
-    // ----------- >>
     }
-// ----------- << class.extras@AAAAAAF4No/AYXFbLkU= >>
-// ----------- >>
 }
