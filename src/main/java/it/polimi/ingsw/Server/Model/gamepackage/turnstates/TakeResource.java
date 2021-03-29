@@ -12,14 +12,12 @@ public class TakeResource implements AbstractTurnState {
     private Market market;
     private TakeResourceAction action;
     private PersonalBoard board;
-    private ResourceBank resourceBank;
 
     @Override
     public void setup(Turn turn, Action action) {
         this.market = turn.getGame().getMarket();
         this.action = (TakeResourceAction) action;
         this.board = turn.getPlayer().getPersonalBoard();
-        this.resourceBank = turn.getGame().getResourceBank();
     }
 
     @Override
@@ -35,7 +33,7 @@ public class TakeResource implements AbstractTurnState {
      */
     public void chooseRow(int line) {
         board.storeResources(
-                resourceBank.getResource(
+                ResourceBank.getResource(
                         market.chooseRow(line)
                 )
         );
@@ -46,7 +44,7 @@ public class TakeResource implements AbstractTurnState {
      */
     public void chooseColumn(int column) {
         board.storeResources(
-                resourceBank.getResource(
+                ResourceBank.getResource(
                         market.chooseColumn(column)
                 )
         );
