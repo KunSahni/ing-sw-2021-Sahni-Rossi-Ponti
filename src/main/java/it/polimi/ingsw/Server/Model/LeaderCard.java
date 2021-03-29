@@ -10,46 +10,36 @@ import java.time.*;
 
 
 
-// ----------- << imports@AAAAAAF4No/fY3GFeZE= >>
-// ----------- >>
-
-// ----------- << class.annotations@AAAAAAF4No/fY3GFeZE= >>
-// ----------- >>
 public abstract class LeaderCard implements VictoryPointsElement {
-    // ----------- << attribute.annotations@AAAAAAF4O3AuttrrcYA= >>
-    // ----------- >>
+
     private LeaderCardAbility ability;
 
-    // ----------- << attribute.annotations@AAAAAAF4O3CzZuTE7Ys= >>
-    // ----------- >>
     private int victoryPoints;
 
-    // ----------- << attribute.annotations@AAAAAAF4O4M6Ersu6bI= >>
-    // ----------- >>
     private boolean active;
 
-    // ----------- << attribute.annotations@AAAAAAF4NpqJPXyit80= >>
-    // ----------- >>
     private LeaderCardsDeck ;
 
-    // ----------- << attribute.annotations@AAAAAAF4O28f0c9caQ8= >>
-    // ----------- >>
     private LeaderCardAbility ;
 
-    // ----------- << attribute.annotations@AAAAAAF4Rip7Rm58UNs= >>
-    // ----------- >>
     private LeaderCardAbility ;
 
     public LeaderCardAbility getAbility() {
-        return ability;
+        LeaderCardAbility a;
+        a = ability;
+        return a;
     }
 
     public int getVictoryPoints() {
-        return victoryPoints;
+        int v;
+        v = victoryPoints;
+        return v;
     }
 
     private boolean isActive() {
-        return active;
+        boolean b;
+        b = active;
+        return b;
     }
 
     public LeaderCardsDeck get() {
@@ -80,79 +70,20 @@ public abstract class LeaderCard implements VictoryPointsElement {
         this. = ;
     }
 
-    public void link(LeaderCardsDeck _) {
-        if (_ != null) {
-            _.getDeck().add(this);
-        }
-
-        unlink();
-        set(_);
-    }
-
-    public void link(LeaderCardAbility _) {
-        if (_ != null) {
-            _.unlink();
-            _.set(this);
-        }
-
-        unlink();
-        set(_);
-    }
-
-    public void link(LeaderCardAbility _) {
-        if (_ != null) {
-            _.unlink();
-            _.set(this);
-        }
-
-        unlink();
-        set(_);
-    }
-
-    public void unlink() {
-        if (get() != null) {
-            get().getDeck().remove(this);
-            set(null);
-        }
-    }
-
-    public void unlink() {
-        if (get() != null) {
-            get().set(null);
-            set(null);
-        }
-    }
-
-    public void unlink() {
-        if (get() != null) {
-            get().set(null);
-            set(null);
-        }
-    }
-
-    // ----------- << method.annotations@AAAAAAF4O4SLWMFonYU= >>
-    // ----------- >>
-
     /**
      * set active true when the leader card is activated
      */
     public void activate() {
-    // ----------- << method.body@AAAAAAF4O4SLWMFonYU= >>
-    // ----------- >>
         active=true;
     }
-    // ----------- << method.annotations@AAAAAAF4O5NAhU0ESoM= >>
-    // ----------- >>
+
 
     /**
      *
      * @return true if the leader card is active
      */
     public boolean isActive() {
-    // ----------- << method.body@AAAAAAF4O5NAhU0ESoM= >>
-    // ----------- >>
         return active;
     }
-// ----------- << class.extras@AAAAAAF4No/fY3GFeZE= >>
-// ----------- >>
+
 }

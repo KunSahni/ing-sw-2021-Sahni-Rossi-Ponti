@@ -5,48 +5,22 @@
 */
 package it.polimi.ingsw.server.model;
 
+import jdk.internal.loader.Resource;
+
 import java.util.*;
 import java.time.*;
 
 
 
-// ----------- << imports@AAAAAAF4O3ciS0w4KpM= >>
-// ----------- >>
-
-// ----------- << class.annotations@AAAAAAF4O3ciS0w4KpM= >>
-// ----------- >>
 public class ProduceLeaderCard extends LeaderCard {
-    // ----------- << attribute.annotations@AAAAAAF4O4+NCBvnULA= >>
-    // ----------- >>
+
     private Color requirement;
 
-    // ----------- << attribute.annotations@AAAAAAF4O5gfpobl4mM= >>
-    // ----------- >>
     private Resource inputResource;
 
-    // ----------- << attribute.annotations@AAAAAAF4RfvVRMxhcc0= >>
-    // ----------- >>
     private int faithIncrement;
 
-    // ----------- << attribute.annotations@AAAAAAF4RiWGybvdl+w= >>
-    // ----------- >>
     private ResourceBank ;
-
-    public Color getRequirement() {
-        return requirement;
-    }
-
-    public Resource getInputResource() {
-        return inputResource;
-    }
-
-    public int getFaithIncrement() {
-        return faithIncrement;
-    }
-
-    public ResourceBank get() {
-        return ;
-    }
 
     public void setInputResource(Resource inputResource) {
         this.inputResource = inputResource;
@@ -56,35 +30,19 @@ public class ProduceLeaderCard extends LeaderCard {
         this. = ;
     }
 
-    public void link(ResourceBank _) {
-        set(_);
-    }
-
-    public void unlink() {
-        set(null);
-    }
-
-    @Override
-    // ----------- << method.annotations@AAAAAAF4RjrUDX8u+pU= >>
-    // ----------- >>
-    public int getVictoryPoints() {
-    // ----------- << method.body@AAAAAAF4RjrUDX8u+pU= >>
-    // ----------- >>
-    }
     /**
      * moves on the faith track and produce the chosen resource
     * @param chosenResource
      * @return the produced resource
     */
 
-    // ----------- << method.annotations@AAAAAAF4O5h/3YsNbNE= >>
-    // ----------- >>
     public Resource produce(Resource chosenResource) {
-    // ----------- << method.body@AAAAAAF4O5h/3YsNbNE= >>
-    // ----------- >>
-        FaithTrack.moveMarker(); //controllare che si possa muovere solo di una posisione sul persorso fede
+        int i = 0;
+        while (i<faithIncrement){
+            FaithTrack.moveMarker();
+        }
+
         return ResourceBank.getResource(chosenResource);
     }
-// ----------- << class.extras@AAAAAAF4O3ciS0w4KpM= >>
-// ----------- >>
+
 }
