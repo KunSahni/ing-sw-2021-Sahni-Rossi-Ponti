@@ -118,7 +118,8 @@ public class DevelopmentCardsBoard {
         return board[line][column].pop();
     }
     /**
-    * Loads the cards from an XML file and creates the related objects. Then it creates all the needed decks by calling the constructor and passing them the cards they need.
+    * Loads the cards from an XML file and creates the related objects.
+     * Then it creates all the needed decks by calling the constructor and passing them the cards they need.
     */
 
 
