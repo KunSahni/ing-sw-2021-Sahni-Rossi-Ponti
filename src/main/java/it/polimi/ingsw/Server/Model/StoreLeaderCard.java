@@ -2,31 +2,16 @@ package it.polimi.ingsw.server.model;
 
 import java.util.*;
 
-public class StoreLeaderCard extends LeaderCard implements StorageElement {
-    private Map<Resource, Integer> storedResources;
+public class StoreLeaderCard extends LeaderCard {
+    private ResourceManager storage;
+    private Resource storedType;
 
-    /**
-    * @param addResources
-    */
-    public void storeResources(Map<Resource, Integer> addResources) {
+    public ResourceManager getStorageManager() {
+        return storage;
     }
-    /**
-    * @param delResources
-    */
 
-    @Override
-    // ----------- << method.annotations@AAAAAAF4Wk3BUEnAsZ4= >>
-    // ----------- >>
-    public void discardResources(Map<Resource, Integer> delResources) {
-    // ----------- << method.body@AAAAAAF4Wk3BUEnAsZ4= >>
-    // ----------- >>
-    }
-    @Override
-    // ----------- << method.annotations@AAAAAAF4Wk4Ui2QVgjg= >>
-    // ----------- >>
-    public Map<Resource, Integer> getResources() {
-    // ----------- << method.body@AAAAAAF4Wk4Ui2QVgjg= >>
-    // ----------- >>
+    public Resource getStoredType() {
+        return storedType;
     }
     @Override
     // ----------- << method.annotations@AAAAAAF4RjrUDX8u+pU= >>
