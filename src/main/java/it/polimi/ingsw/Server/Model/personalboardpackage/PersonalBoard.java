@@ -42,6 +42,10 @@ public class PersonalBoard implements VictoryPointsElement {
         return faithTrack;
     }
 
+    public ResourceManager getStrongbox() {
+        return strongbox;
+    }
+
     /**
      * @return shallow copy of all currently stored resources by the player
      */ //TODO: evaluate if this is actually needed
