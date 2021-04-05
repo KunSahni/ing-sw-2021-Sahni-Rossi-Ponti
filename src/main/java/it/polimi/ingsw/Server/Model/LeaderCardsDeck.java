@@ -1,69 +1,44 @@
 package it.polimi.ingsw.server.model;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.*;
-import java.time.*;
-
-
-import GamePackage.Game;
-import jdk.internal.org.objectweb.asm.TypeReference;
+import java.util.concurrent.ThreadLocalRandom;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 
 public class LeaderCardsDeck {
 
     private Stack<LeaderCard> deck;
 
-
-    private Game ;
-
     public Stack<LeaderCard> getDeck() {
-        Stack<LeaderCard> d = new Stack<LeaderCard>();
-
-        for (LeaderCard l: deck) {
-            d.push(l);
-        }
-        return d;
+        return deck;
     }
-
-    public Game get() {
-        return ;
-    }
-
-    public void setDeck(Stack<LeaderCard> deck) {
-        for (LeaderCard l: deck) {
-            this.deck.push(l);
-        }
-    }
-
-    public void set(Game ) {
-        this. = ;
-    }
-
-
 
     /**
      * shuffles the main deck
      */
-    private void shuffle() {
-        LeaderCard sup[] = new LeaderCard()[4];
-        int i = 0;
-        int rand = 0;
-        boolean b[] = new Boolean()[16];
 
-        for(i=0; i<16; i++){
-            sup[i]= deck.pop();
-            b[i]=false;
+    private void shuffle() {
+        Random random = ThreadLocalRandom.current();
+        LeaderCard[] leaderCards = new LeaderCard[16];
+
+        //place the deck into an array
+        for(int i=0; i<16; i++){
+            leaderCards[i]=deck.pop();
         }
 
-        for(i=0; i<16; i++){
-            rand = random.nextInt(15);
-            while(b[rand]==true){
-                rand++;
-                if (rand>15) rand=0;
-            }
-            deck.push(sup[rand]);
-            b[rand]=true;
+        //shuffle the array
+        for(int i=leaderCards.length-1; i>0; i-- ){
+            int index = random.nextInt(i+1);
+            LeaderCard a = leaderCards[index];
+            leaderCards[index] = leaderCards[i];
+            leaderCards[i] = a;
+        }
+
+        //load the array in the deck
+        for (LeaderCard l: leaderCards) {
+            deck.push(l);
         }
     }
 
@@ -73,9 +48,8 @@ public class LeaderCardsDeck {
      */
     public List<LeaderCard> popFour() {
         List supp = new ArrayList();
-        int i=0;
 
-        for(i=0; i<4; i++){
+        for(int i=0; i<4; i++){
             supp.add(i,deck.pop());
         }
         return supp;
@@ -85,21 +59,56 @@ public class LeaderCardsDeck {
      * loads the leader cards from an XML file
      */
     public void loadLeaderCards() {
+        // write the leader card ability as first
+        // after reading it choose which producer have to call
         deck.clear();
+        Gson gson = new Gson();
+
+        //upload of ConvertLeaderCard
         try {
-            ObjectMapper mapper = new XmlMapper();
-            InputStream inputStream = new FileInputStream(new File("/poszionedelfilexml")); //METTERRE LA POSIZIONE DEL FILE GIUSTA
-            TypeReference<List<LeaderCard>> typeReference = new TypeReference<List<LeaderCard>>() {
-            };
-            List<LeaderCard> leaderCards = mapper.readValue(inputStream, typeReference);
-            for (Leadercard l : leaderCards) {
-                deck.push(l);
+            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            ConvertLeaderCard[] convertLeaderCards = new Gson().fromJson(reader, ConvertLeaderCard.class);
+            for (ConvertLeaderCard c: convertLeaderCards) {
+                deck.push(c);
             }
-            shuffle();
-        }
-        catch(Exception e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        //upload of DiscountLeaderCard
+        try {
+            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            DiscountLeaderCard[] discountLeaderCards = new Gson().fromJson(reader, DiscountLeaderCard.class);
+            for (DiscountLeaderCard d: discountLeaderCards) {
+                deck.push(d);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //upload of ProduceLeaderCard
+        try {
+            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            ProduceLeaderCard[] produceLeaderCards = new Gson().fromJson(reader, ProduceLeaderCard.class);
+            for (ProduceLeaderCard p: produceLeaderCards) {
+                deck.push(p);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //upload of StoreLeaderCard
+        try {
+            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            StoreLeaderCard[] storeLeaderCards = new Gson().fromJson(reader, StoreLeaderCard.class);
+            for (StoreLeaderCard s: storeLeaderCards) {
+                deck.push(s);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        shuffle();
     }
 
 }

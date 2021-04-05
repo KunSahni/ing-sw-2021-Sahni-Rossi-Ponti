@@ -13,9 +13,7 @@ public abstract class LeaderCard implements VictoryPointsElement {
     }
 
     public int getVictoryPoints() {
-        int v;
-        v = victoryPoints;
-        return v;
+        return victoryPoints;
     }
     public boolean isActive(){
         return active;

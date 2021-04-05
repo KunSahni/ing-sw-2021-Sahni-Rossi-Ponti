@@ -1,9 +1,5 @@
 package it.polimi.ingsw.server.model;
 
-import java.util.*;
-import java.time.*;
-
-
 
 public class DiscountLeaderCard extends LeaderCard {
 
@@ -13,8 +9,9 @@ public class DiscountLeaderCard extends LeaderCard {
 
     private Resource discountedResource;
 
-    public Resource getDiscountedResource() {
-        return discountedResource;
+    public DiscountLeaderCard(Color requirement1, Color requirement2, Resource discountedResource) {
+        this.requirement1 = requirement1;
+        this.requirement2 = requirement2;
+        this.discountedResource = discountedResource;
     }
-
 }
