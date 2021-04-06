@@ -2,10 +2,10 @@ package it.polimi.ingsw.server.controller.gamepackage;
 
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.controller.gamestates.*;
+import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 
 import java.util.Queue;
-
-//todo: manage singleplayer turn
+import java.util.stream.Collectors;
 
 /**
  * This class represents a game and controls all the turns/game logic
@@ -13,7 +13,6 @@ import java.util.Queue;
 
 public class Game {
     private final int gameID;
-    private final int inkwell;  //todo: remove inkwell, postion of Player is enough
     private final DevelopmentCardsBoard developmentCardsBoard;
     private final Market market;
     private final LeaderCardsDeck leaderCardsDeck;
@@ -24,41 +23,18 @@ public class Game {
 
     /**
      * @param gameID an unique ID that identifies the game
-     * @param size the number of players who will be participating in this game
      */
-    public Game(int gameID, int size) {
+    public Game(int gameID) {
         this.gameID = gameID;
-        this.inkwell = (int) (Math.random()*(size-1) + 1);
         this.developmentCardsBoard = new DevelopmentCardsBoard();
         this.market = new Market();
         this.leaderCardsDeck = new LeaderCardsDeck();
         this.actionTokenDeck = new ActionTokenDeck();
-        this.currentState = new Pregame();
+        this.currentState = new Pregame(this);
     }
-
-    public int getGameID() {
-        return gameID;
-    }
-
-    public int getInkwell() {
-        return inkwell;
-    }
-
-    public DevelopmentCardsBoard getDevelopmentCardsBoard() {
-        return developmentCardsBoard;
-    }
-
-    public Market getMarket() {
-        return market;
-    }
-
-    public ActionTokenDeck getActionTokenDeck() {
-        return actionTokenDeck;
-    }
-
 
     /**
-     *This method sets a new Turn for the next player
+     *This method sets a new Turn for the next Player
     */
     public void nextTurn() {
         players.add(players.remove());
@@ -66,15 +42,25 @@ public class Game {
     }
 
     /**
+     *This method sets a new Turn for the next player
+     */
+    public void nextSinglePlayerTurn() {
+        currentTurn = new SinglePlayerTurn(this, players.peek());
+    }
+
+    /**
      * This method moves each players' fait marker by one except the on who just discarded a resource
     * @param excludedPlayer the player who discarded the resource
     */
     public void moveOtherMarkers(Player excludedPlayer) {
-        players.stream().filter(
-                player -> !player.equals(excludedPlayer)
-        ).forEach(
-                player -> player.getPersonalBoard().getFaithTrack().moveMarker()
-        );
+        if(players.size()==1)
+            ((SinglePlayerFaithTrack) players.peek().getPersonalBoard().getFaithTrack()).moveBlackCross();
+        else
+            players.stream().filter(
+                    player -> !player.equals(excludedPlayer)
+            ).forEach(
+                    player -> player.getPersonalBoard().getFaithTrack().moveMarker()
+            );
     }
 
     /**
@@ -88,18 +74,74 @@ public class Game {
     * @param position the number of the pope's favor (1, 2 or 3) which players should flip or discard
     */
     public void flipOtherPopesFavor(int position) {
-        players.forEach(
-                player -> player.getPersonalBoard().getFaithTrack().flipPopesFavor(position)
-        );
+        if(players.size()==1)
+            ((SinglePlayerFaithTrack) players.peek().getPersonalBoard().getFaithTrack()).flipPopesFavor(position);
+        else
+            players.forEach(
+                    player -> player.getPersonalBoard().getFaithTrack().flipPopesFavor(position)
+            );
     }
 
     /**
      * @param nickname the nickname of the Player that needs to be added
      */
-    public void addPlayer(String nickname){
+    public void addPlayer(String nickname, View view){
         players.add(
-                new Player(nickname, players.size(), this, leaderCardsDeck.popFour())
+                new Player(nickname, this, view)
         );
+    }
+
+    /**
+     * This method starts the Game and keeps it running as long as it isn't finished
+     */
+    public void run(){
+        while (!(currentState instanceof GameFinished))
+            currentState.run();
+        //todo: e poi?
+        //calcolo punteggi?
+    }
+
+    /**
+     * This method is used to reorder the Players after each one of them is assigned to a position
+     */
+    public void sortPlayers(){
+        players = (Queue<Player>) players.stream().sorted().collect(Collectors.toList());
+    }
+
+    public int getGameSize(){
+        return players.size();
+    }
+
+    public int getGameID() {
+        return gameID;
+    }
+
+    public DevelopmentCardsBoard getDevelopmentCardsBoard() {
+        return developmentCardsBoard;
+    }
+
+    public Market getMarket() {
+        return market;
+    }
+
+    public LeaderCardsDeck getLeaderCardsDeck() {
+        return leaderCardsDeck;
+    }
+
+    public ActionTokenDeck getActionTokenDeck() {
+        return actionTokenDeck;
+    }
+
+    public AbstractGameState getCurrentState() {
+        return currentState;
+    }
+
+    public Turn getCurrentTurn() {
+        return currentTurn;
+    }
+
+    public Queue<Player> getPlayers() {
+        return players;
     }
 
 }
