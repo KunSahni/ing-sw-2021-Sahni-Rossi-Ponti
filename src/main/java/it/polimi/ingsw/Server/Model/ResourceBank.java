@@ -1,27 +1,24 @@
 package it.polimi.ingsw.server.model;
 
 import java.util.*;
-import java.time.*;
+import static it.polimi.ingsw.server.model.MarketMarble.*;
+import static it.polimi.ingsw.server.model.Resource.*;
 
-
-import Resource;
-import jdk.internal.loader.Resource;
-
-public class ResourceBank {
+public final class ResourceBank {
     /**
      * produces and returns a map of resources
      * @return the requested resources
-    * @param request contains the requested resources
-    */
+     * @param request contains the requested resources
+     */
 
 
-    public Map<Resource, Integer> getResource(Map<Resource, Integer> request) {
+    public Map<Resource, Integer> getResourceFromMarble(Map<MarketMarble, Integer> request) {
         Map<Resource, Integer> resources = new HashMap<>();
 
-        resources.put(COIN, request.get(COIN));
-        resources.put(SERVANT, request.get(SERVANT));
-        resources.put(STONE, request.get(STONE));
-        resources.put(SHIELD, request.get(SHIELD));
+        resources.put(COIN, request.get(YELLOW));
+        resources.put(SERVANT, request.get(PURPLE));
+        resources.put(STONE, request.get(GREY));
+        resources.put(SHIELD, request.get(BLUE));
 
         return resources;
     }
@@ -30,7 +27,7 @@ public class ResourceBank {
     * @param request contains the requested resource
     */
 
-    public Resource getResource(Resource request) {
+    public Resource getResources(Resource request) {
         Resource resource;
 
         resource = request;
@@ -41,14 +38,10 @@ public class ResourceBank {
     * @param request
     */
 
-    public Map<Resource, Integer> getResource(Map<MarketMarble, Integer> request) {
-        Map<MarketMarble, Integer> resources = new HashMap<>();
+    public Map<Resource, Integer> getResources(Map<Resource, Integer> request) {
+        Map<Resource, Integer> resources = new HashMap<>();
 
-        resources.put(COIN, request.get(YELLOW));
-        resources.put(SHIELD, request.get(BLUE));
-        resources.put(STONE, request.get(GREY));
-        resources.put(SERVANT, request.get(PURPLE));
-
+        resources.putAll(request);
         return resources;
     }
 
