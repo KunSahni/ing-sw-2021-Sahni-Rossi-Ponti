@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.controller.gamepackage;
 
 import it.polimi.ingsw.server.controller.messages.actions.*;
 import it.polimi.ingsw.server.controller.gamestates.LastRound;
+import it.polimi.ingsw.server.model.Player;
 
 import java.util.concurrent.Flow.*;
 

@@ -1,13 +1,13 @@
-package it.polimi.ingsw.server.controller.gamepackage;
+package it.polimi.ingsw.server.model;
 
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
+import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.messages.actions.*;
 import it.polimi.ingsw.server.controller.messages.choices.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.controller.messages.choices.NextActionMessage;
-import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 

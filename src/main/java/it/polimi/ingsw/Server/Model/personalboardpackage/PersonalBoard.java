@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.model.personalboardpackage;
 import java.util.*;
 import java.util.stream.Collectors;
 import it.polimi.ingsw.server.model.*;
-import it.polimi.ingsw.server.controller.gamepackage.Player;
+import it.polimi.ingsw.server.model.Player;
 
 public class PersonalBoard implements VictoryPointsElement {
     private final List<DevelopmentSlot> developmentSlots;

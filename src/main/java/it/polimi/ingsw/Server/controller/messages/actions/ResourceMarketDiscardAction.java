@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
-import it.polimi.ingsw.server.controller.gamepackage.Player;
+import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.Resource;
 
 import java.util.Map;
