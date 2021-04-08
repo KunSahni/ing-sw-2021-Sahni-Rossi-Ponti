@@ -1,65 +1,13 @@
 package it.polimi.ingsw.server.model;
 
 import java.util.*;
-import java.time.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 
 
 public class DevelopmentCardsDeck {
-    private Stack<DevelopmentCard> deck = new Stack<DevelopmentCard>();
-
-    private DevelopmentCardsBoard ;
-
-    public Set<DevelopmentCard> getDeck() {
-        return deck;
-    }
-
-    public DevelopmentCardsBoard get() {
-        return ;
-    }
-
-    public void set(DevelopmentCardsBoard ) {
-        this. = ;
-    }
-
-    public void linkDeck(DevelopmentCard _deck) {
-        if (_deck != null) {
-            _deck.unlink();
-            _deck.set(this);
-            getDeck().add(_deck);
-        }
-    }
-
-    public void link(DevelopmentCardsBoard _) {
-        if (_ != null) {
-            _.getBoard[4][3]().add(this);
-        }
-
-        unlink();
-        set(_);
-    }
-
-    public void unlinkDeck(DevelopmentCard _deck) {
-        if (_deck != null) {
-            _deck.set(null);
-            getDeck().remove(_deck);
-        }
-    }
-
-    public void unlinkDeck(DevelopmentCard _deck, Iterator<DevelopmentCard> it) {
-        if (_deck != null) {
-            _deck.set(null);
-            it.remove();
-        }
-    }
-
-    public void unlink() {
-        if (get() != null) {
-            get().getBoard[4][3]().remove(this);
-            set(null);
-        }
-    }
+    private Stack<DevelopmentCard> deck;
 
 
     public DevelopmentCard pop() {
@@ -72,24 +20,24 @@ public class DevelopmentCardsDeck {
      * array b is used to mark if a card has been reinserted in the deck
      */
     private void shuffle() {
-        DevelopmentCard sup[] = new DevelopmentCard()[4];
-        int i = new Integer();
-        int rand = new Integer();
-        boolean b[] = new Boolean()[4];
-
-        for(i=0; i<4; i++){
-            sup[i]= deck.pop();
-            b[i]=false;
+        DevelopmentCard[] sup = new DevelopmentCard[4];
+        Random random = ThreadLocalRandom.current();
+        int i = 0;
+        //place the deck into an array
+        for (DevelopmentCard d: deck) {
+            sup[i] = d;
+            i++;
         }
-
-        for(i=0; i<4; i++){
-            rand = random.nextInt(3);
-            while(b[rand]==false){
-                rand++;
-                if (rand>3) rand=0;
-            }
-            deck.push(sup[rand]);
-            b[rand]=true;
+        //shuffle the array
+        for(int b=sup.length-1; b>0; b-- ){
+            int index = random.nextInt(b+1);
+            DevelopmentCard a = sup[index];
+            sup[index] = sup[b];
+            sup[b] = a;
+        }
+        //put the array in the deck
+        for (DevelopmentCard d: sup) {
+            deck.push(d);
         }
     }
     /**
@@ -99,10 +47,9 @@ public class DevelopmentCardsDeck {
 
 
     public DevelopmentCardsDeck(List<DevelopmentCard> cards) {
-        deck.push(cards.get(0));
-        deck.push(cards.get(1));
-        deck.push(cards.get(2));
-        deck.push(cards.get(3));
+        for (DevelopmentCard d: cards) {
+            deck.push(d);
+        }
         shuffle();
     }
 
@@ -111,7 +58,9 @@ public class DevelopmentCardsDeck {
      * @return the first card of the deck not removing it
      */
     public DevelopmentCard peek() {
-        return deck.peek();
+
+        if(deck.empty()){return null;}
+        else {return deck.peek();}
     }
 
 }
