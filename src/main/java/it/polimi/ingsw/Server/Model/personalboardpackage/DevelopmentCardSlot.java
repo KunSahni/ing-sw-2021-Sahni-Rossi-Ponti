@@ -32,10 +32,10 @@ public class DevelopmentCardSlot implements VictoryPointsElement{
     }
 
     /**
-     * Returns the resources that can be created by the topmost production card
+     * Returns a ProductionOutput object created by the topmost production card
      */
-    public Map<Resource, Integer> produce() {
-        return ResourceBank.getResources(cards.peek().getOutputResources());
+    public ProductionOutput produce() {
+        return cards.peek().produce();
     }
 
     /**
