@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.controller.gamestates;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.controller.messages.actions.Forwardable;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Pregame extends AbstractGameState implements Subscriber<Object> {
 
     public Pregame(Game game) {
         super(game);
-        waitingForPlayers = game.getSize();
+        waitingForPlayers = game.getGameSize();
     }
 
     /**
@@ -27,24 +28,36 @@ public class Pregame extends AbstractGameState implements Subscriber<Object> {
     public synchronized void run(){
         dealLeaderCards();
         waitForAllPlayersChoice();
-        waitingForPlayers = game.getSize();
+        waitingForPlayers = game.getGameSize();
         assignInkwell();
         waitForAllPlayersChoice();
         game.setNextState(new InGame(game));
 
     }
+
+    /**
+     * Deal 4 leader cards to each player in the game
+     */
     private void dealLeaderCards() {
-        game.getPlayers().forEach(p -> p.drawLeaderCards(game.getLeaderCardsDeck().popFour()));
+        game.getPlayers().forEach(p -> p.addLeaderCards(game.getLeaderCardsDeck().popFour()));
     }
 
+    /**
+     * Assign turn position to each player
+     */
     private void assignInkwell() {
-        List<Player> playerList = Collections.shuffle(game.getPlayers())
-        for(int i = 1; i <= game.getSize(); i++) {
+        List<Player> playerList = Collections.shuffle(game.getPlayers());
+        for(int i = 1; i <= game.getGameSize(); i++) {
             playerList.get(i).setPosition(i);
         }
         game.sortPlayers();
     }
 
+    /**
+     * Wait for all players' views to have executed their choices.
+     * This method will wait for all leader cards to be picked and
+     * for all extra resources to be picked.
+     */
     private void waitForAllPlayersChoice() {
         while(waitingForPlayers > 0) {
             try {
@@ -55,12 +68,20 @@ public class Pregame extends AbstractGameState implements Subscriber<Object> {
         }
     }
 
+    /**
+     * Initiate pub sub relationship between each players' view and this
+     * class's listener
+     */
     @Override
     public void onSubscribe(Subscription subscription) {
         this.subscription = subscription;
         subscription.request(1);
     }
 
+    /**
+     * Execute forward calls for player choices regarding leader cards
+     * and extra resources
+     */
     @Override
     public synchronized void onNext(Object item) {
         ((Forwardable) item).forward();
