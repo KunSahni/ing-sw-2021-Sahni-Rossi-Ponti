@@ -16,7 +16,7 @@ public class DevelopmentCardsBoard {
     private DevelopmentCardsDeck board[][] = new DevelopmentCardsDeck[4][3];
 
     /**
-    * @param level 
+    * @param level
     * @param color
     * @return and pick the first deck development card of color and level specified
     */
@@ -66,7 +66,7 @@ public class DevelopmentCardsBoard {
 
         try {
             JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
-            DevelopmentCard[] developmentCards = new Gson().fromJson(reader, DevelopmentCard.class);
+            DevelopmentCard[] developmentCards = new Gson().fromJson(reader, DevelopmentCard[].class);
 
             level1 = Arrays.stream(developmentCards)
                     .filter( developmentCard -> LEVEL1.equals(developmentCard.getLevel()))
