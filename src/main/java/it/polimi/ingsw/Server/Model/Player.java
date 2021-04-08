@@ -66,7 +66,7 @@ public class Player implements Comparator<Player>{
     public void setPosition(int position) {
         this.position = position;
         if(position>2)
-            getPersonalBoard().getFaithTrack().moveMarker();
+            getPersonalBoard().getFaithTrack().moveMarker(1);
     }
 
     /**
@@ -169,7 +169,7 @@ public class Player implements Comparator<Player>{
     private boolean canAffordDevelopmentCard(){
         return Arrays.stream(game.getDevelopmentCardsBoard().peekBoard()).anyMatch(
                 developmentCards -> Arrays.stream(developmentCards).anyMatch(
-                        developmentCard -> personalBoard.hasResources(developmentCard.getCost())
+                        developmentCard -> personalBoard.containsResources(developmentCard.peek().getCost())
                 )
         );
     }
@@ -179,8 +179,8 @@ public class Player implements Comparator<Player>{
      * @return true if the Player can afford any, false otherwise
      */
     private boolean canAffordProduction(){
-        boolean canProduceFromDevelopmentCards = personalBoard.getDevelopmentSlots().stream().anyMatch(
-                slot -> slot instanceof DevelopmentCardSlot && personalBoard.hasResources(slot.getInputResources())
+        boolean canProduceFromDevelopmentCards = personalBoard.getDevelopmentCardSlots().stream().anyMatch(
+                slot -> personalBoard.containsResources(slot.peek().getInputResources())
         );
 
         boolean canProduceFromDefaultSlot = personalBoard.getResourceCount() >= 2;
@@ -199,12 +199,7 @@ public class Player implements Comparator<Player>{
     private boolean canActivateLeaderCard(){
         List<LeaderCard> leaderCards = personalBoard.getLeaderCards();
         Optional<LeaderCard> card = leaderCards.stream().filter(
-                leaderCard -> switch (leaderCard.getAbility()){
-                    case STORE ->
-                            personalBoard.hasResources(leaderCard.getRequirement());
-                    default ->
-                            personalBoard.hasDevelopmentCards(leaderCard.getRequirements());
-                }
+                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard.getRequirements())
         ).findAny();
 
         return card.isPresent();

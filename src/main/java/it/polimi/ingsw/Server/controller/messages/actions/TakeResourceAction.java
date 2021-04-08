@@ -41,7 +41,7 @@ public class TakeResourceAction implements Forwardable {
      */
     public void chooseRow(int row) {
         player.storeResources(
-                ResourceBank.getResources(
+                ResourceBank.getResourceFromMarble(
                         market.chooseRow(row)
                 )
         );
@@ -52,7 +52,7 @@ public class TakeResourceAction implements Forwardable {
      */
     public void chooseColumn(int column) {
         player.storeResources(
-                ResourceBank.getResources(
+                ResourceBank.getResourceFromMarble(
                         market.chooseColumn(column)
                 )
         );

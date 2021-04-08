@@ -27,7 +27,7 @@ public class Turn implements Subscriber<Forwardable> {
     public void nextAction(Forwardable nextAction) {
         currentAction = nextAction;
 
-        if(player.getPersonalBoard().getDevelopmentSlotsCount() == 7 || player.getPersonalBoard().getFaithTrack().getPosition() == 20)
+        if(player.getPersonalBoard().getDevelopmentCardsCount() == 7 || player.getPersonalBoard().getFaithTrack().getPosition() == 20)
             triggerLastRound();
 
         if(!(currentAction instanceof StartAction) && !(currentAction instanceof EndAction)){
@@ -41,7 +41,7 @@ public class Turn implements Subscriber<Forwardable> {
      * This method tells the Game that a Player has either completed the FaithTrack or has bought 7 DevelopmentCards and therefore the last round has just begun
      */
     public void triggerLastRound() {
-        game.setNextState(new LastRound());
+        game.setNextState(new LastRound(game));
     }
 
     public Player getPlayer() {
