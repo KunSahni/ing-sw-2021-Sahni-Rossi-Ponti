@@ -4,19 +4,18 @@ import java.util.*;
 import it.polimi.ingsw.server.model.*;
 
 
-public class DevelopmentCardSlot implements DevelopmentSlot, VictoryPointsElement{
+public class DevelopmentCardSlot implements VictoryPointsElement{
     private final Stack<DevelopmentCard> cards;
 
     public DevelopmentCardSlot() {
         cards = new Stack<>();
     }
 
-    public Stack<DevelopmentCard> viewStack() {
-        return (Stack<DevelopmentCard>) cards.clone(); // TODO: understand why he wants the cast
+    public List<DevelopmentCard> viewStack() {
+        return (List<DevelopmentCard>) cards.clone();
     }
-    //TODO: decide if the rest calls peek or viewStack.peek()
+
     /**
-     *
      * @return reference to the card currently at the top in the DevelopmentSlot
      */
     public DevelopmentCard peek() {
@@ -28,23 +27,18 @@ public class DevelopmentCardSlot implements DevelopmentSlot, VictoryPointsElemen
      * @param card gets added at the top of the stack of cards, becoming the
      *             active card that will be used in productions
      */
-    //TODO: add initiator for last round sequence
     public void placeCard(DevelopmentCard card) {
         cards.addElement(card);
     }
 
     /**
-     * @param resources input map of resources that will be consumed by
-     *                  the production
+     * Returns the resources that can be created by the topmost production card
      */
-    @Override
-    public Map<Resource, Integer> produce(Map<Resource, Integer> resources) {
-        return ResourceBank.getResource(cards.peek().getOutputResources());
+    public Map<Resource, Integer> produce() {
+        return ResourceBank.getResources(cards.peek().getOutputResources());
     }
-    //TODO: remove canBePlaced from UML
 
     /**
-     * intermediate step created to facilitate personalBoard calculations
      * @return sum of values of all stacked dev cards
      */
     @Override
@@ -52,5 +46,12 @@ public class DevelopmentCardSlot implements DevelopmentSlot, VictoryPointsElemen
         return cards.stream()
                 .mapToInt(DevelopmentCard::getVictoryPoints)
                 .sum();
+    }
+
+    /**
+     * Returns the number of cards stacked in the current DevelopmentCardSlot
+     */
+    public int getCardsNumber() {
+        return cards.size();
     }
 }

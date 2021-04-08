@@ -5,23 +5,14 @@ import it.polimi.ingsw.server.model.ResourceBank;
 import it.polimi.ingsw.server.model.Resource;
 
 
-public class DefaultSlot implements DevelopmentSlot {
-    private Resource output;
+public class DefaultSlot {
+
+    private DefaultSlot(){}
 
     /**
-     * @param selected allows user to select which resource
-     *                 to produce from the wildcard
-     */
-    public void setOutput(Resource selected) {
-        output = selected;
-    }
-
-    /**
-     * @param resources Given the production's required input
-     *                  returns the related output
+     * @param output will be requested to the bank and returned
     */
-    @Override
-    public Map<Resource, Integer> produce(Map<Resource, Integer> resources) {
-        return ResourceBank.getResource(output);
+    public static Map<Resource, Integer> produce(Resource output) {
+        return ResourceBank.getResources(output);
     }
 }

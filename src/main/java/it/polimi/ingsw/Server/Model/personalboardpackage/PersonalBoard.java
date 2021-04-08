@@ -6,7 +6,7 @@ import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.Player;
 
 public class PersonalBoard implements VictoryPointsElement {
-    private final List<DevelopmentSlot> developmentSlots;
+    private final List<DevelopmentCardSlot> developmentCardSlots;
     private final List<LeaderCard> leaderCards;
     private final Player player;
     private final FaithTrack faithTrack;
@@ -14,16 +14,14 @@ public class PersonalBoard implements VictoryPointsElement {
 
 
 
-    public PersonalBoard(LeaderCard leaderCard1, LeaderCard leaderCard2, Player player) {
-        developmentSlots = new ArrayList<>();
-        leaderCards = new ArrayList<>();
-        leaderCards.add(leaderCard1);
-        leaderCards.add(leaderCard2);
+    public PersonalBoard(Player player) {
+        this.developmentCardSlots = new ArrayList<>();
+        this.leaderCards = new ArrayList<>();
         this.player = player;
-        faithTrack = new FaithTrack(player.getPosition(), this);
-        warehouseDepots = new ResourceManager();
-        strongbox = new ResourceManager();
-        proxyStorage = new ResourceManager();
+        this.faithTrack = new FaithTrack(player.getPosition(), this);
+        this.warehouseDepots = new ResourceManager();
+        this.strongbox = new ResourceManager();
+        this.proxyStorage = new ResourceManager();
     }
 
     public List<LeaderCard> getLeaderCards() {
@@ -34,8 +32,8 @@ public class PersonalBoard implements VictoryPointsElement {
         return player;
     }
 
-    public List<DevelopmentSlot> getDevelopmentSlots() {
-        return new ArrayList<>(developmentSlots);
+    public List<DevelopmentCardSlot> getDevelopmentCardSlots() {
+        return new ArrayList<>(developmentCardSlots);
     }
 
     public FaithTrack getFaithTrack() {
@@ -44,6 +42,10 @@ public class PersonalBoard implements VictoryPointsElement {
 
     public ResourceManager getStrongbox() {
         return strongbox;
+    }
+
+    public void setLeaderCards(List<LeaderCard> leaderCards) {
+        this.leaderCards.addAll(leaderCards);
     }
 
     /**
@@ -92,30 +94,27 @@ public class PersonalBoard implements VictoryPointsElement {
         totalVictoryPoints+=leaderCards.stream()
                 .mapToInt(LeaderCard::getVictoryPoints)
                 .sum();
-        totalVictoryPoints+=developmentSlots.stream()
-                .filter(x -> x instanceof DevelopmentCardSlot)
-                .map(x -> (DevelopmentCardSlot) x)
+        totalVictoryPoints+=developmentCardSlots.stream()
                 .mapToInt(DevelopmentCardSlot::getVictoryPoints)
                 .sum();
         return totalVictoryPoints;
     }
 
     /**
-     * @param addedResources incoming resources from the market, will give discard choice to the player
-     *                       and then store in the most optimal manner
+     * @param addedResources contains the final map of resources pulled from the market.
+     *                       The method will store them in the most optimal manner.
      */
     public void storeResources(Map<Resource, Integer> addedResources) {
-        Map<Resource, Integer> trimmedResources = controller.dispatchDiscardChoice(addedResources);
-        proxyStorage.storeResources(trimmedResources);
+        proxyStorage.storeResources(addedResources);
         Map<Resource, Integer> storeInLeaderCards = leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
                 .map(x -> (StoreLeaderCard) x)
-                .filter(x -> x.getStorageManager().getResourceCount() < 2 && trimmedResources.containsKey(x.getStoredType()))
+                .filter(x -> x.getStorageManager().getResourceCount() < 2 && addedResources.containsKey(x.getStoredType()))
                 .collect(Collectors.toMap(
                         StoreLeaderCard::getStoredType,
                         x -> Integer.min(
                                 2-x.getStorageManager().getResourceCount(),
-                                trimmedResources.get(x.getStoredType())
+                                addedResources.get(x.getStoredType())
                         )
                 ));
         leaderCards.stream()
@@ -127,8 +126,8 @@ public class PersonalBoard implements VictoryPointsElement {
                             put(x.getStoredType(), storeInLeaderCards.get(x.getStoredType()));
                         }}
                 ));
-        storeInLeaderCards.forEach((k, v) -> trimmedResources.put(k, trimmedResources.get(k)-v));
-        warehouseDepots.storeResources(trimmedResources);
+        storeInLeaderCards.forEach((k, v) -> addedResources.put(k, addedResources.get(k)-v));
+        warehouseDepots.storeResources(addedResources);
     }
 
     /**
@@ -143,7 +142,12 @@ public class PersonalBoard implements VictoryPointsElement {
     * @param position will define which position the card will occupy
     */
     public void placeDevelopmentCard(DevelopmentCard card, int position) {
-        DevelopmentCardSlot targetSlot = (DevelopmentCardSlot) developmentSlots.get(position);
-        targetSlot.placeCard(card);
+        developmentCardSlots.get(position).placeCard(card);
+    }
+
+    public int getDevelopmentCardsCount() {
+        return developmentCardSlots.stream()
+                .mapToInt(DevelopmentCardSlot::getCardsNumber)
+                .sum();
     }
 }
