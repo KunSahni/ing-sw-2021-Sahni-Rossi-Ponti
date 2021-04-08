@@ -2,9 +2,11 @@ package it.polimi.ingsw.server.controller.messages.actions;
 
 import it.polimi.ingsw.server.controller.gamepackage.ProductionCombo;
 import it.polimi.ingsw.server.model.ProduceLeaderCard;
+import it.polimi.ingsw.server.model.ProductionOutput;
 import it.polimi.ingsw.server.model.personalboardpackage.DefaultSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
  * This class represents the action of activating productions chosen by a Player
  */
 public class ActivateProductionAction implements Forwardable {
-    private final PersonalBoard board;
+    private PersonalBoard board= null;
     private final ProductionCombo productionCombo;
 
     /**
@@ -64,32 +66,28 @@ public class ActivateProductionAction implements Forwardable {
         board.discardResources(productionCombo.getDiscardedResources().get("depots"), productionCombo.getDiscardedResources().get("strongbox"));
 
         //Extracts the productions from DevelopmentCardSlots
-        List<ProductionOutput> developmentCardsOutput = Optional.ofNullable(productionCombo.getDevelopmentCardSlots()).ifPresent(
+        List<ProductionOutput> developmentCardsOutput = null;
+        Optional.ofNullable(productionCombo.getDevelopmentCardSlots()).ifPresent(
                 developmentCardSlots -> developmentCardSlots.stream().map(
-                        developmentCardSlot -> developmentCardSlot.produce()
-                ).collect(Collectors.toList())
+                        developmentCardSlot -> developmentCardsOutput.add(developmentCardSlot.produce())
+                )
         );
 
         //Manage DevelopmentCardSlots
         elaborateProductionOutputs.accept(developmentCardsOutput);
 
         //Extracts the production from DefaultSlot
-        ProductionOutput defaultSlotOutput = Optional.ofNullable(productionCombo.getDefaultSlotOutput()).ifPresent(
-                resource -> board.getDevelopmentSlots().stream()
-                        .filter(slot -> slot instanceof DefaultSlot)
-                        .map(
-                                slot -> ((DefaultSlot) slot).produce(productionCombo.getDefaultSlotOutput())
-                        )
-        );
+        ProductionOutput defaultSlotOutput = DefaultSlot.produce(productionCombo.getDefaultSlotOutput());
 
         //Manage defaultSlotOutput
         elaborateProductionOutput.accept(defaultSlotOutput);
 
         //Extracts the productions from ProduceLeaderCards and ConvertLeaderCards
-        List<ProductionOutput> leaderCardsOutput = Optional.ofNullable(productionCombo.getLeaderCards()).ifPresent(
+        List<ProductionOutput> leaderCardsOutput = null;
+        Optional.ofNullable(productionCombo.getLeaderCards()).ifPresent(
                 leaderCards -> leaderCards.stream().map(
-                        leaderCard -> ((ProduceLeaderCard) leaderCard).produce(productionCombo.getLeaderCardOutputs().get(leaderCard))
-                ).collect(Collectors.toList())
+                        leaderCard -> leaderCardsOutput.add(((ProduceLeaderCard) leaderCard).produce(productionCombo.getLeaderCardOutputs().get(leaderCard)))
+                )
         );
 
         //Manage leaderCardsOutput

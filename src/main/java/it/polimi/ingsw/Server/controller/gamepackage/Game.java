@@ -4,6 +4,8 @@ import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.controller.gamestates.*;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
@@ -59,7 +61,7 @@ public class Game {
             players.stream().filter(
                     player -> !player.equals(excludedPlayer)
             ).forEach(
-                    player -> player.getPersonalBoard().getFaithTrack().moveMarker()
+                    player -> player.getPersonalBoard().getFaithTrack().moveMarker(1)
             );
     }
 
@@ -74,12 +76,9 @@ public class Game {
     * @param position the number of the pope's favor (1, 2 or 3) which players should flip or discard
     */
     public void flipOtherPopesFavor(int position) {
-        if(players.size()==1)
-            ((SinglePlayerFaithTrack) players.peek().getPersonalBoard().getFaithTrack()).flipPopesFavor(position);
-        else
-            players.forEach(
-                    player -> player.getPersonalBoard().getFaithTrack().flipPopesFavor(position)
-            );
+        players.forEach(
+                player -> player.getPersonalBoard().getFaithTrack().flipPopesFavor(position)
+        );
     }
 
     /**
@@ -140,8 +139,8 @@ public class Game {
         return currentTurn;
     }
 
-    public Queue<Player> getPlayers() {
-        return players;
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players);
     }
 
 }
