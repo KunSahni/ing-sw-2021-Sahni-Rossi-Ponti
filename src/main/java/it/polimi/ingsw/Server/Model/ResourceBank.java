@@ -5,6 +5,10 @@ import static it.polimi.ingsw.server.model.MarketMarble.*;
 import static it.polimi.ingsw.server.model.Resource.*;
 
 public final class ResourceBank {
+
+    private ResourceBank() {
+    }
+
     /**
      * produces and returns a map of resources
      * @return the requested resources
@@ -12,7 +16,8 @@ public final class ResourceBank {
      */
 
 
-    public Map<Resource, Integer> getResourceFromMarble(Map<MarketMarble, Integer> request) {
+
+    public static Map<Resource, Integer> getResourceFromMarble(Map<MarketMarble, Integer> request) {
         Map<Resource, Integer> resources = new HashMap<>();
 
         resources.put(COIN, request.get(YELLOW));
@@ -24,10 +29,10 @@ public final class ResourceBank {
     }
     /**
      * produces and returns a signle resource
-    * @param request contains the requested resource
-    */
+     * @param request contains the requested resource
+     */
 
-    public Resource getResources(Resource request) {
+    public static Resource getResources(Resource request) {
         Resource resource;
 
         resource = request;
@@ -35,10 +40,10 @@ public final class ResourceBank {
     }
     /**
      * @return the resources corresponding the passed merkaet marble
-    * @param request
-    */
+     * @param request
+     */
 
-    public Map<Resource, Integer> getResources(Map<Resource, Integer> request) {
+    public static Map<Resource, Integer> getResources(Map<Resource, Integer> request) {
         Map<Resource, Integer> resources = new HashMap<>();
 
         resources.putAll(request);
