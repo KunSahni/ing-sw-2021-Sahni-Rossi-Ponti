@@ -32,7 +32,7 @@ public final class ResourceBank {
      * @param request contains the requested resource
      */
 
-    public static Resource getResources(Resource request) {
+    public static Resource getResource(Resource request) {
         Resource resource;
 
         resource = request;

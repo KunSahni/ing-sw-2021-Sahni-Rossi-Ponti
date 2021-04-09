@@ -5,13 +5,14 @@ package it.polimi.ingsw.server.model;
  */
 public class ConvertLeaderCard extends LeaderCard {
 
-    private Color requirement1;
-    private Color requirement2;
     private Resource convertedResource;
 
-    public ConvertLeaderCard(Color requirement1, Color requirement2, Resource convertedResource) {
-        this.requirement1 = requirement1;
-        this.requirement2 = requirement2;
+    public ConvertLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource convertedResource) {
+        super(ability, victoryPoints, leaderCardRequirements);
         this.convertedResource = convertedResource;
+    }
+
+    public Resource getConvertedResource() {
+        return convertedResource;
     }
 }

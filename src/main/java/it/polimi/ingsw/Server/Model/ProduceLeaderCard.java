@@ -5,7 +5,6 @@ import java.util.*;
 
 public class ProduceLeaderCard extends LeaderCard {
 
-    private Color requirement;
     private Resource inputResource;
     private int faithIncrement;
 
@@ -24,5 +23,11 @@ public class ProduceLeaderCard extends LeaderCard {
 
     public Resource getInputResource() {
         return inputResource;
+    }
+
+    public ProduceLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource inputResource, int faithIncrement) {
+        super(ability, victoryPoints, leaderCardRequirements);
+        this.inputResource = inputResource;
+        this.faithIncrement = faithIncrement;
     }
 }

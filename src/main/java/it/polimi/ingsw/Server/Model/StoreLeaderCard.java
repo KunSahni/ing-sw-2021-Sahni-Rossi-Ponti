@@ -15,7 +15,8 @@ public class StoreLeaderCard extends LeaderCard {
         return storedType;
     }
 
-    public StoreLeaderCard(ResourceManager storage, Resource storedType) {
+    public StoreLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, ResourceManager storage, Resource storedType) {
+        super(ability, victoryPoints, leaderCardRequirements);
         this.storage = storage;
         this.storedType = storedType;
     }
