@@ -1,33 +1,51 @@
 package it.polimi.ingsw.server.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class LeaderCardRequirements {
-    private Map<Color, Integer> colorIntegerRequirement;
-    private Map<Color, Level> colorLevelRequirement;
-    private Map<Resource, Integer> resourceIntegerRequirement;
+    public static class LevelQuantityPair {
+        private final Level level;
+        private final int quantity;
 
-    public void setColorIntegerRequirement(Map<Color, Integer> colorIntegerRequirement) {
-        this.colorIntegerRequirement = colorIntegerRequirement;
+        public LevelQuantityPair(Level level, int quantity) {
+            this.level = level;
+            this.quantity = quantity;
+        }
+
+        public Level getLevel() {
+            return level;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
     }
 
-    public void setColorLevelRequirement(Map<Color, Level> colorLevelRequirement) {
-        this.colorLevelRequirement = colorLevelRequirement;
+    private Map<Color, LevelQuantityPair> requiredDevelopmentCards;
+    private Map<Resource, Integer> requiredResources;
+
+    public Map<Color, LevelQuantityPair> getRequiredDevelopmentCards() {
+        return requiredDevelopmentCards;
     }
 
-    public void setResourceIntegerRequirement(Map<Resource, Integer> resourceIntegerRequirement) {
-        this.resourceIntegerRequirement = resourceIntegerRequirement;
+    public void setDevelopmentCardsRequirement(Color color, Level level, int quantity) {
+        this.requiredDevelopmentCards = new HashMap<>() {{
+            put(color, new LevelQuantityPair(level, quantity));
+        }};
     }
 
-    public Map<Color, Integer> getColorIntegerRequirement() {
-        return colorIntegerRequirement;
+    public void setDevelopmentCardsRequirement(Color color, int quantity) {
+        this.requiredDevelopmentCards = new HashMap<>() {{
+            put(color, new LevelQuantityPair(Level.LEVEL1, quantity));
+        }};
     }
 
-    public Map<Color, Level> getColorLevelRequirement() {
-        return colorLevelRequirement;
+    public Map<Resource, Integer> getRequiredResources() {
+        return requiredResources;
     }
 
-    public Map<Resource, Integer> getResourceIntegerRequirement() {
-        return resourceIntegerRequirement;
+    public void setRequiredResources(Map<Resource, Integer> requiredResources) {
+        this.requiredResources = requiredResources;
     }
 }

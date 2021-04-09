@@ -11,8 +11,11 @@ public class DevelopmentCardSlot implements VictoryPointsElement{
         cards = new Stack<>();
     }
 
-    public List<DevelopmentCard> viewStack() {
-        return (List<DevelopmentCard>) cards.clone();
+    /**
+     * Returns a list representing the current DevelopmentCards stack
+     */
+    public List<DevelopmentCard> getDevelopmentCards() {
+        return new ArrayList<>(cards);
     }
 
     /**

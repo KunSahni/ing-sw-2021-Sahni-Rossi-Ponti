@@ -11,16 +11,42 @@ import it.polimi.ingsw.server.model.VictoryPointsElement;
 
 public class FaithTrack implements VictoryPointsElement {
     private int position;
-    private List<FavorStatus> popesFavors; // TODO: why is this suggested to be final when it gets edited?
+    private final List<FavorStatus> popesFavors;
     private final Map<Integer, Integer> victoryPointsSheet;
     private final PersonalBoard personalboard;
+
+    /**
+     * @param position       is the starting position of the player
+     *                      calculated by game logic depending on
+     *                      its turn placement
+     * @param personalBoard a reference to board is needed
+     *                      to call Game's moveOtherFaithMarkers
+     */
+    public FaithTrack(int position, PersonalBoard personalBoard) {
+        this.position = position;
+        this.personalboard = personalBoard;
+        popesFavors = new ArrayList<>(Arrays.asList(
+                FavorStatus.INACTIVE,
+                FavorStatus.INACTIVE,
+                FavorStatus.INACTIVE));
+        victoryPointsSheet = Map.of( // TODO: parse json
+                0, 0,
+                3, 1,
+                6, 2,
+                9, 4,
+                12, 6,
+                15, 9,
+                18, 12,
+                21, 16,
+                24, 20);
+    }
 
     public int getPosition() {
         return position;
     }
 
     public List<FavorStatus> getPopesFavors() {
-        return new ArrayList(popesFavors);
+        return new ArrayList<>(popesFavors);
     }
 
     /**
@@ -41,11 +67,19 @@ public class FaithTrack implements VictoryPointsElement {
     }
 
     /**
+     * Moves the marker a number of times equivalent to the parameter
+     */
+    public void moveMarker(int steps) {
+        for (int i = 0; i < steps; i++) {
+            moveMarker();
+        }
+    }
+    /**
      * Moves faith marker by one position on the faith track
      * When landing on a pope's place (with inactive status)
      * a vatican report starts
      */
-    public void moveMarker() {
+    private void moveMarker() {
         position++;
         if (checkVaticanReport(position)){
             flipPopesFavor(position / 8);
@@ -75,30 +109,5 @@ public class FaithTrack implements VictoryPointsElement {
         } else {
             popesFavors.set(index, FavorStatus.DISCARDED);
         }
-    }
-    /**
-    * @param position       is the starting position of the player
-     *                      calculated by game logic depending on
-     *                      its turn placement
-     * @param personalboard a reference to board is needed
-     *                      to call Game's moveOtherFaithMarkers
-    */
-    public FaithTrack(int position, PersonalBoard personalboard) {
-        this.position = position;
-        this.personalboard = personalboard;
-        popesFavors = new ArrayList<>(Arrays.asList(
-                FavorStatus.INACTIVE,
-                FavorStatus.INACTIVE,
-                FavorStatus.INACTIVE));
-        victoryPointsSheet = Map.of( // TODO: check if a hashmap is better?
-                0, 0,
-                3, 1,
-                6, 2,
-                9, 4,
-                12, 6,
-                15, 9,
-                18, 12,
-                21, 16,
-                24, 20);
     }
 }

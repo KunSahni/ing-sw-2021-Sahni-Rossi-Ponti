@@ -12,10 +12,11 @@ public class PersonalBoard implements VictoryPointsElement {
     private final FaithTrack faithTrack;
     private final ResourceManager warehouseDepots, strongbox, proxyStorage;
 
-
-
     public PersonalBoard(Player player) {
-        this.developmentCardSlots = new ArrayList<>();
+        this.developmentCardSlots = new ArrayList<>(Arrays.asList(
+                new DevelopmentCardSlot(),
+                new DevelopmentCardSlot(),
+                new DevelopmentCardSlot()));
         this.leaderCards = new ArrayList<>();
         this.player = player;
         this.faithTrack = new FaithTrack(player.getPosition(), this);
@@ -44,15 +45,46 @@ public class PersonalBoard implements VictoryPointsElement {
         return strongbox;
     }
 
+    public int getResourceCount() {
+        return proxyStorage.getResourceCount();
+    }
+
     public void setLeaderCards(List<LeaderCard> leaderCards) {
         this.leaderCards.addAll(leaderCards);
     }
 
     /**
+     * Checks if the given requirements, needed to activate a leader card, are fulfilled
+     */
+    public boolean containsLeaderCardRequirements(LeaderCardRequirements requirements) {
+        if(Optional.ofNullable(requirements.getRequiredResources()).isPresent()) {
+            return proxyStorage.contains(requirements.getRequiredResources());
+        } else {
+            return requirements.getRequiredDevelopmentCards()
+                    .entrySet()
+                    .stream()
+                    .map(
+                            e -> e.getValue().getQuantity() <= developmentCardSlots.stream()
+                                    .flatMap(d -> d.getDevelopmentCards().stream())
+                                    .map(c -> e.getKey() == c.getType() &&
+                                            c.getLevel().compareTo(e.getValue().getLevel()) >= 0)
+                                    .filter(b -> b)
+                                    .count()
+                    ).reduce(true, (a, b) -> a && b);
+        }
+    }
+    /**
      * @return shallow copy of all currently stored resources by the player
      */ //TODO: evaluate if this is actually needed
     public Map<Resource, Integer> getResources() {
         return new HashMap<>(proxyStorage.getStoredResources());
+    }
+
+    /**
+     * Returns true if the resources listed in parameter are available
+     */
+    public boolean containsResources(Map<Resource, Integer> requirement) {
+        return proxyStorage.contains(requirement);
     }
 
     /**
@@ -101,8 +133,7 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     /**
-     * @param addedResources contains the final map of resources pulled from the market.
-     *                       The method will store them in the most optimal manner.
+     * Stores in depots and, if possible, in leader cards the addedResources map
      */
     public void storeResources(Map<Resource, Integer> addedResources) {
         proxyStorage.storeResources(addedResources);
@@ -135,8 +166,8 @@ public class PersonalBoard implements VictoryPointsElement {
     */
     public void discardLeaderCard(LeaderCard card) {
         leaderCards.remove(card);
-        faithTrack.moveMarker();
     }
+
     /**
     * @param card has just been purchased and will be placed on the personal board
     * @param position will define which position the card will occupy
@@ -145,6 +176,9 @@ public class PersonalBoard implements VictoryPointsElement {
         developmentCardSlots.get(position).placeCard(card);
     }
 
+    /**
+     * Returns the number of purchased development cards
+     */
     public int getDevelopmentCardsCount() {
         return developmentCardSlots.stream()
                 .mapToInt(DevelopmentCardSlot::getCardsNumber)
