@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.model.LeaderCard;
 
 
 public class LeaderCardsDeck {
@@ -56,18 +57,16 @@ public class LeaderCardsDeck {
     }
 
     /**
-     * loads the leader cards from an XML file
+     * loads the leader cards from a json file
      */
     public void loadLeaderCards() {
-        // write the leader card ability as first
-        // after reading it choose which producer have to call
         deck.clear();
         Gson gson = new Gson();
 
         //upload of ConvertLeaderCard
         try {
             JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
-            ConvertLeaderCard[] convertLeaderCards = new Gson().fromJson(reader, ConvertLeaderCard.class);
+            ConvertLeaderCard[] convertLeaderCards = new Gson().fromJson(reader, ConvertLeaderCard[].class);
             for (ConvertLeaderCard c: convertLeaderCards) {
                 deck.push(c);
             }
