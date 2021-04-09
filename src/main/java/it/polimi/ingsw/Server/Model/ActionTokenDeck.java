@@ -8,13 +8,13 @@ public class ActionTokenDeck {
 
     private Stack<ActionToken> currentDeck = new Stack<ActionToken>();
     private final List<ActionToken> fullDeck = new ArrayList<ActionToken>(){{
-        add(MOVEBYTWO);
-        add(MOVEBYTWO);
-        add(MOVEANDSHUFFLE);
-        add(REMOVEGREEN);
-        add(REMOVEPURPLE);
-        add(REMOVEYELLOW);
-        add(REMOVEBLUE);
+        add(ActionToken.MOVEBYTWO);
+        add(ActionToken.MOVEBYTWO);
+        add(ActionToken.MOVEANDSHUFFLE);
+        add(ActionToken.REMOVEGREEN);
+        add(ActionToken.REMOVEPURPLE);
+        add(ActionToken.REMOVEYELLOW);
+        add(ActionToken.REMOVEBLUE);
     }};
 
     private List<ActionToken> getFullDeck() {
