@@ -15,10 +15,7 @@ public class ActivateLeaderCardAction implements Forwardable {
         this.leaderCard = leaderCard;
     }
 
-    /**
-     * @param leaderCard the leader card that needs to be activated
-     */
-    private void activateLeaderCard(LeaderCard leaderCard) {
+    private void activateLeaderCard() {
         leaderCard.activate();
     }
 

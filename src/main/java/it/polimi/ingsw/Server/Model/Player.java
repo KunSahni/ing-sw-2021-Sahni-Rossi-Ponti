@@ -24,6 +24,8 @@ public class Player implements Comparator<Player>{
     private final ResourceManager tempStorage;
     private boolean isPlayersTurn;
     private final SubmissionPublisher<Object> publisher = new SubmissionPublisher<>();
+    private int rank;
+    private int victoryPoints;
 
     /**
      * @param nickname an unique nickname associated to the Player, can't be changed during the game
@@ -37,6 +39,7 @@ public class Player implements Comparator<Player>{
         this.tempStorage = new ResourceManager();
         this.isPlayersTurn = false;
         publisher.subscribe(view);
+        rank = victoryPoints = 0;
     }
 
     /**
@@ -260,6 +263,14 @@ public class Player implements Comparator<Player>{
         return Integer.compare(firstPlayer.getPosition(), secondPlayer.getPosition());
     }
 
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public void setVictoryPoints(int victoryPoints) {
+        this.victoryPoints = victoryPoints;
+    }
+
     public String getNickname() {
         return nickname;
     }
@@ -284,4 +295,11 @@ public class Player implements Comparator<Player>{
         return tempStorage.getStoredResources();
     }
 
+    public int getRank() {
+        return rank;
+    }
+
+    public int getVictoryPoints() {
+        return victoryPoints;
+    }
 }

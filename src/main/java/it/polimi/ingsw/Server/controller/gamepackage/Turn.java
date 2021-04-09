@@ -40,7 +40,7 @@ public class Turn implements Subscriber<Forwardable> {
     /**
      * This method tells the Game that a Player has either completed the FaithTrack or has bought 7 DevelopmentCards and therefore the last round has just begun
      */
-    public void triggerLastRound() {
+    private void triggerLastRound() {
         game.setNextState(new LastRound(game));
     }
 
