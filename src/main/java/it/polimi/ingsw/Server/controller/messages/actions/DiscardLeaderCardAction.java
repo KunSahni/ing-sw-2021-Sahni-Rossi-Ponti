@@ -20,7 +20,7 @@ public class DiscardLeaderCardAction implements Forwardable {
     }
 
     /**
-     * @param card the leader card that needs to be discarded
+     * Discards the selected LeaderCard
      */
     private void discardLeaderCard() {
         board.discardLeaderCard(leaderCard);
@@ -29,6 +29,6 @@ public class DiscardLeaderCardAction implements Forwardable {
     @Override
     public void forward() {
         discardLeaderCard();
-        board.getFaithTrack().moveMarker();
+        board.getFaithTrack().moveMarker(1);
     }
 }
