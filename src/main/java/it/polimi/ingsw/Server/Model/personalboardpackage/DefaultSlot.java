@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
-import java.util.*;
-
 import it.polimi.ingsw.server.model.ProductionOutput;
 import it.polimi.ingsw.server.model.ResourceBank;
 import it.polimi.ingsw.server.model.Resource;
@@ -16,10 +14,6 @@ public class DefaultSlot {
      * @param output defines which product gets produced
      */
     public static ProductionOutput produce(Resource output) {
-        return new ProductionOutput(
-                new HashMap<>(){{
-                    put(output, 1);
-                }}
-        );
+        return new ProductionOutput(ResourceBank.getResource(output));
     }
 }

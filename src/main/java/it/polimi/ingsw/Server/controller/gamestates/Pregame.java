@@ -46,7 +46,8 @@ public class Pregame extends AbstractGameState implements Subscriber<Object> {
      * Assign turn position to each player
      */
     private void assignInkwell() {
-        List<Player> playerList = Collections.shuffle(game.getPlayers());
+        List<Player> playerList = game.getPlayers();
+        Collections.shuffle(playerList);
         for(int i = 1; i <= game.getGameSize(); i++) {
             playerList.get(i).setPosition(i);
         }

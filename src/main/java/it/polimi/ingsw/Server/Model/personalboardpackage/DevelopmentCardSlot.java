@@ -42,7 +42,7 @@ public class DevelopmentCardSlot implements VictoryPointsElement{
     }
 
     /**
-     * @return sum of values of all stacked dev cards
+     * Returns the sum of victory points of all stacked development cards
      */
     @Override
     public int getVictoryPoints() {
