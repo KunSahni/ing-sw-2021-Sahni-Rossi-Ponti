@@ -9,13 +9,12 @@ import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * This class represents the action of activating productions chosen by a Player
  */
 public class ActivateProductionAction implements Forwardable {
-    private PersonalBoard board= null;
+    private PersonalBoard board;
     private final ProductionCombo productionCombo;
 
     /**
@@ -98,7 +97,7 @@ public class ActivateProductionAction implements Forwardable {
      * This Consumer manages a List of ProductionOutput where each item contains a map of produced resources and FaithPoints.
      * Saves all the resources in the strongbox and moves the faith marker accordingly.
      */
-    private Consumer<List<ProductionOutput>> elaborateProductionOutputs = productionOutputs ->  productionOutputs.forEach(
+    private final Consumer<List<ProductionOutput>> elaborateProductionOutputs = productionOutputs ->  productionOutputs.forEach(
             productionOutput -> {
                 board.getFaithTrack().moveMarker(productionOutput.getFaithIncrement());
                 board.getStrongbox().storeResources(productionOutput.getResources());
@@ -109,7 +108,7 @@ public class ActivateProductionAction implements Forwardable {
      * This Consumer manages a single ProductionOutput which contains a map of produced resources and FaithPoints.
      * Saves all the resources in the strongbox and moves the faith marker accordingly.
      */
-    private Consumer<ProductionOutput> elaborateProductionOutput = productionOutput ->  {
+    private final Consumer<ProductionOutput> elaborateProductionOutput = productionOutput ->  {
                 board.getFaithTrack().moveMarker(productionOutput.getFaithIncrement());
                 board.getStrongbox().storeResources(productionOutput.getResources());
             };

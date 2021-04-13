@@ -21,6 +21,6 @@ public class ActivateLeaderCardAction implements Forwardable {
 
     @Override
     public void forward() {
-        activateLeaderCard(leaderCard);
+        activateLeaderCard();
     }
 }

@@ -37,7 +37,7 @@ public class SinglePlayerTurn extends Turn {
      */
     @Override
     public void nextAction(Forwardable nextAction) {
-        if(nextAction instanceof EndAction && this instanceof SinglePlayerTurn){    //todo: ha senso il secondo controllo?
+        if(nextAction instanceof EndAction){    //todo: ha senso il secondo controllo?
             nextAction = pickActionToken();
             super.nextAction(nextAction);
         }
@@ -45,5 +45,9 @@ public class SinglePlayerTurn extends Turn {
             super.nextAction(new EndAction());
 
         super.nextAction(nextAction);
+    }
+
+    public ActionToken getActionToken() {
+        return actionToken;
     }
 }
