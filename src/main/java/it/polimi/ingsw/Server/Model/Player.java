@@ -13,6 +13,7 @@ import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 /**
  * This class represents a Player
  */
+
 public class Player implements Comparator<Player>{
     private final Game game;
     private final String nickname;

@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 /**
  * This class represents a game and controls all the turns/game logic
  */
-
 public class Game {
     private final int gameID;
     private final DevelopmentCardsBoard developmentCardsBoard;
