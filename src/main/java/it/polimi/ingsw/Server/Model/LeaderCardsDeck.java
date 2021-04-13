@@ -10,7 +10,7 @@ import it.polimi.ingsw.server.model.LeaderCard;
 
 public class LeaderCardsDeck {
 
-    private Stack<LeaderCard> deck;
+    public Stack<LeaderCard> deck;
 
     public Stack<LeaderCard> getDeck() {
         return deck;
@@ -21,23 +21,14 @@ public class LeaderCardsDeck {
      */
 
     private void shuffle() {
-        Random random = ThreadLocalRandom.current();
-        LeaderCard[] leaderCards = new LeaderCard[16];
-
-        //place the deck into an array
-        for(int i=0; i<16; i++){
-            leaderCards[i]=deck.pop();
+        List<LeaderCard> leaderCards = new ArrayList<>();
+        //put all cards in the deck in an array
+        for (LeaderCard l: deck) {
+            leaderCards.add(deck.pop());
         }
+        Collections.shuffle(leaderCards);
 
-        //shuffle the array
-        for(int i=leaderCards.length-1; i>0; i-- ){
-            int index = random.nextInt(i+1);
-            LeaderCard a = leaderCards[index];
-            leaderCards[index] = leaderCards[i];
-            leaderCards[i] = a;
-        }
-
-        //load the array in the deck
+        //put all cards in the array in the deck
         for (LeaderCard l: leaderCards) {
             deck.push(l);
         }
@@ -48,10 +39,10 @@ public class LeaderCardsDeck {
      * @return supp that contains the deck of a player
      */
     public List<LeaderCard> popFour() {
-        List supp = new ArrayList();
+        List<LeaderCard> supp = new ArrayList<>();
 
         for(int i=0; i<4; i++){
-            supp.add(i,deck.pop());
+            supp.add(deck.pop());
         }
         return supp;
     }
@@ -65,7 +56,7 @@ public class LeaderCardsDeck {
 
         //upload of ConvertLeaderCard
         try {
-            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            JsonReader reader = new JsonReader(new FileReader("filewithconvertleadercard")); //todo : add the right json file name
             ConvertLeaderCard[] convertLeaderCards = new Gson().fromJson(reader, ConvertLeaderCard[].class);
             for (ConvertLeaderCard c: convertLeaderCards) {
                 deck.push(c);
@@ -76,7 +67,7 @@ public class LeaderCardsDeck {
 
         //upload of DiscountLeaderCard
         try {
-            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            JsonReader reader = new JsonReader(new FileReader("filewithdiscountledercard")); //todo : add the right json file name
             DiscountLeaderCard[] discountLeaderCards = new Gson().fromJson(reader, DiscountLeaderCard.class);
             for (DiscountLeaderCard d: discountLeaderCards) {
                 deck.push(d);
@@ -87,7 +78,7 @@ public class LeaderCardsDeck {
 
         //upload of ProduceLeaderCard
         try {
-            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            JsonReader reader = new JsonReader(new FileReader("filewithproduceleadercard")); //todo : add the right json file name
             ProduceLeaderCard[] produceLeaderCards = new Gson().fromJson(reader, ProduceLeaderCard.class);
             for (ProduceLeaderCard p: produceLeaderCards) {
                 deck.push(p);
@@ -98,7 +89,7 @@ public class LeaderCardsDeck {
 
         //upload of StoreLeaderCard
         try {
-            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            JsonReader reader = new JsonReader(new FileReader("filewithstoreleadercard")); //todo : add the right json file name
             StoreLeaderCard[] storeLeaderCards = new Gson().fromJson(reader, StoreLeaderCard.class);
             for (StoreLeaderCard s: storeLeaderCards) {
                 deck.push(s);

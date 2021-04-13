@@ -33,24 +33,18 @@ public class ActionTokenDeck {
      * reset the deck at the beginning of the game and when MOVEANDSHUFFLE token is taken
      */
     public void reset() {
-        ActionToken[] sup = new ActionToken[7];
+        List<ActionToken> sup = new ArrayList<>();
         Random random = ThreadLocalRandom.current();
         int i = 0;
 
         currentDeck.clear();
-        //place the deck into an array
+        //place the deck into a list
         for (ActionToken actionToken: fullDeck) {
-            sup[i] = actionToken;
-            i++;
+            sup.add(actionToken);
         }
         //shuffle the array
-        for(int b=sup.length-1; b>0; b-- ){
-            int index = random.nextInt(b+1);
-            ActionToken a = sup[index];
-            sup[index] = sup[b];
-            sup[b] = a;
-        }
-        //put the array in deck
+        Collections.shuffle(sup);
+        //put the cards in the list in deck
         for (ActionToken actionToken: sup) {
             currentDeck.push(actionToken);
         }

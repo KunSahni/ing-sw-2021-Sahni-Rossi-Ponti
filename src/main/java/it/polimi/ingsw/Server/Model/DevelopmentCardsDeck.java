@@ -20,21 +20,13 @@ public class DevelopmentCardsDeck {
      * array b is used to mark if a card has been reinserted in the deck
      */
     private void shuffle() {
-        DevelopmentCard[] sup = new DevelopmentCard[4];
-        Random random = ThreadLocalRandom.current();
-        int i = 0;
-        //place the deck into an array
+        List<DevelopmentCard> sup = new ArrayList<>();
+        //place the deck into a list
         for (DevelopmentCard d: deck) {
-            sup[i] = d;
-            i++;
+            sup.add(d);
         }
         //shuffle the array
-        for(int b=sup.length-1; b>0; b-- ){
-            int index = random.nextInt(b+1);
-            DevelopmentCard a = sup[index];
-            sup[index] = sup[b];
-            sup[b] = a;
-        }
+        Collections.shuffle(sup);
         //put the array in the deck
         for (DevelopmentCard d: sup) {
             deck.push(d);
