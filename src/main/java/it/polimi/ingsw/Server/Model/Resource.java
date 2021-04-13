@@ -11,7 +11,7 @@ public enum Resource {
 
     public final String label;
 
-    private Resource(String label) {
+    Resource(String label) {
         this.label = label;
     }
 }

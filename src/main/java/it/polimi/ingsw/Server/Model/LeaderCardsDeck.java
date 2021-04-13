@@ -2,10 +2,8 @@ package it.polimi.ingsw.server.model;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import it.polimi.ingsw.server.model.LeaderCard;
 
 
 public class LeaderCardsDeck {
@@ -21,17 +19,7 @@ public class LeaderCardsDeck {
      */
 
     private void shuffle() {
-        List<LeaderCard> leaderCards = new ArrayList<>();
-        //put all cards in the deck in an array
-        for (LeaderCard l: deck) {
-            leaderCards.add(deck.pop());
-        }
-        Collections.shuffle(leaderCards);
-
-        //put all cards in the array in the deck
-        for (LeaderCard l: leaderCards) {
-            deck.push(l);
-        }
+        Collections.shuffle(deck);
     }
 
     /**
@@ -52,7 +40,6 @@ public class LeaderCardsDeck {
      */
     public void loadLeaderCards() {
         deck.clear();
-        Gson gson = new Gson();
 
         //upload of ConvertLeaderCard
         try {

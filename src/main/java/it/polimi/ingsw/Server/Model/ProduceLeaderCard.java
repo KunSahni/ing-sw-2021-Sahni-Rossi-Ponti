@@ -5,20 +5,19 @@ import java.util.*;
 
 public class ProduceLeaderCard extends LeaderCard {
 
-    private Resource inputResource;
-    private int faithIncrement;
+    private final Resource inputResource;
+    private final int faithIncrement;
 
     /**
      * create a productionOutput with the faith increment and the chosenResource
-    * @param chosenResource
+    * @param chosenResource is the resource that the player has chosen
      * @return the productionOutput created by itself
     */
 
     public ProductionOutput produce(Resource chosenResource) {
         Map<Resource, Integer> map= new HashMap<>();
         map.put(chosenResource, 1);
-        ProductionOutput productionOutput = new ProductionOutput(faithIncrement, map);
-        return productionOutput;
+        return new ProductionOutput(faithIncrement, map);
     }
 
     public Resource getInputResource() {

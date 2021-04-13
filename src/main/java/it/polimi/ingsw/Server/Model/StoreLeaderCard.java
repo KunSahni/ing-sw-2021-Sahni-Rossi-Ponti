@@ -4,8 +4,8 @@ package it.polimi.ingsw.server.model;
  *
  */
 public class StoreLeaderCard extends LeaderCard {
-    private ResourceManager storage;
-    private Resource storedType;
+    private final ResourceManager storage;
+    private final Resource storedType;
 
     public ResourceManager getStorageManager() {
         return storage;

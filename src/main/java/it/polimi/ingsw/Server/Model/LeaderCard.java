@@ -2,10 +2,10 @@ package it.polimi.ingsw.server.model;
 
 
 public abstract class LeaderCard implements VictoryPointsElement {
-    private LeaderCardAbility ability;
-    private int victoryPoints;
+    private final LeaderCardAbility ability;
+    private final int victoryPoints;
     private boolean active;
-    private LeaderCardRequirements leaderCardRequirements;
+    private final LeaderCardRequirements leaderCardRequirements;
 
     public LeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements) {
         this.ability = ability;

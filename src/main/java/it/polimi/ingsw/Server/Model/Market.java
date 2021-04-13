@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class Market {
 
-    private MarketMarble[][] market;
+    private final MarketMarble[][] market;
     private MarketMarble extraMarble;
 
     /**
@@ -45,7 +45,7 @@ public class Market {
     /**
      * create a map with the resources in the chosen line and moves the market marbles
      * @return a map with the Market Marble in the chosen line
-    * @param row
+    * @param row is the row chosen by the player
     */
 
 
@@ -68,7 +68,7 @@ public class Market {
     /**
      * create a map with the resources in the chosen line and moves the market marbles
      * @return a map with the Market Marble in the chosen line
-    * @param column
+    * @param column is the column chosen by the player
     */
 
 

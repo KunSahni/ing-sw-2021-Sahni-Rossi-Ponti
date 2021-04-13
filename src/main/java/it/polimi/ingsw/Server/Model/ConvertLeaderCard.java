@@ -5,7 +5,7 @@ package it.polimi.ingsw.server.model;
  */
 public class ConvertLeaderCard extends LeaderCard {
 
-    private Resource convertedResource;
+    private final Resource convertedResource;
 
     public ConvertLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource convertedResource) {
         super(ability, victoryPoints, leaderCardRequirements);

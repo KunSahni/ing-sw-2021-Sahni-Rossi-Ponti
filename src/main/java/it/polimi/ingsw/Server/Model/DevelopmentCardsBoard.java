@@ -13,43 +13,27 @@ import static it.polimi.ingsw.server.model.Level.*;
 
 public class DevelopmentCardsBoard {
 
-    private DevelopmentCardsDeck board[][] = new DevelopmentCardsDeck[4][3];
+    private final DevelopmentCardsDeck[][] board = new DevelopmentCardsDeck[4][3];
 
     /**
-    * @param level
-    * @param color
     * @return and pick the first deck development card of color and level specified
     */
 
 
     public DevelopmentCard pick(Level level, Color color) {
-        int line = 0;
-        int column = 0;
-        switch (level) {
-            case LEVEL1:
-                line = 2;
-                break;
-            case LEVEL2:
-                line = 1;
-                break;
-            case LEVEL3:
-                line = 0;
-                break;
-        }
-        switch (color) {
-            case GREEN:
-                column = 0;
-                break;
-            case BLUE:
-                column = 1;
-                break;
-            case YELLOW:
-                column = 2;
-                break;
-            case PURPLE:
-                column = 3;
-                break;
-        }
+        int line;
+        int column;
+        line = switch (level) {
+            case LEVEL1 -> 2;
+            case LEVEL2 -> 1;
+            case LEVEL3 -> 0;
+        };
+        column = switch (color) {
+            case GREEN -> 0;
+            case BLUE -> 1;
+            case YELLOW -> 2;
+            case PURPLE -> 3;
+        };
         return board[line][column].pop();
     }
     /**
@@ -59,10 +43,9 @@ public class DevelopmentCardsBoard {
 
 
     private void loadDevelopmentCards() {
-        Gson gson = new Gson();
-        List<DevelopmentCard> level1 = new ArrayList<>();
-        List<DevelopmentCard> level2 = new ArrayList<>();
-        List<DevelopmentCard> level3 = new ArrayList<>();
+        List<DevelopmentCard> level1;
+        List<DevelopmentCard> level2;
+        List<DevelopmentCard> level3;
 
         try {
             JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
@@ -99,40 +82,24 @@ public class DevelopmentCardsBoard {
         }
     }
     /**
-    * @param level 
-    * @param color
      * @return the first deck development card of color and level specified not picking it
     */
 
 
     public DevelopmentCard peek(Level level, Color color) {
-        int line = 0;
-        int column = 0;
-        switch (level) {
-            case LEVEL1:
-                line = 2;
-                break;
-            case LEVEL2:
-                line = 1;
-                break;
-            case LEVEL3:
-                line = 0;
-                break;
-        }
-        switch (color) {
-            case GREEN:
-                column = 0;
-                break;
-            case BLUE:
-                column = 1;
-                break;
-            case YELLOW:
-                column = 2;
-                break;
-            case PURPLE:
-                column = 3;
-                break;
-        }
+        int line;
+        int column;
+        line = switch (level) {
+            case LEVEL1 -> 2;
+            case LEVEL2 -> 1;
+            case LEVEL3 -> 0;
+        };
+        column = switch (color) {
+            case GREEN -> 0;
+            case BLUE -> 1;
+            case YELLOW -> 2;
+            case PURPLE -> 3;
+        };
         return board[line][column].peek();
 
     }
@@ -142,7 +109,6 @@ public class DevelopmentCardsBoard {
     }
     /**
      * discard two card from the board in single player games when the action token discard is picked
-    * @param color
     */
 
 
@@ -157,8 +123,7 @@ public class DevelopmentCardsBoard {
         //if there are elements in the deck discard two of them
         for (DevelopmentCardsDeck d: dcd) {
             if (i == 2){return;}
-            if (d.peek()==null){}
-            else{
+            if (d.peek()!=null){
                 d.pop();
                 i++;
             }
@@ -171,8 +136,7 @@ public class DevelopmentCardsBoard {
 
         for (DevelopmentCardsDeck d: dcd) {
             if (i == 2){return;}
-            if (d.peek()==null){}
-            else{
+            if (d.peek()!=null){
                 d.pop();
                 i++;
             }
@@ -185,8 +149,7 @@ public class DevelopmentCardsBoard {
 
         for (DevelopmentCardsDeck d: dcd) {
             if (i == 2){return;}
-            if (d.peek()==null){}
-            else{
+            if (d.peek()!=null){
                 d.pop();
                 i++;
             }

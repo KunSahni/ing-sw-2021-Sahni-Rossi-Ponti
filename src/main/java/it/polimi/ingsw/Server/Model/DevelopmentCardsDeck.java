@@ -1,13 +1,12 @@
 package it.polimi.ingsw.server.model;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 
 
 public class DevelopmentCardsDeck {
-    private Stack<DevelopmentCard> deck;
+    private final Stack<DevelopmentCard> deck;
 
 
     public DevelopmentCard pop() {
@@ -20,17 +19,7 @@ public class DevelopmentCardsDeck {
      * array b is used to mark if a card has been reinserted in the deck
      */
     private void shuffle() {
-        List<DevelopmentCard> sup = new ArrayList<>();
-        //place the deck into a list
-        for (DevelopmentCard d: deck) {
-            sup.add(d);
-        }
-        //shuffle the array
-        Collections.shuffle(sup);
-        //put the array in the deck
-        for (DevelopmentCard d: sup) {
-            deck.push(d);
-        }
+        Collections.shuffle(deck);
     }
     /**
      * pushes all the cards in the deck and than shuffle them
@@ -39,6 +28,7 @@ public class DevelopmentCardsDeck {
 
 
     public DevelopmentCardsDeck(List<DevelopmentCard> cards) {
+        deck = new Stack<>();
         for (DevelopmentCard d: cards) {
             deck.push(d);
         }

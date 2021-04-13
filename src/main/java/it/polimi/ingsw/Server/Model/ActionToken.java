@@ -13,7 +13,7 @@ public enum ActionToken {
 
     public final String label;
 
-    private ActionToken(String label) {
+    ActionToken(String label) {
         this.label = label;
     }
 }

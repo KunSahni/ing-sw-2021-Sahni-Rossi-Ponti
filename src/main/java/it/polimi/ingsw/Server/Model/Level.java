@@ -10,7 +10,7 @@ public enum Level {
 
     public final String label;
 
-    private Level(String label) {
+    Level(String label) {
         this.label = label;
     }
 }

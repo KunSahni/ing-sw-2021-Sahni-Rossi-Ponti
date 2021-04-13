@@ -11,9 +11,9 @@ public enum MarketMarble {
     YELLOW("Yellow"),
     PURPLE("Pruple");
 
-    private final String label;
+    public final String label;
 
-    private MarketMarble(String label) {
+    MarketMarble(String label) {
         this.label = label;
     }
 }
