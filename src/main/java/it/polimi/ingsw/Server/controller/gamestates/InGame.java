@@ -16,6 +16,6 @@ public class InGame extends AbstractGameState {
         while(game.getCurrentState() instanceof InGame) {
             game.nextTurn();
         }
-        //todo: figure out who is actually setting nextstate to LastRound
+        //todo: figure out who is actually setting nextState to LastRound
     }
 }
