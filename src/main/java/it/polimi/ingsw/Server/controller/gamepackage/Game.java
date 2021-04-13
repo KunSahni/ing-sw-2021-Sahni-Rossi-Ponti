@@ -84,9 +84,9 @@ public class Game {
     /**
      * @param nickname the nickname of the Player that needs to be added
      */
-    public void addPlayer(String nickname, View view){
+    public void addPlayer(String nickname){  //todo: add View
         players.add(
-                new Player(nickname, this, view)
+                new Player(nickname, this)
         );
     }
 

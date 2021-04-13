@@ -8,7 +8,6 @@ import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.messages.actions.*;
 import it.polimi.ingsw.server.controller.messages.choices.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.controller.messages.choices.NextActionMessage;
-import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
 /**
@@ -31,14 +30,14 @@ public class Player implements Comparator<Player>{
      * @param nickname an unique nickname associated to the Player, can't be changed during the game
      * @param game the Game in which the Player will be playing
      */
-    public Player(String nickname, Game game, View view) {
+    public Player(String nickname, Game game) {  //todo: add View
         this.nickname = nickname;
         this.game = game;
         this.personalBoard = new PersonalBoard(this);
         this.performedActions = new ArrayList<>();
         this.tempStorage = new ResourceManager();
         this.isPlayersTurn = false;
-        publisher.subscribe(view);
+        //publisher.subscribe(view);
         rank = victoryPoints = 0;
     }
 
@@ -202,7 +201,7 @@ public class Player implements Comparator<Player>{
     private boolean canActivateLeaderCard(){
         List<LeaderCard> leaderCards = personalBoard.getLeaderCards();
         Optional<LeaderCard> card = leaderCards.stream().filter(
-                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard.getRequirements())
+                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements())
         ).findAny();
 
         return card.isPresent();
