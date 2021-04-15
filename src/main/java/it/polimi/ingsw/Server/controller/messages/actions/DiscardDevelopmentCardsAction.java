@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
-import it.polimi.ingsw.server.model.ActionToken;
-import it.polimi.ingsw.server.model.Color;
-import it.polimi.ingsw.server.model.DevelopmentCardsBoard;
+import it.polimi.ingsw.server.model.actiontoken.ActionToken;
+import it.polimi.ingsw.server.model.developmentcard.Color;
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
 
 /**

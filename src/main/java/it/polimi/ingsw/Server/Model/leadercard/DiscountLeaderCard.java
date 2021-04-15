@@ -1,5 +1,7 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.leadercard;
 
+
+import it.polimi.ingsw.server.model.utils.Resource;
 
 public class DiscountLeaderCard extends LeaderCard {
 

@@ -2,8 +2,15 @@ package it.polimi.ingsw.server.model.personalboardpackage;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import it.polimi.ingsw.server.model.*;
+
 import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
+import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
+import it.polimi.ingsw.server.model.utils.Resource;
+import it.polimi.ingsw.server.model.utils.ResourceManager;
+import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 public class PersonalBoard implements VictoryPointsElement {
     private final List<DevelopmentCardSlot> developmentCardSlots;
@@ -66,7 +73,7 @@ public class PersonalBoard implements VictoryPointsElement {
                     .map(
                             e -> e.getValue().getQuantity() <= developmentCardSlots.stream()
                                     .flatMap(d -> d.getDevelopmentCards().stream())
-                                    .map(c -> e.getKey() == c.getType() &&
+                                    .map(c -> e.getKey() == c.getColor() &&
                                             c.getLevel().compareTo(e.getValue().getLevel()) >= 0)
                                     .filter(b -> b)
                                     .count()

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.actiontoken;
 
 /**
  * this enumeration represents all possible types of action token

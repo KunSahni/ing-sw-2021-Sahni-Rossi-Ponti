@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
-import it.polimi.ingsw.server.model.ProductionOutput;
-import it.polimi.ingsw.server.model.ResourceBank;
-import it.polimi.ingsw.server.model.Resource;
+import it.polimi.ingsw.server.model.utils.ProductionOutput;
+import it.polimi.ingsw.server.model.utils.ResourceBank;
+import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.Map;
 

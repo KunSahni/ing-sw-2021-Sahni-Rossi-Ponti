@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.market;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
-import it.polimi.ingsw.server.model.ActionTokenDeck;
+import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 

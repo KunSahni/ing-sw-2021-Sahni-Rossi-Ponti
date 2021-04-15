@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
-import it.polimi.ingsw.server.model.Resource;
+import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
 import java.util.Map;

@@ -8,7 +8,11 @@ import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.messages.actions.*;
 import it.polimi.ingsw.server.controller.messages.choices.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.controller.messages.choices.NextActionMessage;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
+import it.polimi.ingsw.server.model.utils.Resource;
+import it.polimi.ingsw.server.model.utils.ResourceManager;
 
 /**
  * This class represents a Player

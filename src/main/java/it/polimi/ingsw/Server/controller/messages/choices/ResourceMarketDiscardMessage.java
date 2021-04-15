@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.messages.choices;
 
-import it.polimi.ingsw.server.model.Resource;
+import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.Map;
 

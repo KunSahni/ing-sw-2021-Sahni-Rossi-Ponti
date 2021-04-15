@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
-import it.polimi.ingsw.server.model.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
 /**

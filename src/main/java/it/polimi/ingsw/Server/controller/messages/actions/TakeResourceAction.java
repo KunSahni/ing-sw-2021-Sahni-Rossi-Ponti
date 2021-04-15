@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.Market;
-import it.polimi.ingsw.server.model.ResourceBank;
+import it.polimi.ingsw.server.model.market.Market;
+import it.polimi.ingsw.server.model.utils.ResourceBank;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
 
 

@@ -1,4 +1,6 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.leadercard;
+
+import it.polimi.ingsw.server.model.utils.Resource;
 
 /**
  * requirement1 requires 2 card of that color

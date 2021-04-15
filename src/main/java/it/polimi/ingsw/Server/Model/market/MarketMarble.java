@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.market;
 
 /**
  * this enumeration represents the market marbles colors

@@ -1,4 +1,8 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.leadercard;
+
+import it.polimi.ingsw.server.model.developmentcard.Color;
+import it.polimi.ingsw.server.model.developmentcard.Level;
+import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.HashMap;
 import java.util.Map;

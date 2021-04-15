@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
 import it.polimi.ingsw.server.controller.gamepackage.ProductionCombo;
-import it.polimi.ingsw.server.model.ProduceLeaderCard;
-import it.polimi.ingsw.server.model.ProductionOutput;
+import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
+import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.personalboardpackage.DefaultSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 

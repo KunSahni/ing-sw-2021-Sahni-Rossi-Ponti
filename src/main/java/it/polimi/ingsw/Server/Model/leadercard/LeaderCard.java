@@ -1,5 +1,7 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.leadercard;
 
+
+import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 public abstract class LeaderCard implements VictoryPointsElement {
     private final LeaderCardAbility ability;

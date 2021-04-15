@@ -1,10 +1,10 @@
 package it.polimi.ingsw.server.controller.messages.actions;
 
-import it.polimi.ingsw.server.model.Color;
-import it.polimi.ingsw.server.model.DevelopmentCardsBoard;
-import it.polimi.ingsw.server.model.Level;
+import it.polimi.ingsw.server.model.developmentcard.Color;
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
+import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
-import it.polimi.ingsw.server.model.Resource;
+import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
 import java.util.Map;

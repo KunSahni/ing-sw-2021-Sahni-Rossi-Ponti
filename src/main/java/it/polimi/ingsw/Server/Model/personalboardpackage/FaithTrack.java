@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
 import java.util.*;
-import it.polimi.ingsw.server.model.VictoryPointsElement;
+import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 
 public class FaithTrack implements VictoryPointsElement {

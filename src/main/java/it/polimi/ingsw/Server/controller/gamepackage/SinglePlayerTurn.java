@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller.gamepackage;
 
 import it.polimi.ingsw.server.controller.messages.actions.Forwardable;
-import it.polimi.ingsw.server.model.ActionToken;
+import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.controller.messages.actions.DiscardDevelopmentCardsAction;
 import it.polimi.ingsw.server.controller.messages.actions.MoveBlackCrossAction;
 import it.polimi.ingsw.server.controller.messages.actions.ResetAndMoveAction;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.utils;
 
 /**
  * this enumeration represents all possibles type of resources

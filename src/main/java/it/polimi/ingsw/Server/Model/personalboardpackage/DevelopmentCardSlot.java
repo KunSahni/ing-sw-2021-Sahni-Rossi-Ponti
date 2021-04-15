@@ -1,10 +1,13 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
 import java.util.*;
-import it.polimi.ingsw.server.model.*;
+
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
+import it.polimi.ingsw.server.model.utils.ProductionOutput;
+import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 
-public class DevelopmentCardSlot implements VictoryPointsElement{
+public class DevelopmentCardSlot implements VictoryPointsElement {
     private final Stack<DevelopmentCard> cards;
 
     public DevelopmentCardSlot() {

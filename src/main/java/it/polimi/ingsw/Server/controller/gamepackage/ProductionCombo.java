@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller.gamepackage;
 
-import it.polimi.ingsw.server.model.LeaderCard;
-import it.polimi.ingsw.server.model.Resource;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
+import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 
 import java.util.List;

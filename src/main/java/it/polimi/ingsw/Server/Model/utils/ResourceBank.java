@@ -1,8 +1,10 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.utils;
+
+import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.util.*;
-import static it.polimi.ingsw.server.model.MarketMarble.*;
-import static it.polimi.ingsw.server.model.Resource.*;
+import static it.polimi.ingsw.server.model.market.MarketMarble.*;
+import static it.polimi.ingsw.server.model.utils.Resource.*;
 
 public final class ResourceBank {
 
@@ -11,21 +13,22 @@ public final class ResourceBank {
 
     /**
      * produces and returns a map of resources
-     * @return the requested resources
+     * @return the resources corresponding the passed market marbles
      * @param request contains the requested resources
      */
 
 
 
-    public static Map<Resource, Integer> getResourceFromMarble(Map<MarketMarble, Integer> request) {
+    public static ProductionOutput getResourceFromMarble(Map<MarketMarble, Integer> request) {
         Map<Resource, Integer> resources = new HashMap<>();
 
         resources.put(COIN, request.get(YELLOW));
         resources.put(SERVANT, request.get(PURPLE));
         resources.put(STONE, request.get(GREY));
         resources.put(SHIELD, request.get(BLUE));
+        int faithIncrement = request.get(RED);
 
-        return resources;
+        return new ProductionOutput(faithIncrement, resources);
     }
     /**
      * produces and returns a signle resource
@@ -36,18 +39,16 @@ public final class ResourceBank {
         Resource resource;
 
         resource = request;
-        return request;
+        return resource;
     }
     /**
-     * @return the resources corresponding the passed merkaet marble
-     * @param request
+     * @return the requested resources
+     * @param request is the map that contains the requested resources
      */
 
     public static Map<Resource, Integer> getResources(Map<Resource, Integer> request) {
-        Map<Resource, Integer> resources = new HashMap<>();
 
-        resources.putAll(request);
-        return resources;
+        return new HashMap<>(request);
     }
 
 }

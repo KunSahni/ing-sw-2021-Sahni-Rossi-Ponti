@@ -1,4 +1,6 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.developmentcard;
+
+import it.polimi.ingsw.server.model.utils.*;
 
 import java.util.*;
 
@@ -25,7 +27,7 @@ public class DevelopmentCard implements VictoryPointsElement {
         this.faithIncrement = faithIncrement;
     }
 
-    public Color getType() {
+    public Color getColor() {
         return type;
     }
 

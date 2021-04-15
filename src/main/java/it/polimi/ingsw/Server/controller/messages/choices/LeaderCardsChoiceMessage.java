@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.messages.choices;
 
-import it.polimi.ingsw.server.model.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 
 import java.util.List;
 

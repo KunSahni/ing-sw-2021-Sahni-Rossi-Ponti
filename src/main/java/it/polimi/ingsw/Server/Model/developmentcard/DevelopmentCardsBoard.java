@@ -1,5 +1,6 @@
-package it.polimi.ingsw.server.model;
+package it.polimi.ingsw.server.model.developmentcard;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -8,12 +9,18 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import static it.polimi.ingsw.server.model.Color.*;
-import static it.polimi.ingsw.server.model.Level.*;
+import static it.polimi.ingsw.server.model.developmentcard.Color.*;
+import static it.polimi.ingsw.server.model.developmentcard.Level.*;
 
 public class DevelopmentCardsBoard {
 
-    private final DevelopmentCardsDeck[][] board = new DevelopmentCardsDeck[4][3];
+    private final DevelopmentCardsDeck[][] board;
+
+
+    public DevelopmentCardsBoard() {
+        board = new DevelopmentCardsDeck[4][3];
+        loadDevelopmentCards();
+    }
 
     /**
     * @return and pick the first deck development card of color and level specified
@@ -48,35 +55,35 @@ public class DevelopmentCardsBoard {
         List<DevelopmentCard> level3;
 
         try {
-            JsonReader reader = new JsonReader(new FileReader("filename")); //todo : add the right json file name
+            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/DevelopmentCards.json")));
             DevelopmentCard[] developmentCards = new Gson().fromJson(reader, DevelopmentCard[].class);
 
             level1 = Arrays.stream(developmentCards)
                     .filter( developmentCard -> LEVEL1.equals(developmentCard.getLevel()))
                     .collect(Collectors.toList());
 
-            board[2][0] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> GREEN.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[2][1] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> BLUE.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[2][2] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> YELLOW.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[2][3] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> PURPLE.equals(developmentCard.getType())).collect(Collectors.toList()));
+            board[2][0] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> GREEN.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[2][1] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> BLUE.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[2][2] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> YELLOW.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[2][3] = new DevelopmentCardsDeck(level1.stream().filter( developmentCard -> PURPLE.equals(developmentCard.getColor())).collect(Collectors.toList()));
 
             level2 = Arrays.stream(developmentCards)
                     .filter( developmentCard -> LEVEL2.equals(developmentCard.getLevel()))
                     .collect(Collectors.toList());
 
-            board[1][0] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> GREEN.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[1][1] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> BLUE.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[1][2] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> YELLOW.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[1][3] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> PURPLE.equals(developmentCard.getType())).collect(Collectors.toList()));
+            board[1][0] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> GREEN.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[1][1] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> BLUE.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[1][2] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> YELLOW.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[1][3] = new DevelopmentCardsDeck(level2.stream().filter( developmentCard -> PURPLE.equals(developmentCard.getColor())).collect(Collectors.toList()));
 
             level3 = Arrays.stream(developmentCards)
                     .filter( developmentCard -> LEVEL3.equals(developmentCard.getLevel()))
                     .collect(Collectors.toList());
 
-            board[0][0] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> GREEN.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[0][1] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> BLUE.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[0][2] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> YELLOW.equals(developmentCard.getType())).collect(Collectors.toList()));
-            board[0][3] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> PURPLE.equals(developmentCard.getType())).collect(Collectors.toList()));
+            board[0][0] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> GREEN.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[0][1] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> BLUE.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[0][2] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> YELLOW.equals(developmentCard.getColor())).collect(Collectors.toList()));
+            board[0][3] = new DevelopmentCardsDeck(level3.stream().filter( developmentCard -> PURPLE.equals(developmentCard.getColor())).collect(Collectors.toList()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -86,7 +93,7 @@ public class DevelopmentCardsBoard {
     */
 
 
-    public DevelopmentCard peek(Level level, Color color) {
+    public DevelopmentCard peekCard(Level level, Color color) {
         int line;
         int column;
         line = switch (level) {
@@ -118,7 +125,7 @@ public class DevelopmentCardsBoard {
         //collect in a list the deck of development cards level 1 and color the parameter color
         List<DevelopmentCardsDeck> dcd = Arrays.stream(board[2])
                 .filter(developmentCardsDeck -> color
-                .equals(developmentCardsDeck.peek().getType()))
+                .equals(developmentCardsDeck.peek().getColor()))
                 .collect(Collectors.toList());
         //if there are elements in the deck discard two of them
         for (DevelopmentCardsDeck d: dcd) {
@@ -131,7 +138,7 @@ public class DevelopmentCardsBoard {
 
         dcd = Arrays.stream(board[1])
                 .filter(developmentCardsDeck -> color
-                .equals(developmentCardsDeck.peek().getType()))
+                .equals(developmentCardsDeck.peek().getColor()))
                 .collect(Collectors.toList());
 
         for (DevelopmentCardsDeck d: dcd) {
@@ -144,7 +151,7 @@ public class DevelopmentCardsBoard {
 
         dcd = Arrays.stream(board[0])
                 .filter(developmentCardsDeck -> color
-                        .equals(developmentCardsDeck.peek().getType()))
+                        .equals(developmentCardsDeck.peek().getColor()))
                 .collect(Collectors.toList());
 
         for (DevelopmentCardsDeck d: dcd) {
