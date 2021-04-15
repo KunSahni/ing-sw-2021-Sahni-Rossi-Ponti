@@ -4,7 +4,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
-			'COIN':1,
+			'COIN':1
 		},
 		"outputResources":null,
 		"cost":{
@@ -17,7 +17,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
-			'STONE':1,
+			'STONE':1
 		},
 		"outputResources":null,
 		"cost":{
@@ -30,7 +30,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
-			'SHIELD':1,
+			'SHIELD':1
 		},
 		"outputResources":null,
 		"cost":{
@@ -43,7 +43,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
-			'SERVANT':1,
+			'SERVANT':1
 		},
 		"outputResources":null,
 		"cost":{
@@ -56,10 +56,10 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
-			'STONE':1,
+			'STONE':1
 		},
 		"outputResources":{
-			'SERVANT':1,
+			'SERVANT':1
 		},
 		"cost":{
 			'SHIELD':1,
@@ -73,10 +73,10 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
-			'COIN':1,
+			'COIN':1
 		},
 		"outputResources":{
-			'SHIELD':1,
+			'SHIELD':1
 		},
 		"cost":{
 			'SHIELD':1,
@@ -90,10 +90,10 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
-			'SERVANT':1,
+			'SERVANT':1
 		},
 		"outputResources":{
-			'STONE':1,
+			'STONE':1
 		},
 		"cost":{
 			'COIN':1,
@@ -107,10 +107,10 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
-			'SHIELD':1,
+			'SHIELD':1
 		},
 		"outputResources":{
-			'COIN':1,
+			'COIN':1
 		},
 		"cost":{
 			'SHIELD':1,
@@ -124,7 +124,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
-			'SERVANT':2,
+			'SERVANT':2
 		},
 		"outputResources":{
 			'COIN':1,
@@ -141,7 +141,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
-			'COIN':2,
+			'COIN':2
 		},
 		"outputResources":{
 			'SERVANT':1,
@@ -158,7 +158,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
-			'STONE':2,
+			'STONE':2
 		},
 		"outputResources":{
 			'COIN':1,
@@ -175,7 +175,7 @@
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
-			'SHIELD':2,
+			'SHIELD':2
 		},
 		"outputResources":{
 			'COIN':1,
