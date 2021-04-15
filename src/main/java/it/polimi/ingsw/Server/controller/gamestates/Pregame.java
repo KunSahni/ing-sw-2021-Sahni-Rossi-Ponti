@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.controller.gamestates;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.controller.messages.actions.Forwardable;
+import it.polimi.ingsw.server.controller.message.action.Forwardable;
 
 import java.util.Collections;
 import java.util.List;

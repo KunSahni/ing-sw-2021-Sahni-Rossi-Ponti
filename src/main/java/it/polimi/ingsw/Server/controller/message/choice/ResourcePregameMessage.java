@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.messages.choices;
+package it.polimi.ingsw.server.controller.message.choice;
 
 /**
  * This class contains the amount of resources which the Player needs to pick at the beginning of the game

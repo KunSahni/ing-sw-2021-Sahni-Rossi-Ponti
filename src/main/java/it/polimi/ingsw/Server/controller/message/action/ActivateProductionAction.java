@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.messages.actions;
+package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.controller.gamepackage.ProductionCombo;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;

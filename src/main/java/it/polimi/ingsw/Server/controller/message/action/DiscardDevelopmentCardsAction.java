@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.messages.actions;
+package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.developmentcard.Color;

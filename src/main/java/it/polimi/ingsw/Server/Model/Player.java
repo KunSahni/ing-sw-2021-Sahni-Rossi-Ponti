@@ -5,9 +5,9 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.messages.actions.*;
-import it.polimi.ingsw.server.controller.messages.choices.LeaderCardsChoiceMessage;
-import it.polimi.ingsw.server.controller.messages.choices.NextActionMessage;
+import it.polimi.ingsw.server.controller.message.action.*;
+import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
+import it.polimi.ingsw.server.controller.message.choice.NextActionMessage;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
@@ -148,9 +148,9 @@ public class Player implements Comparator<Player>{
             return  availableNextStates;
         }
 
-        //Checks if the Turn is in a state where the user has performed one of the compulsory actions
+        //Checks if the Turn is in a state where the user has performed one of the compulsory action
         if (hasPerformedCompulsoryAction()){
-            //The player can always end the turn since he has already done one of the compulsory actions
+            //The player can always end the turn since he has already done one of the compulsory action
             availableNextStates.add(Actions.ENDACTION);
 
             //Checks if the player has any inactive LeaderCard which can be activated
@@ -223,8 +223,8 @@ public class Player implements Comparator<Player>{
     }
 
     /**
-     * This method checks if the Player has only performed LeaderCard activation or discard related actions
-     * @return true if the Player has only performed such actions, false otherwise
+     * This method checks if the Player has only performed LeaderCard activation or discard related action
+     * @return true if the Player has only performed such action, false otherwise
      */
     private boolean hasOnlyPerformedLeaderCardActions(){
         return performedActions.stream().filter(
@@ -234,7 +234,7 @@ public class Player implements Comparator<Player>{
 
     /**
      * This method checks if the Player has performed any of the compulsory Actions (TakeResourceAction, BuyDevelopmentCardAction, ActivateProductionAction)
-     * @return true if the Player has performed any of such actions, false otherwise
+     * @return true if the Player has performed any of such action, false otherwise
      */
     private boolean hasPerformedCompulsoryAction() {
         return performedActions.stream().anyMatch(

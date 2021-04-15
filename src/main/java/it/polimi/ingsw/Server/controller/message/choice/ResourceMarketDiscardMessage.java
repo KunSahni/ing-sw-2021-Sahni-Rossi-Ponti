@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.messages.choices;
+package it.polimi.ingsw.server.controller.message.choice;
 
 import it.polimi.ingsw.server.model.utils.Resource;
 

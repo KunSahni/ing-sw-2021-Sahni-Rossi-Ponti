@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.messages.actions;
+package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
