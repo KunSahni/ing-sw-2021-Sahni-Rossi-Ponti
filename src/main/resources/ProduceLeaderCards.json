@@ -1,0 +1,66 @@
+[
+	{
+		"ability" : "PRODUCE",
+		"victoryPoints" : 4,
+		"active" : false,
+		"leaderCardRequirements" : {
+			"requiredDevelopmentCards" : {
+				'GREEN':{
+					"level":"LEVEL2",
+					"quantity":1
+				}
+			},
+			"requiredResources":null
+		},
+		"inputResource":"COIN",
+		"faithIncrement":1
+	},
+	{
+		"ability" : "PRODUCE",
+		"victoryPoints" : 4,
+		"active" : false,
+		"leaderCardRequirements" : {
+			"requiredDevelopmentCards" : {
+				'PURPLE':{
+					"level":"LEVEL2",
+					"quantity":1
+				}
+			},
+			"requiredResources":null
+		},
+		"inputResource":"STONE",
+		"faithIncrement":1
+	},
+	{
+		"ability" : "PRODUCE",
+		"victoryPoints" : 4,
+		"active" : false,
+		"leaderCardRequirements" : {
+			"requiredDevelopmentCards" : {
+				'BLUE':{
+					"level":"LEVEL2",
+					"quantity":1
+				}
+			},
+			"requiredResources":null
+		},
+		"inputResource":"SERVANT",
+		"faithIncrement":1
+	},
+	{
+		"ability" : "PRODUCE",
+		"victoryPoints" : 4,
+		"active" : false,
+		"leaderCardRequirements" : {
+			"requiredDevelopmentCards" : {
+				'YELLOW':{
+					"level":"LEVEL2",
+					"quantity":1
+				}
+			},
+			"requiredResources":null
+		},
+		"inputResource":"S",
+		"faithIncrement":1
+	}
+]

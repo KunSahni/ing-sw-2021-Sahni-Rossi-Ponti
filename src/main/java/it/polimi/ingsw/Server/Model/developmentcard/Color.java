@@ -1,5 +1,8 @@
-package it.polimi.ingsw.server.model.utils;
+package it.polimi.ingsw.server.model.developmentcard;
 
+/**
+ * this enumeration represents possible colors of Development Cards
+ */
 public enum Color {
     GREEN("Green"),
     BLUE("Blue"),

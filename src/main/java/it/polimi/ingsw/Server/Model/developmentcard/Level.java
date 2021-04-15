@@ -1,5 +1,8 @@
-package it.polimi.ingsw.server.model.utils;
+package it.polimi.ingsw.server.model.developmentcard;
 
+/**
+ * this enumeration represents leader cards level
+ */
 public enum Level {
     LEVEL1("Level1"),
     LEVEL2("Level2"),

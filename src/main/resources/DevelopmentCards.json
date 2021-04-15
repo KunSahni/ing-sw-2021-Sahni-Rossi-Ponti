@@ -1,0 +1,762 @@
+[
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL1",
+		"victoryPoints" : 1,
+		"inputResources":{
+			'COIN':1,
+		},
+		"outputResources":null,
+		"cost":{
+			'SHIELD':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 1,
+		"inputResources":{
+			'STONE':1,
+		},
+		"outputResources":null,
+		"cost":{
+			'SERVANT':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 1,
+		"inputResources":{
+			'SHIELD':1,
+		},
+		"outputResources":null,
+		"cost":{
+			'COIN':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL1",
+		"victoryPoints" : 1,
+		"inputResources":{
+			'SERVANT':1,
+		},
+		"outputResources":null,
+		"cost":{
+			'STONE':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL1",
+		"victoryPoints" : 2,
+		"inputResources":{
+			'STONE':1,
+		},
+		"outputResources":{
+			'SERVANT':1,
+		},
+		"cost":{
+			'SHIELD':1,
+			'SERVANT':1,
+			'STONE':1
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 2,
+		"inputResources":{
+			'COIN':1,
+		},
+		"outputResources":{
+			'SHIELD':1,
+		},
+		"cost":{
+			'SHIELD':1,
+			'SERVANT':1,
+			'COIN':1
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 2,
+		"inputResources":{
+			'SERVANT':1,
+		},
+		"outputResources":{
+			'STONE':1,
+		},
+		"cost":{
+			'COIN':1,
+			'SERVANT':1,
+			'STONE':1
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL1",
+		"victoryPoints" : 2,
+		"inputResources":{
+			'SHIELD':1,
+		},
+		"outputResources":{
+			'COIN':1,
+		},
+		"cost":{
+			'SHIELD':1,
+			'STONE':1,
+			'COIN':1
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL1",
+		"victoryPoints" : 3,
+		"inputResources":{
+			'SERVANT':2,
+		},
+		"outputResources":{
+			'COIN':1,
+			'SHIELD':1,
+			'STONE':1
+		},
+		"cost":{
+			'SHIELD':3
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 3,
+		"inputResources":{
+			'COIN':2,
+		},
+		"outputResources":{
+			'SERVANT':1,
+			'SHIELD':1,
+			'STONE':1
+		},
+		"cost":{
+			'SERVANT':3
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 3,
+		"inputResources":{
+			'STONE':2,
+		},
+		"outputResources":{
+			'COIN':1,
+			'SERVANT':1,
+			'STONE':1
+		},
+		"cost":{
+			'COIN':3
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL1",
+		"victoryPoints" : 3,
+		"inputResources":{
+			'SHIELD':2,
+		},
+		"outputResources":{
+			'COIN':1,
+			'SERVANT':1,
+			'STONE':1
+		},
+		"cost":{
+			'STONE':3
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL1",
+		"victoryPoints" : 4,
+		"inputResources":{
+			'STONE':1,
+			'SERVANT':1
+		},
+		"outputResources":{
+			'COIN':2
+		},
+		"cost":{
+			'SHIELD':2,
+			'COIN':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 4,
+		"inputResources":{
+			'COIN':1,
+			'SHIELD':1
+		},
+		"outputResources":{
+			'STONE':2
+		},
+		"cost":{
+			'SERVANT':2,
+			'STONE':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL1",
+		"victoryPoints" : 4,
+		"inputResources":{
+			'SHIELD':1,
+			'STONE':1
+		},
+		"outputResources":{
+			'SERVANT':2
+		},
+		"cost":{
+			'COIN':2,
+			'SERVANT':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL1",
+		"victoryPoints" : 4,
+		"inputResources":{
+			'COIN':1,
+			'SERVANT':1
+		},
+		"outputResources":{
+			'SHIELD':2
+		},
+		"cost":{
+			'STONE':2,
+			'SHIELD':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL2",
+		"victoryPoints" : 5,
+		"inputResources":{
+			'STONE':1
+		},
+		"outputResources":null,
+		"cost":{
+			'SHIELD':4
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 5,
+		"inputResources":{
+			'COIN':1
+		},
+		"outputResources":null,
+		"cost":{
+			'SERVANT':4
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 5,
+		"inputResources":{
+			'SERVANT':1
+		},
+		"outputResources":null,
+		"cost":{
+			'COIN':4
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL2",
+		"victoryPoints" : 5,
+		"inputResources":{
+			'SHIELD':1
+		},
+		"outputResources":null,
+		"cost":{
+			'STONE':4
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL2",
+		"victoryPoints" : 6,
+		"inputResources":{
+			'SHIELD':1,
+			'SERVANT':1
+		},
+		"outputResources":{
+			'STONE':3
+		},
+		"cost":{
+			'SHIELD':3,
+			'SERVANT':2
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 6,
+		"inputResources":{
+			'COIN':1,
+			'SERVANT':1
+		},
+		"outputResources":{
+			'SHIELD':3
+		},
+		"cost":{
+			'SERVANT':3,
+			'COIN':2
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 6,
+		"inputResources":{
+			'COIN':1,
+			'STONE':1
+		},
+		"outputResources":{
+			'SERVANT':3
+		},
+		"cost":{
+			'COIN':3,
+			'STONE':2
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL2",
+		"victoryPoints" : 6,
+		"inputResources":{
+			'STONE':1,
+			'SHIELD':1
+		},
+		"outputResources":{
+			'COIN':3
+		},
+		"cost":{
+			'STONE':3,
+			'SHIELD':2
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL2",
+		"victoryPoints" : 7,
+		"inputResources":{
+			'COIN':2
+		},
+		"outputResources":{
+			'STONE':2
+		},
+		"cost":{
+			'SHIELD':5
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 7,
+		"inputResources":{
+			'STONE':2
+		},
+		"outputResources":{
+			'COIN':2
+		},
+		"cost":{
+			'SERVANT':5
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 7,
+		"inputResources":{
+			'SERVANT':2
+		},
+		"outputResources":{
+			'SHIELD':2
+		},
+		"cost":{
+			'COIN':5
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL2",
+		"victoryPoints" : 7,
+		"inputResources":{
+			'SHIELD':2
+		},
+		"outputResources":{
+			'SERVANT':2
+		},
+		"cost":{
+			'STONE':5
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL2",
+		"victoryPoints" : 8,
+		"inputResources":{
+			'COIN':1
+		},
+		"outputResources":{
+			'SHIELD':2
+		},
+		"cost":{
+			'SHIELD':3,
+			'COIN':3
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 8,
+		"inputResources":{
+			'STONE':1
+		},
+		"outputResources":{
+			'SERVANT':2
+		},
+		"cost":{
+			'SERVANT':3,
+			'SHIELD':3
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL2",
+		"victoryPoints" : 8,
+		"inputResources":{
+			'SERVANT':1
+		},
+		"outputResources":{
+			'STONE':2
+		},
+		"cost":{
+			'COIN':3,
+			'STONE':3
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL2",
+		"victoryPoints" : 8,
+		"inputResources":{
+			'SHIELD':1
+		},
+		"outputResources":{
+			'COIN':2
+		},
+		"cost":{
+			'STONE':3,
+			'SERVANT':3
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL3",
+		"victoryPoints" : 9,
+		"inputResources":{
+			'COIN':2
+		},
+		"outputResources":{
+			'STONE':3
+		},
+		"cost":{
+			'SHIELD':6
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 9,
+		"inputResources":{
+			'STONE':2
+		},
+		"outputResources":{
+			'COIN':3
+		},
+		"cost":{
+			'SERVANT':6
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 9,
+		"inputResources":{
+			'SERVANT':2
+		},
+		"outputResources":{
+			'SHIELD':3
+		},
+		"cost":{
+			'COIN':6
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL3",
+		"victoryPoints" : 9,
+		"inputResources":{
+			'SHIELD':2
+		},
+		"outputResources":{
+			'SERVANT':3
+		},
+		"cost":{
+			'STONE':6
+		},
+		"faithIncrement" : 2
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL3",
+		"victoryPoints" : 10,
+		"inputResources":{
+			'COIN':1,
+			'SERVANT':1
+		},
+		"outputResources":{
+			'SHIELD':2,
+			'STONE':2
+		},
+		"cost":{
+			'SHIELD':5,
+			'SERVANT':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 10,
+		"inputResources":{
+			'STONE':1,
+			'SHIELD':1
+		},
+		"outputResources":{
+			'COIN':2,
+			'SERVANT':2
+		},
+		"cost":{
+			'SERVANT':5,
+			'COIN':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 10,
+		"inputResources":{
+			'COIN':1,
+			'SHIELD':1
+		},
+		"outputResources":{
+			'SERVANT':2,
+			'STONE':2
+		},
+		"cost":{
+			'COIN':5,
+			'STONE':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL3",
+		"victoryPoints" : 10,
+		"inputResources":{
+			'STONE':1,
+			'SERVANT':1
+		},
+		"outputResources":{
+			'COIN':2,
+			'SHIELD':2
+		},
+		"cost":{
+			'STONE':5,
+			'SERVANT':2
+		},
+		"faithIncrement" : 1
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL3",
+		"victoryPoints" : 11,
+		"inputResources":{
+			'SERVANT':1
+		},
+		"outputResources":{
+			'COIN':1
+		},
+		"cost":{
+			'SHIELD':7
+		},
+		"faithIncrement" : 3
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 11,
+		"inputResources":{
+			'COIN':1
+		},
+		"outputResources":{
+			'STONE':1
+		},
+		"cost":{
+			'SERVANT':7
+		},
+		"faithIncrement" : 3
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 11,
+		"inputResources":{
+			'STONE':1
+		},
+		"outputResources":{
+			'SHIELD':1
+		},
+		"cost":{
+			'COIN':7
+		},
+		"faithIncrement" : 3
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL3",
+		"victoryPoints" : 11,
+		"inputResources":{
+			'SHIELD':1
+		},
+		"outputResources":{
+			'SERVANT':1
+		},
+		"cost":{
+			'STONE':7
+		},
+		"faithIncrement" : 3
+	},
+	{
+		"type" : "GREEN",
+		"level" : "LEVEL3",
+		"victoryPoints" : 12,
+		"inputResources":{
+			'STONE':1
+		},
+		"outputResources":{
+			'COIN':3,
+			'SHIELD':1
+		},
+		"cost":{
+			'SHIELD':4,
+			'COIN':4
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "PURPLE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 12,
+		"inputResources":{
+			'COIN':1
+		},
+		"outputResources":{
+			'STONE':3,
+			'SERVANT':1
+		},
+		"cost":{
+			'SERVANT':4,
+			'SHIELD':4
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "BLUE",
+		"level" : "LEVEL3",
+		"victoryPoints" : 12,
+		"inputResources":{
+			'SERVANT':1
+		},
+		"outputResources":{
+			'COIN':1,
+			'SHIELD':3
+		},
+		"cost":{
+			'COIN':4,
+			'STONE':4
+		},
+		"faithIncrement" : null
+	},
+	{
+		"type" : "YELLOW",
+		"level" : "LEVEL3",
+		"victoryPoints" : 12,
+		"inputResources":{
+			'SHIELD':1
+		},
+		"outputResources":{
+			'STONE':1,
+			'SERVANT':3
+		},
+		"cost":{
+			'STONE':4,
+			'SERVANT':4
+		},
+		"faithIncrement" : null
+	},
+]
