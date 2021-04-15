@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ProductionCombo {
     private List<DevelopmentCardSlot> developmentCardSlots;
-    private Resource defaultSlotOutput;
+    private Map<Resource, Integer> defaultSlotOutput;
     private List<LeaderCard> leaderCards;
     private Map<LeaderCard, Resource> leaderCardOutputs;
     private Map<String, Map<Resource, Integer>> discardedResources;
@@ -22,7 +22,7 @@ public class ProductionCombo {
         this.developmentCardSlots = developmentCardSlots;
     }
 
-    public void setDefaultSlotOutput(Resource defaultSlotOutput) {
+    public void setDefaultSlotOutput(Map<Resource, Integer> defaultSlotOutput) {
         this.defaultSlotOutput = defaultSlotOutput;
     }
 
@@ -42,7 +42,7 @@ public class ProductionCombo {
         return developmentCardSlots;
     }
 
-    public Resource getDefaultSlotOutput() {
+    public Map<Resource, Integer> getDefaultSlotOutput() {
         return defaultSlotOutput;
     }
 
