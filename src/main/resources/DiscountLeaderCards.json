@@ -5,11 +5,11 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'YELLOW':{
+				"YELLOW":{
 					"level":"LEVEL1",
 					"quantity":1
 				},
-				'PURPLE':{
+				"PURPLE":{
 					"level":"LEVEL1",
 					"quantity":1
 				}
@@ -24,11 +24,11 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'GREEN':{
+				"GREEN":{
 					"level":"LEVEL1",
 					"quantity":1
 				},
-				'BLUE':{
+				"BLUE":{
 					"level":"LEVEL1",
 					"quantity":1
 				}
@@ -43,11 +43,11 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'BLUE':{
+				"BLUE":{
 					"level":"LEVEL1",
 					"quantity":1
 				},
-				'PURPLE':{
+				"PURPLE":{
 					"level":"LEVEL1",
 					"quantity":1
 				}
@@ -62,11 +62,11 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'YELLOW':{
+				"YELLOW":{
 					"level":"LEVEL1",
 					"quantity":1
 				},
-				'GREEN':{
+				"GREEN":{
 					"level":"LEVEL1",
 					"quantity":1
 				}
@@ -74,5 +74,5 @@
 			"requiredResources":null
 		},
 		"discountedResource" : "SERVANT"
-	},
+	}
 ]

@@ -5,7 +5,7 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'GREEN':{
+				"GREEN":{
 					"level":"LEVEL2",
 					"quantity":1
 				}
@@ -21,7 +21,7 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'PURPLE':{
+				"PURPLE":{
 					"level":"LEVEL2",
 					"quantity":1
 				}
@@ -37,7 +37,7 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'BLUE':{
+				"BLUE":{
 					"level":"LEVEL2",
 					"quantity":1
 				}
@@ -53,7 +53,7 @@
 		"active" : false,
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : {
-				'YELLOW':{
+				"YELLOW":{
 					"level":"LEVEL2",
 					"quantity":1
 				}

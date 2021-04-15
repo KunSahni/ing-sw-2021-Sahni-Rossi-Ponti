@@ -6,12 +6,12 @@
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : null,
 			"requiredResources":{
-				'SHIELD':5
+				"SHIELD":5
 			}
 		},
 		"storage" : {
 			"storedResources":{
-				'COIN':0
+				"COIN":0
 			}
 		},
 		"storedType" : "COIN"
@@ -23,12 +23,12 @@
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : null,
 			"requiredResources":{
-				'SERVANT':5
+				"SERVANT":5
 			}
 		},
 		"storage" : {
 			"storedResources":{
-				'SHIELD':0
+				"SHIELD":0
 			}
 		},
 		"storedType" : "SHIELD"
@@ -40,12 +40,12 @@
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : null,
 			"requiredResources":{
-				'STONE':5
+				"STONE":5
 			}
 		},
 		"storage" : {
 			"storedResources":{
-				'SERVANT':0
+				"SERVANT":0
 			}
 		},
 		"storedType" : "SERVANT"
@@ -57,14 +57,14 @@
 		"leaderCardRequirements" : {
 			"requiredDevelopmentCards" : null,
 			"requiredResources":{
-				'COIN':5
+				"COIN":5
 			}
 		},
 		"storage" : {
 			"storedResources":{
-				'STONE':0
+				"STONE":0
 			}
 		},
 		"storedType" : "STONE"
-	},
+	}
 ]
