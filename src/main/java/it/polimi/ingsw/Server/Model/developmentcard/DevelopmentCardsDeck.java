@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
-import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
-
 import java.util.*;
 
 

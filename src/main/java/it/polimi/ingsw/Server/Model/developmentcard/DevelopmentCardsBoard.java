@@ -18,7 +18,7 @@ public class DevelopmentCardsBoard {
 
 
     public DevelopmentCardsBoard() {
-        board = new DevelopmentCardsDeck[4][3];
+        board = new DevelopmentCardsDeck[3][4];
         loadDevelopmentCards();
     }
 

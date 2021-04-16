@@ -3,8 +3,8 @@ package it.polimi.ingsw.server.model.utils;
 import java.util.Map;
 
 public class ProductionOutput {
-    public int faithIncrement;
-    public Map<Resource, Integer> resources;
+    private int faithIncrement;
+    private Map<Resource, Integer> resources;
 
     public ProductionOutput (int faithIncrement, Map<Resource, Integer> resources){
         this.faithIncrement=faithIncrement;

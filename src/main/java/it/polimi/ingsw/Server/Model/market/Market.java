@@ -1,5 +1,11 @@
 package it.polimi.ingsw.server.model.market;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,30 +21,23 @@ public class Market {
      * than it shuffles them
      */
     public Market() {
-        //todo: read from file
-        Map<MarketMarble, Integer> marbles = new HashMap<>();
         market = new MarketMarble[3][4];
-        Arrays.stream(market).forEach(
-                marketMarbles -> Arrays.stream(marketMarbles).forEach(
-                        marketMarble -> marketMarble=pickMarble(marbles)
-                )
-        );
-        extraMarble = pickMarble(marbles);
-    }
-
-    private MarketMarble pickMarble(Map<MarketMarble, Integer> marbles){
-        Random random = new Random();
-        List<MarketMarble> keys = new ArrayList<>(marbles.keySet());
-
-        MarketMarble randomKey = keys.get(random.nextInt(keys.size()));
-        if (marbles.get(randomKey)>0){
-            marbles.put(randomKey,marbles.get(randomKey)-1);
-            return randomKey;
+        int index=0;
+        List<MarketMarble> marbles = new ArrayList<>();
+        try {
+            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/Market.json")));
+            marbles = new Gson().fromJson(reader, ArrayList.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        else{
-            marbles.remove(randomKey);
-            return pickMarble(marbles);
+        Collections.shuffle(marbles);
+        for(int line=0; line<3; line++){
+            for(int column=0; column<4; column++){
+                market[line][column] = marbles.remove(index);
+                index++;
+            }
         }
+        extraMarble = marbles.remove(index);
     }
 
 

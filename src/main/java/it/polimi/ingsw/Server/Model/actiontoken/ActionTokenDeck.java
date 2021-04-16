@@ -1,7 +1,11 @@
 package it.polimi.ingsw.server.model.actiontoken;
 
-import it.polimi.ingsw.server.model.actiontoken.ActionToken;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 public class ActionTokenDeck {
@@ -14,15 +18,14 @@ public class ActionTokenDeck {
     }
 
     public List<ActionToken> getFullDeck() {
-        return new ArrayList<>(){{
-            add(ActionToken.MOVEBYTWO);
-            add(ActionToken.MOVEBYTWO);
-            add(ActionToken.MOVEANDSHUFFLE);
-            add(ActionToken.REMOVEGREEN);
-            add(ActionToken.REMOVEPURPLE);
-            add(ActionToken.REMOVEYELLOW);
-            add(ActionToken.REMOVEBLUE);
-        }};
+        List<ActionToken> actionTokenFullDeck = new ArrayList<>();
+        try {
+            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/ActionTokenFullDeck.json")));
+            actionTokenFullDeck = new Gson().fromJson(reader, ArrayList.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return actionTokenFullDeck;
     }
     public Stack<ActionToken> getCurrentDeck() {
         return currentDeck;

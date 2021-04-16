@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonReader;
 
 public class LeaderCardsDeck {
 
-    public Stack<LeaderCard> deck;
+    private Stack<LeaderCard> deck;
 
     public LeaderCardsDeck() {
         loadLeaderCards();
