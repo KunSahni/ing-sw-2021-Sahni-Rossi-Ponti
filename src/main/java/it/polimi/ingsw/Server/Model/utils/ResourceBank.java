@@ -35,10 +35,10 @@ public final class ResourceBank {
      * @param request contains the requested resource
      */
 
-    public static Resource getResource(Resource request) {
-        Resource resource;
+    public static Map<Resource, Integer> getResource(Resource request) {
+        Map<Resource, Integer> resource = new HashMap<>();
 
-        resource = request;
+        resource.put(request, 1);
         return resource;
     }
     /**
