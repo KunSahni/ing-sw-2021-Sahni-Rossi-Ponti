@@ -7,8 +7,8 @@ public class DiscountLeaderCard extends LeaderCard {
 
     private final Resource discountedResource;
 
-    public DiscountLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource discountedResource) {
-        super(ability, victoryPoints, leaderCardRequirements);
+    public DiscountLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource discountedResource) {
+        super(LeaderCardAbility.DISCOUNT, victoryPoints, leaderCardRequirements);
         this.discountedResource = discountedResource;
     }
 

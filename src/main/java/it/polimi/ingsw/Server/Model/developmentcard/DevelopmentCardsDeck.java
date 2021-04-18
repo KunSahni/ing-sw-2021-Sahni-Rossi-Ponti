@@ -13,26 +13,18 @@ public class DevelopmentCardsDeck {
         return deck.pop();
     }
 
-    /**
-     * this method shuffle the deck
-     * array sup is used to "park" all the cards contained in the deck
-     * array b is used to mark if a card has been reinserted in the deck
-     */
-    private void shuffle() {
-        Collections.shuffle(deck);
-    }
+
     /**
      * pushes all the cards in the deck and than shuffle them
     * @param cards contains the cards that are going in the deck
     */
-
 
     public DevelopmentCardsDeck(List<DevelopmentCard> cards) {
         deck = new Stack<>();
         for (DevelopmentCard d: cards) {
             deck.push(d);
         }
-        shuffle();
+        Collections.shuffle(deck);
     }
 
     /**
@@ -45,4 +37,7 @@ public class DevelopmentCardsDeck {
         else {return deck.peek();}
     }
 
+    public List<DevelopmentCard> getDeck(){
+        return new ArrayList<>(deck);
+    }
 }

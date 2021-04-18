@@ -9,8 +9,8 @@ public class ConvertLeaderCard extends LeaderCard {
 
     private final Resource convertedResource;
 
-    public ConvertLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource convertedResource) {
-        super(ability, victoryPoints, leaderCardRequirements);
+    public ConvertLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource convertedResource) {
+        super(LeaderCardAbility.CONVERT, victoryPoints, leaderCardRequirements);
         this.convertedResource = convertedResource;
     }
 

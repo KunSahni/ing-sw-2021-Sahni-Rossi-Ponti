@@ -1,6 +1,5 @@
 [
 	{
-		"ability" : "DISCOUNT",
 		"victoryPoints" : 2,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -19,7 +18,6 @@
 		"discountedResource" : "COIN"
 	},
 	{
-		"ability" : "DISCOUNT",
 		"victoryPoints" : 2,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -38,7 +36,6 @@
 		"discountedResource" : "STONE"
 	},
 	{
-		"ability" : "DISCOUNT",
 		"victoryPoints" : 2,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -57,7 +54,6 @@
 		"discountedResource" : "SHIELD"
 	},
 	{
-		"ability" : "DISCOUNT",
 		"victoryPoints" : 2,
 		"active" : false,
 		"leaderCardRequirements" : {

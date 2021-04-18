@@ -8,19 +8,19 @@ import it.polimi.ingsw.server.model.utils.ResourceManager;
  */
 public class StoreLeaderCard extends LeaderCard {
     private final ResourceManager storage;
-    private final Resource storedType;
+    private final Resource storedResource;
 
     public ResourceManager getStorageManager() {
         return storage;
     }
 
-    public Resource getStoredType() {
-        return storedType;
+    public Resource getStoredResource() {
+        return storedResource;
     }
 
-    public StoreLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, ResourceManager storage, Resource storedType) {
-        super(ability, victoryPoints, leaderCardRequirements);
+    public StoreLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, ResourceManager storage, Resource storedType) {
+        super(LeaderCardAbility.STORE, victoryPoints, leaderCardRequirements);
         this.storage = storage;
-        this.storedType = storedType;
+        this.storedResource = storedType;
     }
 }

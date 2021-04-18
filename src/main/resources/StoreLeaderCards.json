@@ -1,6 +1,5 @@
 [
 	{
-		"ability" : "STORE",
 		"victoryPoints" : 3,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -17,7 +16,6 @@
 		"storedType" : "COIN"
 	},
 	{
-		"ability" : "STORE",
 		"victoryPoints" : 3,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -34,7 +32,6 @@
 		"storedType" : "SHIELD"
 	},
 	{
-		"ability" : "STORE",
 		"victoryPoints" : 3,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -51,7 +48,6 @@
 		"storedType" : "SERVANT"
 	},
 	{
-		"ability" : "STORE",
 		"victoryPoints" : 3,
 		"active" : false,
 		"leaderCardRequirements" : {
