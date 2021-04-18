@@ -16,6 +16,6 @@ public class DefaultSlot {
      * @param output defines which product gets produced
      */
     public static ProductionOutput produce(Map<Resource, Integer> output) {
-        return new ProductionOutput(ResourceBank.getResources(output));
+        return new ProductionOutput(0, ResourceBank.getResources(output));
     }
 }
