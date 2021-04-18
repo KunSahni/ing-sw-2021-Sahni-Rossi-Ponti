@@ -25,16 +25,18 @@ public class Game {
     private AbstractGameState currentState;
     private Turn currentTurn;
     private Queue<Player> players;
+    private final int size;
 
     /**
      * @param gameID an unique ID that identifies the game
      */
-    public Game(int gameID) {
+    public Game(int gameID, int size) {
         this.gameID = gameID;
         this.developmentCardsBoard = new DevelopmentCardsBoard();
         this.market = new Market();
         this.leaderCardsDeck = new LeaderCardsDeck();
         this.actionTokenDeck = new ActionTokenDeck();
+        this.size = size;
         this.currentState = new Pregame(this);
     }
 
@@ -111,7 +113,7 @@ public class Game {
     }
 
     public int getGameSize(){
-        return players.size();
+        return size;
     }
 
     public int getGameID() {
