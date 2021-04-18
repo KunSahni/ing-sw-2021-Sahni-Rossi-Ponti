@@ -9,6 +9,7 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class Game {
         this.actionTokenDeck = new ActionTokenDeck();
         this.size = size;
         this.currentState = new Pregame(this);
+        this.players = new LinkedList<>();
     }
 
     /**
