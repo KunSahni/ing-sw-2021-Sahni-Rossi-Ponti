@@ -21,23 +21,23 @@ public class Market {
      * than it shuffles them
      */
     public Market() {
-        market = new MarketMarble[3][4];
+        this.market = new MarketMarble[3][4];
         int index=0;
-        List<MarketMarble> marbles = new ArrayList<>();
+        MarketMarble[] marketMarbles = new MarketMarble[13];
         try {
             JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/Market.json")));
-            marbles = new Gson().fromJson(reader, ArrayList.class);
+            marketMarbles = new Gson().fromJson(reader, MarketMarble[].class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Collections.shuffle(marbles);
+        Collections.shuffle(Arrays.asList(marketMarbles));
         for(int line=0; line<3; line++){
             for(int column=0; column<4; column++){
-                market[line][column] = marbles.remove(index);
+                this.market[line][column] = marketMarbles[index];
                 index++;
             }
         }
-        extraMarble = marbles.remove(index);
+        extraMarble = marketMarbles[index];
     }
 
 
@@ -91,4 +91,7 @@ public class Market {
         extraMarble=supp;
     }
 
+    public MarketMarble getExtraMarble() {
+        return extraMarble;
+    }
 }

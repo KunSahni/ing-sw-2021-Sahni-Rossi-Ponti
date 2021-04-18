@@ -18,13 +18,15 @@ public class ActionTokenDeck {
     }
 
     public List<ActionToken> getFullDeck() {
+        ActionToken[] actionTokens = new ActionToken[7];
         List<ActionToken> actionTokenFullDeck = new ArrayList<>();
         try {
             JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/ActionTokenFullDeck.json")));
-            actionTokenFullDeck = new Gson().fromJson(reader, ArrayList.class);
+            actionTokens = new Gson().fromJson(reader, ActionToken[].class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        actionTokenFullDeck.addAll(Arrays.asList(actionTokens));
         return actionTokenFullDeck;
     }
     public Stack<ActionToken> getCurrentDeck() {

@@ -21,12 +21,17 @@ public final class ResourceBank {
 
     public static ProductionOutput getResourceFromMarble(Map<MarketMarble, Integer> request) {
         Map<Resource, Integer> resources = new HashMap<>();
+        int faithIncrement = 0;
 
-        resources.put(COIN, request.get(YELLOW));
-        resources.put(SERVANT, request.get(PURPLE));
-        resources.put(STONE, request.get(GREY));
-        resources.put(SHIELD, request.get(BLUE));
-        int faithIncrement = request.get(RED);
+        for (MarketMarble m: request.keySet()) {
+            switch (m) {
+                case YELLOW -> resources.put(COIN, request.get(m));
+                case PURPLE -> resources.put(SERVANT, request.get(m));
+                case GREY -> resources.put(STONE, request.get(m));
+                case BLUE -> resources.put(SHIELD, request.get(m));
+                case RED -> faithIncrement = request.get(m);
+            }
+        }
 
         return new ProductionOutput(faithIncrement, resources);
     }

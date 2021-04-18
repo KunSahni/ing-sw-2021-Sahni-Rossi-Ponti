@@ -8,7 +8,7 @@ import com.google.gson.stream.JsonReader;
 
 public class LeaderCardsDeck {
 
-    private Stack<LeaderCard> deck;
+    private Stack<LeaderCard> deck = new Stack<>();
 
     public LeaderCardsDeck() {
         loadLeaderCards();
@@ -52,7 +52,7 @@ public class LeaderCardsDeck {
         //upload of DiscountLeaderCard
         try {
             JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/DiscountLeaderCards.json")));
-            DiscountLeaderCard[] discountLeaderCards = new Gson().fromJson(reader, DiscountLeaderCard.class);
+            DiscountLeaderCard[] discountLeaderCards = new Gson().fromJson(reader, DiscountLeaderCard[].class);
             for (DiscountLeaderCard d: discountLeaderCards) {
                 deck.push(d);
             }
@@ -63,7 +63,7 @@ public class LeaderCardsDeck {
         //upload of ProduceLeaderCard
         try {
             JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/ProduceLeaderCards.json")));
-            ProduceLeaderCard[] produceLeaderCards = new Gson().fromJson(reader, ProduceLeaderCard.class);
+            ProduceLeaderCard[] produceLeaderCards = new Gson().fromJson(reader, ProduceLeaderCard[].class);
             for (ProduceLeaderCard p: produceLeaderCards) {
                 deck.push(p);
             }
@@ -74,7 +74,7 @@ public class LeaderCardsDeck {
         //upload of StoreLeaderCard
         try {
             JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/StoreLeaderCards.json")));
-            StoreLeaderCard[] storeLeaderCards = new Gson().fromJson(reader, StoreLeaderCard.class);
+            StoreLeaderCard[] storeLeaderCards = new Gson().fromJson(reader, StoreLeaderCard[].class);
             for (StoreLeaderCard s: storeLeaderCards) {
                 deck.push(s);
             }
