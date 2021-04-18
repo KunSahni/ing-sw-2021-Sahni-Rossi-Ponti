@@ -8,11 +8,11 @@ import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.message.action.*;
 import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.controller.message.choice.NextActionMessage;
+import it.polimi.ingsw.server.controller.message.choice.ResourceMarketConvertMessage;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
+import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
-import it.polimi.ingsw.server.model.utils.Resource;
-import it.polimi.ingsw.server.model.utils.ResourceManager;
 
 /**
  * This class represents a Player
@@ -25,7 +25,7 @@ public class Player implements Comparator<Player>{
     private final PersonalBoard personalBoard;
     private List<LeaderCard> leaderCards;
     private List<Forwardable> performedActions;
-    private final ResourceManager tempStorage;
+    private Map<MarketMarble, Integer> tempMarbles;
     private boolean isPlayersTurn;
     private final SubmissionPublisher<Object> publisher = new SubmissionPublisher<>();
     private int rank;
@@ -40,7 +40,7 @@ public class Player implements Comparator<Player>{
         this.game = game;
         this.personalBoard = new PersonalBoard(this);
         this.performedActions = new ArrayList<>();
-        this.tempStorage = new ResourceManager();
+        this.tempMarbles = new HashMap<>();
         this.isPlayersTurn = false;
         //publisher.subscribe(view);
         rank = victoryPoints = 0;
@@ -86,36 +86,13 @@ public class Player implements Comparator<Player>{
         );
     }
 
-
     /**
-     * This method discards the selected resources from the temporary storage and moves the remaining resources to the PersonalBoard
-     * @param deletedResources the resources to delete
+     * This method sets the Player's position in the game
+     * @param tempMarbles a copy of the MarketMarbles picked from the Market
      */
-    public void discardResources(Map<Resource, Integer> deletedResources) {
-        //Remap the tempStorage based on deletedResources
-        Map<Resource, Integer> savedResources = tempStorage.getStoredResources().entrySet().stream().collect(
-                Collectors.toMap(Map.Entry::getKey,
-                        e -> e.getValue() - (Optional.ofNullable(deletedResources.get(e.getKey())).isPresent()? deletedResources.get(e.getKey()):0))
-        );
-
-        //Filter and keep only Resources whose count is greater than 0
-        savedResources = savedResources.entrySet().stream().filter(
-                resourceIntegerEntry -> resourceIntegerEntry.getValue()>0
-        ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        //Move savedResources to the depots
-        personalBoard.storeResources(savedResources);
-
-        //Clear the tempStorage
-        tempStorage.discardResources(tempStorage.getStoredResources());
-    }
-
-    /**
-     * This method stores the passed resources to tempStorage
-     * @param resources the resources to store
-     */
-    public void storeResources(Map<Resource, Integer> resources){
-        tempStorage.storeResources(resources);
+    public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
+        this.tempMarbles = tempMarbles;
+        publisher.submit(new ResourceMarketConvertMessage(tempMarbles));
     }
 
     /** This method returns a list of all the states in which the Player could go next
@@ -295,15 +272,15 @@ public class Player implements Comparator<Player>{
         return game;
     }
 
-    public Map<Resource, Integer> getResources() {
-        return tempStorage.getStoredResources();
-    }
-
     public int getRank() {
         return rank;
     }
 
     public int getVictoryPoints() {
         return victoryPoints;
+    }
+
+    public Map<MarketMarble, Integer> getTempMarbles() {
+        return Map.copyOf(tempMarbles);
     }
 }
