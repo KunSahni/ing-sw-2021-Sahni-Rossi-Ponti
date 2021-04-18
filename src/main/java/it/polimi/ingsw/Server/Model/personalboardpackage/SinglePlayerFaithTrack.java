@@ -16,9 +16,9 @@ public class SinglePlayerFaithTrack extends FaithTrack {
         blackCrossPosition = 0;
     }
 
-//    public int getBlackCrossPosition() {
-//        return blackCrossPosition;
-//    }
+    public int getBlackCrossPosition() {
+        return blackCrossPosition;
+    }
 
     /**
      * Move Lorenzo's cross by one tile. In case a pope's place is
