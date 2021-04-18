@@ -107,13 +107,13 @@ public class PersonalBoard implements VictoryPointsElement {
         warehouseDepots.discardResources(discardMapWarehouse);
         leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
-                .map(x -> (StoreLeaderCard) x)
-                .forEach(x -> x.getStorageManager().discardResources(
+                .map(leaderCard -> (StoreLeaderCard) leaderCard)
+                .forEach(storeLeaderCard -> storeLeaderCard.discardResources(
                         new HashMap<>() {{
                             put(
-                                    x.getStoredType(),
-                                    discardFromDepots.get(x.getStoredType())-
-                                            Optional.ofNullable(discardMapWarehouse.get(x.getStoredType())).orElse(0)
+                                    storeLeaderCard.getStoredType(),
+                                    discardFromDepots.get(storeLeaderCard.getStoredType())-
+                                            Optional.ofNullable(discardMapWarehouse.get(storeLeaderCard.getStoredType())).orElse(0)
                             );
                         }}
                 ));
@@ -147,21 +147,21 @@ public class PersonalBoard implements VictoryPointsElement {
         Map<Resource, Integer> storeInLeaderCards = leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
                 .map(x -> (StoreLeaderCard) x)
-                .filter(x -> x.getStorageManager().getResourceCount() < 2 && addedResources.containsKey(x.getStoredType()))
+                .filter(storeLeaderCard -> storeLeaderCard.getResourceCount() < 2 && addedResources.containsKey(storeLeaderCard.getStoredType()))
                 .collect(Collectors.toMap(
                         StoreLeaderCard::getStoredType,
-                        x -> Integer.min(
-                                2-x.getStorageManager().getResourceCount(),
-                                addedResources.get(x.getStoredType())
+                        storeLeaderCard -> Integer.min(
+                                2-storeLeaderCard.getResourceCount(),
+                                addedResources.get(storeLeaderCard.getStoredType())
                         )
                 ));
         leaderCards.stream()
-                .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
-                .map(x -> (StoreLeaderCard) x)
-                .filter(x -> storeInLeaderCards.containsKey(x.getStoredType()))
-                .forEach(x -> x.getStorageManager().storeResources(
+                .filter(leaderCard -> (leaderCard instanceof StoreLeaderCard) && leaderCard.isActive())
+                .map(leaderCard -> (StoreLeaderCard) leaderCard)
+                .filter(storeLeaderCard -> storeInLeaderCards.containsKey(storeLeaderCard.getStoredType()))
+                .forEach(storeLeaderCard -> storeLeaderCard.storeResources(
                         new HashMap<>(){{
-                            put(x.getStoredType(), storeInLeaderCards.get(x.getStoredType()));
+                            put(storeLeaderCard.getStoredType(), storeInLeaderCards.get(storeLeaderCard.getStoredType()));
                         }}
                 ));
         storeInLeaderCards.forEach((k, v) -> addedResources.put(k, addedResources.get(k)-v));
