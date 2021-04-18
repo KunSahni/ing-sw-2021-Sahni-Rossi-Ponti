@@ -27,8 +27,8 @@ public class ProduceLeaderCard extends LeaderCard {
         return inputResource;
     }
 
-    public ProduceLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource inputResource, int faithIncrement) {
-        super(ability, victoryPoints, leaderCardRequirements);
+    public ProduceLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource inputResource, int faithIncrement) {
+        super(LeaderCardAbility.PRODUCE, victoryPoints, leaderCardRequirements);
         this.inputResource = inputResource;
         this.faithIncrement = faithIncrement;
     }

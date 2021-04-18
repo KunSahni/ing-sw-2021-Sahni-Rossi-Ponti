@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class StoreLeaderCard extends LeaderCard {
     private final ResourceManager storage;
-    private final Resource storedType;
+    private final Resource storedResourceType;
 
-    public StoreLeaderCard(LeaderCardAbility ability, int victoryPoints, LeaderCardRequirements leaderCardRequirements, ResourceManager storage, Resource storedType) {
-        super(ability, victoryPoints, leaderCardRequirements);
+    public StoreLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, ResourceManager storage, Resource storedResourceType) {
+        super(LeaderCardAbility.STORE, victoryPoints, leaderCardRequirements);
         this.storage = storage;
-        this.storedType = storedType;
+        this.storedResourceType = storedResourceType;
     }
 
     /**
@@ -44,6 +44,6 @@ public class StoreLeaderCard extends LeaderCard {
      * Returns the StoreLeaderCard's stored resource type.
      */
     public Resource getStoredType() {
-        return storedType;
+        return storedResourceType;
     }
 }

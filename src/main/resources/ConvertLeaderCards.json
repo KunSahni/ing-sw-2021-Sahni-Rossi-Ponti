@@ -1,6 +1,5 @@
 [
 	{
-		"ability" : "CONVERT",
 		"victoryPoints" : 5,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -19,7 +18,6 @@
 		"convertedResource" : "COIN"
 	},
 	{
-		"ability" : "CONVERT",
 		"victoryPoints" : 5,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -38,7 +36,6 @@
 		"convertedResource" : "STONE"
 	},
 	{
-		"ability" : "CONVERT",
 		"victoryPoints" : 5,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -57,7 +54,6 @@
 		"convertedResource" : "SHIELD"
 	},
 	{
-		"ability" : "CONVERT",
 		"victoryPoints" : 5,
 		"active" : false,
 		"leaderCardRequirements" : {

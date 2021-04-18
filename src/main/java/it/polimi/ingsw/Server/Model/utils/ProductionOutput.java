@@ -11,16 +11,6 @@ public class ProductionOutput {
         this.resources = resources;
     }
 
-    public ProductionOutput(int faithIncrement) {
-        this.faithIncrement = faithIncrement;
-        this.resources = null;
-    }
-
-    public ProductionOutput(Map<Resource, Integer> resources) {
-        this.resources = resources;
-        this.faithIncrement = 0;
-    }
-
     public int getFaithIncrement() {
         return faithIncrement;
     }

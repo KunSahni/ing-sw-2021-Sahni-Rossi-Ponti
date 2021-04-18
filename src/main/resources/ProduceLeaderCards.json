@@ -1,6 +1,5 @@
 [
 	{
-		"ability" : "PRODUCE",
 		"victoryPoints" : 4,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -16,7 +15,6 @@
 		"faithIncrement":1
 	},
 	{
-		"ability" : "PRODUCE",
 		"victoryPoints" : 4,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -32,7 +30,6 @@
 		"faithIncrement":1
 	},
 	{
-		"ability" : "PRODUCE",
 		"victoryPoints" : 4,
 		"active" : false,
 		"leaderCardRequirements" : {
@@ -48,7 +45,6 @@
 		"faithIncrement":1
 	},
 	{
-		"ability" : "PRODUCE",
 		"victoryPoints" : 4,
 		"active" : false,
 		"leaderCardRequirements" : {

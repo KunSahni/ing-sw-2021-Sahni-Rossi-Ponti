@@ -8,7 +8,7 @@ import java.util.*;
 
 
 public class DevelopmentCard implements VictoryPointsElement {
-    private final Color type;
+    private final Color color;
     private final Level level;
     private final int victoryPoints;
     private final Map<Resource, Integer> inputResources;
@@ -18,7 +18,7 @@ public class DevelopmentCard implements VictoryPointsElement {
 
 
     public DevelopmentCard(Color type, Level level, int victoryPoints, Map<Resource, Integer> inputResources, Map<Resource, Integer> outputResources, Map<Resource, Integer> cost, int faithIncrement) {
-        this.type = type;
+        this.color = type;
         this.level = level;
         this.victoryPoints = victoryPoints;
         this.inputResources = inputResources;
@@ -28,7 +28,7 @@ public class DevelopmentCard implements VictoryPointsElement {
     }
 
     public Color getColor() {
-        return type;
+        return color;
     }
 
     public Level getLevel() {
