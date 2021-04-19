@@ -9,9 +9,9 @@ public class StoreLeaderCard extends LeaderCard {
     private final ResourceManager storage;
     private final Resource storedResourceType;
 
-    public StoreLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, ResourceManager storage, Resource storedResourceType) {
+    public StoreLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource storedResourceType) {
         super(LeaderCardAbility.STORE, victoryPoints, leaderCardRequirements);
-        this.storage = storage;
+        this.storage = new ResourceManager();
         this.storedResourceType = storedResourceType;
     }
 
