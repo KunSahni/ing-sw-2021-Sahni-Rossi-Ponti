@@ -25,31 +25,19 @@ public class LeaderCardRequirements {
             return quantity;
         }
     }
+    private final Map<Color, LevelQuantityPair> requiredDevelopmentCards;
+    private final Map<Resource, Integer> requiredResources;
 
-    private Map<Color, LevelQuantityPair> requiredDevelopmentCards;
-    private Map<Resource, Integer> requiredResources;
+    public LeaderCardRequirements() {
+        requiredDevelopmentCards = new HashMap<>();
+        requiredResources = new HashMap<>();
+    }
 
     public Map<Color, LevelQuantityPair> getRequiredDevelopmentCards() {
         return requiredDevelopmentCards;
     }
 
-    public void setDevelopmentCardsRequirement(Color color, Level level, int quantity) {
-        this.requiredDevelopmentCards = new HashMap<>() {{
-            put(color, new LevelQuantityPair(level, quantity));
-        }};
-    }
-
-    public void setDevelopmentCardsRequirement(Color color, int quantity) {
-        this.requiredDevelopmentCards = new HashMap<>() {{
-            put(color, new LevelQuantityPair(Level.LEVEL1, quantity));
-        }};
-    }
-
     public Map<Resource, Integer> getRequiredResources() {
         return requiredResources;
-    }
-
-    public void setRequiredResources(Map<Resource, Integer> requiredResources) {
-        this.requiredResources = requiredResources;
     }
 }
