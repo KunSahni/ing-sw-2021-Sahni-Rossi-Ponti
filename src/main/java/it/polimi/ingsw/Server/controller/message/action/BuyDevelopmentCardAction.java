@@ -56,7 +56,8 @@ public class BuyDevelopmentCardAction implements Forwardable {
      * This method manages the transaction for buying  a DevelopmentCard
      */
     private void buyDevelopmentCard() {
-        board.discardResources(discardedResources.get("depots"), discardedResources.get("strongbox"));
+        board.discardFromDepots(discardedResources.get("depots"));
+        board.discardFromStrongbox(discardedResources.get("strongbox"));
         board.placeDevelopmentCard(developmentCardsBoard.pick(level, color), position);
     }
 

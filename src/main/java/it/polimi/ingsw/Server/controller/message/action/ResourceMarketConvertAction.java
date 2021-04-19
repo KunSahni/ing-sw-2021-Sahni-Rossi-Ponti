@@ -27,7 +27,7 @@ public class ResourceMarketConvertAction implements Forwardable{
     @Override
     public void forward() {
         ProductionOutput convertedResources = ResourceBank.getResourceFromMarble(convertedMarbles);
-        personalBoard.storeResources(convertedResources.getResources());
+        personalBoard.storeInDepots(convertedResources.getResources());
         personalBoard.getFaithTrack().moveMarker(convertedResources.getFaithIncrement());
     }
 }

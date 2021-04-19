@@ -23,6 +23,6 @@ public class ResourceDiscardAction implements Forwardable{
 
     @Override
     public void forward() {
-        personalBoard.discardResources(resources, null);
+        personalBoard.discardFromDepots(resources);
     }
 }

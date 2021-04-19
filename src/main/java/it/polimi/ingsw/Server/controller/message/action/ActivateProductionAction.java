@@ -62,7 +62,8 @@ public class ActivateProductionAction implements Forwardable {
      */
     private void activateProduction() {
         //First the required resources are discarded
-        board.discardResources(productionCombo.getDiscardedResources().get("depots"), productionCombo.getDiscardedResources().get("strongbox"));
+        board.discardFromDepots(productionCombo.getDiscardedResources().get("depots"));
+        board.discardFromStrongbox(productionCombo.getDiscardedResources().get("strongbox"));
 
         //Extracts the productions from DevelopmentCardSlots
         List<ProductionOutput> developmentCardsOutput = null;
@@ -100,7 +101,7 @@ public class ActivateProductionAction implements Forwardable {
     private final Consumer<List<ProductionOutput>> elaborateProductionOutputs = productionOutputs ->  productionOutputs.forEach(
             productionOutput -> {
                 board.getFaithTrack().moveMarker(productionOutput.getFaithIncrement());
-                board.getStrongbox().storeResources(productionOutput.getResources());
+                board.storeInStrongbox(productionOutput.getResources());
             }
     );
 
@@ -110,7 +111,7 @@ public class ActivateProductionAction implements Forwardable {
      */
     private final Consumer<ProductionOutput> elaborateProductionOutput = productionOutput ->  {
                 board.getFaithTrack().moveMarker(productionOutput.getFaithIncrement());
-                board.getStrongbox().storeResources(productionOutput.getResources());
+                board.storeInStrongbox(productionOutput.getResources());
             };
 
 }

@@ -48,10 +48,6 @@ public class PersonalBoard implements VictoryPointsElement {
         return faithTrack;
     }
 
-    public ResourceManager getStrongbox() {
-        return strongbox;
-    }
-
     public int getResourceCount() {
         return proxyStorage.getResourceCount();
     }
@@ -80,9 +76,11 @@ public class PersonalBoard implements VictoryPointsElement {
                     ).reduce(true, (a, b) -> a && b);
         }
     }
+
     /**
      * @return shallow copy of all currently stored resources by the player
-     */ //TODO: evaluate if this is actually needed
+     */
+    //TODO: evaluate if this is actually needed
     public Map<Resource, Integer> getResources() {
         return new HashMap<>(proxyStorage.getStoredResources());
     }
@@ -95,15 +93,15 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     /**
-     * @param discardFromDepots resources discarded from leader cards and depots, all Integers must be >0
-     * @param discardFromStrongbox resources discarded from strongbox
+     * Discards resources from depots
+     * @param resources map of resources that will get discarded
      */
-    public void discardResources(Map<Resource, Integer> discardFromDepots, Map<Resource, Integer> discardFromStrongbox) {
+    public void discardFromDepots(Map<Resource, Integer> resources) {
         Map <Resource, Integer> discardMapWarehouse = warehouseDepots.getStoredResources().keySet().stream()
-                .filter(discardFromDepots::containsKey)
+                .filter(resources::containsKey)
                 .collect(Collectors.toMap(
                         k -> k,
-                        k -> Integer.min(discardFromDepots.get(k), warehouseDepots.getStoredResources().get(k))));
+                        k -> Integer.min(resources.get(k), warehouseDepots.getStoredResources().get(k))));
         warehouseDepots.discardResources(discardMapWarehouse);
         leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
@@ -112,14 +110,21 @@ public class PersonalBoard implements VictoryPointsElement {
                         new HashMap<>() {{
                             put(
                                     storeLeaderCard.getStoredType(),
-                                    discardFromDepots.get(storeLeaderCard.getStoredType())-
+                                    resources.get(storeLeaderCard.getStoredType())-
                                             Optional.ofNullable(discardMapWarehouse.get(storeLeaderCard.getStoredType())).orElse(0)
                             );
                         }}
                 ));
-        strongbox.discardResources(discardFromStrongbox);
-        proxyStorage.discardResources(discardFromDepots);
-        proxyStorage.discardResources(discardFromStrongbox);
+        proxyStorage.discardResources(resources);
+    }
+
+    /**
+     * Discards resources from the strongbox
+     * @param resources map of resources that will get discarded
+     */
+    public void discardFromStrongbox(Map<Resource, Integer> resources) {
+        strongbox.discardResources(resources);
+        proxyStorage.discardResources(resources);
     }
 
     /**
@@ -140,19 +145,21 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     /**
-     * Stores in depots and, if possible, in leader cards the addedResources map
+     * Stores the given resources in the Warehouse Depots and, if possible, in Storage
+     * Leader Cards
+     * @param resources map containing the resources to add
      */
-    public void storeResources(Map<Resource, Integer> addedResources) {
-        proxyStorage.storeResources(addedResources);
+    public void storeInDepots(Map<Resource, Integer> resources) {
+        proxyStorage.storeResources(resources);
         Map<Resource, Integer> storeInLeaderCards = leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
                 .map(x -> (StoreLeaderCard) x)
-                .filter(storeLeaderCard -> storeLeaderCard.getResourceCount() < 2 && addedResources.containsKey(storeLeaderCard.getStoredType()))
+                .filter(storeLeaderCard -> storeLeaderCard.getResourceCount() < 2 && resources.containsKey(storeLeaderCard.getStoredType()))
                 .collect(Collectors.toMap(
                         StoreLeaderCard::getStoredType,
                         storeLeaderCard -> Integer.min(
                                 2-storeLeaderCard.getResourceCount(),
-                                addedResources.get(storeLeaderCard.getStoredType())
+                                resources.get(storeLeaderCard.getStoredType())
                         )
                 ));
         leaderCards.stream()
@@ -164,8 +171,17 @@ public class PersonalBoard implements VictoryPointsElement {
                             put(storeLeaderCard.getStoredType(), storeInLeaderCards.get(storeLeaderCard.getStoredType()));
                         }}
                 ));
-        storeInLeaderCards.forEach((k, v) -> addedResources.put(k, addedResources.get(k)-v));
-        warehouseDepots.storeResources(addedResources);
+        storeInLeaderCards.forEach((k, v) -> resources.put(k, resources.get(k)-v));
+        warehouseDepots.storeResources(resources);
+    }
+
+    /**
+     * Stores the given resources in the Strongbox
+     * @param resources map containing the resources to add
+     */
+    public void storeInStrongbox(Map<Resource, Integer> resources) {
+        proxyStorage.storeResources(resources);
+        strongbox.storeResources(resources);
     }
 
     /**

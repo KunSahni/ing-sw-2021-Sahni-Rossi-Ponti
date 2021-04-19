@@ -23,6 +23,6 @@ public class ResourcePregameAction implements Forwardable{
 
     @Override
     public void forward() {
-        personalBoard.storeResources(resources);
+        personalBoard.storeInDepots(resources);
     }
 }
