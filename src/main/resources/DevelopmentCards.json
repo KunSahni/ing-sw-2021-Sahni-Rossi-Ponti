@@ -1,6 +1,6 @@
 [
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
@@ -13,7 +13,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
@@ -26,7 +26,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
@@ -39,7 +39,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL1",
 		"victoryPoints" : 1,
 		"inputResources":{
@@ -52,7 +52,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
@@ -69,7 +69,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
@@ -86,7 +86,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
@@ -103,7 +103,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL1",
 		"victoryPoints" : 2,
 		"inputResources":{
@@ -120,7 +120,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
@@ -137,7 +137,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
@@ -154,7 +154,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
@@ -171,7 +171,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL1",
 		"victoryPoints" : 3,
 		"inputResources":{
@@ -188,7 +188,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL1",
 		"victoryPoints" : 4,
 		"inputResources":{
@@ -205,7 +205,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 4,
 		"inputResources":{
@@ -222,7 +222,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL1",
 		"victoryPoints" : 4,
 		"inputResources":{
@@ -239,7 +239,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL1",
 		"victoryPoints" : 4,
 		"inputResources":{
@@ -256,7 +256,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL2",
 		"victoryPoints" : 5,
 		"inputResources":{
@@ -269,7 +269,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 5,
 		"inputResources":{
@@ -282,7 +282,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 5,
 		"inputResources":{
@@ -295,7 +295,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL2",
 		"victoryPoints" : 5,
 		"inputResources":{
@@ -308,7 +308,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL2",
 		"victoryPoints" : 6,
 		"inputResources":{
@@ -325,7 +325,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 6,
 		"inputResources":{
@@ -342,7 +342,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 6,
 		"inputResources":{
@@ -359,7 +359,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL2",
 		"victoryPoints" : 6,
 		"inputResources":{
@@ -376,7 +376,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL2",
 		"victoryPoints" : 7,
 		"inputResources":{
@@ -391,7 +391,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 7,
 		"inputResources":{
@@ -406,7 +406,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 7,
 		"inputResources":{
@@ -421,7 +421,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL2",
 		"victoryPoints" : 7,
 		"inputResources":{
@@ -436,7 +436,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL2",
 		"victoryPoints" : 8,
 		"inputResources":{
@@ -452,7 +452,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 8,
 		"inputResources":{
@@ -468,7 +468,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL2",
 		"victoryPoints" : 8,
 		"inputResources":{
@@ -484,7 +484,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL2",
 		"victoryPoints" : 8,
 		"inputResources":{
@@ -500,7 +500,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL3",
 		"victoryPoints" : 9,
 		"inputResources":{
@@ -515,7 +515,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 9,
 		"inputResources":{
@@ -530,7 +530,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 9,
 		"inputResources":{
@@ -545,7 +545,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL3",
 		"victoryPoints" : 9,
 		"inputResources":{
@@ -560,7 +560,7 @@
 		"faithIncrement" : 2
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL3",
 		"victoryPoints" : 10,
 		"inputResources":{
@@ -578,7 +578,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 10,
 		"inputResources":{
@@ -596,7 +596,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 10,
 		"inputResources":{
@@ -614,7 +614,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL3",
 		"victoryPoints" : 10,
 		"inputResources":{
@@ -632,7 +632,7 @@
 		"faithIncrement" : 1
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL3",
 		"victoryPoints" : 11,
 		"inputResources":{
@@ -647,7 +647,7 @@
 		"faithIncrement" : 3
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 11,
 		"inputResources":{
@@ -662,7 +662,7 @@
 		"faithIncrement" : 3
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 11,
 		"inputResources":{
@@ -677,7 +677,7 @@
 		"faithIncrement" : 3
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL3",
 		"victoryPoints" : 11,
 		"inputResources":{
@@ -692,7 +692,7 @@
 		"faithIncrement" : 3
 	},
 	{
-		"type" : "GREEN",
+		"color" : "GREEN",
 		"level" : "LEVEL3",
 		"victoryPoints" : 12,
 		"inputResources":{
@@ -709,7 +709,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "PURPLE",
+		"color" : "PURPLE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 12,
 		"inputResources":{
@@ -726,7 +726,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "BLUE",
+		"color" : "BLUE",
 		"level" : "LEVEL3",
 		"victoryPoints" : 12,
 		"inputResources":{
@@ -743,7 +743,7 @@
 		"faithIncrement" : null
 	},
 	{
-		"type" : "YELLOW",
+		"color" : "YELLOW",
 		"level" : "LEVEL3",
 		"victoryPoints" : 12,
 		"inputResources":{
