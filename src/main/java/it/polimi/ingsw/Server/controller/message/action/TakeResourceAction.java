@@ -39,14 +39,14 @@ public class TakeResourceAction implements Forwardable {
     /**
      * @param row the line from which the player wants to take resources from the market
      */
-    public void chooseRow(int row) {
+    private void chooseRow(int row) {
         player.setTempMarbles(market.chooseRow(row));
     }
 
     /**
      * @param column the column from which the player wants to take resources from the market
      */
-    public void chooseColumn(int column) {
+    private void chooseColumn(int column) {
         player.setTempMarbles(market.chooseColumn(column));
     }
 }
