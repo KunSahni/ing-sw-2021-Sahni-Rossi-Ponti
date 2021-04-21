@@ -1,4 +1,4 @@
-package model;
+package model.developmentcard;
 
 import it.polimi.ingsw.server.model.developmentcard.*;
 
