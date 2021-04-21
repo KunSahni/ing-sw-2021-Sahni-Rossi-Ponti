@@ -38,7 +38,6 @@ public class Game {
         this.leaderCardsDeck = new LeaderCardsDeck();
         this.actionTokenDeck = new ActionTokenDeck();
         this.size = size;
-        this.currentState = new Pregame(this);
         this.players = new LinkedList<>();
     }
 
@@ -101,6 +100,7 @@ public class Game {
      * This method starts the Game and keeps it running as long as it isn't finished
      */
     public void run(){
+        setNextState(new Pregame(this));
         while (!(currentState instanceof GameFinished))
             currentState.run();
         //todo: e poi?
