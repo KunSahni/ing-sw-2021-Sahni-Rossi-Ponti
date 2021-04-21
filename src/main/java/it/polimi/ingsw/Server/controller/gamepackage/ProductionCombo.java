@@ -12,7 +12,8 @@ public class ProductionCombo {
     private Map<Resource, Integer> defaultSlotOutput;
     private List<LeaderCard> leaderCards;
     private Map<LeaderCard, Resource> leaderCardOutputs;
-    private Map<String, Map<Resource, Integer>> discardedResources;
+    private Map<Resource, Integer> discardedResourcesFromDepots;
+    private Map<Resource, Integer> discardedResourcesFromStrongbox;
 
     public ProductionCombo() {
         super();
@@ -34,8 +35,12 @@ public class ProductionCombo {
         this.leaderCardOutputs = leaderCardOutputs;
     }
 
-    public void setDiscardedResources(Map<String, Map<Resource, Integer>> discardedResources) {
-        this.discardedResources = discardedResources;
+    public void setDiscardedResourcesFromDepots(Map<Resource, Integer> discardedResourcesFromDepots) {
+        this.discardedResourcesFromDepots = discardedResourcesFromDepots;
+    }
+
+    public void setDiscardedResourcesFromStrongbox(Map<Resource, Integer> discardedResourcesFromStrongbox) {
+        this.discardedResourcesFromStrongbox = discardedResourcesFromStrongbox;
     }
 
     public List<DevelopmentCardSlot> getDevelopmentCardSlots() {
@@ -54,8 +59,11 @@ public class ProductionCombo {
         return leaderCardOutputs;
     }
 
-    public Map<String, Map<Resource, Integer>> getDiscardedResources() {
-        return discardedResources;
+    public Map<Resource, Integer> getDiscardedResourcesFromDepots() {
+        return discardedResourcesFromDepots;
     }
 
+    public Map<Resource, Integer> getDiscardedResourcesFromStrongbox() {
+        return discardedResourcesFromStrongbox;
+    }
 }

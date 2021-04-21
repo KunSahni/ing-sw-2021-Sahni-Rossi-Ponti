@@ -18,22 +18,25 @@ public class BuyDevelopmentCardAction implements Forwardable {
     private final Level level;
     private final Color color;
     private final int position;
-    private final Map<String, Map<Resource, Integer>> discardedResources;
+    private final Map<Resource, Integer> discardedResourcesFromDepots;
+    private final Map<Resource, Integer> discardedResourcesFromStrongbox;
 
     /**
      * @param turn the turn in which this action is happening
      * @param level the level of the chosen LeaderCard
      * @param color the color of the chosen LeaderCard
      * @param position the positon on the PersonalBoard where the DevelopmentCard will be placed
-     * @param discardedResources the resources discarded in order to buy the DevelopmentCard
+     * @param discardedResourcesFromDepots the resources discarded from the depots in order to buy the DevelopmentCard
+     * @param discardedResourcesFromStrongbox the resources discarded from the strongbox in order to buy the DevelopmentCard
      */
-    public BuyDevelopmentCardAction(Turn turn, Level level, Color color, int position, Map<String, Map<Resource, Integer>> discardedResources) {
+    public BuyDevelopmentCardAction(Turn turn, Level level, Color color, int position, Map<Resource, Integer> discardedResourcesFromDepots, Map<Resource, Integer> discardedResourcesFromStrongbox) {
         board = turn.getPlayer().getPersonalBoard();
         developmentCardsBoard = turn.getGame().getDevelopmentCardsBoard();
         this.level = level;
         this.color = color;
         this.position = position;
-        this.discardedResources = discardedResources;
+        this.discardedResourcesFromDepots = discardedResourcesFromDepots;
+        this.discardedResourcesFromStrongbox = discardedResourcesFromStrongbox;
     }
 
     @Override
@@ -56,8 +59,8 @@ public class BuyDevelopmentCardAction implements Forwardable {
      * This method manages the transaction for buying  a DevelopmentCard
      */
     private void buyDevelopmentCard() {
-        board.discardFromDepots(discardedResources.get("depots"));
-        board.discardFromStrongbox(discardedResources.get("strongbox"));
+        board.discardFromDepots(discardedResourcesFromDepots);
+        board.discardFromStrongbox(discardedResourcesFromStrongbox);
         board.placeDevelopmentCard(developmentCardsBoard.pick(level, color), position);
     }
 
