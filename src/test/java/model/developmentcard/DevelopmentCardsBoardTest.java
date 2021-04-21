@@ -20,7 +20,7 @@ public class DevelopmentCardsBoardTest {
      * @param board a DevelopmentCardsBoard object
      * @return the List of cards
      */
-    List<DevelopmentCardsDeck> boardToDeckList(DevelopmentCardsBoard board) {
+    static List<DevelopmentCardsDeck> boardToDeckList(DevelopmentCardsBoard board) {
         return Arrays.stream(board.peekBoard())
                 .flatMap(Arrays::stream)
                 .collect(toList());
@@ -35,7 +35,7 @@ public class DevelopmentCardsBoardTest {
      * @param board a DevelopmentCardsBoard object
      * @return the List of cards
      */
-    List<DevelopmentCard> boardToCardList(DevelopmentCardsBoard board) {
+    static List<DevelopmentCard> boardToCardList(DevelopmentCardsBoard board) {
         return boardToDeckList(board).stream()
                 .flatMap(deck -> deck.getDeck().stream())
                 .collect(toList());
