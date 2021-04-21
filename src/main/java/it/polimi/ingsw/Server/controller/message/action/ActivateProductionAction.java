@@ -62,8 +62,8 @@ public class ActivateProductionAction implements Forwardable {
      */
     private void activateProduction() {
         //First the required resources are discarded
-        board.discardFromDepots(productionCombo.getDiscardedResources().get("depots"));
-        board.discardFromStrongbox(productionCombo.getDiscardedResources().get("strongbox"));
+        board.discardFromDepots(productionCombo.getDiscardedResourcesFromDepots());
+        board.discardFromStrongbox(productionCombo.getDiscardedResourcesFromStrongbox());
 
         //Extracts the productions from DevelopmentCardSlots
         List<ProductionOutput> developmentCardsOutput = null;
