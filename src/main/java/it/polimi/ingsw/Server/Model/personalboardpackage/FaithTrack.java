@@ -1,68 +1,97 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
+//import java.util.concurrent.Flow.Publisher;
+
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
-
-public class FaithTrack implements VictoryPointsElement {
-    private int position;
+/**
+ * Class representing a standard Faith Track used in a multi-player match.
+ */
+public class FaithTrack implements VictoryPointsElement /*, Publisher*/ {
+    private int faithMarkerPosition;
     private final List<FavorStatus> popesFavors;
-    private final Map<Integer, Integer> victoryPointsSheet;
-    private final PersonalBoard personalboard;
+    private final Player player;
+
+    public FaithTrack(Player player) {
+        // Player marked by the Inkwell (position 1) and the one right
+        // after start from 0 on the faith track. Players in position 3
+        // and 4 have a 1 tile advantage.
+        this.faithMarkerPosition = player.getPosition() / 3;
+        // Player reference is saved to retrieve current game when
+        // a Vatican Report starts and all boards need to have their
+        // Faith Tracks updated.
+        this.player = player;
+        this.popesFavors = new ArrayList<>(Arrays.asList(FavorStatus.INACTIVE, FavorStatus.INACTIVE, FavorStatus.INACTIVE));
+    }
 
     /**
-     * @param position       is the starting position of the player
-     *                      calculated by game logic depending on
-     *                      its turn placement
-     * @param personalBoard a reference to board is needed
-     *                      to call Game's moveOtherFaithMarkers
+     * Returns the position of the Faith Marker on the Faith Track.
+     * Ranges from 0 to 24.
+     * @return position integer.
      */
-    public FaithTrack(int position, PersonalBoard personalBoard) {
-        this.position = position;
-        this.personalboard = personalBoard;
-        popesFavors = new ArrayList<>(Arrays.asList(
-                FavorStatus.INACTIVE,
-                FavorStatus.INACTIVE,
-                FavorStatus.INACTIVE));
-        victoryPointsSheet = Map.of( // TODO: parse json
-                0, 0,
-                3, 1,
-                6, 2,
-                9, 4,
-                12, 6,
-                15, 9,
-                18, 12,
-                21, 16,
-                24, 20);
+    public int getFaithMarkerPosition() {
+        return faithMarkerPosition;
     }
 
-    public int getPosition() {
-        return position;
+    /**
+     * Returns a List of FavorStatus. The elements are sorted
+     * in the same fashion as they are displayed on the board,
+     * first in the list being the least valuable.
+     * @return List of FavorStatus enum elements.
+     */
+    public List<FavorStatus> getPopesFavors() {
+        return new ArrayList<>(popesFavors);
     }
-
-//    public List<FavorStatus> getPopesFavors() {
-//        return new ArrayList<>(popesFavors);
-//    }
 
     /**
      * Returns end-game victory points depending on the position
-     * on faith track and on the active pope's favors
+     * on faith track and on active pope's favors.
+     * @return number of victory points obtained from the board.
      */
     @Override
     public int getVictoryPoints() {
-        int popesFavorPoints = 0; // Victory points gained from vatican reports
-        // Victory points gained from pope's favors
-        final int positionPoints = victoryPointsSheet.get(position-(position%3));
-        for (FavorStatus singleFavor: popesFavors) {
-            if (singleFavor == FavorStatus.ACTIVE) {
-                popesFavorPoints+=(2+popesFavors.indexOf(singleFavor));
-            }
-        }
-        return positionPoints + popesFavorPoints;
+        return calculatePopesFavorsVictoryPoints() + calculateTrackPositionVictoryPoints();
     }
 
     /**
-     * Moves the marker a number of times equivalent to the parameter
+     * Calculate the amount of Victory Points earned from activating
+     * Pope's Favors.
+     * @return number of points.
+     */
+    private int calculatePopesFavorsVictoryPoints() {
+        int popesFavorPoints = 0;
+        for (int i = 0; i < popesFavors.size(); i++) {
+            if (popesFavors.get(i) == FavorStatus.ACTIVE) {
+                popesFavorPoints += i + 2;
+            }
+        }
+        return popesFavorPoints;
+    }
+
+    /**
+     * Calculates the amount of Victory Points earned from moving
+     * forward on the Faith Track.
+     * @return number of points.
+     */
+    private int calculateTrackPositionVictoryPoints() {
+        try {
+            JsonReader reader = new JsonReader(new FileReader("src/main/resources/FaithTrackPoints.json"));
+            Map<String, Integer> victoryPointsMap = new Gson().fromJson(reader, Map.class);
+            return victoryPointsMap.get(Integer.toString(getFaithMarkerPosition()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * Moves the marker a number of times equivalent to the parameter.
      */
     public void moveMarker(int steps) {
         for (int i = 0; i < steps; i++) {
@@ -70,36 +99,44 @@ public class FaithTrack implements VictoryPointsElement {
         }
     }
     /**
-     * Moves faith marker by one position on the faith track
-     * When landing on a pope's place (with inactive status)
-     * a vatican report starts
+     * Moves the Faith Marker up by one position on the Faith Track.
+     * When landing on a Pope's Place (with inactive status) a Vatican
+     * Report starts.
      */
     private void moveMarker() {
-        position++;
-        if (checkVaticanReport(position)){
-            flipPopesFavor(position / 8);
-            personalboard.getPlayer().getGame().flipOtherPopesFavor(position / 8);
+        faithMarkerPosition++;
+        if (checkVaticanReport(faithMarkerPosition)){
+            player.getGame().startVaticanReport(faithMarkerPosition / 8);
         }
     }
 
     /**
-     * @param pos indicates a position on the faith track, the method checks
-     *            if there is a vatican report that has not yet been invoked
-     *            on the given position's tile
+     * If the tile on the given position corresponds to a Pope Space and the
+     * corresponding Vatican Report has not been called yet, method returns true.
+     * Otherwise returns false.
+     * @param pos position on the Faith Track of the tile that will be checked.
+     * @return outcome of the checks on the tile.
      */
     protected boolean checkVaticanReport(int pos) {
+        // Pope Spaces are located on tiles with positions multiples of 8
         return (pos % 8) == 0 && popesFavors.get(pos / 8) == FavorStatus.INACTIVE;
     }
 
     /**
-     * @param index can be 1,2 or 3. Activates or discards the selected
-     *              pope's favor depending on the position of the faith
-     *              cross
+     * Handles the logic for turning or discarding a Pope's Favor
+     * depending on the Faith Cross' position.
+     * @param index indicates which of the three Pope's Favors has
+     *              to be evaluated. If an integer different from 1, 2
+     *              or 3 gets passed undefined behavior may occur.
      */
     public void flipPopesFavor(int index) {
-        int vaticanReportSectionSize; // the 3 areas are respectively 4 5 and 6 tiles
-        vaticanReportSectionSize = 3 + index;
-        if(position > (index * 8) - vaticanReportSectionSize) {
+        // The 3 Vatican Report sections are sized differently, the first
+        // one being 4 tiles long and the second and third respectively
+        // 5 and 6.
+        int vaticanReportSectionSize = 3 + index;
+        // If the Faith Marker is inside the Vatican Report Section then
+        // the Favor gets activated.
+        if(faithMarkerPosition > (index * 8) - vaticanReportSectionSize) {
             popesFavors.set(index, FavorStatus.ACTIVE);
         } else {
             popesFavors.set(index, FavorStatus.DISCARDED);

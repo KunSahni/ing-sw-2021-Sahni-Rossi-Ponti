@@ -1,29 +1,31 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import it.polimi.ingsw.server.model.Player;
 
+/**
+ * Class representing a Faith Track used in a single-player match, extends the regular
+ * Faith Track Class by handling the Black Cross' behavior.
+ */
 public class SinglePlayerFaithTrack extends FaithTrack {
     private int blackCrossPosition;
 
-    /**
-     * @param position      is the starting position of the player
-     *                      calculated by game logic depending on
-     *                      its turn placement
-     * @param personalBoard a reference to board is needed
-     *                      to call Game's moveOtherFaithMarkers
-     */
-    public SinglePlayerFaithTrack(int position, PersonalBoard personalBoard) {
-        super(position, personalBoard);
+    public SinglePlayerFaithTrack(Player player) {
+        super(player);
         blackCrossPosition = 0;
     }
 
+    /**
+     * Returns the position of the Black Cross on the Faith Track
+     * @return integer representing the position
+     */
     public int getBlackCrossPosition() {
         return blackCrossPosition;
     }
 
     /**
-     * Move Lorenzo's cross by one tile. In case a pope's place is
-     * reached, start a vatican report that will affect the only
-     * player
+     * Moves the Black Cross up by one position on the faith track.
+     * When landing on a pope's place (with inactive status) a
+     * vatican report starts.
      */
     public void moveBlackCross() {
         blackCrossPosition++;

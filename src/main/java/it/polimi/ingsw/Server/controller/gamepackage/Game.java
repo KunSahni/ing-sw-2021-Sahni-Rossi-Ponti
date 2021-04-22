@@ -81,7 +81,7 @@ public class Game {
     /**
     * @param position the number of the pope's favor (1, 2 or 3) which players should flip or discard
     */
-    public void flipOtherPopesFavor(int position) {
+    public void startVaticanReport(int position) {
         players.forEach(
                 player -> player.getPersonalBoard().getFaithTrack().flipPopesFavor(position)
         );

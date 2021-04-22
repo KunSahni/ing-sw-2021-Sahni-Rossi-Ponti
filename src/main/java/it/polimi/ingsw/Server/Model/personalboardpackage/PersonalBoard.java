@@ -26,7 +26,7 @@ public class PersonalBoard implements VictoryPointsElement {
                 new DevelopmentCardSlot()));
         this.leaderCards = new ArrayList<>();
         this.player = player;
-        this.faithTrack = new FaithTrack(player.getPosition(), this);
+        this.faithTrack = new FaithTrack(player);
         this.warehouseDepots = new ResourceManager();
         this.strongbox = new ResourceManager();
         this.proxyStorage = new ResourceManager();
@@ -80,7 +80,6 @@ public class PersonalBoard implements VictoryPointsElement {
     /**
      * @return shallow copy of all currently stored resources by the player
      */
-    //TODO: evaluate if this is actually needed
     public Map<Resource, Integer> getResources() {
         return new HashMap<>(proxyStorage.getStoredResources());
     }
