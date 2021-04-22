@@ -45,8 +45,8 @@ public class Game {
      *This method sets a new Turn for the next Player
     */
     public void nextTurn() {
-        players.add(players.remove());
         currentTurn = new Turn(this, players.peek());
+        players.add(players.remove());
     }
 
     /**

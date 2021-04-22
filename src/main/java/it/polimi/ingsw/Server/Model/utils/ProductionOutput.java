@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.utils;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ProductionOutput {
     private int faithIncrement;
@@ -18,4 +19,13 @@ public class ProductionOutput {
     public Map<Resource, Integer> getResources() {
         return resources;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductionOutput that = (ProductionOutput) o;
+        return faithIncrement == that.faithIncrement && Objects.equals(resources, that.resources);
+    }
+
 }
