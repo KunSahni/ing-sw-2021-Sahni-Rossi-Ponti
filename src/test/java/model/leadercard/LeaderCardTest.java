@@ -16,7 +16,9 @@ public class LeaderCardTest {
 
     @BeforeEach
     void init() {
-        testCard = new ConvertLeaderCard(1, new LeaderCardRequirements(), Resource.COIN);
+        testCard = new ConvertLeaderCard(1,
+                new LeaderCardRequirements(null, null),
+                Resource.COIN);
     }
 
     @Test

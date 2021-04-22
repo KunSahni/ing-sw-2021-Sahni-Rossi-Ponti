@@ -35,7 +35,9 @@ public class StoreLeaderCardTest {
 
     @BeforeEach
     void init() {
-        leaderCard = new StoreLeaderCard(1, new LeaderCardRequirements(), Resource.SHIELD);
+        leaderCard = new StoreLeaderCard(1,
+                new LeaderCardRequirements(null, null),
+                Resource.SHIELD);
     }
 
     @DisplayName("storeResources tests")

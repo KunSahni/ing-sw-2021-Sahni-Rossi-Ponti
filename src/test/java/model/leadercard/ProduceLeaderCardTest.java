@@ -16,7 +16,9 @@ public class ProduceLeaderCardTest {
 
     @BeforeEach
     void init() {
-        testCard = new ProduceLeaderCard(1, new LeaderCardRequirements(), Resource.COIN, 1);
+        testCard = new ProduceLeaderCard(1,
+                new LeaderCardRequirements(null, null),
+                Resource.COIN, 1);
     }
 
     /**
