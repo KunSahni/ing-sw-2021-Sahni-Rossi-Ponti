@@ -26,7 +26,9 @@ public class PersonalBoard implements VictoryPointsElement {
                 new DevelopmentCardSlot()));
         this.leaderCards = new ArrayList<>();
         this.player = player;
-        this.faithTrack = new FaithTrack(player);
+        this.faithTrack = player.getGame().getGameSize() == 1
+                ? new SinglePlayerFaithTrack(player)
+                : new FaithTrack(player);
         this.warehouseDepots = new ResourceManager();
         this.strongbox = new ResourceManager();
         this.proxyStorage = new ResourceManager();
