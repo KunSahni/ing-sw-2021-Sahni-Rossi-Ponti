@@ -42,6 +42,7 @@ public class Player implements Comparator<Player>{
         this.performedActions = new ArrayList<>();
         this.tempMarbles = new HashMap<>();
         this.isPlayersTurn = false;
+        this.leaderCards = new ArrayList<>();
         //publisher.subscribe(view);
         rank = victoryPoints = 0;
     }
@@ -63,7 +64,7 @@ public class Player implements Comparator<Player>{
      */
     public void setLeaderCards(List<LeaderCard> leaderCards){
         personalBoard.setLeaderCards(leaderCards);
-        leaderCards.clear();
+        this.leaderCards.clear();
     }
 
     /**

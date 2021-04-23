@@ -20,10 +20,6 @@ public class ConvertAndStoreMarketMarbleAction implements Forwardable{
         this.personalBoard = personalBoard;
     }
 
-    public Map<MarketMarble, Integer> getChosenMarbles() {
-        return convertedMarbles;
-    }
-
     @Override
     public void forward() {
         ProductionOutput convertedResources = ResourceBank.getResourceFromMarble(convertedMarbles);
