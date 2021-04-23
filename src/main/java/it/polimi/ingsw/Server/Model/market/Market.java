@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.market;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -25,7 +24,7 @@ public class Market {
         int index=0;
         MarketMarble[] marketMarbles = new MarketMarble[13];
         try {
-            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/Market.json")));
+            JsonReader reader = new JsonReader(new FileReader("src/main/resources/Market.json"));
             marketMarbles = new Gson().fromJson(reader, MarketMarble[].class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -93,5 +92,16 @@ public class Market {
 
     public MarketMarble getExtraMarble() {
         return extraMarble;
+    }
+
+    /**
+     * Returns the current MarketMarble layout.
+     * The multi-dimensional array is arranged in a way that, on insertion, the ExtraMarble will be placed in row 2 (when a column is selected) or column 3 (when a row is selected) of the matrix.
+     * Every MarketMarble gets moved in the previous index of the column/row.
+     * The MarketMarble in position 0 of the column/row gets popped out of the matrix and becomes ExtraMarble.
+     * @return two dimensional MarketMarble array.
+     */
+    public MarketMarble[][] getMarblesLayout(){
+         return market.clone();
     }
 }
