@@ -63,7 +63,7 @@ public class Player implements Comparator<Player>{
      */
     public void setLeaderCards(List<LeaderCard> leaderCards){
         personalBoard.setLeaderCards(leaderCards);
-        leaderCards.clear();
+        this.leaderCards.clear();
     }
 
     /**
