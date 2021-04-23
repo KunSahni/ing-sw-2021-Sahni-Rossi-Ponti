@@ -44,26 +44,26 @@ public class ProductionCombo {
     }
 
     public List<DevelopmentCardSlot> getDevelopmentCardSlots() {
-        return developmentCardSlots;
+        return List.copyOf(developmentCardSlots);
     }
 
     public Map<Resource, Integer> getDefaultSlotOutput() {
-        return defaultSlotOutput;
+        return Map.copyOf(defaultSlotOutput);
     }
 
     public List<LeaderCard> getLeaderCards() {
-        return leaderCards;
+        return List.copyOf(leaderCards);
     }
 
     public Map<LeaderCard, Resource> getLeaderCardOutputs() {
-        return leaderCardOutputs;
+        return Map.copyOf(leaderCardOutputs);
     }
 
     public Map<Resource, Integer> getDiscardedResourcesFromDepots() {
-        return discardedResourcesFromDepots;
+        return Map.copyOf(discardedResourcesFromDepots);
     }
 
     public Map<Resource, Integer> getDiscardedResourcesFromStrongbox() {
-        return discardedResourcesFromStrongbox;
+        return Map.copyOf(discardedResourcesFromStrongbox);
     }
 }

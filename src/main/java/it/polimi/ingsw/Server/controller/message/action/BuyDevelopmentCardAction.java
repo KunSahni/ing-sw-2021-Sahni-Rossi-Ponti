@@ -7,7 +7,10 @@ import it.polimi.ingsw.server.controller.gamepackage.Turn;
 import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * This class represents the action of buying a DevelopmentCard
@@ -35,8 +38,8 @@ public class BuyDevelopmentCardAction implements Forwardable {
         this.level = level;
         this.color = color;
         this.position = position;
-        this.discardedResourcesFromDepots = discardedResourcesFromDepots;
-        this.discardedResourcesFromStrongbox = discardedResourcesFromStrongbox;
+        this.discardedResourcesFromDepots = Objects.isNull(discardedResourcesFromDepots)? new HashMap<>(): discardedResourcesFromDepots;
+        this.discardedResourcesFromStrongbox = Objects.isNull(discardedResourcesFromStrongbox)? new HashMap<>(): discardedResourcesFromStrongbox;
     }
 
     @Override

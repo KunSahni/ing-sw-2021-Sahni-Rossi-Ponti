@@ -15,6 +15,6 @@ public class ResourceMarketConvertMessage {
     }
 
     public Map<MarketMarble, Integer> getChosenMarbles() {
-        return chosenMarbles;
+        return Map.copyOf(chosenMarbles);
     }
 }

@@ -17,6 +17,6 @@ public class NextActionMessage implements Message{
     }
 
     public List<Actions> getNextActions() {
-        return nextActions;
+        return List.copyOf(nextActions);
     }
 }

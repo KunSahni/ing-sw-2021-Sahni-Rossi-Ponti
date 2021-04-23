@@ -265,7 +265,7 @@ public class Player implements Comparator<Player>{
     }
 
     public List<LeaderCard> getLeaderCards() {
-        return leaderCards;
+        return List.copyOf(leaderCards);
     }
 
     public Game getGame() {

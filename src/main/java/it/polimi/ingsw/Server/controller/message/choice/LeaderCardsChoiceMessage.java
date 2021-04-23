@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.controller.message.choice;
 
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +16,6 @@ public class LeaderCardsChoiceMessage implements Message{
     }
 
     public List<LeaderCard> getLeaderCards() {
-        return leaderCards;
+        return List.copyOf(leaderCards);
     }
 }

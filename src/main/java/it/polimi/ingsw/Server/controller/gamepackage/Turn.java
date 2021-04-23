@@ -24,10 +24,10 @@ public class Turn implements Subscriber<Forwardable> {
      * This method sets a Forwardable as the nextAction chosen by the Player, it also executes it
     * @param nextAction the next action that the Player wants to do
     */
-    public void nextAction(Forwardable nextAction) {
+    protected void nextAction(Forwardable nextAction) {
         currentAction = nextAction;
 
-        if(player.getPersonalBoard().getDevelopmentCardsCount() == 7 || player.getPersonalBoard().getFaithTrack().getPosition() == 20)
+        if(player.getPersonalBoard().getDevelopmentCardsCount() == 7 || player.getPersonalBoard().getFaithTrack().getFaithMarkerPosition() == 20)
             triggerLastRound();
 
         if(!(currentAction instanceof StartAction) && !(currentAction instanceof EndAction)){

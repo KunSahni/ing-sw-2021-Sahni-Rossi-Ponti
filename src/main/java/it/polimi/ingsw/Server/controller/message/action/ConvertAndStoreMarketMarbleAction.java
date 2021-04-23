@@ -11,11 +11,11 @@ import java.util.Map;
 /**
  * This class represents the action of choosing how to convert the chosen MarketMarbles into resources
  */
-public class ResourceMarketConvertAction implements Forwardable{
+public class ConvertAndStoreMarketMarbleAction implements Forwardable{
     private final Map<MarketMarble, Integer> convertedMarbles;
     private final PersonalBoard personalBoard;
 
-    public ResourceMarketConvertAction(PersonalBoard personalBoard, Map<MarketMarble, Integer> convertedMarbles) {
+    public ConvertAndStoreMarketMarbleAction(PersonalBoard personalBoard, Map<MarketMarble, Integer> convertedMarbles) {
         this.convertedMarbles = convertedMarbles;
         this.personalBoard = personalBoard;
     }
