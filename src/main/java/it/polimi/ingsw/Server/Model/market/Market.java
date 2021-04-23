@@ -102,6 +102,6 @@ public class Market {
      * @return two dimensional MarketMarble array.
      */
     public MarketMarble[][] getMarblesLayout(){
-         return market.clone();
+        return Arrays.stream(market).map(MarketMarble[]::clone).toArray($ -> market.clone());
     }
 }
