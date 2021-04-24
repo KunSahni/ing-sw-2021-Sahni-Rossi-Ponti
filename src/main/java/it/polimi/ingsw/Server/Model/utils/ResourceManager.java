@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ResourceManager {
     private final Map<Resource, Integer> storedResources;
@@ -46,6 +47,11 @@ public class ResourceManager {
         deletedResources.forEach(
                 (k, v) -> storedResources.put(k, storedResources.get(k)-v)
         );
+        List<Resource> toRemove = storedResources.entrySet().stream()
+                .filter(entry -> entry.getValue() == 0)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        toRemove.forEach(storedResources::remove);
     }
 
     /**
