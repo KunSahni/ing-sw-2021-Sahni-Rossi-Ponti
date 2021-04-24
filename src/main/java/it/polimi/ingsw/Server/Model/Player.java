@@ -38,6 +38,7 @@ public class Player implements Comparator<Player>{
     public Player(String nickname, Game game) {  //todo: add View
         this.nickname = nickname;
         this.game = game;
+        game.addPlayer(this);
         this.personalBoard = new PersonalBoard(this);
         this.performedActions = new ArrayList<>();
         this.tempMarbles = new HashMap<>();
