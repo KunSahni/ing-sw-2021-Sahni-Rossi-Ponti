@@ -20,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -38,7 +39,7 @@ class PersonalBoardTest {
 
 
     @Nested
-    class TestLeaderCardFeautures{
+    class LeaderCardFeauturesTest{
         List<LeaderCard> leaderCards;
         LeaderCardsDeck leaderCardsDeck;
 
@@ -52,13 +53,15 @@ class PersonalBoardTest {
         }
 
         @Test
-        void testSetLeaderCardsAndGetLeaderCards() {
+        @DisplayName("Test setLeaderCards and getLeaderCards")
+        void setLeaderCardsAndGetLeaderCardsTest() {
             List<LeaderCard> actualLeaderCards = personalBoard.getLeaderCards();
             assertEquals(leaderCards, actualLeaderCards, "Error: was expecting " + leaderCards + ", but received " + actualLeaderCards);
         }
 
         @Test
-        void testDiscardLeaderCard() {
+        @DisplayName("Test discardLeaderCard")
+        void discardLeaderCardTest() {
             LeaderCard removableCard = leaderCards.remove(1);
             personalBoard.discardLeaderCard(removableCard);
             List<LeaderCard> actualLeaderCards = personalBoard.getLeaderCards();
@@ -67,7 +70,8 @@ class PersonalBoardTest {
 
         @ParameterizedTest
         @EnumSource(LeaderCardAbility.class)
-        void testContainsLeaderCardRequirementsWhenTrue(LeaderCardAbility leaderCardAbility) {
+        @DisplayName("Test containsLeaderCardRequirements when the PersonalBoard does contain such requirements")
+        void containsLeaderCardRequirementsWhenTrueTest(LeaderCardAbility leaderCardAbility) {
             leaderCards.forEach(
                     leaderCard -> personalBoard.discardLeaderCard(leaderCard)
             );
@@ -126,7 +130,8 @@ class PersonalBoardTest {
 
         @ParameterizedTest
         @EnumSource(LeaderCardAbility.class)
-        void testContainsLeaderCardRequirementsWhenFalse(LeaderCardAbility leaderCardAbility) {
+        @DisplayName("Test containsLeaderCardRequirements when the PersonalBoard does not contain such requirements")
+        void containsLeaderCardRequirementsWhenFalseTest(LeaderCardAbility leaderCardAbility) {
             LeaderCard leaderCard = getLeaderCardWithAbility(leaderCardAbility);
             //assertTrue because the board surely does not contain all the requirements
             assertFalse(personalBoard.containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements()), "Error: was expecting false, but received true instead");
@@ -165,14 +170,20 @@ class PersonalBoardTest {
         }
 
         @Test
-        void testPlaceAndGetDevelopmentCardSlots() {
-            List<DevelopmentCardSlot> containedDevelopmentCards = personalBoard.getDevelopmentCardSlots();
-            boolean containsAllDevelopmentCards = containedDevelopmentCards.equals(developmentCardSlots);
-            assertEquals(developmentCardSlots, containedDevelopmentCards, "Error: the personalBoard does not contain the passed DevelopmentCards");
+        @DisplayName("Test placeDevelopmentCard and getDevelopmentCardSlots")
+        void placeAndGetDevelopmentCardSlotsTest() {
+            List<DevelopmentCardSlot> containedDevelopmentCardSlots = personalBoard.getDevelopmentCardSlots();
+
+            assertAll(
+                    () -> assertEquals(developmentCardSlots.get(0).getDevelopmentCards(), containedDevelopmentCardSlots.get(0).getDevelopmentCards(), "Error: the first DevelopmentCardSlot does not contain the right cards"),
+                    () -> assertEquals(developmentCardSlots.get(1).getDevelopmentCards(), containedDevelopmentCardSlots.get(1).getDevelopmentCards(), "Error: the second DevelopmentCardSlot does not contain the right cards"),
+                    () -> assertEquals(developmentCardSlots.get(2).getDevelopmentCards(), containedDevelopmentCardSlots.get(2).getDevelopmentCards(), "Error: the third DevelopmentCardSlot does not contain the right cards")
+            );
         }
 
         @Test
-        void testGetDevelopmentCardsCount() {
+        @DisplayName("Test getDevelopmentCardsCount")
+        void getDevelopmentCardsCountTest() {
             int expectedCount = developmentCardSlots.stream().mapToInt(
                     developmentCardSlot -> developmentCardSlot.getCardsNumber()
             ).sum();
@@ -226,7 +237,7 @@ class PersonalBoardTest {
 
         @Test
         @DisplayName("Test storeResources and getResources")
-        void StoreAndGetResourcesTest() {
+        void storeAndGetResourcesTest() {
             //Check returned resources
             Map<Resource, Integer> containedResources = personalBoard.getResources();
             Map<Resource, Integer> expectedResources = new HashMap<>(strongboxResources);
