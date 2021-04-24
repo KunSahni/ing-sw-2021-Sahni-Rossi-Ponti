@@ -8,14 +8,14 @@ import com.google.gson.stream.JsonReader;
 
 public class LeaderCardsDeck {
 
-    private Stack<LeaderCard> deck = new Stack<>();
+    private final Stack<LeaderCard> deck = new Stack<>();
 
     public LeaderCardsDeck() {
         loadLeaderCards();
     }
 
-    public Stack<LeaderCard> getDeck() {
-        return deck;
+    public List<LeaderCard> getDeck() {
+        return new ArrayList<>(deck);
     }
 
 
