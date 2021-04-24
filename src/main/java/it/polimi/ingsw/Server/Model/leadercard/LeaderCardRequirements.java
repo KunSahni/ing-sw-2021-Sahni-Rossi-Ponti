@@ -29,6 +29,14 @@ public class LeaderCardRequirements {
         public int getQuantity() {
             return quantity;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            LevelQuantityPair that = (LevelQuantityPair) o;
+            return quantity == that.quantity && level == that.level;
+        }
     }
     private Map<Color, LevelQuantityPair> requiredDevelopmentCards;
     private Map<Resource, Integer> requiredResources;
