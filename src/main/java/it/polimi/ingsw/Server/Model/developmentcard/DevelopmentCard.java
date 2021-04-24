@@ -2,7 +2,9 @@ package it.polimi.ingsw.server.model.developmentcard;
 
 import it.polimi.ingsw.server.model.utils.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 
@@ -36,15 +38,30 @@ public class DevelopmentCard implements VictoryPointsElement {
     }
 
     public Map<Resource, Integer> getInputResources() {
-        return inputResources;
+        if (Optional.ofNullable(inputResources).isPresent()) {
+            return new HashMap<>(inputResources);
+        }
+        else{
+            return null;
+        }
     }
 
     public Map<Resource, Integer> getOutputResources() {
-        return outputResources;
+        if (Optional.ofNullable(outputResources).isPresent()) {
+            return new HashMap<>(outputResources);
+        }
+        else{
+            return null;
+        }
     }
 
     public Map<Resource, Integer> getCost() {
-        return cost;
+        if (Optional.ofNullable(cost).isPresent()) {
+            return new HashMap<>(cost);
+        }
+        else{
+            return null;
+        }
     }
 
     public int getFaithIncrement() {
