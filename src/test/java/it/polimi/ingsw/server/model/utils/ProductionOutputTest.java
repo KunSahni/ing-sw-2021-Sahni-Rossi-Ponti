@@ -1,7 +1,5 @@
-package model.utils;
+package it.polimi.ingsw.server.model.utils;
 
-import it.polimi.ingsw.server.model.utils.ProductionOutput;
-import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

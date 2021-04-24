@@ -1,7 +1,5 @@
-package model.leadercard;
+package it.polimi.ingsw.server.model.leadercard;
 
-import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
-import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.BeforeEach;

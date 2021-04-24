@@ -1,10 +1,7 @@
-package model.utils;
+package it.polimi.ingsw.server.model.utils;
 
 import it.polimi.ingsw.server.model.market.MarketMarble;
-import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import org.junit.jupiter.api.*;
-import it.polimi.ingsw.server.model.utils.ResourceBank;
-import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.*;
 

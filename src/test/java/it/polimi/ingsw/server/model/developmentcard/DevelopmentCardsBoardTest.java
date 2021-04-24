@@ -1,6 +1,4 @@
-package model.developmentcard;
-
-import it.polimi.ingsw.server.model.developmentcard.*;
+package it.polimi.ingsw.server.model.developmentcard;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;

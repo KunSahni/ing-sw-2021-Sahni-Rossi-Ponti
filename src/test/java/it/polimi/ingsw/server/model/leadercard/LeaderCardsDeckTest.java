@@ -1,7 +1,5 @@
-package model.leadercard;
+package it.polimi.ingsw.server.model.leadercard;
 
-import it.polimi.ingsw.server.model.leadercard.LeaderCard;
-import it.polimi.ingsw.server.model.leadercard.LeaderCardsDeck;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

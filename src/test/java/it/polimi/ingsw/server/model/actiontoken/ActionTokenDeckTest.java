@@ -1,7 +1,5 @@
-package model.actiontoken;
+package it.polimi.ingsw.server.model.actiontoken;
 
-import it.polimi.ingsw.server.model.actiontoken.ActionToken;
-import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

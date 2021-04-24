@@ -1,6 +1,5 @@
-package model.developmentcard;
+package it.polimi.ingsw.server.model.developmentcard;
 
-import it.polimi.ingsw.server.model.developmentcard.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

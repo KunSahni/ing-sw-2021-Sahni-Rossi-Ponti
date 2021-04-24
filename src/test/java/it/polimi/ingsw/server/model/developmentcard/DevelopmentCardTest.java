@@ -1,7 +1,5 @@
-package model.developmentcard;
+package it.polimi.ingsw.server.model.developmentcard;
 
-import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
-import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
