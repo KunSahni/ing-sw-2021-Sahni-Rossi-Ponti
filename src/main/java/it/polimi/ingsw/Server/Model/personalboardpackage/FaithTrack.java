@@ -82,8 +82,8 @@ public class FaithTrack implements VictoryPointsElement /*, Publisher*/ {
     private int calculateTrackPositionVictoryPoints() {
         try {
             JsonReader reader = new JsonReader(new FileReader("src/main/resources/FaithTrackPoints.json"));
-            Map<String, Integer> victoryPointsMap = new Gson().fromJson(reader, Map.class);
-            return victoryPointsMap.get(Integer.toString(getFaithMarkerPosition()));
+            Map<String, Double> victoryPointsMap = new Gson().fromJson(reader, Map.class);
+            return victoryPointsMap.get(Integer.toString(getFaithMarkerPosition())).intValue();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return -1;
@@ -98,6 +98,7 @@ public class FaithTrack implements VictoryPointsElement /*, Publisher*/ {
             moveMarker();
         }
     }
+
     /**
      * Moves the Faith Marker up by one position on the Faith Track.
      * When landing on a Pope's Place (with inactive status) a Vatican
@@ -119,7 +120,7 @@ public class FaithTrack implements VictoryPointsElement /*, Publisher*/ {
      */
     protected boolean checkVaticanReport(int pos) {
         // Pope Spaces are located on tiles with positions multiples of 8
-        return (pos % 8) == 0 && popesFavors.get(pos / 8) == FavorStatus.INACTIVE;
+        return (pos % 8) == 0 && popesFavors.get(pos / 8 - 1) == FavorStatus.INACTIVE;
     }
 
     /**
@@ -137,9 +138,9 @@ public class FaithTrack implements VictoryPointsElement /*, Publisher*/ {
         // If the Faith Marker is inside the Vatican Report Section then
         // the Favor gets activated.
         if(faithMarkerPosition > (index * 8) - vaticanReportSectionSize) {
-            popesFavors.set(index, FavorStatus.ACTIVE);
+            popesFavors.set(index - 1, FavorStatus.ACTIVE);
         } else {
-            popesFavors.set(index, FavorStatus.DISCARDED);
+            popesFavors.set(index - 1, FavorStatus.DISCARDED);
         }
     }
 }
