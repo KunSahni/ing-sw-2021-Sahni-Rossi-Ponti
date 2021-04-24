@@ -53,6 +53,7 @@ class FaithTrackTest {
     @DisplayName("Test flipPopesFavor")
     void flipPopesFavorTest(int index) {
         faithTrack.moveMarker(index*8);
+        faithTrack.flipPopesFavor(index);
         List<FavorStatus> popesFavors = faithTrack.getPopesFavors();
         assertEquals(FavorStatus.ACTIVE, popesFavors.get(index-1), "Error: the PersonalBoard did not flip the PopesFavor");
     }
