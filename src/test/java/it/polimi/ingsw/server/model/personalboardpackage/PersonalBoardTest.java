@@ -153,7 +153,7 @@ class PersonalBoardTest {
             developmentCardSlots.get(2).placeCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW));
 
             //Adds the DevelopmentCards to the personalBoard
-            IntStream.range(0, 2)
+            IntStream.range(0, 3)
                     .forEach(
                             position -> developmentCardSlots.get(position).getDevelopmentCards()
                                             .stream()
