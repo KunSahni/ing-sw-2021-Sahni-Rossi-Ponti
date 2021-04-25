@@ -17,13 +17,11 @@ public abstract class LeaderCard implements VictoryPointsElement {
     }
 
     public LeaderCardAbility getAbility() {
-        LeaderCardAbility a;
-        a = ability;
-        return a;
+        return ability;
     }
 
     public LeaderCardRequirements getLeaderCardRequirements() {
-        return leaderCardRequirements;
+        return new LeaderCardRequirements(this.leaderCardRequirements.getRequiredDevelopmentCards(), this.leaderCardRequirements.getRequiredResources());
     }
 
     public int getVictoryPoints() {

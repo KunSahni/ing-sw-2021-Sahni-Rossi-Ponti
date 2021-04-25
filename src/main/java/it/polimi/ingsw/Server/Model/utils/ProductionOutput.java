@@ -1,7 +1,9 @@
 package it.polimi.ingsw.server.model.utils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class ProductionOutput {
     private int faithIncrement;
@@ -17,7 +19,12 @@ public class ProductionOutput {
     }
 
     public Map<Resource, Integer> getResources() {
-        return resources;
+        if(resources!=null){
+            return Map.copyOf(resources);
+        }
+        else{
+            return null;
+        }
     }
 
     @Override

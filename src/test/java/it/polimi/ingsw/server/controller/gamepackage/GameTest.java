@@ -1,3 +1,5 @@
+package it.polimi.ingsw.server.controller.gamepackage;
+
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
@@ -20,7 +22,7 @@ public class GameTest {
     @Test
     @DisplayName("Game has been created correctly")
     void createGameTest(){
-        game.addPlayer("Nick");
+        Player player = new Player("Nick", game);
         assertEquals(1, game.getGameID());
     }
 
@@ -29,10 +31,10 @@ public class GameTest {
     void addPlayerTest(){
         int expected = 4;
         game = new Game(1, 4);
-        game.addPlayer("Nick");
-        game.addPlayer("Tom");
-        game.addPlayer("Paperino");
-        game.addPlayer("Topolino");
+        Player nick = new Player("Nick", game);
+        Player tom = new Player("Tom", game);
+        Player paperino = new Player("Paperino", game);
+        Player topolino = new Player("Topolino", game);
         assertAll(
                 ()-> assertEquals(expected, game.getPlayers().size()),
                 ()-> assertTrue(game.getPlayers().get(0).getNickname().equals("Nick")),
@@ -46,8 +48,8 @@ public class GameTest {
     @DisplayName("Current player turn pass to next player")
     void nextPlayerTurnTest(){
         String expectedString = "Tom";
-        game.addPlayer("Nick");
-        game.addPlayer("Tom");
+        Player player = new Player("Nick", game);
+        Player player1 = new Player("Tom", game);
         game.nextTurn();
         assertEquals(expectedString, game.getPlayers().get(0).getNickname());
     }
@@ -57,7 +59,7 @@ public class GameTest {
         String expectedString = "Nick";
 
         game = new Game(1,1);
-        game.addPlayer("Nick");
+        Player player = new Player("Nick", game);
         game.nextSinglePlayerTurn();
         assertEquals(expectedString, game.getPlayers().get(0).getNickname());
     }
@@ -65,8 +67,8 @@ public class GameTest {
     @Test
     @DisplayName("Players who are qualified flip their Pope's favor")
     void flipOtherPopesFavorTest(){
-        game.addPlayer("Nick");
-        game.addPlayer("Litto");
+        Player player = new Player("Nick", game);
+        Player litto = new Player("Litto", game);
         game.getPlayers().get(1).getPersonalBoard().getFaithTrack().moveMarker(5);
         game.startVaticanReport(1);
         List<FavorStatus> playerLittoFavorStatusList= new ArrayList<>();
@@ -92,10 +94,10 @@ public class GameTest {
     @Test
     void playersSorted() {
         game = new Game(1, 4);
-        game.addPlayer("Nick");
-        game.addPlayer("Tom");
-        game.addPlayer("Paperino");
-        game.addPlayer("Topolino");
+        Player nick = new Player("Nick", game);
+        Player tom = new Player("Tom", game);
+        Player paperino = new Player("Paperino", game);
+        Player topolino = new Player("Topolino", game);
 
         game.getPlayers().get(0).setPosition(3);
         game.getPlayers().get(1).setPosition(4);
@@ -122,8 +124,8 @@ public class GameTest {
         @Test
         @DisplayName("In multiplayer game move other marker correctly")
         void moveOtherMarkerMultiplayerTest() {
-            game.addPlayer("Nick");
-            game.addPlayer("Lit");
+            Player nick = new Player("Nick", game);
+            Player lit = new Player("Lit", game);
             int expected = game.getPlayers().get(1).getPersonalBoard().getFaithTrack().getFaithMarkerPosition()+1;
             game.moveOtherMarkers(game.getPlayers().get(0));
             assertEquals(expected, game.getPlayers().get(1).getPersonalBoard().getFaithTrack().getFaithMarkerPosition());
@@ -132,7 +134,7 @@ public class GameTest {
         @Test
         void moveOtherMarkerSinglePlayerTest() {
             Game game = new Game(1, 1);
-            game.addPlayer("Nick");
+            Player nick = new Player("Nick", game);
 
             int expected = ((SinglePlayerFaithTrack) game.getPlayers().get(0).getPersonalBoard().getFaithTrack()).getBlackCrossPosition()+1;
             game.moveOtherMarkers(game.getPlayers().get(0));

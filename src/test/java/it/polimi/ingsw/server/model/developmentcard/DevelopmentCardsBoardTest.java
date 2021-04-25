@@ -85,6 +85,12 @@ public class DevelopmentCardsBoardTest {
             }
 
             @Test
+            @DisplayName("Consequent calls return the same board")
+            void sameBoardReturnedTest() {
+                assertEquals(boardToCardList(board), boardToCardList(board));
+            }
+
+            @Test
             @DisplayName("At least one DevelopmentCardsDeck contains cards")
             void notEmptyDecksTest() {
                 assertTrue(boardToDeckList(board).stream().anyMatch(deck -> deck.getDeck().size() > 0));
@@ -284,9 +290,13 @@ public class DevelopmentCardsBoardTest {
                 List<DevelopmentCard> finalBoard = boardToCardList(board);
                 assertAll(
                         () -> assertTrue(initialBoard.containsAll(expectedDiscardedCards)),
-                        () -> assertFalse(finalBoard.containsAll(expectedDiscardedCards)),
                         () -> assertEquals(initialBoard.size()-numOfDiscardsExpected, finalBoard.size())
                 );
+                if (expectedDiscardedCards.size() == 0) {
+                    assertTrue(finalBoard.containsAll(expectedDiscardedCards));
+                } else {
+                    assertFalse(finalBoard.containsAll(expectedDiscardedCards));
+                }
             }
         }
     }

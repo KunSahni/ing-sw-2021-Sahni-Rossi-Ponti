@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
-
+import java.util.stream.IntStream;
 
 
 public class Market {
@@ -71,11 +71,12 @@ public class Market {
 
 
     public Map<MarketMarble, Integer> chooseColumn(int column) {
-        MarketMarble[] marketColumn = (MarketMarble[]) Arrays.stream(market).map(
-                marketMarbles -> marketMarbles[column]
-        ).toArray(); //Kunal thinks it works
+        MarketMarble[] marketMarbles = new MarketMarble[3];
+        for(int i=0; i<3; i++){
+            marketMarbles[i]=market[i][column];
+        }
 
-        Map<MarketMarble, Integer> marbles = Arrays.stream(marketColumn).collect(
+        Map<MarketMarble, Integer> marbles = Arrays.stream(marketMarbles).collect(
                 Collectors.toMap(s -> s, s -> 1, Integer::sum)
         );
         moveUp(column);

@@ -32,7 +32,9 @@ public final class ResourceBank {
                 case RED -> faithIncrement = request.get(m);
             }
         }
-
+        if (resources.isEmpty()){
+            resources = null;
+        }
         return new ProductionOutput(faithIncrement, resources);
     }
     /**

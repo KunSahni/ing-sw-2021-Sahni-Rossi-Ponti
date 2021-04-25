@@ -89,6 +89,12 @@ public class DevelopmentCardsDeckTest {
         }
 
         @Test
+        @DisplayName("Consequent calls return the same card")
+        void sameReturnTest() {
+            assertEquals(deck.peek(), deck.peek());
+        }
+
+        @Test
         @DisplayName("Correct card peeked")
         void correctCardPeekedTest() {
             DevelopmentCard expectedCard = initialDeck.get(initialDeck.size() - 1);
