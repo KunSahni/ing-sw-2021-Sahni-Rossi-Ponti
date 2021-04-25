@@ -290,9 +290,13 @@ public class DevelopmentCardsBoardTest {
                 List<DevelopmentCard> finalBoard = boardToCardList(board);
                 assertAll(
                         () -> assertTrue(initialBoard.containsAll(expectedDiscardedCards)),
-                        () -> assertFalse(finalBoard.containsAll(expectedDiscardedCards)),
                         () -> assertEquals(initialBoard.size()-numOfDiscardsExpected, finalBoard.size())
                 );
+                if (expectedDiscardedCards.size() == 0) {
+                    assertTrue(finalBoard.containsAll(expectedDiscardedCards));
+                } else {
+                    assertFalse(finalBoard.containsAll(expectedDiscardedCards));
+                }
             }
         }
     }
