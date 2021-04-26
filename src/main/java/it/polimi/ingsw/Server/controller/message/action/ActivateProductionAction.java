@@ -62,8 +62,12 @@ public class ActivateProductionAction implements Forwardable {
      */
     private void activateProduction() {
         //First the required resources are discarded
-        board.discardFromDepots(productionCombo.getDiscardedResourcesFromDepots());
-        board.discardFromStrongbox(productionCombo.getDiscardedResourcesFromStrongbox());
+        Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox()).ifPresent(
+                resourceIntegerMap -> board.discardFromStrongbox(resourceIntegerMap)
+        );
+        Optional.ofNullable(productionCombo.getDiscardedResourcesFromDepots()).ifPresent(
+                resourceIntegerMap -> board.discardFromDepots(resourceIntegerMap)
+        );
 
         //Extracts the productions from DevelopmentCardSlots
         List<ProductionOutput> developmentCardsOutput = null;
@@ -95,17 +99,6 @@ public class ActivateProductionAction implements Forwardable {
     }
 
     /**
-     * This Consumer manages a List of ProductionOutput where each item contains a map of produced resources and FaithPoints.
-     * Saves all the resources in the strongbox and moves the faith marker accordingly.
-     */
-    private final Consumer<List<ProductionOutput>> elaborateProductionOutputs = productionOutputs ->  productionOutputs.forEach(
-            productionOutput -> {
-                board.getFaithTrack().moveMarker(productionOutput.getFaithIncrement());
-                board.storeInStrongbox(productionOutput.getResources());
-            }
-    );
-
-    /**
      * This Consumer manages a single ProductionOutput which contains a map of produced resources and FaithPoints.
      * Saves all the resources in the strongbox and moves the faith marker accordingly.
      */
@@ -113,5 +106,13 @@ public class ActivateProductionAction implements Forwardable {
                 board.getFaithTrack().moveMarker(productionOutput.getFaithIncrement());
                 board.storeInStrongbox(productionOutput.getResources());
             };
+
+    /**
+     * This Consumer manages a List of ProductionOutput where each item contains a map of produced resources and FaithPoints.
+     * Saves all the resources in the strongbox and moves the faith marker accordingly.
+     */
+    private final Consumer<List<ProductionOutput>> elaborateProductionOutputs = productionOutputs ->  productionOutputs.forEach(
+            elaborateProductionOutput
+    );
 
 }
