@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.personalboardpackage.DefaultSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -70,32 +71,43 @@ public class ActivateProductionAction implements Forwardable {
         );
 
         //Extracts the productions from DevelopmentCardSlots
-        List<ProductionOutput> developmentCardsOutput = null;
+        List<ProductionOutput> developmentCardsOutput = new ArrayList<>();
         Optional.ofNullable(productionCombo.getDevelopmentCardSlots()).ifPresent(
-                developmentCardSlots -> developmentCardSlots.stream().map(
+                developmentCardSlots -> developmentCardSlots.forEach(
                         developmentCardSlot -> developmentCardsOutput.add(developmentCardSlot.produce())
                 )
         );
 
         //Manage DevelopmentCardSlots
-        elaborateProductionOutputs.accept(developmentCardsOutput);
+        Optional.ofNullable(developmentCardsOutput).ifPresent(
+                outputList -> elaborateProductionOutputs.accept(outputList)
+        );
 
         //Extracts the production from DefaultSlot
-        ProductionOutput defaultSlotOutput = DefaultSlot.produce(productionCombo.getDefaultSlotOutput());
+        ProductionOutput defaultSlotOutput = null;
+        if(productionCombo.getDefaultSlotOutput() != null)
+            defaultSlotOutput = DefaultSlot.produce(productionCombo.getDefaultSlotOutput());
 
         //Manage defaultSlotOutput
-        elaborateProductionOutput.accept(defaultSlotOutput);
+        Optional.ofNullable(defaultSlotOutput).ifPresent(
+                output -> elaborateProductionOutput.accept(output)
+        );
 
         //Extracts the productions from ProduceLeaderCards and ConvertLeaderCards
-        List<ProductionOutput> leaderCardsOutput = null;
-        Optional.ofNullable(productionCombo.getLeaderCards()).ifPresent(
-                leaderCards -> leaderCards.stream().map(
-                        leaderCard -> leaderCardsOutput.add(((ProduceLeaderCard) leaderCard).produce(productionCombo.getLeaderCardOutputs().get(leaderCard)))
-                )
+        List<ProductionOutput> leaderCardsOutput = new ArrayList<>();
+
+        Optional.ofNullable(productionCombo.getLeaderCardOutputs()).ifPresent(
+                $ -> Optional.ofNullable(productionCombo.getLeaderCards()).ifPresent(
+                    leaderCards -> leaderCards.forEach(
+                            leaderCard -> leaderCardsOutput.add(((ProduceLeaderCard) leaderCard).produce(productionCombo.getLeaderCardOutputs().get(leaderCard)))
+                    )
+            )
         );
 
         //Manage leaderCardsOutput
-        elaborateProductionOutputs.accept(leaderCardsOutput);
+        Optional.ofNullable(leaderCardsOutput).ifPresent(
+                outputList -> elaborateProductionOutputs.accept(outputList)
+        );
     }
 
     /**
