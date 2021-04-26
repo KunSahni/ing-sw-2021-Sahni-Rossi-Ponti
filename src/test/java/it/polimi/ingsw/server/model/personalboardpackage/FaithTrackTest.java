@@ -20,8 +20,8 @@ class FaithTrackTest {
     void setUp() {
         Game game = new Game(1, 1);
         Player player = new Player("Mario",game);
-        PersonalBoard board = new PersonalBoard(player);
-        faithTrack = new FaithTrack(player);
+        game.addPlayer(player);
+        faithTrack = player.getPersonalBoard().getFaithTrack();
     }
 
     @ParameterizedTest
@@ -43,7 +43,7 @@ class FaithTrackTest {
             default -> 0;
             case 8 -> 4;
             case 16 -> 14;
-            case 20 -> 29;
+            case 24 -> 29;
         };
         assertEquals(expectedVictoryPoints, actualVictoryPoints, "Error: was expecting " + expectedVictoryPoints + ", but received " + actualVictoryPoints);
     }
