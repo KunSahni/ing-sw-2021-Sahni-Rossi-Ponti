@@ -1,5 +1,6 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.playeraction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
@@ -10,12 +11,11 @@ import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * This class represents the action of buying a DevelopmentCard
  */
-public class BuyDevelopmentCardAction implements Forwardable {
+public class BuyDevelopmentCardAction implements Action {
     private final PersonalBoard board;
     private final DevelopmentCardsBoard developmentCardsBoard;
     private final Level level;
@@ -43,7 +43,7 @@ public class BuyDevelopmentCardAction implements Forwardable {
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         buyDevelopmentCard();
     }
 

@@ -1,6 +1,7 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.playeraction;
 
 import it.polimi.ingsw.server.controller.gamepackage.ProductionCombo;
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.personalboardpackage.DefaultSlot;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 /**
  * This class represents the action of activating productions chosen by a Player
  */
-public class ActivateProductionAction implements Forwardable {
+public class ActivateProductionAction implements Action {
     private PersonalBoard board;
     private final ProductionCombo productionCombo;
 
@@ -28,7 +29,7 @@ public class ActivateProductionAction implements Forwardable {
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         activateProduction();
     }
 

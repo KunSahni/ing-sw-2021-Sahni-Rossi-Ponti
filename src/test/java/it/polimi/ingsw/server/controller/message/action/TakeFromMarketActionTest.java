@@ -2,16 +2,13 @@ package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
-import it.polimi.ingsw.server.controller.message.action.TakeResourceAction;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.market.Market;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 @Disabled
-public class TakeResourceActionTest {
+public class TakeFromMarketActionTest {
     Player player;
 
     @BeforeEach

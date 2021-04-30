@@ -1,15 +1,15 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.playeraction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.market.Market;
-import it.polimi.ingsw.server.model.utils.ResourceBank;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
 
 
 /**
  * This class represents the action of taking Resources from the Market
  */
-public class TakeResourceAction implements Forwardable {
+public class TakeFromMarketAction implements Action {
     private final Market market;
     private final Player player;
     private final int value;
@@ -21,7 +21,7 @@ public class TakeResourceAction implements Forwardable {
      * @param value the number of the row or column from which the Player wants to take the Resources
      * @param row a boolean representing if the Player wants to take Resources from a row(true) or a column(false)
      */
-    public TakeResourceAction(Turn turn, Player player, int value, boolean row) {
+    public TakeFromMarketAction(Turn turn, Player player, int value, boolean row) {
         this.market = turn.getGame().getMarket();
         this.player = player;
         this.value = value;
@@ -29,7 +29,7 @@ public class TakeResourceAction implements Forwardable {
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         if (row)
             chooseRow(value);
         else

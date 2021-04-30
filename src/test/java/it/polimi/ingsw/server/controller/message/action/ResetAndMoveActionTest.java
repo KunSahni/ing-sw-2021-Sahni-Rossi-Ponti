@@ -2,9 +2,8 @@ package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
-import it.polimi.ingsw.server.controller.message.action.ResetAndMoveAction;
+import it.polimi.ingsw.server.controller.message.action.gameaction.ResetAndMoveAction;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +32,7 @@ public class ResetAndMoveActionTest {
     @DisplayName("Action Token Deck gets reset")
     void actionTokenDeckResetTest() {
         IntStream.range(0, 4).forEach(i -> game.getActionTokenDeck().pop());
-        resetAndMoveAction.forward();
+        resetAndMoveAction.execute();
         assertEquals(7, game.getActionTokenDeck().getCurrentDeck().size());
     }
 
@@ -42,7 +41,7 @@ public class ResetAndMoveActionTest {
     void blackCrossOneStepTest() {
         int initialPosition = ((SinglePlayerFaithTrack) personalBoard.getFaithTrack())
                 .getBlackCrossPosition();
-        resetAndMoveAction.forward();
+        resetAndMoveAction.execute();
         assertEquals(initialPosition + 1,
                 ((SinglePlayerFaithTrack) personalBoard.getFaithTrack())
                 .getBlackCrossPosition());

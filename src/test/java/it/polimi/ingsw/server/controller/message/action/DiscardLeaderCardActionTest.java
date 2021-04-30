@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.message.action.DiscardLeaderCardAction;
+import it.polimi.ingsw.server.controller.message.action.playeraction.DiscardLeaderCardAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
@@ -34,7 +34,7 @@ public class DiscardLeaderCardActionTest {
     @DisplayName("Faith marker moved by one")
     void faithIncrementByOneTest() {
         int initialFaithMarkerPosition = board.getFaithTrack().getFaithMarkerPosition();
-        discardLeaderCardAction.forward();
+        discardLeaderCardAction.execute();
         assertEquals(initialFaithMarkerPosition+1, board.getFaithTrack().getFaithMarkerPosition());
     }
 
@@ -42,7 +42,7 @@ public class DiscardLeaderCardActionTest {
     @DisplayName("The right LeaderCard has been discarded")
     void discardedRightLeaderCardTest() {
         board.setLeaderCards(List.of(leaderCard));
-        discardLeaderCardAction.forward();
+        discardLeaderCardAction.execute();
         assertFalse(board.getLeaderCards().contains(leaderCard));
     }
 
@@ -51,7 +51,7 @@ public class DiscardLeaderCardActionTest {
     void discardedOnlyTheRightLeaderCardTest() {
         LeaderCard leaderCard1 = new DiscountLeaderCard(3, new LeaderCardRequirements(null, null), Resource.STONE);
         board.setLeaderCards(List.of(leaderCard, leaderCard1));
-        discardLeaderCardAction.forward();
+        discardLeaderCardAction.execute();
         assertAll(
                 ()->assertTrue(board.getLeaderCards().contains(leaderCard1)),
                 ()->assertEquals(1, board.getLeaderCards().size())

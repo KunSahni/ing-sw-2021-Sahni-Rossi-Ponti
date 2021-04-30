@@ -1,14 +1,16 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.gameaction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.Map;
 
 /**
- * This class represents the action of discarding some Resources from the ones placed in the depots or in a StoreLeaderCard
+ * This class represents the action of discarding some Resources from
+ * the ones placed in the depots or in a StoreLeaderCard
  */
-public class ResourceDiscardAction implements Forwardable{
+public class ResourceDiscardAction implements Action {
     private final Map<Resource, Integer> resources;
     private final PersonalBoard personalBoard;
 
@@ -22,7 +24,7 @@ public class ResourceDiscardAction implements Forwardable{
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         personalBoard.discardFromDepots(resources);
     }
 }

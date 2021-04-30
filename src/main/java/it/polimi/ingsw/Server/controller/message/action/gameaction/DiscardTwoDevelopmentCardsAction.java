@@ -1,14 +1,16 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.gameaction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
 
 /**
- * This class represents the action of discarding two DevelopmentCards from the DevelopmentCardsBoard
+ * This class represents the action of discarding two DevelopmentCards from
+ * the DevelopmentCardsBoard
  */
-public class DiscardDevelopmentCardsAction implements Forwardable {
+public class DiscardTwoDevelopmentCardsAction implements Action {
     private final Color color;
     private final DevelopmentCardsBoard developmentCardsBoard;
 
@@ -16,7 +18,7 @@ public class DiscardDevelopmentCardsAction implements Forwardable {
      * @param turn the turn in which this action is happening
      * @param actionToken the actionToken corresponding to this action
      */
-    public DiscardDevelopmentCardsAction(Turn turn, ActionToken actionToken) {
+    public DiscardTwoDevelopmentCardsAction(Turn turn, ActionToken actionToken) {
         if(actionToken.equals(ActionToken.REMOVEBLUE))
             this.color = Color.BLUE;
         else if(actionToken.equals(ActionToken.REMOVEYELLOW))
@@ -31,7 +33,7 @@ public class DiscardDevelopmentCardsAction implements Forwardable {
 
 
     @Override
-    public void forward() {
+    public void execute() {
         discardCards();
     }
 

@@ -1,12 +1,13 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.playeraction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 
 /**
  * This class represents the action of discarding a LeaderCard chosen by a Player
  */
-public class DiscardLeaderCardAction implements Forwardable {
+public class DiscardLeaderCardAction implements Action {
     private final PersonalBoard board;
     private final LeaderCard leaderCard;
 
@@ -27,7 +28,7 @@ public class DiscardLeaderCardAction implements Forwardable {
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         discardLeaderCard();
         board.getFaithTrack().moveMarker(1);
     }

@@ -49,5 +49,11 @@ public class ProduceLeaderCardTest {
         void singleResourceTypeTest() {
             assertEquals(1, productionOutput.getResources().size());
         }
+
+        @Test
+        @DisplayName("getAbility() method test")
+        void getAbilityMethodTest() {
+            assertEquals(LeaderCardAbility.PRODUCE, testCard.getAbility());
+        }
     }
 }

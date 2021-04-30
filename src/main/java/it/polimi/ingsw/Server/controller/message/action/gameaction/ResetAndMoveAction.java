@@ -1,5 +1,6 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.gameaction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
@@ -7,7 +8,7 @@ import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 /**
  * This class represents the action of resetting the ActionTokenDeck to its original state and moving the black cross by one space on the SinglePlayerFaithTrack
  */
-public class ResetAndMoveAction implements Forwardable {
+public class ResetAndMoveAction implements Action {
     private final ActionTokenDeck actionTokenDeck;
     private final SinglePlayerFaithTrack singlePlayerFaithTrack;
 
@@ -20,7 +21,7 @@ public class ResetAndMoveAction implements Forwardable {
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         singlePlayerFaithTrack.moveBlackCross();
         actionTokenDeck.reset();
     }

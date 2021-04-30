@@ -2,11 +2,8 @@ package it.polimi.ingsw.server.controller.message.action;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.gamepackage.ProductionCombo;
-import it.polimi.ingsw.server.controller.message.action.ActivateProductionAction;
+import it.polimi.ingsw.server.controller.message.action.playeraction.ActivateProductionAction;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.leadercard.LeaderCard;
-import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
-import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -45,7 +42,7 @@ public class ActivateProductionActionTest {
             productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.COIN, 1));
                 int initialFaithTrackPosition = board.getFaithTrack().getFaithMarkerPosition();
             activateProductionAction = new ActivateProductionAction(board, productionCombo);
-            activateProductionAction.forward();
+            activateProductionAction.execute();
             assertAll(
                     ()->assertEquals(initialFaithTrackPosition+1, board.getFaithTrack().getFaithMarkerPosition()),
                     ()->assertFalse(board.containsResources(Map.of(Resource.COIN, 1)))

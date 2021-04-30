@@ -1,6 +1,6 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.gameaction;
 
-import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * This class represents the action of choosing how to convert the chosen MarketMarbles into resources
  */
-public class ConvertAndStoreMarketMarbleAction implements Forwardable{
+public class ConvertAndStoreMarketMarbleAction implements Action {
     private final Map<MarketMarble, Integer> convertedMarbles;
     private final PersonalBoard personalBoard;
 
@@ -21,7 +21,7 @@ public class ConvertAndStoreMarketMarbleAction implements Forwardable{
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         ProductionOutput convertedResources = ResourceBank.getResourceFromMarble(convertedMarbles);
         personalBoard.storeInDepots(convertedResources.getResources());
         personalBoard.getFaithTrack().moveMarker(convertedResources.getFaithIncrement());

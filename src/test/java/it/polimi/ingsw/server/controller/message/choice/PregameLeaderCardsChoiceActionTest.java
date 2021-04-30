@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller.message.choice;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.message.action.LeaderCardsChoiceAction;
+import it.polimi.ingsw.server.controller.message.action.playeraction.PregameLeaderCardsChoiceAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +12,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LeaderCardsChoiceActionTest {
-    LeaderCardsChoiceAction leaderCardsChoiceAction;
+public class PregameLeaderCardsChoiceActionTest {
+    PregameLeaderCardsChoiceAction pregameLeaderCardsChoiceAction;
     Player player;
     List<LeaderCard> pickedLeaderCards;
 
@@ -22,14 +22,14 @@ public class LeaderCardsChoiceActionTest {
         Game game = new Game(1, 1);
         player = new Player("Nick", game);
         pickedLeaderCards = game.getLeaderCardsDeck().popFour().subList(0, 2);
-        leaderCardsChoiceAction = new LeaderCardsChoiceAction(pickedLeaderCards, player);
+        pregameLeaderCardsChoiceAction = new PregameLeaderCardsChoiceAction(pickedLeaderCards, player);
     }
 
     @Test
     @DisplayName("Player goes from having none to two LeaderCards")
     void twoLeaderCardsIncreaseTest() {
         List<LeaderCard> initialList = player.getPersonalBoard().getLeaderCards();
-        leaderCardsChoiceAction.forward();
+        pregameLeaderCardsChoiceAction.execute();
         assertAll(
                 () -> assertEquals(0, initialList.size()),
                 () -> assertEquals(2, player.getPersonalBoard().getLeaderCards().size())
@@ -39,7 +39,7 @@ public class LeaderCardsChoiceActionTest {
     @Test
     @DisplayName("LeaderCards have been correctly stored")
     void correctlyStoredTest() {
-        leaderCardsChoiceAction.forward();
+        pregameLeaderCardsChoiceAction.execute();
         assertEquals(pickedLeaderCards, player.getPersonalBoard().getLeaderCards());
     }
 }

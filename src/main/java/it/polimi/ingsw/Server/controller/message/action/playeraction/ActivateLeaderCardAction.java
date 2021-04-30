@@ -1,11 +1,12 @@
-package it.polimi.ingsw.server.controller.message.action;
+package it.polimi.ingsw.server.controller.message.action.playeraction;
 
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 
 /**
  * This class represents the action of activating a LeaderCard chosen by a Player
  */
-public class ActivateLeaderCardAction implements Forwardable {
+public class ActivateLeaderCardAction implements Action {
     private final LeaderCard leaderCard;
 
     /**
@@ -20,7 +21,7 @@ public class ActivateLeaderCardAction implements Forwardable {
     }
 
     @Override
-    public void forward() {
+    public void execute() {
         activateLeaderCard();
     }
 }
