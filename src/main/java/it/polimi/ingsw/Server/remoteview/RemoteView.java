@@ -3,9 +3,9 @@ package it.polimi.ingsw.server.remoteview;
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.renderable.ErrorMessage;
-import it.polimi.ingsw.server.model.renderable.PrivateRenderable;
-import it.polimi.ingsw.server.model.renderable.Renderable;
+import it.polimi.ingsw.server.network.ErrorMessage;
+import it.polimi.ingsw.server.network.PrivateRenderable;
+import it.polimi.ingsw.server.network.Renderable;
 
 import java.util.HashMap;
 import java.util.Map;
