@@ -1,8 +1,6 @@
 package it.polimi.ingsw.server.controller.message.action;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
-import it.polimi.ingsw.server.controller.message.action.gameaction.MoveBlackCrossAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +27,7 @@ public class MoveBlackCrossActionTest {
         int initialBlackCrossPosition =
                 ((SinglePlayerFaithTrack) player.getPersonalBoard().getFaithTrack())
                         .getBlackCrossPosition();
-        moveBlackCrossAction.execute();
+        moveBlackCrossAction.forward();
         int finalBlackCrossPosition =
                 ((SinglePlayerFaithTrack) player.getPersonalBoard().getFaithTrack())
                         .getBlackCrossPosition();

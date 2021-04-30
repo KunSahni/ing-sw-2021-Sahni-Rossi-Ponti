@@ -4,7 +4,6 @@ import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
-import it.polimi.ingsw.server.controller.gamepackage.Turn;
 
 /**
  * This class represents the action of discarding two DevelopmentCards from
@@ -18,7 +17,7 @@ public class DiscardTwoDevelopmentCardsAction implements Action {
      * @param turn the turn in which this action is happening
      * @param actionToken the actionToken corresponding to this action
      */
-    public DiscardTwoDevelopmentCardsAction(Turn turn, ActionToken actionToken) {
+    public DiscardTwoDevelopmentCardsAction(DevelopmentCardsBoard developmentCardsBoard, ActionToken actionToken) {
         if(actionToken.equals(ActionToken.REMOVEBLUE))
             this.color = Color.BLUE;
         else if(actionToken.equals(ActionToken.REMOVEYELLOW))
@@ -28,7 +27,7 @@ public class DiscardTwoDevelopmentCardsAction implements Action {
         else
             this.color = Color.GREEN;
 
-        this.developmentCardsBoard = turn.getGame().getDevelopmentCardsBoard();
+        this.developmentCardsBoard = developmentCardsBoard;
     }
 
 

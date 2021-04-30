@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.controller.message.action;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.message.action.playeraction.ActivateLeaderCardAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
@@ -42,7 +40,7 @@ public class ActivateLeaderCardActionTest {
     @Test
     @DisplayName("Right LeaderCard has been activated")
     void RightLeaderCardActivated() {
-        activateLeaderCardAction.execute();
+        activateLeaderCardAction.forward();
         assertTrue(leaderCard.isActive());
     }
 
@@ -51,7 +49,7 @@ public class ActivateLeaderCardActionTest {
     void ActivatedOnlyTheRightLeaderCard() {
         LeaderCard leaderCard1 = new DiscountLeaderCard(1,new LeaderCardRequirements(java.util.Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1,1)), java.util.Map.of(Resource.COIN, 1)), Resource.STONE);
         personalBoard.setLeaderCards(Arrays.asList(leaderCard, leaderCard1));
-        activateLeaderCardAction.execute();
+        activateLeaderCardAction.forward();
         assertAll(
                 ()-> assertFalse(leaderCard1.isActive()),
                 ()->assertTrue(leaderCard.isActive())

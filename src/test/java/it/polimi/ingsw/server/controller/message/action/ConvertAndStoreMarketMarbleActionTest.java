@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.controller.message.action;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.message.action.gameaction.ConvertAndStoreMarketMarbleAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
@@ -40,7 +38,7 @@ public class ConvertAndStoreMarketMarbleActionTest {
     @DisplayName("Correct resource increase in storages")
     void correctResourceIncreaseTest() {
         int initialCount = personalBoard.getResourceCount();
-        convertAndStoreMarketMarbleAction.execute();
+        convertAndStoreMarketMarbleAction.forward();
         assertEquals(initialCount + 2, personalBoard.getResourceCount());
     }
 
@@ -48,7 +46,7 @@ public class ConvertAndStoreMarketMarbleActionTest {
     @DisplayName("Correct Faith Marker movement")
     void correctFaithMarkerMovementTest() {
         int initialPosition = personalBoard.getFaithTrack().getFaithMarkerPosition();
-        convertAndStoreMarketMarbleAction.execute();
+        convertAndStoreMarketMarbleAction.forward();
         assertEquals(initialPosition + 1, personalBoard.getFaithTrack().getFaithMarkerPosition());
     }
 
@@ -60,7 +58,7 @@ public class ConvertAndStoreMarketMarbleActionTest {
             put(Resource.SERVANT, 1);
         }};
         boolean initiallyContained = personalBoard.containsResources(contentChecked);
-        convertAndStoreMarketMarbleAction.execute();
+        convertAndStoreMarketMarbleAction.forward();
         assertAll(
                 () -> assertFalse(initiallyContained),
                 () -> assertTrue(personalBoard.containsResources(contentChecked))

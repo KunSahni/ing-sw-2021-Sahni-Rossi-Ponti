@@ -1,8 +1,6 @@
 package it.polimi.ingsw.server.controller.message.action;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
-import it.polimi.ingsw.server.controller.message.action.playeraction.BuyDevelopmentCardAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
@@ -36,7 +34,7 @@ public class BuyDevelopmentCardActionTest {
     @Test
     @DisplayName("Development card just bought is on the personal board of the player in the right position")
     void DevelopmentCardAddedInRightPositionTest(){
-        buyDevelopmentCardAction.execute();
+        buyDevelopmentCardAction.forward();
         assertTrue(player.getPersonalBoard().getDevelopmentCardSlots().get(1).getDevelopmentCards().contains(developmentCard));
     }
 
@@ -44,7 +42,7 @@ public class BuyDevelopmentCardActionTest {
     @DisplayName("DevelopmentCard price has been paid")
     void DevelopmentCardPricePaidTest() {
         int initialStoneReserve = player.getPersonalBoard().getResources().get(Resource.STONE);
-        buyDevelopmentCardAction.execute();
+        buyDevelopmentCardAction.forward();
         assertEquals(initialStoneReserve-1, player.getPersonalBoard().getResources().get(Resource.STONE));
     }
 }

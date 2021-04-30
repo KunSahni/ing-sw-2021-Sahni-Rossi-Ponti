@@ -5,4 +5,5 @@ package it.polimi.ingsw.server.network;
  * be rendered via GUI / CLI .
  */
 public interface Renderable {
+
 }

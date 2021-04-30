@@ -1,8 +1,6 @@
 package it.polimi.ingsw.server.controller.message.action;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.gamepackage.Turn;
-import it.polimi.ingsw.server.controller.message.action.gameaction.DiscardTwoDevelopmentCardsAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
@@ -13,9 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DiscardTwoDevelopmentCardsActionTest {
+public class DiscardDevelopmentCardsActionTest {
 
-    DiscardTwoDevelopmentCardsAction discardTwoDevelopmentCardsAction;
+    DiscardDevelopmentCardsAction discardDevelopmentCardsAction;
     Turn turn;
     Game game;
     Player player;
@@ -25,7 +23,7 @@ public class DiscardTwoDevelopmentCardsActionTest {
         game = new Game(1, 1);
         player = new Player("Nick", game);
         turn = new Turn(game, player);
-        discardTwoDevelopmentCardsAction = new DiscardTwoDevelopmentCardsAction(turn, ActionToken.REMOVEBLUE);
+        discardDevelopmentCardsAction = new DiscardDevelopmentCardsAction(turn, ActionToken.REMOVEBLUE);
     }
 
     @Test
@@ -33,7 +31,7 @@ public class DiscardTwoDevelopmentCardsActionTest {
     void discardedTwoDevelopmentCardsTest(){
         DevelopmentCard discardedCard1 = game.getDevelopmentCardsBoard().peekBoard()[2][1].pop();
         DevelopmentCard discardedCard2 = game.getDevelopmentCardsBoard().peekBoard()[2][1].pop();
-        discardTwoDevelopmentCardsAction.execute();
+        discardDevelopmentCardsAction.forward();
         assertAll(
                 ()->assertFalse(game.getDevelopmentCardsBoard().peekBoard()[2][1].getDeck().contains(discardedCard1)),
                 ()->assertFalse(game.getDevelopmentCardsBoard().peekBoard()[2][1].getDeck().contains(discardedCard2))
@@ -46,7 +44,7 @@ public class DiscardTwoDevelopmentCardsActionTest {
         DevelopmentCardsDeck[][] expectedDevelopmentCards = game.getDevelopmentCardsBoard().peekBoard();
         expectedDevelopmentCards[2][1].pop();
         expectedDevelopmentCards[2][1].pop();
-        discardTwoDevelopmentCardsAction.execute();
+        discardDevelopmentCardsAction.forward();
         //assertEquals(developmentCards, game.getDevelopmentCardsBoard().peekBoard());
         assertAll(
                 ()-> assertEquals(expectedDevelopmentCards[0][0], game.getDevelopmentCardsBoard().peekBoard()[0][0]),

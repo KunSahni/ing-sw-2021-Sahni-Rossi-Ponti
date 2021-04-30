@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.controller.message.action.gameaction;
 
-import it.polimi.ingsw.server.controller.gamepackage.Turn;
 import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 
@@ -14,8 +13,8 @@ public class MoveBlackCrossAction implements Action {
     /**
      * @param turn the turn in which this action is happening
      */
-    public MoveBlackCrossAction(Turn turn) {
-        this.singlePlayerFaithTrack = (SinglePlayerFaithTrack) turn.getPlayer().getPersonalBoard().getFaithTrack();
+    public MoveBlackCrossAction(SinglePlayerFaithTrack faithTrack) {
+        this.singlePlayerFaithTrack = faithTrack;
     }
 
     @Override

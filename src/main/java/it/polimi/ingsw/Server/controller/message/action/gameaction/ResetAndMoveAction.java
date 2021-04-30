@@ -2,7 +2,6 @@ package it.polimi.ingsw.server.controller.message.action.gameaction;
 
 import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
-import it.polimi.ingsw.server.controller.gamepackage.Turn;
 import it.polimi.ingsw.server.model.personalboardpackage.SinglePlayerFaithTrack;
 
 /**
@@ -15,9 +14,9 @@ public class ResetAndMoveAction implements Action {
     /**
      * @param turn the turn in which this action is happening
      */
-    public ResetAndMoveAction(Turn turn) {
-        this.actionTokenDeck = turn.getGame().getActionTokenDeck();
-        this.singlePlayerFaithTrack = (SinglePlayerFaithTrack) turn.getPlayer().getPersonalBoard().getFaithTrack();
+    public ResetAndMoveAction(ActionTokenDeck actionTokenDeck, SinglePlayerFaithTrack singlePlayerFaithTrack) {
+        this.actionTokenDeck = actionTokenDeck;
+        this.singlePlayerFaithTrack = singlePlayerFaithTrack;
     }
 
     @Override

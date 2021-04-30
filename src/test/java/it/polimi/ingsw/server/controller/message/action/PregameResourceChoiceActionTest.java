@@ -1,7 +1,5 @@
 package it.polimi.ingsw.server.controller.message.action;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.message.action.playeraction.PregameResourceChoiceAction;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -13,16 +11,16 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PregameResourceChoiceActionTest {
+public class ResourcePregameActionTest {
     PersonalBoard personalBoard;
-    PregameResourceChoiceAction pregameResourceChoiceAction;
+    ResourcePregameAction resourcePregameAction;
 
     @BeforeEach
     void init() {
         Game game = new Game(1, 1);
         Player player = new Player("Nick", game);
         personalBoard = new PersonalBoard(player);
-        pregameResourceChoiceAction = new PregameResourceChoiceAction(personalBoard,
+        resourcePregameAction = new ResourcePregameAction(personalBoard,
                 new HashMap<>() {{
                     put(Resource.COIN, 2);
                 }});
@@ -32,14 +30,14 @@ public class PregameResourceChoiceActionTest {
     @DisplayName("Number of resources in the board increased correctly")
     void correctResourceIncreaseTest() {
         int initialResourceCount = personalBoard.getResourceCount();
-        pregameResourceChoiceAction.execute();
+        resourcePregameAction.forward();
         assertEquals(initialResourceCount + 2, personalBoard.getResourceCount());
     }
 
     @Test
     @DisplayName("The forwarded resources are now contained in the board")
     void correctBoardResourceContent() {
-        pregameResourceChoiceAction.execute();
+        resourcePregameAction.forward();
         assertTrue(personalBoard.containsResources(new HashMap<>() {{put(Resource.COIN, 2);}}));
     }
 }
