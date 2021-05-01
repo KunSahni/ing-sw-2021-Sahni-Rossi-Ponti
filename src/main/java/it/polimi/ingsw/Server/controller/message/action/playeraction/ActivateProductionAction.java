@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.controller.message.action.playeraction;
 
-import it.polimi.ingsw.server.controller.gamepackage.ProductionCombo;
+import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;

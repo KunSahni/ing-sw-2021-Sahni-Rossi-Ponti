@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.gamepackage;
+package it.polimi.ingsw.server.model.utils;
 
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
