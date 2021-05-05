@@ -2,8 +2,6 @@ package it.polimi.ingsw.server.model.personalboardpackage;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.actiontoken.ActionToken;
-import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

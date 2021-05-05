@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.message.action.*;
+import it.polimi.ingsw.server.controller.message.action.playeraction.*;
 import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.controller.message.choice.NextActionMessage;
 import it.polimi.ingsw.server.controller.message.choice.ResourceMarketConvertMessage;
@@ -24,18 +25,19 @@ public class Player implements Comparable<Player>{
     private int position;
     private final PersonalBoard personalBoard;
     private List<LeaderCard> leaderCards;
-    private List<Forwardable> performedActions;
+    private List<Action> performedActions;
     private Map<MarketMarble, Integer> tempMarbles;
     private boolean isPlayersTurn;
     private final SubmissionPublisher<Object> publisher = new SubmissionPublisher<>();
     private int rank;
     private int victoryPoints;
+    private boolean isPlayerConnected;  //todo:manage reconnection
 
     /**
      * @param nickname an unique nickname associated to the Player, can't be changed during the game
      * @param game the Game in which the Player will be playing
      */
-    public Player(String nickname, Game game) {  //todo: add View
+    public Player(String nickname, Game game) {
         this.nickname = nickname;
         this.game = game;
         game.addPlayer(this);
@@ -81,7 +83,7 @@ public class Player implements Comparable<Player>{
     /**
      * @param action an action that has been chosen by the Player and performed, so therefore can be stored as performed
      */
-    public void addAction(Forwardable action){
+    public void addAction(Action action){
         performedActions.add(action);
         publisher.submit(
                 new NextActionMessage(availableNextStates())
@@ -217,7 +219,7 @@ public class Player implements Comparable<Player>{
      */
     private boolean hasPerformedCompulsoryAction() {
         return performedActions.stream().anyMatch(
-                performedAction -> performedAction instanceof TakeResourceAction || performedAction instanceof BuyDevelopmentCardAction || performedAction instanceof ActivateProductionAction
+                performedAction -> performedAction instanceof TakeFromMarketAction || performedAction instanceof BuyDevelopmentCardAction || performedAction instanceof ActivateProductionAction
         );
     }
 
@@ -307,7 +309,7 @@ public class Player implements Comparable<Player>{
      * {@code 0}, or {@code 1} according to whether the value of
      * <i>expression</i> is negative, zero, or positive, respectively.
      *
-     * @param o the object to be compared.
+     * @param player the object to be compared.
      * @return a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.
      * @throws NullPointerException if the specified object is null
