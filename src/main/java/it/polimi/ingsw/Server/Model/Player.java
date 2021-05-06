@@ -311,7 +311,7 @@ public class Player implements Comparable<Player>{
      * {@code 0}, or {@code 1} according to whether the value of
      * <i>expression</i> is negative, zero, or positive, respectively.
      *
-     * @param o the object to be compared.
+     * @param player the object to be compared.
      * @return a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.
      * @throws NullPointerException if the specified object is null

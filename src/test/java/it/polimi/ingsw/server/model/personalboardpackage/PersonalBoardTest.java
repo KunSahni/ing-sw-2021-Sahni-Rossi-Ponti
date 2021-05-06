@@ -11,7 +11,6 @@ import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardsDeck;
 import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
-import it.polimi.ingsw.server.model.utils.ResourceManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +19,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -29,17 +27,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class PersonalBoardTest {
     PersonalBoard personalBoard;
     Player player;
+    Game game;
 
     @BeforeEach
     void setUp() {
-        Game game = new Game(1, 1);
+        game = new Game(1, 1);
         player = new Player("Mario",game);
-        personalBoard = new PersonalBoard(player);
+        game.addPlayer(player);
+        personalBoard = player.getPersonalBoard();
     }
 
 
     @Nested
-    class LeaderCardFeauturesTest{
+    class LeaderCardFeaturesTest {
         List<LeaderCard> leaderCards;
         LeaderCardsDeck leaderCardsDeck;
 
@@ -106,22 +106,18 @@ class PersonalBoardTest {
                 //STORE and CONVERT LeaderCards have similar requirements, so this places all the required DevelopmentCards on the on the personalBoard
                 default -> leaderCard.getLeaderCardRequirements()
                         .getRequiredDevelopmentCards()
-                        .entrySet()
-                        .stream()
-                        .forEach(
-                        colorLevelQuantityPairEntry -> IntStream.range(0, colorLevelQuantityPairEntry.getValue().getQuantity())
+                        .forEach((key, value) -> IntStream.range(0, value.getQuantity())
                                 .forEach(
-                                $ -> {
-                                    int position = 0;
-                                    personalBoard.placeDevelopmentCard(
-                                        developmentCardsBoard.pick(
-                                                colorLevelQuantityPairEntry.getValue().getLevel(), colorLevelQuantityPairEntry.getKey()
-                                        ),
-                                        position++
-                                    );
-                                }
-                        )
-                );
+                                        $ -> {
+                                            int position = 0;
+                                            personalBoard.placeDevelopmentCard(
+                                                    developmentCardsBoard.pick(
+                                                            value.getLevel(), key
+                                                    ),
+                                                    position++
+                                            );
+                                        }
+                                ));
             }
 
             //assertTrue because the board surely contains all the requirements
@@ -140,7 +136,7 @@ class PersonalBoardTest {
     }
 
     @Nested
-    class TestDevelopmentCardFeautures{
+    class TestDevelopmentCardFeatures {
         DevelopmentCardsBoard developmentCardsBoard;
         List<DevelopmentCardSlot> developmentCardSlots;
 
@@ -185,7 +181,7 @@ class PersonalBoardTest {
         @DisplayName("Test getDevelopmentCardsCount")
         void getDevelopmentCardsCountTest() {
             int expectedCount = developmentCardSlots.stream().mapToInt(
-                    developmentCardSlot -> developmentCardSlot.getCardsNumber()
+                    DevelopmentCardSlot::getCardsNumber
             ).sum();
             int actualCount = personalBoard.getDevelopmentCardsCount();
             assertEquals(expectedCount, actualCount, "Error: was expecting a count of " + expectedCount + " development cards, but received " + actualCount);
@@ -193,7 +189,7 @@ class PersonalBoardTest {
     }
 
     @Nested
-    class TestResourceFeautures{
+    class TestResourceFeatures {
         StoreLeaderCard leaderCard1;
         StoreLeaderCard leaderCard2;
         Map<Resource, Integer> strongboxResources;
@@ -242,13 +238,13 @@ class PersonalBoardTest {
             Map<Resource, Integer> containedResources = personalBoard.getResources();
             Map<Resource, Integer> expectedResources = new HashMap<>(strongboxResources);
             depotsResources.forEach(
-                    (key, value) -> expectedResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> expectedResources.merge( key, value, Integer::sum)
             );
             leaderCard1Resources.forEach(
-                    (key, value) -> expectedResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> expectedResources.merge( key, value, Integer::sum)
             );
             leaderCard2Resources.forEach(
-                    (key, value) -> expectedResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> expectedResources.merge( key, value, Integer::sum)
             );
 
             assertEquals(expectedResources, containedResources, "Error: the personal board does not contain the passed resources(should've been: " + expectedResources + " but received " + containedResources + ")");
@@ -260,13 +256,13 @@ class PersonalBoardTest {
         void containsResourcesTest() {
             Map<Resource, Integer> allResources = new HashMap<>(strongboxResources);
             depotsResources.forEach(
-                    (key, value) -> allResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> allResources.merge( key, value, Integer::sum)
             );
             leaderCard1Resources.forEach(
-                    (key, value) -> allResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> allResources.merge( key, value, Integer::sum)
             );
             leaderCard2Resources.forEach(
-                    (key, value) -> allResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> allResources.merge( key, value, Integer::sum)
             );
 
             assertTrue(personalBoard.containsResources(depotsResources), "Error: the requested resources are contained in the depots, but the personal board returned false ");
@@ -284,7 +280,7 @@ class PersonalBoardTest {
 
             Map<Resource, Integer> allResources = new HashMap<>(leaderCard1Resources);
             leaderCard2Resources.forEach(
-                    (key, value) -> allResources.merge( key, value, (v1, v2) -> v1+v2)
+                    (key, value) -> allResources.merge( key, value, Integer::sum)
             );
 
             boolean successfulDiscard = allResources.equals(personalBoard.getResources());
@@ -357,7 +353,7 @@ class PersonalBoardTest {
                 + personalBoard.getFaithTrack().getVictoryPoints()
                 + developmentCardSlots.stream()
                 .mapToInt(
-                        developmentCardSlot -> developmentCardSlot.getVictoryPoints()
+                        DevelopmentCardSlot::getVictoryPoints
                 ).sum();
 
         int actualVictoryPoints = personalBoard.getVictoryPoints();
@@ -366,7 +362,7 @@ class PersonalBoardTest {
     }
 
     /**
-     * This methos returns a LeaderCard with a specified LeaderCardAbility
+     * This method returns a LeaderCard with a specified LeaderCardAbility
      * @param leaderCardAbility the ability that the returned LeaderCard should have
      * @return a LeaderCard of the specified LeaderCardAbility
      */
@@ -375,9 +371,7 @@ class PersonalBoardTest {
         Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
                 leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
         ).findFirst();
-        if(leaderCard.isPresent())
-            return leaderCard.get();
-        return getLeaderCardWithAbility(leaderCardAbility);
+        return leaderCard.orElseGet(() -> getLeaderCardWithAbility(leaderCardAbility));
     }
 
     @Nested
@@ -411,7 +405,7 @@ class PersonalBoardTest {
         @Test
         @DisplayName("Returns correctly sized list")
         void sizeTest() {
-            assertTrue(personalBoard.getLeaderCards().size()<=2 && personalBoard.getLeaderCards().size()>=0);
+            assertTrue(personalBoard.getLeaderCards().size()<=2);
         }
     }
 
