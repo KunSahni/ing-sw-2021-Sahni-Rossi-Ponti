@@ -1,11 +1,13 @@
 package it.polimi.ingsw.server.model;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
 import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.message.action.*;
+import it.polimi.ingsw.server.controller.message.action.playeraction.*;
 import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.controller.message.choice.NextActionMessage;
 import it.polimi.ingsw.server.controller.message.choice.ResourceMarketConvertMessage;
@@ -13,59 +15,62 @@ import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
 
 /**
  * This class represents a Player
  */
 
 public class Player implements Comparable<Player>{
-    private final Game game;
     private final String nickname;
     private int position;
     private final PersonalBoard personalBoard;
-    private List<LeaderCard> leaderCards;
-    private List<Forwardable> performedActions;
+    private List<LeaderCard> tempLeaderCards;
+    private List<Actions> performedActions;
     private Map<MarketMarble, Integer> tempMarbles;
     private boolean isPlayersTurn;
-    private final SubmissionPublisher<Object> publisher = new SubmissionPublisher<>();
-    private int rank;
-    private int victoryPoints;
+    private boolean isConnected;
+    private final ChangesHandler changesHandler;
 
-    /**
-     * @param nickname an unique nickname associated to the Player, can't be changed during the game
-     * @param game the Game in which the Player will be playing
-     */
-    public Player(String nickname, Game game) {  //todo: add View
+    public Player(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
         this.nickname = nickname;
-        this.game = game;
-        game.addPlayer(this);
-        this.personalBoard = new PersonalBoard(this);
-        this.performedActions = new ArrayList<>();
-        this.tempMarbles = new HashMap<>();
-        this.isPlayersTurn = false;
-        this.leaderCards = new ArrayList<>();
-        //publisher.subscribe(view);
-        rank = victoryPoints = 0;
+        this.personalBoard = new PersonalBoard(changesHandler, nickname);
+        this.performedActions = changesHandler.readTurnActions(nickname);
+        this.tempMarbles = changesHandler.readTempMarbles(nickname);
+        this.isPlayersTurn = changesHandler.readPlayerTurnFlag(nickname);
+        this.tempLeaderCards = changesHandler.readPlayerTempLeaderCards(nickname);
+        this.position = changesHandler.readPlayerPosition(nickname);
+        this.isConnected = false;
+        this.changesHandler = changesHandler;
+    }
+
+    public void connect() {
+        isConnected = true;
+        changesHandler.playerConnected(nickname);
+    }
+
+    public void disconnect() {
+        isConnected = false;
+        changesHandler.playerDisconnected(nickname);
     }
 
     /**
      * This method assigns 4 LeaderCards to the Player from which he picks two
      * @param leaderCards a list of 4 LeaderCards
      */
-    public void addLeaderCards(List<LeaderCard> leaderCards){
-        this.leaderCards = leaderCards;
-        publisher.submit(
-                new LeaderCardsChoiceMessage(leaderCards)
-        );
+    public void setTempLeaderCards(List<LeaderCard> leaderCards){
+        this.tempLeaderCards = leaderCards;
+        changesHandler.writePlayerTempLeaderCards(nickname, tempLeaderCards);
     }
 
     /**
      * This method takes in input the chosen cards and creates the personalBoard accordingly
-     * @param leaderCards a list of two LeaderCards chosen by the Player
+     * @param tempLeaderCards a list of two LeaderCards chosen by the Player
      */
-    public void setLeaderCards(List<LeaderCard> leaderCards){
-        personalBoard.setLeaderCards(leaderCards);
-        this.leaderCards.clear();
+    public void chooseTwoLeaderCards(List<LeaderCard> tempLeaderCards){
+        personalBoard.setLeaderCards(tempLeaderCards);
+        this.tempLeaderCards.clear();
+        changesHandler.writePlayerTempLeaderCards(nickname, tempLeaderCards);
     }
 
     /**
@@ -81,7 +86,7 @@ public class Player implements Comparable<Player>{
     /**
      * @param action an action that has been chosen by the Player and performed, so therefore can be stored as performed
      */
-    public void addAction(Forwardable action){
+    public void addAction(Actions action){
         performedActions.add(action);
         publisher.submit(
                 new NextActionMessage(availableNextStates())
@@ -94,7 +99,6 @@ public class Player implements Comparable<Player>{
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
         this.tempMarbles = tempMarbles;
-        publisher.submit(new ResourceMarketConvertMessage(tempMarbles));
     }
 
     /** This method returns a list of all the states in which the Player could go next
@@ -217,7 +221,7 @@ public class Player implements Comparable<Player>{
      */
     private boolean hasPerformedCompulsoryAction() {
         return performedActions.stream().anyMatch(
-                performedAction -> performedAction instanceof TakeResourceAction || performedAction instanceof BuyDevelopmentCardAction || performedAction instanceof ActivateProductionAction
+                performedAction -> performedAction instanceof TakeFromMarketAction || performedAction instanceof BuyDevelopmentCardAction || performedAction instanceof ActivateProductionAction
         );
     }
 
@@ -255,8 +259,8 @@ public class Player implements Comparable<Player>{
         return personalBoard;
     }
 
-    public List<LeaderCard> getLeaderCards() {
-        return List.copyOf(leaderCards);
+    public List<LeaderCard> getTempLeaderCards() {
+        return List.copyOf(tempLeaderCards);
     }
 
     public Game getGame() {
