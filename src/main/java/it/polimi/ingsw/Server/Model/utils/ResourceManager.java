@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 public class ResourceManager {
     private final Map<Resource, Integer> storedResources;
 
-    public ResourceManager() {
-        storedResources = new HashMap<>();
+    public ResourceManager(Map<Resource, Integer> map) {
+        storedResources = new HashMap<>(map);
     }
 
     /**
