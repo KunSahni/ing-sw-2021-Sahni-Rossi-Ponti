@@ -2,16 +2,16 @@ package it.polimi.ingsw.server.model.leadercard;
 
 import java.io.*;
 import java.util.*;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
 
 
 public class LeaderCardsDeck {
+    private final LinkedList<LeaderCard> deck;
+    private final ChangesHandler changesHandler;
 
-    private final Stack<LeaderCard> deck = new Stack<>();
-
-    public LeaderCardsDeck() {
-        loadLeaderCards();
+    public LeaderCardsDeck(ChangesHandler changesHandler) throws FileNotFoundException {
+        this.changesHandler = changesHandler;
+        this.deck = new LinkedList<>(changesHandler.readLeaderCardsDeck());
     }
 
     public List<LeaderCard> getDeck() {
@@ -29,60 +29,7 @@ public class LeaderCardsDeck {
         for(int i=0; i<4; i++){
             supp.add(deck.pop());
         }
+        changesHandler.writeLeaderCardsDeck(deck);
         return supp;
     }
-
-    /**
-     * loads the leader cards from a json file
-     */
-    public void loadLeaderCards() {
-        deck.clear();
-
-        //upload of ConvertLeaderCard
-        try {
-            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/ConvertLeaderCards.json")));
-            ConvertLeaderCard[] convertLeaderCards = new Gson().fromJson(reader, ConvertLeaderCard[].class);
-            for (ConvertLeaderCard c: convertLeaderCards) {
-                deck.push(c);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //upload of DiscountLeaderCard
-        try {
-            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/DiscountLeaderCards.json")));
-            DiscountLeaderCard[] discountLeaderCards = new Gson().fromJson(reader, DiscountLeaderCard[].class);
-            for (DiscountLeaderCard d: discountLeaderCards) {
-                deck.push(d);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //upload of ProduceLeaderCard
-        try {
-            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/ProduceLeaderCards.json")));
-            ProduceLeaderCard[] produceLeaderCards = new Gson().fromJson(reader, ProduceLeaderCard[].class);
-            for (ProduceLeaderCard p: produceLeaderCards) {
-                deck.push(p);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //upload of StoreLeaderCard
-        try {
-            JsonReader reader = new JsonReader(new FileReader(new File("src/main/resources/StoreLeaderCards.json")));
-            StoreLeaderCard[] storeLeaderCards = new Gson().fromJson(reader, StoreLeaderCard[].class);
-            for (StoreLeaderCard s: storeLeaderCards) {
-                deck.push(s);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Collections.shuffle(deck);
-    }
-
 }
