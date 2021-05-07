@@ -1,17 +1,26 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 
 public class DevelopmentCardSlot implements VictoryPointsElement {
-    private final Stack<DevelopmentCard> cards;
+    private final LinkedList<DevelopmentCard> cards;
+    private final int slotIndex;
+    private final ChangesHandler changesHandler;
+    private final String nickname;
 
-    public DevelopmentCardSlot() {
-        cards = new Stack<>();
+    public DevelopmentCardSlot(ChangesHandler changesHandler, String nickname, int slotIndex)
+            throws FileNotFoundException {
+        this.changesHandler = changesHandler;
+        this.nickname = nickname;
+        this.slotIndex = slotIndex;
+        this.cards = new LinkedList<>(changesHandler.readPlayerDevelopmentCardSlot(nickname, slotIndex));
     }
 
     /**
@@ -34,7 +43,7 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
      *             active card that will be used in productions
      */
     public void placeCard(DevelopmentCard card) {
-        cards.addElement(card);
+        cards.addFirst(card);
     }
 
     /**
