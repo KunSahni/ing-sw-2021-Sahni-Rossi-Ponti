@@ -1,13 +1,10 @@
 package it.polimi.ingsw.server.model.market;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 public class Market {
@@ -15,28 +12,17 @@ public class Market {
     private final MarketMarble[][] market;
     private MarketMarble extraMarble;
 
-    /**
-     * sets the market and the extra marble passed to it
-     * than it shuffles them
-     */
-    public Market() {
+    public Market(ChangesHandler changesHandler) throws FileNotFoundException {
+        List<MarketMarble> rawMarket = changesHandler.readMarket();
         this.market = new MarketMarble[3][4];
-        int index=0;
-        MarketMarble[] marketMarbles = new MarketMarble[13];
-        try {
-            JsonReader reader = new JsonReader(new FileReader("src/main/resources/Market.json"));
-            marketMarbles = new Gson().fromJson(reader, MarketMarble[].class);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Collections.shuffle(Arrays.asList(marketMarbles));
-        for(int line=0; line<3; line++){
-            for(int column=0; column<4; column++){
-                this.market[line][column] = marketMarbles[index];
+        this.extraMarble = rawMarket.remove(0);
+        int index = 0;
+        for (int line = 0; line < 3; line++) {
+            for (int column = 0; column < 4; column++) {
+                this.market[line][column] = rawMarket.get(index);
                 index++;
             }
         }
-        extraMarble = marketMarbles[index];
     }
 
 
