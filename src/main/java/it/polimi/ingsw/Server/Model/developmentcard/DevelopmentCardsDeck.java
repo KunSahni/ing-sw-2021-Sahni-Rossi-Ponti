@@ -1,30 +1,22 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
+
+import java.io.FileNotFoundException;
 import java.util.*;
 
-
-
-
 public class DevelopmentCardsDeck {
-    private final Stack<DevelopmentCard> deck;
+    private final LinkedList<DevelopmentCard> deck;
+    private final ChangesHandler changesHandler;
 
+    public DevelopmentCardsDeck(ChangesHandler changesHandler, Color color, Level level)
+            throws FileNotFoundException {
+        this.changesHandler = changesHandler;
+        this.deck = new LinkedList<>(changesHandler.readDevelopmentCardsDeck(color, level));
+    }
 
     public DevelopmentCard pop() {
         return deck.pop();
-    }
-
-
-    /**
-     * pushes all the cards in the deck and than shuffle them
-    * @param cards contains the cards that are going in the deck
-    */
-
-    public DevelopmentCardsDeck(List<DevelopmentCard> cards) {
-        deck = new Stack<>();
-        for (DevelopmentCard d: cards) {
-            deck.push(d);
-        }
-        Collections.shuffle(deck);
     }
 
     /**
@@ -32,8 +24,7 @@ public class DevelopmentCardsDeck {
      * @return the first card of the deck not removing it
      */
     public DevelopmentCard peek() {
-
-        if(deck.empty()){return null;}
+        if(deck.isEmpty()){return null;}
         else {return deck.peek();}
     }
 
