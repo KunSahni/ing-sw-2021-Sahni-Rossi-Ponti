@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.controller.gamestates;
+package it.polimi.ingsw.server.model.utils;
 
 
 /**

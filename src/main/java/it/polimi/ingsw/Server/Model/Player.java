@@ -2,15 +2,10 @@ package it.polimi.ingsw.server.model;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
-import it.polimi.ingsw.server.controller.gamepackage.Game;
 import it.polimi.ingsw.server.controller.message.action.*;
 import it.polimi.ingsw.server.controller.message.action.playeraction.*;
-import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
-import it.polimi.ingsw.server.controller.message.choice.NextActionMessage;
-import it.polimi.ingsw.server.controller.message.choice.ResourceMarketConvertMessage;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
@@ -44,6 +39,30 @@ public class Player implements Comparable<Player>{
         this.changesHandler = changesHandler;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public PersonalBoard getPersonalBoard() {
+        return personalBoard;
+    }
+
+    public List<LeaderCard> getTempLeaderCards() {
+        return List.copyOf(tempLeaderCards);
+    }
+
+    public Map<MarketMarble, Integer> getTempMarbles() {
+        return Map.copyOf(tempMarbles);
+    }
+
+    public boolean isPlayersTurn() {
+        return isPlayersTurn;
+    }
+
     public void connect() {
         isConnected = true;
         changesHandler.playerConnected(nickname);
@@ -75,7 +94,7 @@ public class Player implements Comparable<Player>{
 
     /**
      * This method sets the Player's position in the game
-     * @param position an integer between 1 and 4 representing a position in the fame
+     * @param position an integer between 1 and 4
      */
     public void setPosition(int position) {
         this.position = position;
@@ -88,9 +107,6 @@ public class Player implements Comparable<Player>{
      */
     public void addAction(Actions action){
         performedActions.add(action);
-        publisher.submit(
-                new NextActionMessage(availableNextStates())
-        );
     }
 
     /**
@@ -239,45 +255,6 @@ public class Player implements Comparable<Player>{
         isPlayersTurn = false;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
-    public void setVictoryPoints(int victoryPoints) {
-        this.victoryPoints = victoryPoints;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public PersonalBoard getPersonalBoard() {
-        return personalBoard;
-    }
-
-    public List<LeaderCard> getTempLeaderCards() {
-        return List.copyOf(tempLeaderCards);
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public int getVictoryPoints() {
-        return victoryPoints;
-    }
-
-    public Map<MarketMarble, Integer> getTempMarbles() {
-        return Map.copyOf(tempMarbles);
-    }
 
     /**
      * Compares this object with the specified object for order.  Returns a
