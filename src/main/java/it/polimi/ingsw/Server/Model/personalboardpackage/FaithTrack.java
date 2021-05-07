@@ -3,31 +3,26 @@ package it.polimi.ingsw.server.model.personalboardpackage;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
-//import java.util.concurrent.Flow.Publisher;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 /**
  * Class representing a standard Faith Track used in a multi-player match.
  */
-public class FaithTrack implements VictoryPointsElement /*, Publisher*/ {
+public class FaithTrack implements VictoryPointsElement {
     private int faithMarkerPosition;
     private final List<FavorStatus> popesFavors;
-    private final Player player;
+    private final ChangesHandler changesHandler;
+    private final String nickname;
 
-    public FaithTrack(Player player) {
-        // Player marked by the Inkwell (position 1) and the one right
-        // after start from 0 on the faith track. Players in position 3
-        // and 4 have a 1 tile advantage.
-        this.faithMarkerPosition = player.getPosition() / 3;
-        // Player reference is saved to retrieve current game when
-        // a Vatican Report starts and all boards need to have their
-        // Faith Tracks updated.
-        this.player = player;
-        this.popesFavors = new ArrayList<>(Arrays.asList(FavorStatus.INACTIVE, FavorStatus.INACTIVE, FavorStatus.INACTIVE));
+    public FaithTrack(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
+        this.changesHandler = changesHandler;
+        this.nickname = nickname;
+        this.popesFavors = changesHandler.readPlayerPopesFavors(nickname);
+        this.faithMarkerPosition = changesHandler.readPlayerFaithMarkerPosition(nickname);
     }
 
     /**
