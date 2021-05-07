@@ -1,13 +1,16 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
+import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.utils.ResourceManager;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
@@ -15,31 +18,22 @@ import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 public class PersonalBoard implements VictoryPointsElement {
     private final List<DevelopmentCardSlot> developmentCardSlots;
     private final List<LeaderCard> leaderCards;
-    private final Player player;
     private final FaithTrack faithTrack;
     private final ResourceManager warehouseDepots, strongbox, proxyStorage;
 
-    public PersonalBoard(Player player) {
-        this.developmentCardSlots = new ArrayList<>(Arrays.asList(
-                new DevelopmentCardSlot(),
-                new DevelopmentCardSlot(),
-                new DevelopmentCardSlot()));
-        this.leaderCards = new ArrayList<>();
-        this.player = player;
-        this.faithTrack = player.getGame().getGameSize() == 1
-                ? new SinglePlayerFaithTrack(player)
-                : new FaithTrack(player);
-        this.warehouseDepots = new ResourceManager();
-        this.strongbox = new ResourceManager();
-        this.proxyStorage = new ResourceManager();
+    public PersonalBoard(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
+        this.leaderCards = changesHandler.readPlayerLeaderCards(nickname);
+        this.developmentCardSlots = new ArrayList<>();
+        IntStream.range(1, 4).forEach(i -> developmentCardSlots.add(
+                new DevelopmentCardSlot(changesHandler, nickname, i)));
+        this.faithTrack = new FaithTrack(changesHandler, nickname);
+        this.warehouseDepots = new ResourceManager(changesHandler.readPlayerWarehouseDepots(nickname));
+        this.strongbox = new ResourceManager(changesHandler.readPlayerStrongbox(nickname));
+        this.proxyStorage = new ResourceManager(changesHandler.readPlayerProxyStorage(nickname));
     }
 
     public List<LeaderCard> getLeaderCards() {
         return new ArrayList<>(leaderCards);
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     public List<DevelopmentCardSlot> getDevelopmentCardSlots() {
