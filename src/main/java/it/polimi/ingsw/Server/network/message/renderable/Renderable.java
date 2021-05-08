@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network;
+package it.polimi.ingsw.server.network.message.renderable;
 
 import it.polimi.ingsw.client.UI;
 
@@ -7,5 +7,5 @@ import it.polimi.ingsw.client.UI;
  * be rendered via GUI / CLI .
  */
 public interface Renderable {
-    Renderable render(UI ui);
+    void render(UI ui);
 }
