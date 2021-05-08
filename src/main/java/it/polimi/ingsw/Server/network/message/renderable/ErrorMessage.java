@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network;
+package it.polimi.ingsw.server.network.message.renderable;
 
 /**
  * Error message created server-side and transmitted client-side
