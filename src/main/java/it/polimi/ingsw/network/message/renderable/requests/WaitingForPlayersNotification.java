@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network.message.renderable.requests;
+package it.polimi.ingsw.network.message.renderable.requests;
 
 /**
  * This class represents a notification sent to the client when he joins an incomplete lobby.

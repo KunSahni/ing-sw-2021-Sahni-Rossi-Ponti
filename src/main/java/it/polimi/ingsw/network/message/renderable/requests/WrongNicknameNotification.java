@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network.message.renderable.requests;
+package it.polimi.ingsw.network.message.renderable.requests;
 
 import it.polimi.ingsw.client.UI;
 

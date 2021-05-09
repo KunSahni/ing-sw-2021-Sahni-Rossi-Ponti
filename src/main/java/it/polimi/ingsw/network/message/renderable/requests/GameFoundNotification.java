@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network.message.renderable.requests;
+package it.polimi.ingsw.network.message.renderable.requests;
 
 /**
  * This class represents a notification which is sent to the user when he tries to reconnect to a game

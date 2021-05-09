@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network.message.renderable;
+package it.polimi.ingsw.network.message.renderable;
 
 import java.io.Serializable;
 

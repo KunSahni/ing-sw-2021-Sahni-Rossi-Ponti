@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.network.message.renderable.requests;
+package it.polimi.ingsw.network.message.renderable.requests;
 
 /**
  * This class represents a notification sent when the client hasn't performed any action in the first 60 seconds of his turn.

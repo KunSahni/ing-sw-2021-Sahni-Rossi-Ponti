@@ -10,7 +10,7 @@ import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
-import it.polimi.ingsw.server.network.message.renderable.Renderable;
+import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.FileNotFoundException;

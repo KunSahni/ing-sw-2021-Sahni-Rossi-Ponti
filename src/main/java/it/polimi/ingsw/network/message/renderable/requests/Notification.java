@@ -1,7 +1,7 @@
-package it.polimi.ingsw.server.network.message.renderable.requests;
+package it.polimi.ingsw.network.message.renderable.requests;
 
 import it.polimi.ingsw.client.UI;
-import it.polimi.ingsw.server.network.message.renderable.PrivateRenderable;
+import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 
 /**
  * This class represent a notification which will be displayed on the user's screen
