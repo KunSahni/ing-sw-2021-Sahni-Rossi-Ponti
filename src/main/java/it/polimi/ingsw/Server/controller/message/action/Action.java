@@ -1,9 +1,11 @@
 package it.polimi.ingsw.server.controller.message.action;
 
+import java.io.Serializable;
+
 /**
  * Interface representing any model-changing action in the game.
  */
-public interface Action {
+public interface Action extends Serializable {
 
     /**
      * Run the Action and modify the model.
