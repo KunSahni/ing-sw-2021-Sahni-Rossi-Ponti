@@ -1,38 +1,27 @@
 package it.polimi.ingsw.server.model.utils;
 
-import it.polimi.ingsw.server.model.leadercard.LeaderCard;
-import it.polimi.ingsw.server.model.utils.Resource;
-import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 
 import java.util.List;
 import java.util.Map;
 
 public class ProductionCombo {
-    private List<DevelopmentCardSlot> developmentCardSlots;
+    private List<Integer> developmentCardSlotsIndexes;
     private Map<Resource, Integer> defaultSlotOutput;
-    private List<LeaderCard> leaderCards;
-    private Map<LeaderCard, Resource> leaderCardOutputs;
+    private Map<DumbLeaderCard, Resource> leaderCardProduction;
     private Map<Resource, Integer> discardedResourcesFromDepots;
     private Map<Resource, Integer> discardedResourcesFromStrongbox;
 
-    public ProductionCombo() {
-        super();
-    }
-
-    public void setDevelopmentCardSlots(List<DevelopmentCardSlot> developmentCardSlots) {
-        this.developmentCardSlots = developmentCardSlots;
+    public void setDevelopmentCardSlots(List<Integer> developmentCardSlotsIndexes) {
+        this.developmentCardSlotsIndexes = developmentCardSlotsIndexes;
     }
 
     public void setDefaultSlotOutput(Map<Resource, Integer> defaultSlotOutput) {
         this.defaultSlotOutput = defaultSlotOutput;
     }
 
-    public void setLeaderCards(List<LeaderCard> leaderCards) {
-        this.leaderCards = leaderCards;
-    }
-
-    public void setLeaderCardOutputs(Map<LeaderCard, Resource> leaderCardOutputs) {
-        this.leaderCardOutputs = leaderCardOutputs;
+    public void setLeaderCardProduction(Map<DumbLeaderCard, Resource> leaderCardProduction) {
+        this.leaderCardProduction = leaderCardProduction;
     }
 
     public void setDiscardedResourcesFromDepots(Map<Resource, Integer> discardedResourcesFromDepots) {
@@ -43,10 +32,10 @@ public class ProductionCombo {
         this.discardedResourcesFromStrongbox = discardedResourcesFromStrongbox;
     }
 
-    public List<DevelopmentCardSlot> getDevelopmentCardSlots() {
-        if(developmentCardSlots == null)
+    public List<Integer> getDevelopmentCardSlotsIndexes() {
+        if (developmentCardSlotsIndexes == null)
             return null;
-        return List.copyOf(developmentCardSlots);
+        return List.copyOf(developmentCardSlotsIndexes);
     }
 
     public Map<Resource, Integer> getDefaultSlotOutput() {
@@ -55,16 +44,10 @@ public class ProductionCombo {
         return Map.copyOf(defaultSlotOutput);
     }
 
-    public List<LeaderCard> getLeaderCards() {
-        if(leaderCards == null)
+    public Map<DumbLeaderCard, Resource> getLeaderCardProduction() {
+        if(leaderCardProduction == null)
             return null;
-        return List.copyOf(leaderCards);
-    }
-
-    public Map<LeaderCard, Resource> getLeaderCardOutputs() {
-        if(leaderCardOutputs == null)
-            return null;
-        return Map.copyOf(leaderCardOutputs);
+        return Map.copyOf(leaderCardProduction);
     }
 
     public Map<Resource, Integer> getDiscardedResourcesFromDepots() {
