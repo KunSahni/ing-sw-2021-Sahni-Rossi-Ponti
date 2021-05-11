@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import it.polimi.ingsw.server.controller.message.action.Actions;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
@@ -15,20 +14,23 @@ import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 
 // TODO: this has to be async to not interrupt server flow
 public class ChangesHandler {
-    private String root;
-    private SubmissionPublisher<Renderable> submissionPublisher;
+    private final String root;
+    private final SubmissionPublisher<Renderable> submissionPublisher;
     private boolean isNewGame;
+    private Map<Object, Writer> changesBuffer;
 
     public ChangesHandler(int gameId) {
         this.root = "src/main/resources/" + gameId + "/";
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isNewGame = false;
+        changesBuffer = new HashMap<>();
     }
 
     public void createGameFilesFromBlueprint(List<String> nicknames) {
@@ -41,6 +43,9 @@ public class ChangesHandler {
         isNewGame = true;
     }
 
+    public void writePlayerAction(Actions playerAction) {
+
+    }
     public GameState readGameState() throws FileNotFoundException {
         return readValueFromFile(
                 root + "GameState.json",

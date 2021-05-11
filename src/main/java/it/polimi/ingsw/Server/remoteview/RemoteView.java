@@ -1,11 +1,13 @@
 package it.polimi.ingsw.server.remoteview;
 
+import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.gamepackage.Game;
-import it.polimi.ingsw.server.controller.message.action.Action;
+import it.polimi.ingsw.server.controller.action.Action;
+import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.network.ErrorMessage;
-import it.polimi.ingsw.server.network.PrivateRenderable;
-import it.polimi.ingsw.server.network.Renderable;
+import it.polimi.ingsw.server.network.renderable.ErrorMessage;
+import it.polimi.ingsw.server.network.renderable.PrivateRenderable;
+import it.polimi.ingsw.server.network.renderable.Renderable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +19,7 @@ public class RemoteView implements Flow.Subscriber<Renderable> {
      * Utility class created to submit to the Game instance all player's
      * Actions received from Connection instances
      */
-    private class NetworkMessageForwarder implements Flow.Subscriber<Action> {
+    private class NetworkMessageForwarder implements Flow.Subscriber<PlayerAction> {
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
 
@@ -40,17 +42,17 @@ public class RemoteView implements Flow.Subscriber<Renderable> {
     }
 
     private final Map<Player, Connection> connectedPlayers;
-    private final SubmissionPublisher<Action> submissionPublisher;
+    private final SubmissionPublisher<PlayerAction> submissionPublisher;
 
     /**
      * Creates a RemoteView Object and subscribes to it the Game
      * instance passed via parameter.
-     * @param game Controller that will subscribe to the RemoteView.
+     * @param controller Controller that will subscribe to the RemoteView.
      */
-    public RemoteView(Game game) {
+    public RemoteView(Controller controller) {
         connectedPlayers = new HashMap<Player, Connection>();
         submissionPublisher = new SubmissionPublisher<Action>();
-        submissionPublisher.subscribe(game);
+        submissionPublisher.subscribe(controller);
     }
 
     /**
