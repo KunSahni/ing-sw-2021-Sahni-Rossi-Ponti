@@ -8,7 +8,7 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
  * In this request the server asks the client to identify himself with a nickname.
  */
 public class AuthenticationRequest extends PrivateRenderable {
-    public final String message;
+    private final String message;
 
     public AuthenticationRequest() {
         this.message = "Insert your nickname";

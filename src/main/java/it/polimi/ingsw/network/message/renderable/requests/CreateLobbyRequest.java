@@ -8,7 +8,7 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
  * In this request the server asks the client to select the number of players for the next game.
  */
 public class CreateLobbyRequest extends PrivateRenderable {
-    public final String message;
+    private final String message;
 
     public CreateLobbyRequest() {
         this.message = "How many players (1-4) will be in the next game?";

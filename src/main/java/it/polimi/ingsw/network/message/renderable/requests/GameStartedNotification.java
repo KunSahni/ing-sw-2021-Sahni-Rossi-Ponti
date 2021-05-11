@@ -5,7 +5,7 @@ package it.polimi.ingsw.network.message.renderable.requests;
  * and therefore the actual game can be started.
  */
 public class GameStartedNotification extends Notification{
-    protected GameStartedNotification() {
+    public GameStartedNotification() {
         super("The game is about to start!");
     }
 }

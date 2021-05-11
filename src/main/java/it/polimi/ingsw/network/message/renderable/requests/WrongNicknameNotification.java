@@ -8,7 +8,7 @@ import it.polimi.ingsw.client.UI;
  */
 public class WrongNicknameNotification extends Notification{
 
-    protected WrongNicknameNotification() {
+    public WrongNicknameNotification() {
         super("The requested game was found, but no player with your nickname was found in it.");
     }
 

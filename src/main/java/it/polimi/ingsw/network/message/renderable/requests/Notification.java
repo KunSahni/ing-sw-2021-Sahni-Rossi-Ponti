@@ -9,7 +9,7 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 public abstract class Notification extends PrivateRenderable {
     public final String message;
 
-    protected Notification(String message) {
+    public Notification(String message) {
         this.message = message;
     }
 

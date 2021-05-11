@@ -171,4 +171,6 @@ public abstract class UI {
                         dumbPersonalBoard -> dumbPersonalBoard.getNickname().equals(nickname)
                 ).findFirst();
     }
+
+
 }

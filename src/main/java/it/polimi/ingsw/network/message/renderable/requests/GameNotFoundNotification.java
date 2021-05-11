@@ -8,13 +8,13 @@ import it.polimi.ingsw.client.UI;
  */
 public class GameNotFoundNotification extends Notification{
 
-    protected GameNotFoundNotification() {
+    public GameNotFoundNotification() {
         super("We're sorry, but the requested game is finished, you can either join a new game or quit the app.");
     }
 
     @Override
     public void render(UI ui) {
         super.render(ui);
-        ui.updateGameID(-1);
+        ui.createModelView(-1, 0);
     }
 }

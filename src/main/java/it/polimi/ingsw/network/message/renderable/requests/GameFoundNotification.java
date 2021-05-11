@@ -5,7 +5,7 @@ package it.polimi.ingsw.network.message.renderable.requests;
  * and that exact game is still running, so the user can be reconnected to it.
  */
 public class GameFoundNotification extends Notification {
-    protected GameFoundNotification() {
+    public GameFoundNotification() {
         super("The requested game was found, you're about to be reconnected!");
     }
 }
