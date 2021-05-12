@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.server.model.utils.*;
 
 import java.util.HashMap;
@@ -82,4 +83,7 @@ public class DevelopmentCard implements VictoryPointsElement {
         return new ProductionOutput(faithIncrement, outputResources);
     }
 
+    public DumbDevelopmentCard convertToDumb() {
+        return new DumbDevelopmentCard(this);
+    }
 }
