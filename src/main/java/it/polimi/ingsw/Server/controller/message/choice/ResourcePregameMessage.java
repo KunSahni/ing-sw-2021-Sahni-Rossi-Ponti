@@ -1,9 +1,11 @@
 package it.polimi.ingsw.server.controller.message.choice;
 
+import it.polimi.ingsw.network.message.messages.Message;
+
 /**
  * This class contains the amount of resources which the Player needs to pick at the beginning of the game
  */
-public class ResourcePregameMessage implements Message{
+public class ResourcePregameMessage implements Message {
     private final int numberOfResources;
 
     public ResourcePregameMessage(int numberOfResources) {

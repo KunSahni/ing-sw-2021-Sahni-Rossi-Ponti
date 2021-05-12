@@ -13,6 +13,8 @@ public class DumbFaithTrack {
     private int faithMarkerPosition;
     private List<FavorStatus> popesFavors;
 
+    //todo: meglio fare anche DumbSinglePlayerFaithTrack o lo gestisco da qui?
+
     public DumbFaithTrack() {
         super();
     }

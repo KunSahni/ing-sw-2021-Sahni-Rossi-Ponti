@@ -1,9 +1,7 @@
 package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.server.controller.message.action.Action;
-import it.polimi.ingsw.server.controller.message.choice.Message;
-
-import java.io.Serializable;
+import it.polimi.ingsw.network.message.messages.Message;
 
 /**
  * This class can contain either an action or a message which will be transmitted to the server via the network

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 //todo: StoreLeaderCard related methods are not implemented yet
+//todo: implement pub/sub for rendering
 
 public abstract class UI {
     private DumbModel dumbModel;
@@ -19,9 +20,10 @@ public abstract class UI {
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
     public abstract void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     public abstract void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
-    public abstract void renderResourceChoice();
+    public abstract void renderResourcePregameChoice(int numberOfResources);
     public abstract void renderMarket(DumbMarket market);
     public abstract void renderMessage(String message);
+    public abstract void renderErrorMessage(String message);
     public abstract void renderAuthenticationRequest(String message);
     public abstract void renderCreateLobbyRequest(String message);
 
@@ -171,6 +173,5 @@ public abstract class UI {
                         dumbPersonalBoard -> dumbPersonalBoard.getNickname().equals(nickname)
                 ).findFirst();
     }
-
 
 }
