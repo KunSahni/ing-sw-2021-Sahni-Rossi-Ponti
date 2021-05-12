@@ -8,13 +8,9 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Game {
-    private final int gameId;
     private GameState currentState;
     private final LinkedList<Player> players;
     private final Market market;
@@ -23,7 +19,6 @@ public class Game {
     private final ChangesHandler changesHandler;
 
     public Game(int gameId, List<String> nicknameList) throws FileNotFoundException {
-        this.gameId = gameId;
         this.changesHandler = new ChangesHandler(gameId);
         if (nicknameList != null) {
             changesHandler.createGameFilesFromBlueprint(nicknameList);
@@ -35,7 +30,9 @@ public class Game {
         this.leaderCardsDeck = new LeaderCardsDeck(changesHandler);
         this.developmentCardsBoard = new DevelopmentCardsBoard(changesHandler);
         this.players = new LinkedList<>();
-        nicknameList.forEach(nickname -> players.add(new Player(changesHandler, nickname)));
+        for (String nickname : nicknameList) {
+            players.add(new Player(changesHandler, nickname));
+        }
     }
 
     public GameState getCurrentState() {
@@ -55,6 +52,21 @@ public class Game {
                 .filter(player -> player.getNickname().equals(nickname))
                 .findAny();
         return target.orElse(null);
+    }
+
+    public void sortPlayers() {
+        Collections.sort(players);
+    }
+
+    public void nextTurn() {
+        if (players.stream().anyMatch(Player::isConnected)) {
+            players.getFirst().finishTurn();
+            players.addLast(players.removeFirst());
+            while (!players.getFirst().isConnected())
+                players.addLast(players.removeFirst());
+            players.getFirst().startTurn();
+        }
+
     }
 
     public void connect(String nickname) {
