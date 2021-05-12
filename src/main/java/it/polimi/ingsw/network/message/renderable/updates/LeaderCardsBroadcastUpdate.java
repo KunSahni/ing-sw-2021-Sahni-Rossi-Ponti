@@ -7,13 +7,13 @@ import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
 import java.util.List;
 
 /**
- * This class contains an update regarding a player's leader cards which will be saved in the local DumbModel
+ * This class contains an update regarding another player's leader cards which will be saved in the local DumbModel
  */
-public class LeaderCardsUpdate extends BroadcastRenderable {
+public class LeaderCardsBroadcastUpdate extends BroadcastRenderable {
     private final String nickname;
     private final List<DumbLeaderCard> updatedLeaderCards;
 
-    public LeaderCardsUpdate(String nickname, List<DumbLeaderCard> updatedLeaderCards) {
+    public LeaderCardsBroadcastUpdate(String nickname, List<DumbLeaderCard> updatedLeaderCards) {
         this.nickname = nickname;
         this.updatedLeaderCards = updatedLeaderCards;
     }

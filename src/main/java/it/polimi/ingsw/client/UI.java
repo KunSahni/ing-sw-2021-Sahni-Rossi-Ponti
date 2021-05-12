@@ -15,11 +15,13 @@ import java.util.Optional;
 
 public abstract class UI {
     private DumbModel dumbModel;
+    private String nickname;
 
     public abstract void renderPersonalBoard(DumbPersonalBoard personalBoard);
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
     public abstract void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     public abstract void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
+    public abstract void renderTempMarbles(List<MarketMarble> updateMarbles);
     public abstract void renderResourcePregameChoice(int numberOfResources);
     public abstract void renderMarket(DumbMarket market);
     public abstract void renderMessage(String message);
@@ -100,11 +102,18 @@ public abstract class UI {
         );
     }
 
-    //todo: implement
-    public void updateTempMarbles(List<MarketMarble> updateMarbles){}
+    /**
+     * This method is called every time the client receives an update regarding hiw own leaderCards.
+     * @param updatedLeaderCards the updated list of leaderCards held by the player
+     */
+    public void updateLeaderCards(List<DumbLeaderCard> updatedLeaderCards){
+        getPersonalBoard(nickname).ifPresent(
+                dumbPersonalBoard -> dumbPersonalBoard.updateLeaderCards(updatedLeaderCards)
+        );
+    }
 
     /**
-     * This method is called every time the client receives an update regarding a player's leaderCards.
+     * This method is called every time the client receives an update regarding another player's leaderCards.
      * @param nickname the nickname of the player whose leaderCards will be updated
      * @param updatedLeaderCards the updated list of leaderCards held by the player
      */
