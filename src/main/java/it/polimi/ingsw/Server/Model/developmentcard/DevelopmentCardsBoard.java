@@ -1,8 +1,13 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
+
+import static java.util.stream.Collectors.toList;
 
 public class DevelopmentCardsBoard {
     private final ChangesHandler changesHandler;
@@ -29,6 +34,7 @@ public class DevelopmentCardsBoard {
             j=0;
             i--;
         }
+        this.changesHandler.publishDevelopmentCardsBoard(topViewList());
     }
 
     /**
@@ -49,7 +55,10 @@ public class DevelopmentCardsBoard {
             case YELLOW -> 2;
             case PURPLE -> 3;
         };
-        return board[line][column].pop();
+
+        DevelopmentCard popped = board[line][column].pop();
+        changesHandler.publishDevelopmentCardsBoard(topViewList());
+        return popped;
     }
 
 
@@ -118,5 +127,12 @@ public class DevelopmentCardsBoard {
                 i++;
             }
         }
+    }
+
+    private List<DevelopmentCard> topViewList() {
+        return Arrays.stream(board)
+                .flatMap(Arrays::stream)
+                .map(DevelopmentCardsDeck::peek)
+                .collect(Collectors.toList());
     }
 }

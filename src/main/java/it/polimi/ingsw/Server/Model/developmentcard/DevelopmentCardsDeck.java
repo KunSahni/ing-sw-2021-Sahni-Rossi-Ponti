@@ -16,7 +16,9 @@ public class DevelopmentCardsDeck {
     }
 
     public DevelopmentCard pop() {
-        return deck.pop();
+        DevelopmentCard pop = deck.pop();
+        changesHandler.writeDevelopmentCardsDeck(pop.getColor(), pop.getLevel(), deck);
+        return pop;
     }
 
     /**

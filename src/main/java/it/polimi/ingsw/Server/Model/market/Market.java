@@ -6,13 +6,16 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 
 public class Market {
-
+    private final ChangesHandler changesHandler;
     private final MarketMarble[][] market;
     private MarketMarble extraMarble;
 
     public Market(ChangesHandler changesHandler) throws FileNotFoundException {
+        this.changesHandler = changesHandler;
         List<MarketMarble> rawMarket = changesHandler.readMarket();
         this.market = new MarketMarble[3][4];
         this.extraMarble = rawMarket.remove(0);
@@ -38,6 +41,7 @@ public class Market {
                 Collectors.toMap(s -> s, s -> 1, Integer::sum)
         );
         moveLeft(row);
+        changesHandler.writeMarket(convertMarketToList());
         return marbles;
     }
 
@@ -66,6 +70,7 @@ public class Market {
                 Collectors.toMap(s -> s, s -> 1, Integer::sum)
         );
         moveUp(column);
+        changesHandler.writeMarket(convertMarketToList());
         return marbles;
     }
 
@@ -90,5 +95,14 @@ public class Market {
      */
     public MarketMarble[][] getMarblesLayout(){
         return Arrays.stream(market).map(MarketMarble[]::clone).toArray($ -> market.clone());
+    }
+
+    private List<MarketMarble> convertMarketToList() {
+        List<MarketMarble> list = new ArrayList<>();
+        list.add(extraMarble);
+        list.addAll(Arrays.stream(market)
+                .flatMap(Arrays::stream)
+                .collect(toList()));
+        return list;
     }
 }
