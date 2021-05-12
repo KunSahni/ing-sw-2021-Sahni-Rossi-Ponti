@@ -36,7 +36,7 @@ public class ProductionCombo {
         this.discardedResourcesFromStrongbox = discardedResourcesFromStrongbox;
     }
 
-    public List<DumbDevelopmentCard> developmentCards() {
+    public List<DumbDevelopmentCard> getDevelopmentCards() {
         if (developmentCards == null)
             return null;
         return List.copyOf(developmentCards);
