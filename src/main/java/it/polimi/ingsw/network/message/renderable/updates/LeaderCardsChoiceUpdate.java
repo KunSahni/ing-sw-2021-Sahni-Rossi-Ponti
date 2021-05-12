@@ -12,7 +12,8 @@ import java.util.List;
 public class LeaderCardsChoiceUpdate extends PrivateRenderable {
     private final List<DumbLeaderCard> leaderCards;
 
-    public LeaderCardsChoiceUpdate(List<DumbLeaderCard> leaderCards) {
+    public LeaderCardsChoiceUpdate(String nickname, List<DumbLeaderCard> leaderCards) {
+        super(nickname);
         this.leaderCards = leaderCards;
     }
 

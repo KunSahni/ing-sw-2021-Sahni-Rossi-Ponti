@@ -6,4 +6,13 @@ import java.io.Serializable;
  * Renderable items that are get shown only to one player.
  */
 public abstract class PrivateRenderable implements ServerRenderable, Serializable {
+    private final String nickname;
+
+    public PrivateRenderable(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
 }

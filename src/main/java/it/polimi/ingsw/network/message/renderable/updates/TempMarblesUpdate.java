@@ -12,7 +12,8 @@ import java.util.List;
 public class TempMarblesUpdate extends PrivateRenderable {
     private final List<MarketMarble> updateMarbles;
 
-    public TempMarblesUpdate(List<MarketMarble> updateMarbles) {
+    public TempMarblesUpdate(String nickname, List<MarketMarble> updateMarbles) {
+        super(nickname);
         this.updateMarbles = updateMarbles;
     }
 

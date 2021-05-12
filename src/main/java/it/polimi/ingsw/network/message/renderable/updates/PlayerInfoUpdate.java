@@ -6,11 +6,11 @@ import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
 /**
  *  This class contains an update regarding a player who's just joined a game
  */
-public class PlayerUpdate extends BroadcastRenderable {
+public class PlayerInfoUpdate extends BroadcastRenderable {
     private final String nickname;
     private final int position;
 
-    public PlayerUpdate(String nickname, int position) {
+    public PlayerInfoUpdate(String nickname, int position) {
         this.nickname = nickname;
         this.position = position;
     }

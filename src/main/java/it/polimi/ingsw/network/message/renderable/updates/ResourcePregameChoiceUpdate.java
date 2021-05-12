@@ -6,7 +6,8 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 public class ResourcePregameChoiceUpdate extends PrivateRenderable {
     private final int numberOfResources;
 
-    public ResourcePregameChoiceUpdate(int numberOfResources) {
+    public ResourcePregameChoiceUpdate(String nickname, int numberOfResources) {
+        super(nickname);
         this.numberOfResources = numberOfResources;
     }
 
