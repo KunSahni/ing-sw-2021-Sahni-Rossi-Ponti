@@ -20,7 +20,7 @@ public class ActivateLeaderCardAction extends PlayerAction {
 
     @Override
     public GameAction execute() {
-        player.getPersonalBoard().activateLeaderCard(leaderCard);
+        player.getPersonalBoard().activateLeaderCard(leaderCard.convert());
         player.addAction(Actions.ACTIVATED_LEADER_CARD_ACTION);
         return null;
     }
@@ -33,12 +33,12 @@ public class ActivateLeaderCardAction extends PlayerAction {
         if (player.getPersonalBoard()
                 .getLeaderCards()
                 .stream()
-                .noneMatch(card -> card.equals(leaderCard)))
+                .noneMatch(card -> card.equals(leaderCard.convert())))
             throw new InvalidActionException("You do not have the selected LeaderCard");
         if (player.getPersonalBoard()
                 .getLeaderCards()
                 .stream()
-                .filter(card -> card.equals(leaderCard))
+                .filter(card -> card.equals(leaderCard.convert()))
                 .noneMatch(LeaderCard::isActive))
             throw new InvalidActionException("LeaderCard is already active");
         if (!player.getPersonalBoard()

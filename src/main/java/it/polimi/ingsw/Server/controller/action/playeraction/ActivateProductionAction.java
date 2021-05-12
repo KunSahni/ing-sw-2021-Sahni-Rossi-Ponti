@@ -1,14 +1,16 @@
 package it.polimi.ingsw.server.controller.action.playeraction;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.personalboardpackage.DefaultSlot;
+import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.utils.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ActivateProductionAction extends PlayerAction {
     private final ProductionCombo productionCombo;
@@ -21,18 +23,17 @@ public class ActivateProductionAction extends PlayerAction {
     public GameAction execute() {
         List<ProductionOutput> productionOutputs = new ArrayList<>();
         Optional.ofNullable(productionCombo.getDefaultSlotOutput()).ifPresent(
-                map -> productionOutputs.add(DefaultSlot.produce(map))
+                defaultSlotOutput -> productionOutputs.add(DefaultSlot.produce(defaultSlotOutput))
         );
         Optional.ofNullable(productionCombo.getLeaderCardProduction()).ifPresent(
-                map -> map.forEach((dumbCard, outputResource) ->
-                        productionOutputs.add(new ProduceLeaderCard(dumbCard)
-                                .produce(outputResource))
+                leaderCardResourceMap -> leaderCardResourceMap.forEach(
+                        (dumbCard, outputResource) -> productionOutputs.add(
+                                ((ProduceLeaderCard) dumbCard.convert()).produce(outputResource))
                 )
         );
-        Optional.ofNullable(productionCombo.getDevelopmentCardSlotsIndexes()).ifPresent(
-                indexes -> indexes.stream().map(i ->
-                        player.getPersonalBoard().getDevelopmentCardSlots().get(i - 1).peek())
-                .forEach(card -> productionOutputs.add(card.produce()))
+        Optional.ofNullable(productionCombo.getDevelopmentCards()).ifPresent(
+                cards -> cards.stream().map(DumbDevelopmentCard::convert)
+                        .forEach(card -> productionOutputs.add(card.produce()))
         );
         // Store all outputs in the strongbox
         productionOutputs.forEach(productionOutput ->
@@ -59,16 +60,18 @@ public class ActivateProductionAction extends PlayerAction {
         if (productionCombo.getDefaultSlotOutput().values().stream().reduce(0, Integer::sum) != 1)
             throw new InvalidActionException("You cannot produce more than one resource with your" +
                     " default slot activation");
-        if (productionCombo.getDevelopmentCardSlotsIndexes() != null) {
-            if (!developmentCardsSlotsAvailable())
-                throw new InvalidActionException("You are trying to utilize Development Card " +
-                        "Slots " +
-                        "which do not contain cards.");
+        if (productionCombo.getDevelopmentCards() != null) {
+            if (!developmentCardsAvailable())
+                throw new InvalidActionException("The development cards you have supplied do not " +
+                        "match the ones available in your Development Slots.");
         }
         if (productionCombo.getLeaderCardProduction() != null) {
             if (!leaderCardsMatch())
-                throw new InvalidActionException("You cannot produce with the supplied Leader " +
-                        "Cards");
+                throw new InvalidActionException("You have supplied Leader Cards that are not " +
+                        "available on your personal board.");
+            if (!leaderCardsAreProduce())
+                throw new InvalidActionException("You must supply Produce Type Leader Cards to " +
+                        "activate a production.");
         }
         if (!discardMapsMatchProductionCosts())
             throw new InvalidActionException("The resources that you have selected to discard do " +
@@ -82,24 +85,31 @@ public class ActivateProductionAction extends PlayerAction {
     }
 
     private boolean productionComboIsEmpty() {
-        return productionCombo.getDevelopmentCardSlotsIndexes() != null
+        return productionCombo.getDevelopmentCards() != null
                 || productionCombo.getLeaderCardProduction() != null
                 || productionCombo.getDefaultSlotOutput() != null;
     }
 
-    private boolean developmentCardsSlotsAvailable() {
-        return IntStream.range(1, 4)
-                .filter(i -> productionCombo.getDevelopmentCardSlotsIndexes().contains(i))
-                .allMatch(i -> player.getPersonalBoard().getDevelopmentCardSlots().get(i - 1).peek() != null);
+    private boolean developmentCardsAvailable() {
+        return player.getPersonalBoard().getDevelopmentCardSlots().stream()
+                .map(DevelopmentCardSlot::peek).collect(Collectors.toList())
+                .containsAll(productionCombo.getDevelopmentCards().stream()
+                        .map(DumbDevelopmentCard::convert).collect(Collectors.toList()));
     }
 
     private boolean leaderCardsMatch() {
         return productionCombo.getLeaderCardProduction().keySet().stream()
-                .map(card -> new ProduceLeaderCard(card))
+                .map(DumbLeaderCard::convert)
                 .allMatch(card -> player.getPersonalBoard().getLeaderCards().stream()
                         .filter(LeaderCard::isActive)
                         .collect(Collectors.toList())
                         .contains(card));
+    }
+
+    private boolean leaderCardsAreProduce() {
+        return productionCombo.getLeaderCardProduction().keySet().stream()
+                .map(DumbLeaderCard::convert)
+                .allMatch(card -> card instanceof ProduceLeaderCard);
     }
 
     private boolean discardMapsMatchProductionCosts() {
@@ -111,9 +121,7 @@ public class ActivateProductionAction extends PlayerAction {
         );
         // Calculate the total cost to activate the selected development cards
         Map<Resource, Integer> devCardsCost = new HashMap<>();
-        IntStream.range(1, 4)
-                .filter(i -> productionCombo.getDevelopmentCardSlotsIndexes().contains(i))
-                .mapToObj(i -> player.getPersonalBoard().getDevelopmentCardSlots().get(i - 1).peek())
+        productionCombo.getDevelopmentCards()
                 .forEach(card -> card.getCost().forEach(
                         (k, v) -> devCardsCost.merge(k, v, Integer::sum)
                 ));

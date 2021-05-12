@@ -11,7 +11,7 @@ public enum Actions {
     DISCARDED_LEADER_CARD_ACTION,
     TURN_ENDED_ACTION,
     STORED_TEMP_MARBLES_ACTION,
-    STORED_MARKET_RESOURCES_ACTION,
+    STORED_MARKET_RESOURCES_ACTION;
 
     public boolean isCompulsory() {
         return switch(this) {
