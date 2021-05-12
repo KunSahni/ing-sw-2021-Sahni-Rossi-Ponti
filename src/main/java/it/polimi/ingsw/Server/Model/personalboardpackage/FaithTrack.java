@@ -88,34 +88,32 @@ public class FaithTrack implements VictoryPointsElement {
     /**
      * Moves the marker a number of times equivalent to the parameter.
      */
-    public void moveMarker(int steps) {
+    public int moveMarker(int steps) {
         for (int i = 0; i < steps; i++) {
             moveMarker();
         }
+        return faithMarkerPosition;
     }
 
     /**
      * Moves the Faith Marker up by one position on the Faith Track.
-     * When landing on a Pope's Place (with inactive status) a Vatican
-     * Report starts.
+     * @return updated position.
      */
-    private void moveMarker() {
+    public int moveMarker() {
         faithMarkerPosition++;
-        if (checkVaticanReport(faithMarkerPosition)){
-            player.getGame().startVaticanReport(faithMarkerPosition / 8);
-        }
+        return faithMarkerPosition;
     }
 
     /**
-     * If the tile on the given position corresponds to a Pope Space and the
-     * corresponding Vatican Report has not been called yet, method returns true.
+     * If the tile on which the FaithMarker is placed corresponds to a Pope Space
+     * and the corresponding Vatican Report has not been called yet, method returns true.
      * Otherwise returns false.
-     * @param pos position on the Faith Track of the tile that will be checked.
      * @return outcome of the checks on the tile.
      */
-    protected boolean checkVaticanReport(int pos) {
+    public boolean checkVaticanReport(int tile) {
         // Pope Spaces are located on tiles with positions multiples of 8
-        return (pos % 8) == 0 && popesFavors.get(pos / 8 - 1) == FavorStatus.INACTIVE;
+        return (tile % 8) == 0 &&
+                popesFavors.get(tile / 8 - 1) == FavorStatus.INACTIVE;
     }
 
     /**

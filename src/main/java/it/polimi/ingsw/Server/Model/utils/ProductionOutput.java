@@ -1,9 +1,7 @@
 package it.polimi.ingsw.server.model.utils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class ProductionOutput {
     private int faithIncrement;

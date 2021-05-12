@@ -19,23 +19,10 @@ public final class ResourceBank {
 
 
 
-    public static ProductionOutput getResourceFromMarble(Map<MarketMarble, Integer> request) {
+    public static Map<Resource, Integer> getResourceFromMarble(Map<MarketMarble, Integer> request) {
         Map<Resource, Integer> resources = new HashMap<>();
-        int faithIncrement = 0;
-
-        for (MarketMarble m: request.keySet()) {
-            switch (m) {
-                case YELLOW -> resources.put(COIN, request.get(m));
-                case PURPLE -> resources.put(SERVANT, request.get(m));
-                case GREY -> resources.put(STONE, request.get(m));
-                case BLUE -> resources.put(SHIELD, request.get(m));
-                case RED -> faithIncrement = request.get(m);
-            }
-        }
-        if (resources.isEmpty()){
-            resources = null;
-        }
-        return new ProductionOutput(faithIncrement, resources);
+        request.forEach((marble, value) -> resources.put(marble.toResource(), value));
+        return resources;
     }
     /**
      * produces and returns a signle resource

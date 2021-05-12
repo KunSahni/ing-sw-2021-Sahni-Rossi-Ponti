@@ -4,12 +4,12 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import it.polimi.ingsw.server.controller.message.action.*;
-import it.polimi.ingsw.server.controller.message.action.playeraction.*;
+import it.polimi.ingsw.server.controller.action.playeraction.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
+import it.polimi.ingsw.server.model.utils.Actions;
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
 
 /**
@@ -27,7 +27,8 @@ public class Player implements Comparable<Player>{
     private boolean isConnected;
     private final ChangesHandler changesHandler;
 
-    public Player(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
+    public Player(ChangesHandler changesHandler, String nickname)
+            throws FileNotFoundException {
         this.nickname = nickname;
         this.personalBoard = new PersonalBoard(changesHandler, nickname);
         this.performedActions = changesHandler.readTurnActions(nickname);
@@ -61,6 +62,10 @@ public class Player implements Comparable<Player>{
 
     public boolean isPlayersTurn() {
         return isPlayersTurn;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
     public void connect() {
@@ -98,23 +103,22 @@ public class Player implements Comparable<Player>{
      */
     public void setPosition(int position) {
         this.position = position;
-        if(position>2)
-            getPersonalBoard().getFaithTrack().moveMarker(1);
     }
 
     /**
-     * @param action an action that has been chosen by the Player and performed, so therefore can be stored as performed
+     * @param action an action that has been chosen by the Player and performed,
+     *               so therefore can be stored as performed
      */
     public void addAction(Actions action){
         performedActions.add(action);
     }
 
     /**
-     * This method sets the Player's position in the game
-     * @param tempMarbles a copy of the MarketMarbles picked from the Market
+     * Creates a map of temporarily stored MarketMarbles
+     * @param tempMarbles map of MarketMarbles taken from the Market.
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
-        this.tempMarbles = tempMarbles;
+        this.tempMarbles = new HashMap<>(tempMarbles);
     }
 
     /** This method returns a list of all the states in which the Player could go next
@@ -130,19 +134,19 @@ public class Player implements Comparable<Player>{
 
             //Checks if the player has any inactive LeaderCard which can be activated
             if(canActivateLeaderCard())
-                availableNextStates.add(Actions.ACTIVATELEADERCARDACTION);
+                availableNextStates.add(Actions.ACTIVATED_LEADER_CARD_ACTION);
 
             //Checks if the player has any inactive LeaderCard which can be discarded
             if(canDiscardLeaderCard())
-                availableNextStates.add(Actions.DISCARDLEADERCARDACTION);
+                availableNextStates.add(Actions.DISCARDED_LEADER_CARD_ACTION);
 
             //Checks if the player can afford any of the available DevelopmentCards
             if(canAffordDevelopmentCard())
-                availableNextStates.add(Actions.BUYDEVELOPMENTCARDACTION);
+                availableNextStates.add(Actions.BOUGHT_DEVELOPMENT_CARD_ACTION);
 
             //Checks if the player can afford any of the possible productions
             if(canAffordProduction())
-                availableNextStates.add(Actions.ACTIVATEPRODUCTIONACTION);
+                availableNextStates.add(Actions.ACTIVATED_PRODUCTION_ACTION);
 
             return  availableNextStates;
         }
@@ -154,11 +158,11 @@ public class Player implements Comparable<Player>{
 
             //Checks if the player has any inactive LeaderCard which can be activated
             if(canActivateLeaderCard())
-                availableNextStates.add(Actions.ACTIVATELEADERCARDACTION);
+                availableNextStates.add(Actions.ACTIVATED_LEADER_CARD_ACTION);
 
             //Checks if the player has any inactive LeaderCard which can be discarded
             if(canDiscardLeaderCard())
-                availableNextStates.add(Actions.DISCARDLEADERCARDACTION);
+                availableNextStates.add(Actions.DISCARDED_LEADER_CARD_ACTION);
 
             return availableNextStates;
         }
@@ -166,6 +170,15 @@ public class Player implements Comparable<Player>{
         //In every other case the player can't choose any action, so the only option is to end the turn
         availableNextStates.add(Actions.ENDACTION);
         return availableNextStates;
+    }
+
+    /**
+     * Checks if the supplied action can be added to the executed
+     * Actions list without violating action-order related game
+     * logic.
+     */
+    public boolean isValidNextAction(Actions action) {
+
     }
 
     /**
@@ -237,7 +250,7 @@ public class Player implements Comparable<Player>{
      */
     private boolean hasPerformedCompulsoryAction() {
         return performedActions.stream().anyMatch(
-                performedAction -> performedAction instanceof TakeFromMarketAction || performedAction instanceof BuyDevelopmentCardAction || performedAction instanceof ActivateProductionAction
+                performedAction -> performedAction instanceof TakeFromMarketAction || performedAction instanceof BuyDevelopmentCardAction || performedAction instanceof OldActivateProductionAction
         );
     }
 

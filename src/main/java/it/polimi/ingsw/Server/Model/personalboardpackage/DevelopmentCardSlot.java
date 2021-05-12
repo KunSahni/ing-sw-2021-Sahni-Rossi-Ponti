@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
+import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
@@ -46,6 +47,13 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
         cards.addFirst(card);
     }
 
+    public boolean canPlaceCard(DevelopmentCard card) {
+        return switch (card.getLevel()) {
+            case LEVEL1 -> cards.size() == 0;
+            case LEVEL2 -> peek().getLevel().equals(Level.LEVEL1);
+            case LEVEL3 -> peek().getLevel().equals(Level.LEVEL2);
+        };
+    }
     /**
      * Returns a ProductionOutput object created by the topmost production card
      */

@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -37,8 +38,16 @@ public class Game {
         nicknameList.forEach(nickname -> players.add(new Player(changesHandler, nickname)));
     }
 
+    public GameState getCurrentState() {
+        return currentState;
+    }
+
     public void subscribe(RemoteView remoteView) {
         changesHandler.subscribe(remoteView);
+    }
+
+    public List<Player> getPlayerList() {
+        return new ArrayList<>(players);
     }
 
     public Player getPlayer(String nickname) {

@@ -5,9 +5,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
@@ -27,7 +27,8 @@ public class PersonalBoard implements VictoryPointsElement {
         IntStream.range(1, 4).forEach(i -> developmentCardSlots.add(
                 new DevelopmentCardSlot(changesHandler, nickname, i)));
         this.faithTrack = new FaithTrack(changesHandler, nickname);
-        this.warehouseDepots = new ResourceManager(changesHandler.readPlayerWarehouseDepots(nickname));
+        this.warehouseDepots =
+                new ResourceManager(changesHandler.readPlayerWarehouseDepots(nickname));
         this.strongbox = new ResourceManager(changesHandler.readPlayerStrongbox(nickname));
         this.proxyStorage = new ResourceManager(changesHandler.readPlayerProxyStorage(nickname));
     }
@@ -56,7 +57,7 @@ public class PersonalBoard implements VictoryPointsElement {
      * Checks if the given requirements, needed to activate a leader card, are fulfilled
      */
     public boolean containsLeaderCardRequirements(LeaderCardRequirements requirements) {
-        if(Optional.ofNullable(requirements.getRequiredResources()).isPresent()) {
+        if (Optional.ofNullable(requirements.getRequiredResources()).isPresent()) {
             return proxyStorage.contains(requirements.getRequiredResources());
         } else {
             return requirements.getRequiredDevelopmentCards()
@@ -87,16 +88,86 @@ public class PersonalBoard implements VictoryPointsElement {
         return proxyStorage.contains(requirement);
     }
 
+    public boolean depotsContainResources(Map<Resource, Integer> resources) {
+        Map<Resource, Integer> allResourcesInDepots =
+                new HashMap<>(warehouseDepots.getStoredResources());
+        leaderCards.stream()
+                .filter(card -> card.isActive() && card.getAbility().equals(LeaderCardAbility.STORE))
+                .map(card -> (StoreLeaderCard) card)
+                .forEach(card -> allResourcesInDepots.compute(
+                        card.getStoredType(),
+                        (k, v) -> (v == null) ? card.getResourceCount() :
+                                v + card.getResourceCount()
+                ));
+        resources.forEach((key, value) ->
+                allResourcesInDepots.compute(key, (k, v) ->
+                        (v == null) ? -value : v - value)
+        );
+        return allResourcesInDepots.values().stream().allMatch(val -> val >= 0);
+    }
+
+    public boolean strongboxContainsResources(Map<Resource, Integer> resource) {
+        Map<Resource, Integer> resourcesInStrongbox = new HashMap<>(strongbox.getStoredResources());
+        resource.forEach((key, value) ->
+                resourcesInStrongbox.compute(key, (k, v) -> (v == null) ? -value : v - value)
+        );
+        return resourcesInStrongbox.values().stream().allMatch(val -> val >= 0);
+    }
+
+    public boolean depotsCanContain(Map<Resource, Integer> resources) {
+        Map<Resource, Integer> resourcesToStore = new HashMap<>(resources);
+        // Verify effects of StoreLeaderCards
+        leaderCards.stream()
+                .filter(card -> card.isActive()
+                        && card.getAbility().equals(LeaderCardAbility.STORE))
+                .map(card -> (StoreLeaderCard) card)
+                .forEach(card -> {
+                    // If there are some resources that can be stored in StoreLeaderCards
+                    if (resourcesToStore.get(card.getStoredType()) != null) {
+                        // Count as if the LeaderCards will store them (remove them
+                        // from ToStore map)
+                        resourcesToStore.put(
+                                card.getStoredType(),
+                                Math.max(
+                                        0,
+                                        resourcesToStore.get(card.getStoredType())
+                                                - (2 - card.getResourceCount())
+                                )
+                        );
+                    }
+                });
+        // Clean the resulting map before merging to current WarehouseDepots
+        Map<Resource, Integer> remainingResources = resourcesToStore.entrySet().stream()
+                .filter(entry -> entry.getValue() != 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        warehouseDepots.getStoredResources()
+                .forEach((depotsKey, depotsValue) -> remainingResources.compute(
+                        depotsKey,
+                        (k, v) -> (v == null) ? depotsValue : v + depotsValue
+                ));
+        // remainingResources map now contains the stored resources and the WarehouseDepots
+        // resources.
+        return remainingResources.keySet().size() <= 3
+                && remainingResources.values().stream().allMatch(value -> value <= 3)
+                && remainingResources.entrySet().stream()
+                .filter(entry -> entry.getValue() == 3).count() <= 1
+                && remainingResources.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 2).count() <= 2;
+    }
+
     /**
      * Discards resources from depots
+     *
      * @param resources map of resources that will get discarded
      */
     public void discardFromDepots(Map<Resource, Integer> resources) {
-        Map <Resource, Integer> discardMapWarehouse = warehouseDepots.getStoredResources().keySet().stream()
-                .filter(resources::containsKey)
-                .collect(Collectors.toMap(
-                        k -> k,
-                        k -> Integer.min(resources.get(k), warehouseDepots.getStoredResources().get(k))));
+        Map<Resource, Integer> discardMapWarehouse =
+                warehouseDepots.getStoredResources().keySet().stream()
+                        .filter(resources::containsKey)
+                        .collect(Collectors.toMap(
+                                k -> k,
+                                k -> Integer.min(resources.get(k),
+                                        warehouseDepots.getStoredResources().get(k))));
         warehouseDepots.discardResources(discardMapWarehouse);
         leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
@@ -105,7 +176,7 @@ public class PersonalBoard implements VictoryPointsElement {
                         new HashMap<>() {{
                             put(
                                     storeLeaderCard.getStoredType(),
-                                    resources.get(storeLeaderCard.getStoredType())-
+                                    resources.get(storeLeaderCard.getStoredType()) -
                                             Optional.ofNullable(discardMapWarehouse.get(storeLeaderCard.getStoredType())).orElse(0)
                             );
                         }}
@@ -115,6 +186,7 @@ public class PersonalBoard implements VictoryPointsElement {
 
     /**
      * Discards resources from the strongbox
+     *
      * @param resources map of resources that will get discarded
      */
     public void discardFromStrongbox(Map<Resource, Integer> resources) {
@@ -128,12 +200,12 @@ public class PersonalBoard implements VictoryPointsElement {
     @Override
     public int getVictoryPoints() {
         int totalVictoryPoints = 0;
-        totalVictoryPoints+=proxyStorage.getResourceCount()/5;
-        totalVictoryPoints+=faithTrack.getVictoryPoints();
-        totalVictoryPoints+=leaderCards.stream()
+        totalVictoryPoints += proxyStorage.getResourceCount() / 5;
+        totalVictoryPoints += faithTrack.getVictoryPoints();
+        totalVictoryPoints += leaderCards.stream()
                 .mapToInt(LeaderCard::getVictoryPoints)
                 .sum();
-        totalVictoryPoints+=developmentCardSlots.stream()
+        totalVictoryPoints += developmentCardSlots.stream()
                 .mapToInt(DevelopmentCardSlot::getVictoryPoints)
                 .sum();
         return totalVictoryPoints;
@@ -142,6 +214,7 @@ public class PersonalBoard implements VictoryPointsElement {
     /**
      * Stores the given resources in the Warehouse Depots and, if possible, in Storage
      * Leader Cards
+     *
      * @param resources map containing the resources to add
      */
     public void storeInDepots(Map<Resource, Integer> resources) {
@@ -153,7 +226,7 @@ public class PersonalBoard implements VictoryPointsElement {
                 .collect(Collectors.toMap(
                         StoreLeaderCard::getStoredType,
                         storeLeaderCard -> Integer.min(
-                                2-storeLeaderCard.getResourceCount(),
+                                2 - storeLeaderCard.getResourceCount(),
                                 resources.get(storeLeaderCard.getStoredType())
                         )
                 ));
@@ -162,16 +235,18 @@ public class PersonalBoard implements VictoryPointsElement {
                 .map(leaderCard -> (StoreLeaderCard) leaderCard)
                 .filter(storeLeaderCard -> storeInLeaderCards.containsKey(storeLeaderCard.getStoredType()))
                 .forEach(storeLeaderCard -> storeLeaderCard.storeResources(
-                        new HashMap<>(){{
-                            put(storeLeaderCard.getStoredType(), storeInLeaderCards.get(storeLeaderCard.getStoredType()));
+                        new HashMap<>() {{
+                            put(storeLeaderCard.getStoredType(),
+                                    storeInLeaderCards.get(storeLeaderCard.getStoredType()));
                         }}
                 ));
-        storeInLeaderCards.forEach((k, v) -> resources.put(k, resources.get(k)-v));
+        storeInLeaderCards.forEach((k, v) -> resources.put(k, resources.get(k) - v));
         warehouseDepots.storeResources(resources);
     }
 
     /**
      * Stores the given resources in the Strongbox
+     *
      * @param resources map containing the resources to add
      */
     public void storeInStrongbox(Map<Resource, Integer> resources) {
@@ -180,16 +255,28 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     /**
-    * @param card gets removed from the board's card list
-    */
+     * @param card gets removed from the board's card list
+     */
     public void discardLeaderCard(LeaderCard card) {
         leaderCards.remove(card);
     }
 
     /**
-    * @param card has just been purchased and will be placed on the personal board
-    * @param position will define which position the card will occupy
-    */
+     * Activates the LeaderCard which matches the one passed
+     * as parameter.
+     *
+     * @param targetCard card which will get activated.
+     */
+    public void activateLeaderCard(LeaderCard targetCard) {
+        leaderCards.stream()
+                .filter(card -> card.equals(targetCard))
+                .forEach(LeaderCard::activate);
+    }
+
+    /**
+     * @param card     has just been purchased and will be placed on the personal board
+     * @param position will define which position the card will occupy
+     */
     public void placeDevelopmentCard(DevelopmentCard card, int position) {
         developmentCardSlots.get(position).placeCard(card);
     }
