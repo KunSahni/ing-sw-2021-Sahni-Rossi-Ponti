@@ -81,6 +81,15 @@ public abstract class UI {
     }
 
     /**
+     * This method is called every time the client receives an update regarding a player's blackCrossPosition.
+     * @param updatedBlackCrossPosition the updated position of the black cross on the faith track
+     */
+    public void updateBlackCrossPosition(int updatedBlackCrossPosition){
+        if(dumbModel.getSize()==1)
+            ((DumbSinglePlayerFaithTrack) dumbModel.getPersonalBoards().get(0).getFaithTrack()).updateBlackCrossPosition(updatedBlackCrossPosition);
+    }
+
+    /**
      * This method is called every time the client receives an update regarding a player's popesFavors.
      * @param nickname the nickname of the player whose position will be updated
      * @param updatedPopesFavors the updated list of popesFavors of the player
@@ -137,6 +146,19 @@ public abstract class UI {
         getPersonalBoard(nickname).ifPresent(
                 dumbPersonalBoard -> dumbPersonalBoard.getDevelopmentCardSlots().get(position).updateDevelopmentCards(updatedDevelopmentCardSlot)
         );
+    }
+
+    /**
+     * This method is called every time the client receives an update regarding a player's store leader card
+     * @param nickname the nickname of the player whose store leader card will be updated
+     * @param leaderCard the store leader card whose storage changed
+     */
+    public void updateStoreLeaderCardStorage(String nickname, DumbStoreLeaderCard leaderCard){
+        getPersonalBoard(nickname).flatMap(dumbPersonalBoard -> dumbPersonalBoard.getLeaderCards()
+                .stream()
+                .filter(
+                        dumbLeaderCard -> dumbLeaderCard instanceof DumbStoreLeaderCard && dumbLeaderCard.equals(leaderCard)
+                ).findFirst()).ifPresent(dumbLeaderCard -> ((DumbStoreLeaderCard) dumbLeaderCard).updateStoredResources(leaderCard.getStorage().getStoredResources()));
     }
 
     /**

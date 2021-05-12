@@ -30,7 +30,7 @@ public class DumbModel {
     }
 
     public void addPersonalBoard(String nickname, int position){
-        personalBoards.add(new DumbPersonalBoard(nickname, position));
+        personalBoards.add(new DumbPersonalBoard(nickname, position, size==1));
     }
 
     public void updateMarket(MarketMarble[] updatedMarketMarbles) {

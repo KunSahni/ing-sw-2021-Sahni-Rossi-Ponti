@@ -19,11 +19,11 @@ public class DumbPersonalBoard {
     private boolean turnStatus;
     private boolean connectionStatus;
 
-    public DumbPersonalBoard(String nickname, int position) {
+    public DumbPersonalBoard(String nickname, int position, boolean isSinglePlayerGame) {
         super();
         this.nickname = nickname;
         this.position = position;
-        this.faithTrack = new DumbFaithTrack();
+        this.faithTrack = isSinglePlayerGame? new DumbSinglePlayerFaithTrack() : new DumbFaithTrack();
         this.depots = new DumbResourceManager();
         this.strongbox = new DumbResourceManager();
         this.developmentCardSlots = new ArrayList<>();
