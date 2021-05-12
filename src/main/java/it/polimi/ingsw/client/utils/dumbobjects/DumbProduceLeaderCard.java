@@ -24,4 +24,10 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
     public int getFaithIncrement() {
         return faithIncrement;
     }
+
+
+    @Override
+    public ProduceLeaderCard convert() {
+        return new ProduceLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), inputResource, faithIncrement);
+    }
 }

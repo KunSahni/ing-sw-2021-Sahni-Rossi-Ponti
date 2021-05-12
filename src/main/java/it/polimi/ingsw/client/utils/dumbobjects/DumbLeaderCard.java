@@ -41,4 +41,6 @@ public abstract class DumbLeaderCard {
     public LeaderCardRequirements getLeaderCardRequirements() {
         return leaderCardRequirements;
     }
+
+    public abstract LeaderCard convert();
 }

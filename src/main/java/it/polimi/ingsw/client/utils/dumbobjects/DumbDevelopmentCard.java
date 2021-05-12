@@ -75,4 +75,8 @@ public class DumbDevelopmentCard {
     public int getVictoryPoints() {
         return victoryPoints;
     }
+
+    public DevelopmentCard convert(){
+        return new DevelopmentCard(color, level, victoryPoints, inputResources, outputResources, cost, faithIncrement);
+    }
 }

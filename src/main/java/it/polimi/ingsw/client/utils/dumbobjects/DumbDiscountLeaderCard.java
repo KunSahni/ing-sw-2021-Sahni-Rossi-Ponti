@@ -18,4 +18,10 @@ public class DumbDiscountLeaderCard extends DumbLeaderCard{
     public Resource getDiscountedResource() {
         return discountedResource;
     }
+
+
+    @Override
+    public DiscountLeaderCard convert() {
+        return new DiscountLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), discountedResource);
+    }
 }

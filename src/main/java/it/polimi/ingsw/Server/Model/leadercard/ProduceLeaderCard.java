@@ -27,9 +27,14 @@ public class ProduceLeaderCard extends LeaderCard {
         return inputResource;
     }
 
+    public int getFaithIncrement() {
+        return faithIncrement;
+    }
+
     public ProduceLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource inputResource, int faithIncrement) {
         super(LeaderCardAbility.PRODUCE, victoryPoints, leaderCardRequirements);
         this.inputResource = inputResource;
         this.faithIncrement = faithIncrement;
     }
+
 }

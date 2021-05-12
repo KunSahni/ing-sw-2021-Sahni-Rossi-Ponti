@@ -19,8 +19,8 @@ public class DevelopmentCard implements VictoryPointsElement {
     private final int faithIncrement;
 
 
-    public DevelopmentCard(Color type, Level level, int victoryPoints, Map<Resource, Integer> inputResources, Map<Resource, Integer> outputResources, Map<Resource, Integer> cost, int faithIncrement) {
-        this.color = type;
+    public DevelopmentCard(Color color, Level level, int victoryPoints, Map<Resource, Integer> inputResources, Map<Resource, Integer> outputResources, Map<Resource, Integer> cost, int faithIncrement) {
+        this.color = color;
         this.level = level;
         this.victoryPoints = victoryPoints;
         this.inputResources = inputResources;

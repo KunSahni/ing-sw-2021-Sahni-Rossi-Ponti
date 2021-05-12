@@ -18,4 +18,10 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
     public Resource getConvertedResource() {
         return convertedResource;
     }
+
+
+    @Override
+    public ConvertLeaderCard convert() {
+        return new ConvertLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), convertedResource);
+    }
 }
