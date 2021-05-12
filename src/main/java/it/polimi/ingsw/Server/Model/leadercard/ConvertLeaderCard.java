@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model.leadercard;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 /**
@@ -16,5 +18,10 @@ public class ConvertLeaderCard extends LeaderCard {
 
     public Resource getConvertedResource() {
         return convertedResource;
+    }
+
+    @Override
+    public DumbLeaderCard convertToDumb() {
+        return new DumbConvertLeaderCard(this);
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.leadercard;
 
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 public abstract class LeaderCard implements VictoryPointsElement {
@@ -34,4 +35,6 @@ public abstract class LeaderCard implements VictoryPointsElement {
     public void activate(){
         active = true;
     }
+
+    public abstract DumbLeaderCard convertToDumb();
 }

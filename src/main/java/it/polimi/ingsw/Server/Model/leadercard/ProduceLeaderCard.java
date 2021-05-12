@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server.model.leadercard;
 
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.Resource;
 
@@ -35,6 +37,11 @@ public class ProduceLeaderCard extends LeaderCard {
         super(LeaderCardAbility.PRODUCE, victoryPoints, leaderCardRequirements);
         this.inputResource = inputResource;
         this.faithIncrement = faithIncrement;
+    }
+
+    @Override
+    public DumbLeaderCard convertToDumb() {
+        return new DumbProduceLeaderCard(this);
     }
 
 }

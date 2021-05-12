@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.model.leadercard;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.utils.ResourceManager;
 
@@ -45,5 +47,10 @@ public class StoreLeaderCard extends LeaderCard {
      */
     public Resource getStoredType() {
         return storedResource;
+    }
+
+    @Override
+    public DumbLeaderCard convertToDumb() {
+        return new DumbStoreLeaderCard(this);
     }
 }

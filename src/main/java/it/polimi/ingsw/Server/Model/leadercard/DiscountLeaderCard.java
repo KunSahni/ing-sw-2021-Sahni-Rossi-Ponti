@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server.model.leadercard;
 
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbDiscountLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 public class DiscountLeaderCard extends LeaderCard {
@@ -14,5 +16,10 @@ public class DiscountLeaderCard extends LeaderCard {
 
     public Resource getDiscountedResource() {
         return discountedResource;
+    }
+
+    @Override
+    public DumbLeaderCard convertToDumb() {
+        return new DumbDiscountLeaderCard(this);
     }
 }
