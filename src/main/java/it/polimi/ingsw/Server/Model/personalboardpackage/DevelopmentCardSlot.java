@@ -45,6 +45,7 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
      */
     public void placeCard(DevelopmentCard card) {
         cards.addFirst(card);
+        changesHandler.writePlayerDevelopmentCardSlot(nickname, slotIndex, cards);
     }
 
     public boolean canPlaceCard(DevelopmentCard card) {

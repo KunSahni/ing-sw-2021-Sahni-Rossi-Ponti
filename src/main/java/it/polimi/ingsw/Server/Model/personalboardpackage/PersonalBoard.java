@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.model.personalboardpackage;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
@@ -16,16 +15,22 @@ import it.polimi.ingsw.server.model.utils.ResourceManager;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 public class PersonalBoard implements VictoryPointsElement {
+    private final ChangesHandler changesHandler;
     private final List<DevelopmentCardSlot> developmentCardSlots;
     private final List<LeaderCard> leaderCards;
     private final FaithTrack faithTrack;
     private final ResourceManager warehouseDepots, strongbox, proxyStorage;
+    private final String nickname;
 
     public PersonalBoard(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
+        this.changesHandler = changesHandler;
+        this.nickname = nickname;
         this.leaderCards = changesHandler.readPlayerLeaderCards(nickname);
         this.developmentCardSlots = new ArrayList<>();
-        IntStream.range(1, 4).forEach(i -> developmentCardSlots.add(
-                new DevelopmentCardSlot(changesHandler, nickname, i)));
+        for (int i = 0; i < 3; i++) {
+            developmentCardSlots.add(
+                    new DevelopmentCardSlot(changesHandler, nickname, i + 1));
+        }
         this.faithTrack = new FaithTrack(changesHandler, nickname);
         this.warehouseDepots =
                 new ResourceManager(changesHandler.readPlayerWarehouseDepots(nickname));
@@ -182,6 +187,9 @@ public class PersonalBoard implements VictoryPointsElement {
                         }}
                 ));
         proxyStorage.discardResources(resources);
+        changesHandler.writePlayerLeaderCards(nickname, leaderCards);
+        changesHandler.writePlayerWarehouseDepots(nickname, warehouseDepots.getStoredResources());
+        changesHandler.writePlayerProxyStorage(nickname, proxyStorage.getStoredResources());
     }
 
     /**
@@ -192,6 +200,8 @@ public class PersonalBoard implements VictoryPointsElement {
     public void discardFromStrongbox(Map<Resource, Integer> resources) {
         strongbox.discardResources(resources);
         proxyStorage.discardResources(resources);
+        changesHandler.writePlayerStrongbox(nickname, strongbox.getStoredResources());
+        changesHandler.writePlayerProxyStorage(nickname, proxyStorage.getStoredResources());
     }
 
     /**
@@ -259,6 +269,7 @@ public class PersonalBoard implements VictoryPointsElement {
      */
     public void discardLeaderCard(LeaderCard card) {
         leaderCards.remove(card);
+        changesHandler.writePlayerLeaderCards(nickname, leaderCards);
     }
 
     /**
@@ -271,14 +282,11 @@ public class PersonalBoard implements VictoryPointsElement {
         leaderCards.stream()
                 .filter(card -> card.equals(targetCard))
                 .forEach(LeaderCard::activate);
+        changesHandler.writePlayerLeaderCards(nickname, leaderCards);
     }
 
-    /**
-     * @param card     has just been purchased and will be placed on the personal board
-     * @param position will define which position the card will occupy
-     */
-    public void placeDevelopmentCard(DevelopmentCard card, int position) {
-        developmentCardSlots.get(position).placeCard(card);
+    public void placeDevelopmentCard(DevelopmentCard card, int slotIndex) {
+        developmentCardSlots.get(slotIndex - 1).placeCard(card);
     }
 
     /**

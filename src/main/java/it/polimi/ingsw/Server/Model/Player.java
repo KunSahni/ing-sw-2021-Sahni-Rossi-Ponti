@@ -114,6 +114,7 @@ public class Player implements Comparable<Player> {
      */
     public void addAction(Actions action) {
         performedActions.add(action);
+        changesHandler.writeTurnActions(nickname, performedActions);
     }
 
     /**
@@ -123,6 +124,7 @@ public class Player implements Comparable<Player> {
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
         this.tempMarbles = new HashMap<>(tempMarbles);
+        changesHandler.writeTempMarbles(nickname, this.tempMarbles);
     }
 
     /**
@@ -285,6 +287,7 @@ public class Player implements Comparable<Player> {
      */
     public void startTurn() {
         isPlayersTurn = true;
+        changesHandler.writePlayerTurnFlag(nickname, true);
     }
 
     /**
@@ -292,6 +295,7 @@ public class Player implements Comparable<Player> {
      */
     public void finishTurn() {
         isPlayersTurn = false;
+        changesHandler.writePlayerTurnFlag(nickname, false);
     }
 
 

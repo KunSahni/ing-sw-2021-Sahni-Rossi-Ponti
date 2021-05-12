@@ -101,6 +101,7 @@ public class FaithTrack implements VictoryPointsElement {
      */
     public int moveMarker() {
         faithMarkerPosition++;
+        changesHandler.writePlayerFaithMarkerPosition(nickname, faithMarkerPosition);
         return faithMarkerPosition;
     }
 
@@ -135,5 +136,6 @@ public class FaithTrack implements VictoryPointsElement {
         } else {
             popesFavors.set(index - 1, FavorStatus.DISCARDED);
         }
+        changesHandler.writePlayerPopesFavors(nickname, popesFavors);
     }
 }
