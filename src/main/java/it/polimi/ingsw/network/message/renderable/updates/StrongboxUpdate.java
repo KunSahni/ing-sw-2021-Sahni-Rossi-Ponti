@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.message.renderable.updates;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
 import it.polimi.ingsw.server.model.utils.Resource;
+import it.polimi.ingsw.server.model.utils.ResourceManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,15 +13,15 @@ import java.util.Map;
  */
 public class StrongboxUpdate extends BroadcastRenderable {
     private final String nickname;
-    private final Map<Resource, Integer> updatedDepots;
+    private final Map<Resource, Integer> updatedStrongbox;
 
-    public StrongboxUpdate(String nickname, Map<Resource, Integer> updatedDepots) {
+    public StrongboxUpdate(String nickname, ResourceManager updatedStrongbox) {
         this.nickname = nickname;
-        this.updatedDepots = new HashMap<>(updatedDepots);
+        this.updatedStrongbox = new HashMap<>(updatedStrongbox.getStoredResources());
     }
 
     @Override
     public void render(UI ui) {
-        ui.updateStrongbox(nickname, updatedDepots);
+        ui.updateStrongbox(nickname, updatedStrongbox);
     }
 }

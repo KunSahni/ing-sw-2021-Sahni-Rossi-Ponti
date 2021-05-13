@@ -16,12 +16,13 @@ public class DumbDevelopmentCardsBoard {
     }
 
     /**
-     * @param developmentCards a flattened list of all the DevelopmentCards placed
-     *                         in the top layer of the DevelopmentCardsBoard, an empty deck is represented with null
+     * @param updatedDevelopmentCardsBoard an updated version of the cards contained in the DevelopmentCardsBoard
      */
-    public void updateBoard(DumbDevelopmentCard[] developmentCards) {
-        IntStream.range(0, developmentCards.length).forEach(
-                i-> this.board[i/4][i%4] = developmentCards[i]
+    public void updateBoard(DumbDevelopmentCard[][] updatedDevelopmentCardsBoard) {
+        IntStream.range(0,4).forEach(
+                i->IntStream.range(0,3).forEach(
+                        j-> this.board[i][j] = updatedDevelopmentCardsBoard[i][j]
+                )
         );
     }
 

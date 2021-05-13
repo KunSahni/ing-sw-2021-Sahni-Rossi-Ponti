@@ -16,7 +16,7 @@ public class DumbModel {
     private final List<DumbPersonalBoard> personalBoards;
     private final DumbMarket market;
     private final DumbDevelopmentCardsBoard developmentCardsBoard;
-    private final DumbActionTokenDeck actionTokenDeck;
+    private final DumbActionTokenDeck actionTokenDeck;  //todo: potrebbe non servire visto che fa tutto il server
     private final int size;
     private final int gameID;
 
@@ -31,18 +31,6 @@ public class DumbModel {
 
     public void addPersonalBoard(String nickname, int position){
         personalBoards.add(new DumbPersonalBoard(nickname, position, size==1));
-    }
-
-    public void updateMarket(List<MarketMarble> updatedMarketMarbles) {
-        this.market.updateMarket(updatedMarketMarbles);
-    }
-
-    public void updateDevelopmentCardsBoard(DumbDevelopmentCard[] updatedDevelopmentCards) {
-        this.developmentCardsBoard.updateBoard(updatedDevelopmentCards);
-    }
-
-    public void updateActionTokenDeck(List<ActionToken> updatedActionTokens) {
-        this.actionTokenDeck.updateActionTokens(updatedActionTokens);
     }
 
     public List<DumbPersonalBoard> getPersonalBoards() {

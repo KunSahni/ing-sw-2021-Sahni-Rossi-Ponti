@@ -78,4 +78,8 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
     public int getCardsNumber() {
         return cards.size();
     }
+
+    public int getSlotIndex() {
+        return slotIndex;
+    }
 }

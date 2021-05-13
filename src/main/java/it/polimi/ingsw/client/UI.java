@@ -53,7 +53,7 @@ public abstract class UI {
      * This method is called every time the client receives an update regarding DumbDevelopmentCardsBoard.
      * @param updatedDevelopmentCardsBoard an updated version of the game's DumbDevelopmentCardsBoard
      */
-    public void updateDevelopmentCardsBoard(DumbDevelopmentCard[] updatedDevelopmentCardsBoard){
+    public void updateDevelopmentCardsBoard(DumbDevelopmentCard[][] updatedDevelopmentCardsBoard){
         dumbModel.getDevelopmentCardsBoard().updateBoard(updatedDevelopmentCardsBoard);
     }
 
@@ -69,7 +69,7 @@ public abstract class UI {
      * This method is called every time the client receives an update regarding DumbMarket.
      * @param updatedMarket an updated version of the game's DumbMarket
      */
-    public void updateMarket(List<MarketMarble> updatedMarket){
+    public void updateMarket(MarketMarble[][] updatedMarket, MarketMarble updatedExtraMarble){
         dumbModel.getMarket().updateMarket(updatedMarket);
     }
 
@@ -77,31 +77,30 @@ public abstract class UI {
      * This method is called every time the client receives an update regarding a player's faithTrackPosition.
      * @param nickname the nickname of the player whose position will be updated
      * @param updatedFaithTrackPosition the updated position of his faithMarker
-     */
-    public void updateFaithTrackPosition(String nickname, int updatedFaithTrackPosition){
-        getPersonalBoard(nickname).ifPresent(
-                dumbPersonalBoard -> dumbPersonalBoard.getFaithTrack().updateFaithMarkerPosition(updatedFaithTrackPosition)
-        );
-    }
-
-    /**
-     * This method is called every time the client receives an update regarding a player's blackCrossPosition.
-     * @param updatedBlackCrossPosition the updated position of the black cross on the faith track
-     */
-    public void updateBlackCrossPosition(int updatedBlackCrossPosition){
-        if(dumbModel.getSize()==1)
-            ((DumbSinglePlayerFaithTrack) dumbModel.getPersonalBoards().get(0).getFaithTrack()).updateBlackCrossPosition(updatedBlackCrossPosition);
-    }
-
-    /**
-     * This method is called every time the client receives an update regarding a player's popesFavors.
-     * @param nickname the nickname of the player whose position will be updated
      * @param updatedPopesFavors the updated list of popesFavors of the player
      */
-    public void updatePopesFavors(String nickname, List<FavorStatus> updatedPopesFavors){
+    public void updateFaithTrack(String nickname, int updatedFaithTrackPosition, List<FavorStatus> updatedPopesFavors){
         getPersonalBoard(nickname).ifPresent(
-                dumbPersonalBoard -> dumbPersonalBoard.getFaithTrack().updatePopesFavors(updatedPopesFavors)
+                dumbPersonalBoard -> {
+                    dumbPersonalBoard.getFaithTrack().updateFaithMarkerPosition(updatedFaithTrackPosition);
+                    dumbPersonalBoard.getFaithTrack().updatePopesFavors(updatedPopesFavors);
+                }
         );
+    }
+
+    /**
+     * This method is called every time the client receives an update regarding the faith track in a single player game
+     * @param updatedFaithTrackPosition the updated position of his faithMarker
+     * @param updatedPopesFavors the updated list of popesFavors of the player
+     * @param updatedBlackCrossPosition the updated position of the black cross on the faith track
+     */
+    public void updateSinglePlayerFaithTrack(int updatedFaithTrackPosition, List<FavorStatus> updatedPopesFavors, int updatedBlackCrossPosition){
+        if(dumbModel.getSize()==1) {
+            updateFaithTrack(nickname, updatedFaithTrackPosition, updatedPopesFavors);
+            getPersonalBoard(nickname).ifPresent(
+                    dumbPersonalBoard -> ((DumbSinglePlayerFaithTrack) dumbPersonalBoard.getFaithTrack()).updateBlackCrossPosition(updatedBlackCrossPosition)
+            );
+        }
     }
 
     /**

@@ -27,13 +27,14 @@ public class DumbMarket {
     }
 
     /**
-     * @param marketMarbles a flattened list of MarketMarbles in which the last element is the extra marble
+     * @param updatedMarket an unpdated layout of the market
      */
-    public void updateMarket(List<MarketMarble> marketMarbles) {
-        IntStream.range(0, marketMarbles.size()-1).forEach(
-                i-> this.market[i/4][i%4] = marketMarbles.get(i)
+    public void updateMarket(MarketMarble[][] updatedMarket) {
+        IntStream.range(0, 4).forEach(
+                i -> IntStream.range(0,3).forEach(
+                        j-> market[i][j] = updatedMarket[i][j]
+                )
         );
-        this.extraMarble = marketMarbles.get(marketMarbles.size()-1);
     }
 
     public MarketMarble[][] getMarket() {
