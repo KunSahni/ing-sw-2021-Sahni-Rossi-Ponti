@@ -4,18 +4,20 @@ import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
+import it.polimi.ingsw.server.model.utils.Actions;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-//todo: StoreLeaderCard related methods are not implemented yet
 //todo: implement pub/sub for rendering
 
 public abstract class UI {
     private DumbModel dumbModel;
     private String nickname;
+    private ArrayList<Actions> turnActions;
 
     public abstract void renderPersonalBoard(DumbPersonalBoard personalBoard);
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
@@ -67,7 +69,7 @@ public abstract class UI {
      * This method is called every time the client receives an update regarding DumbMarket.
      * @param updatedMarket an updated version of the game's DumbMarket
      */
-    public void updateMarket(MarketMarble[] updatedMarket){
+    public void updateMarket(List<MarketMarble> updatedMarket){
         dumbModel.getMarket().updateMarket(updatedMarket);
     }
 
@@ -129,6 +131,8 @@ public abstract class UI {
      * @param updatedTurnStatus true if the player is starting a turn, false if he's finishing it
      */
     public void updateTurnStatus(String nickname, boolean updatedTurnStatus){
+        if(nickname.equals(this.nickname))
+            turnActions.clear();
         getPersonalBoard(nickname).ifPresent(
                 dumbPersonalBoard -> dumbPersonalBoard.updateTurnStatus(updatedTurnStatus)
         );
@@ -191,6 +195,14 @@ public abstract class UI {
         getPersonalBoard(nickname).ifPresent(
                 dumbPersonalBoard -> dumbPersonalBoard.getStrongbox().updateStoredResources(updatedStrongbox)
         );
+    }
+
+    /**
+     * This method is called every time the client receives an update regarding the actions he has performed so far
+     * @param updatedTurnActions a list of all the valid actions requested by the client
+     */
+    public void updateTurnActions(List<Actions> updatedTurnActions){
+        this.turnActions = new ArrayList<>(updatedTurnActions);
     }
 
     /**

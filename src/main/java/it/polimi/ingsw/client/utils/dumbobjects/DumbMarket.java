@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 /**
@@ -28,11 +29,11 @@ public class DumbMarket {
     /**
      * @param marketMarbles a flattened list of MarketMarbles in which the last element is the extra marble
      */
-    public void updateMarket(MarketMarble[] marketMarbles) {
-        IntStream.range(0, marketMarbles.length-1).forEach(
-                i-> this.market[i/4][i%4] = marketMarbles[i]
+    public void updateMarket(List<MarketMarble> marketMarbles) {
+        IntStream.range(0, marketMarbles.size()-1).forEach(
+                i-> this.market[i/4][i%4] = marketMarbles.get(i)
         );
-        this.extraMarble = marketMarbles[marketMarbles.length-1];
+        this.extraMarble = marketMarbles.get(marketMarbles.size()-1);
     }
 
     public MarketMarble[][] getMarket() {

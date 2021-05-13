@@ -33,7 +33,7 @@ public class DumbModel {
         personalBoards.add(new DumbPersonalBoard(nickname, position, size==1));
     }
 
-    public void updateMarket(MarketMarble[] updatedMarketMarbles) {
+    public void updateMarket(List<MarketMarble> updatedMarketMarbles) {
         this.market.updateMarket(updatedMarketMarbles);
     }
 

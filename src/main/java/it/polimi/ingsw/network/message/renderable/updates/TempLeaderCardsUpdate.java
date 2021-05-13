@@ -9,10 +9,10 @@ import java.util.List;
 /**
  * This class contains an update regarding the leader cards from which a player can choose
  */
-public class LeaderCardsChoiceUpdate extends PrivateRenderable {
+public class TempLeaderCardsUpdate extends PrivateRenderable {
     private final List<DumbLeaderCard> leaderCards;
 
-    public LeaderCardsChoiceUpdate(String nickname, List<DumbLeaderCard> leaderCards) {
+    public TempLeaderCardsUpdate(String nickname, List<DumbLeaderCard> leaderCards) {
         super(nickname);
         this.leaderCards = leaderCards;
     }
