@@ -197,7 +197,7 @@ public abstract class UI {
      * @param nickname a player whose DumbPersonalBoard need to be retrieved
      * @return the DumbPersonalBoard corresponding to the player with the nickname given as a parameter
      */
-    public Optional<DumbPersonalBoard> getPersonalBoard(String nickname){
+    private Optional<DumbPersonalBoard> getPersonalBoard(String nickname){
         return dumbModel.getPersonalBoards()
                 .stream()
                 .filter(

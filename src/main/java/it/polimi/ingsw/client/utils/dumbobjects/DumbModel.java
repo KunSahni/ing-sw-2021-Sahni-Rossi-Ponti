@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client;
+package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;

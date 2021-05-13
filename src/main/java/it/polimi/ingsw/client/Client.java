@@ -14,7 +14,6 @@ import java.util.concurrent.Flow.*;
  * This is the Client of the game which receives and elaborates all the Renderables sent by the Server
  */
 public class Client implements Subscriber<Renderable> {
-    private String nickname;
     private Player currentPlayer;
     private final Queue<Renderable> updatesQueue;
     private final UI ui;
@@ -123,16 +122,8 @@ public class Client implements Subscriber<Renderable> {
 
     }
 
-    private void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
     private void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
-    }
-
-    private String getNickname() {
-        return nickname;
     }
 
     private Player getCurrentPlayer() {
