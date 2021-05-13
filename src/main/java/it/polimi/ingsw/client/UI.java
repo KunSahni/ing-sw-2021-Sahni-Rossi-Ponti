@@ -23,7 +23,7 @@ public abstract class UI {
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
     public abstract void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     public abstract void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
-    public abstract void renderTempMarbles(List<MarketMarble> updateMarbles);
+    public abstract void renderTempMarbles(Map<MarketMarble, Integer> updateMarbles);
     public abstract void renderResourcePregameChoice(int numberOfResources);
     public abstract void renderMarket(DumbMarket market);
     public abstract void renderMessage(String message);
@@ -45,8 +45,28 @@ public abstract class UI {
      * @param nickname the nickname of the player that needs to be added
      * @param position the position of the player on the "table"
      */
-    public void addPersonalBoard(String nickname, int position){
+    private void addPersonalBoard(String nickname, int position){
         dumbModel.addPersonalBoard(nickname, position);
+    }
+
+    /**
+     * This method creates a new PersonalBoard inside the DumbModel base on the passed parameters
+     * @param nickname the nickname of the player that needs to be added
+     * @param position the position of the player on the "table"
+     * @param updatedTurnStatus true if the player is starting a turn, false if he's finishing it
+     * @param updatedConnectionStatus true if the player is connected to the server, false if he's disconnected from the server
+     */
+    public void updatePersonalBoard(String nickname, int position, boolean updatedTurnStatus, boolean updatedConnectionStatus){
+        getPersonalBoard(nickname).ifPresentOrElse(
+                dumbPersonalBoard -> {
+                    dumbPersonalBoard.updateConnectionStatus(updatedConnectionStatus);
+                    dumbPersonalBoard.updateTurnStatus(updatedTurnStatus);
+                },
+                ()->{
+                    addPersonalBoard(nickname, position);
+                    updatePersonalBoard(nickname, position, updatedTurnStatus, updatedConnectionStatus);
+                }
+        );
     }
 
     /**
@@ -121,30 +141,6 @@ public abstract class UI {
     public void updateLeaderCards(String nickname, List<DumbLeaderCard> updatedLeaderCards){
         getPersonalBoard(nickname).ifPresent(
                 dumbPersonalBoard -> dumbPersonalBoard.updateLeaderCards(updatedLeaderCards)
-        );
-    }
-
-    /**
-     * This method is called every time the client receives an update regarding a player's turnStatus.
-     * @param nickname the nickname of the player whose turnStatus will be updated
-     * @param updatedTurnStatus true if the player is starting a turn, false if he's finishing it
-     */
-    public void updateTurnStatus(String nickname, boolean updatedTurnStatus){
-        if(nickname.equals(this.nickname))
-            turnActions.clear();
-        getPersonalBoard(nickname).ifPresent(
-                dumbPersonalBoard -> dumbPersonalBoard.updateTurnStatus(updatedTurnStatus)
-        );
-    }
-
-    /**
-     * This method is called every time the client receives an update regarding a player's connectionStatus.
-     * @param nickname the nickname of the player whose connectionStatus will be updated
-     * @param updatedConnectionStatus true if the player is connected to the server, false if he's disconnected from the server
-     */
-    public void updateConnectionStatus(String nickname, boolean updatedConnectionStatus){
-        getPersonalBoard(nickname).ifPresent(
-                dumbPersonalBoard -> dumbPersonalBoard.updateConnectionStatus(updatedConnectionStatus)
         );
     }
 
