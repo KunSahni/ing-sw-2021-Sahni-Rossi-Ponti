@@ -12,6 +12,7 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
 import it.polimi.ingsw.network.message.renderable.Renderable;
+import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.*;
@@ -21,6 +22,7 @@ import java.util.concurrent.SubmissionPublisher;
 
 // TODO: this has to be async to not interrupt server flow
 // maybe not, it is important that the calls happen in the right order
+// TODO: move to model package
 public class ChangesHandler {
     private final String root;
     private final SubmissionPublisher<Renderable> submissionPublisher;
@@ -140,6 +142,17 @@ public class ChangesHandler {
 
     public void writeLeaderCardsDeck(LeaderCardsDeck leaderCardsDeck) {
         changesBuffer.put(leaderCardsDeck, root + "LeaderCardsDeck.json");
+    }
+
+    // Personal board
+    public void publishPersonalBoard(String nickname, PersonalBoard personalBoard) {
+        publishPlayerLeaderCards(nickname, personalBoard.getLeaderCards());
+        publishWarehouseDepots(nickname, personalBoard.getWarehouseDepots());
+        publishStrongbox(nickname, personalBoard.getStrongbox());
+        publishFaithTrack(nickname, personalBoard.getFaithTrack());
+        personalBoard.getDevelopmentCardSlots().forEach(
+                slot -> publishDevelopmentCardSlot(nickname, slot)
+        );
     }
 
     // Player on-board Leader Cards
