@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
@@ -12,16 +11,17 @@ import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 public class DevelopmentCardSlot implements VictoryPointsElement {
     private final LinkedList<DevelopmentCard> cards;
-    private final int slotIndex;
-    private final ChangesHandler changesHandler;
-    private final String nickname;
+    private int slotIndex;
+    private ChangesHandler changesHandler;
+    private String nickname;
 
-    public DevelopmentCardSlot(ChangesHandler changesHandler, String nickname, int slotIndex)
-            throws FileNotFoundException {
-        this.changesHandler = changesHandler;
+    private DevelopmentCardSlot() {
+        this.cards = new LinkedList<>();
+    }
+
+    public void init(String nickname, ChangesHandler changesHandler) {
         this.nickname = nickname;
-        this.slotIndex = slotIndex;
-        this.cards = new LinkedList<>(changesHandler.readPlayerDevelopmentCardSlot(nickname, slotIndex));
+        this.changesHandler = changesHandler;
     }
 
     /**
@@ -45,7 +45,7 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
      */
     public void placeCard(DevelopmentCard card) {
         cards.addFirst(card);
-        changesHandler.writePlayerDevelopmentCardSlot(nickname, slotIndex, cards);
+        changesHandler.writeDevelopmentCardSlot(nickname, this);
     }
 
     public boolean canPlaceCard(DevelopmentCard card) {
@@ -55,10 +55,12 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
             case LEVEL3 -> peek().getLevel().equals(Level.LEVEL2);
         };
     }
+
     /**
      * Returns a ProductionOutput object created by the topmost production card
      */
     public ProductionOutput produce() {
+        assert cards.peek() != null;
         return cards.peek().produce();
     }
 

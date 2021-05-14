@@ -4,7 +4,7 @@ import java.util.*;
 public class DevelopmentCardsDeck {
     private final LinkedList<DevelopmentCard> deck;
 
-    public DevelopmentCardsDeck() {
+    private DevelopmentCardsDeck() {
         deck = new LinkedList<>();
     }
 

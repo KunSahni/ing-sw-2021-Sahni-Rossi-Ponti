@@ -28,11 +28,11 @@ public class PersonalBoard implements VictoryPointsElement {
         this.leaderCards = changesHandler.readPlayerLeaderCards(nickname);
         this.developmentCardSlots = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
-            developmentCardSlots.add(changesHandler.readPlayerDevelopmentCardSlot(nickname, i));
+            developmentCardSlots.add(changesHandler.readDevelopmentCardSlot(nickname, i));
         }
-        this.faithTrack = changesHandler.readPlayerFaithTrack(nickname);
-        this.warehouseDepots = changesHandler.readPlayerWarehouseDepots(nickname);
-        this.strongbox = changesHandler.readPlayerStrongbox(nickname);
+        this.faithTrack = changesHandler.readFaithTrack(nickname);
+        this.warehouseDepots = changesHandler.readWarehouseDepots(nickname);
+        this.strongbox = changesHandler.readStrongbox(nickname);
     }
 
     public List<LeaderCard> getLeaderCards() {
@@ -77,12 +77,12 @@ public class PersonalBoard implements VictoryPointsElement {
         }
     }
 
-    /**
-     * @return shallow copy of all currently stored resources by the player
-     */
-    public Map<Resource, Integer> getResources() {
-        return new HashMap<>(proxyStorage.getStoredResources());
-    }
+//    /**
+//     * @return shallow copy of all currently stored resources by the player
+//     */
+//    public Map<Resource, Integer> getResources() {
+//        return new HashMap<>(proxyStorage.getStoredResources());
+//    }
 
     /**
      * Returns true if the resources listed in parameter are available
@@ -184,10 +184,8 @@ public class PersonalBoard implements VictoryPointsElement {
                             );
                         }}
                 ));
-        proxyStorage.discardResources(resources);
         changesHandler.writePlayerLeaderCards(nickname, leaderCards);
-        changesHandler.writePlayerWarehouseDepots(nickname, warehouseDepots.getStoredResources());
-        changesHandler.writePlayerProxyStorage(nickname, proxyStorage.getStoredResources());
+        changesHandler.writeWarehouseDepots(nickname, warehouseDepots);
     }
 
     /**
@@ -197,9 +195,7 @@ public class PersonalBoard implements VictoryPointsElement {
      */
     public void discardFromStrongbox(Map<Resource, Integer> resources) {
         strongbox.discardResources(resources);
-        proxyStorage.discardResources(resources);
-        changesHandler.writePlayerStrongbox(nickname, strongbox.getStoredResources());
-        changesHandler.writePlayerProxyStorage(nickname, proxyStorage.getStoredResources());
+        changesHandler.writeStrongbox(nickname, strongbox);
     }
 
     /**
@@ -226,7 +222,6 @@ public class PersonalBoard implements VictoryPointsElement {
      * @param resources map containing the resources to add
      */
     public void storeInDepots(Map<Resource, Integer> resources) {
-        proxyStorage.storeResources(resources);
         Map<Resource, Integer> storeInLeaderCards = leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
                 .map(x -> (StoreLeaderCard) x)
@@ -250,6 +245,8 @@ public class PersonalBoard implements VictoryPointsElement {
                 ));
         storeInLeaderCards.forEach((k, v) -> resources.put(k, resources.get(k) - v));
         warehouseDepots.storeResources(resources);
+        changesHandler.writePlayerLeaderCards(nickname, leaderCards);
+        changesHandler.writeWarehouseDepots(nickname, warehouseDepots);
     }
 
     /**
@@ -258,8 +255,8 @@ public class PersonalBoard implements VictoryPointsElement {
      * @param resources map containing the resources to add
      */
     public void storeInStrongbox(Map<Resource, Integer> resources) {
-        proxyStorage.storeResources(resources);
         strongbox.storeResources(resources);
+        changesHandler.writeStrongbox(nickname, strongbox);
     }
 
     /**

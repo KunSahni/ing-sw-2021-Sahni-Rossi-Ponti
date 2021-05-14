@@ -8,7 +8,7 @@ public class DevelopmentCardsBoard {
     private transient ChangesHandler changesHandler;
     private final DevelopmentCardsDeck[][] board;
 
-    public DevelopmentCardsBoard() {
+    private DevelopmentCardsBoard() {
         this.board = new DevelopmentCardsDeck[3][4];
     }
 

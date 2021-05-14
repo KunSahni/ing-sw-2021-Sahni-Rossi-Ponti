@@ -5,7 +5,6 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.utils.ResourceManager;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class StoreLeaderCard extends LeaderCard {
@@ -15,7 +14,8 @@ public class StoreLeaderCard extends LeaderCard {
     public StoreLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements,
                            Resource storedResourceType, Map<Resource, Integer> resources) {
         super(LeaderCardAbility.STORE, victoryPoints, leaderCardRequirements);
-        this.storage = new ResourceManager(resources);
+        this.storage = new ResourceManager();
+        this.storage.storeResources(resources);
         this.storedResource = storedResourceType;
     }
 

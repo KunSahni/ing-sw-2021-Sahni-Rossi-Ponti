@@ -17,25 +17,23 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
  */
 
 public class Player implements Comparable<Player> {
-    private String nickname;
+    private transient String nickname;
     private int position;
     private transient PersonalBoard personalBoard;
     private List<LeaderCard> tempLeaderCards;
     private final List<Actions> performedActions;
     private Map<MarketMarble, Integer> tempMarbles;
     private boolean isPlayersTurn;
-    private boolean isConnected;
+    private transient boolean isConnected;
     private transient ChangesHandler changesHandler;
 
-    public Player() {
+    private Player() {
         this.performedActions = new ArrayList<>();
     }
 
     public void init(ChangesHandler changesHandler, String nickname)
             throws FileNotFoundException {
-        if (this.nickname == null) {
-            this.nickname = nickname;
-        }
+        this.nickname = nickname;
         this.personalBoard = new PersonalBoard(changesHandler, nickname);
         this.changesHandler = changesHandler;
     }
@@ -83,7 +81,7 @@ public class Player implements Comparable<Player> {
      */
     public void setTempLeaderCards(List<LeaderCard> leaderCards) {
         this.tempLeaderCards = leaderCards;
-        changesHandler.writePlayerTempLeaderCards(nickname, tempLeaderCards);
+        changesHandler.writePlayer(this);
     }
 
     /**
@@ -94,6 +92,7 @@ public class Player implements Comparable<Player> {
     public void chooseTwoLeaderCards(List<LeaderCard> chosenCards) {
         personalBoard.setLeaderCards(chosenCards);
         this.tempLeaderCards.clear();
+        changesHandler.writePlayer(this);
     }
 
     /**
@@ -103,7 +102,7 @@ public class Player implements Comparable<Player> {
      */
     public void setPosition(int position) {
         this.position = position;
-        changesHandler.writePlayerPosition(nickname, position);
+        changesHandler.writePlayer(this);
     }
 
     /**
@@ -112,7 +111,8 @@ public class Player implements Comparable<Player> {
      */
     public void addAction(Actions action) {
         performedActions.add(action);
-        changesHandler.writePlayerTurnActions(nickname, performedActions);
+        changesHandler.writePlayer(this);
+        changesHandler.flushBufferToDisk();
     }
 
     /**
@@ -122,64 +122,64 @@ public class Player implements Comparable<Player> {
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
         this.tempMarbles = new HashMap<>(tempMarbles);
-        changesHandler.writePlayerTempMarbles(nickname, this.tempMarbles);
+        changesHandler.writePlayer(this);
     }
 
-    /**
-     * This method returns a list of all the states in which the Player could go next
-     *
-     * @return a list of all the possible Actions that the Player can choose
-     */
-    public List<Actions> availableNextStates() {
-        List<Actions> availableNextStates = new ArrayList<>();
-
-        //Check if the Turn has just started
-        if (performedActions.isEmpty() || hasOnlyPerformedLeaderCardActions()) {
-            //The player can always choose to take resources from the market since the Turn just
-            // started
-            availableNextStates.add(Actions.TAKERESOURCEACTION);
-
-            //Checks if the player has any inactive LeaderCard which can be activated
-            if (canActivateLeaderCard())
-                availableNextStates.add(Actions.ACTIVATED_LEADER_CARD_ACTION);
-
-            //Checks if the player has any inactive LeaderCard which can be discarded
-            if (canDiscardLeaderCard())
-                availableNextStates.add(Actions.DISCARDED_LEADER_CARD_ACTION);
-
-            //Checks if the player can afford any of the available DevelopmentCards
-            if (canAffordDevelopmentCard())
-                availableNextStates.add(Actions.BOUGHT_DEVELOPMENT_CARD_ACTION);
-
-            //Checks if the player can afford any of the possible productions
-            if (canAffordProduction())
-                availableNextStates.add(Actions.ACTIVATED_PRODUCTION_ACTION);
-
-            return availableNextStates;
-        }
-
-        //Checks if the Turn is in a state where the user has performed one of the compulsory action
-        if (hasPerformedCompulsoryAction()) {
-            //The player can always end the turn since he has already done one of the compulsory
-            // action
-            availableNextStates.add(Actions.ENDACTION);
-
-            //Checks if the player has any inactive LeaderCard which can be activated
-            if (canActivateLeaderCard())
-                availableNextStates.add(Actions.ACTIVATED_LEADER_CARD_ACTION);
-
-            //Checks if the player has any inactive LeaderCard which can be discarded
-            if (canDiscardLeaderCard())
-                availableNextStates.add(Actions.DISCARDED_LEADER_CARD_ACTION);
-
-            return availableNextStates;
-        }
-
-        //In every other case the player can't choose any action, so the only option is to end
-        // the turn
-        availableNextStates.add(Actions.ENDACTION);
-        return availableNextStates;
-    }
+//    /**
+//     * This method returns a list of all the states in which the Player could go next
+//     *
+//     * @return a list of all the possible Actions that the Player can choose
+//     */
+//    public List<Actions> availableNextStates() {
+//        List<Actions> availableNextStates = new ArrayList<>();
+//
+//        //Check if the Turn has just started
+//        if (performedActions.isEmpty() || hasOnlyPerformedLeaderCardActions()) {
+//            //The player can always choose to take resources from the market since the Turn just
+//            // started
+//            availableNextStates.add(Actions.TAKERESOURCEACTION);
+//
+//            //Checks if the player has any inactive LeaderCard which can be activated
+//            if (canActivateLeaderCard())
+//                availableNextStates.add(Actions.ACTIVATED_LEADER_CARD_ACTION);
+//
+//            //Checks if the player has any inactive LeaderCard which can be discarded
+//            if (canDiscardLeaderCard())
+//                availableNextStates.add(Actions.DISCARDED_LEADER_CARD_ACTION);
+//
+//            //Checks if the player can afford any of the available DevelopmentCards
+//            if (canAffordDevelopmentCard())
+//                availableNextStates.add(Actions.BOUGHT_DEVELOPMENT_CARD_ACTION);
+//
+//            //Checks if the player can afford any of the possible productions
+//            if (canAffordProduction())
+//                availableNextStates.add(Actions.ACTIVATED_PRODUCTION_ACTION);
+//
+//            return availableNextStates;
+//        }
+//
+//        //Checks if the Turn is in a state where the user has performed one of the compulsory action
+//        if (hasPerformedCompulsoryAction()) {
+//            //The player can always end the turn since he has already done one of the compulsory
+//            // action
+//            availableNextStates.add(Actions.ENDACTION);
+//
+//            //Checks if the player has any inactive LeaderCard which can be activated
+//            if (canActivateLeaderCard())
+//                availableNextStates.add(Actions.ACTIVATED_LEADER_CARD_ACTION);
+//
+//            //Checks if the player has any inactive LeaderCard which can be discarded
+//            if (canDiscardLeaderCard())
+//                availableNextStates.add(Actions.DISCARDED_LEADER_CARD_ACTION);
+//
+//            return availableNextStates;
+//        }
+//
+//        //In every other case the player can't choose any action, so the only option is to end
+//        // the turn
+//        availableNextStates.add(Actions.ENDACTION);
+//        return availableNextStates;
+//    }
 
     /**
      * Checks if the supplied action can be added to the executed
@@ -197,78 +197,78 @@ public class Player implements Comparable<Player> {
         }
     }
 
-    /**
-     * This method checks if the Player can currently afford to buy any of the DevelopmentCard
-     * available in the DevelopmentCardsBoard
-     *
-     * @return true if the Player can afford any, false otherwise
-     */
-    private boolean canAffordDevelopmentCard() {
-        return Arrays.stream(game.getDevelopmentCardsBoard().peekBoard()).anyMatch(
-                developmentCards -> Arrays.stream(developmentCards).anyMatch(
-                        developmentCard -> personalBoard.containsResources(developmentCard.peek().getCost())
-                )
-        );
-    }
-
-    /**
-     * This method checks if the Player can currently afford to use any of his DevelopmentSlots
-     * to produce
-     *
-     * @return true if the Player can afford any, false otherwise
-     */
-    private boolean canAffordProduction() {
-        boolean canProduceFromDevelopmentCards =
-                personalBoard.getDevelopmentCardSlots().stream().anyMatch(
-                        slot -> personalBoard.containsResources(slot.peek().getInputResources())
-                );
-
-        boolean canProduceFromDefaultSlot = personalBoard.getResourceCount() >= 2;
-
-        boolean canProduceFromLeaderCards = personalBoard.getLeaderCards().stream().anyMatch(
-                leaderCard -> leaderCard.isActive() && leaderCard.getAbility().equals(LeaderCardAbility.PRODUCE)
-        ) && personalBoard.getResourceCount() >= 1;
-
-        return canProduceFromDevelopmentCards || canProduceFromDefaultSlot || canProduceFromLeaderCards;
-    }
-
-    /**
-     * This method checks if the Player can currently afford to activate any of the LeaderCards
-     * that he has
-     *
-     * @return true if the Player can afford any, false otherwise
-     */
-    private boolean canActivateLeaderCard() {
-        List<LeaderCard> leaderCards = personalBoard.getLeaderCards();
-        Optional<LeaderCard> card = leaderCards.stream().filter(
-                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements())
-        ).findAny();
-
-        return card.isPresent();
-    }
-
-    /**
-     * This method checks if the Player can currently discard any of the LeaderCards that he has
-     *
-     * @return true if the Player can discard any, false otherwise
-     */
-    private boolean canDiscardLeaderCard() {
-        return personalBoard.getLeaderCards().stream().anyMatch(
-                leaderCard -> !leaderCard.isActive()
-        );
-    }
-
-    /**
-     * This method checks if the Player has only performed LeaderCard activation or discard
-     * related action
-     *
-     * @return true if the Player has only performed such action, false otherwise
-     */
-    private boolean hasOnlyPerformedLeaderCardActions() {
-        return performedActions.stream().filter(
-                performedAction -> performedAction instanceof ActivateLeaderCardAction || performedAction instanceof DiscardLeaderCardAction
-        ).collect(Collectors.toList()).containsAll(performedActions);
-    }
+//    /**
+//     * This method checks if the Player can currently afford to buy any of the DevelopmentCard
+//     * available in the DevelopmentCardsBoard
+//     *
+//     * @return true if the Player can afford any, false otherwise
+//     */
+//    private boolean canAffordDevelopmentCard() {
+//        return Arrays.stream(game.getDevelopmentCardsBoard().peekBoard()).anyMatch(
+//                developmentCards -> Arrays.stream(developmentCards).anyMatch(
+//                        developmentCard -> personalBoard.containsResources(developmentCard.peek().getCost())
+//                )
+//        );
+//    }
+//
+//    /**
+//     * This method checks if the Player can currently afford to use any of his DevelopmentSlots
+//     * to produce
+//     *
+//     * @return true if the Player can afford any, false otherwise
+//     */
+//    private boolean canAffordProduction() {
+//        boolean canProduceFromDevelopmentCards =
+//                personalBoard.getDevelopmentCardSlots().stream().anyMatch(
+//                        slot -> personalBoard.containsResources(slot.peek().getInputResources())
+//                );
+//
+//        boolean canProduceFromDefaultSlot = personalBoard.getResourceCount() >= 2;
+//
+//        boolean canProduceFromLeaderCards = personalBoard.getLeaderCards().stream().anyMatch(
+//                leaderCard -> leaderCard.isActive() && leaderCard.getAbility().equals(LeaderCardAbility.PRODUCE)
+//        ) && personalBoard.getResourceCount() >= 1;
+//
+//        return canProduceFromDevelopmentCards || canProduceFromDefaultSlot || canProduceFromLeaderCards;
+//    }
+//
+//    /**
+//     * This method checks if the Player can currently afford to activate any of the LeaderCards
+//     * that he has
+//     *
+//     * @return true if the Player can afford any, false otherwise
+//     */
+//    private boolean canActivateLeaderCard() {
+//        List<LeaderCard> leaderCards = personalBoard.getLeaderCards();
+//        Optional<LeaderCard> card = leaderCards.stream().filter(
+//                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements())
+//        ).findAny();
+//
+//        return card.isPresent();
+//    }
+//
+//    /**
+//     * This method checks if the Player can currently discard any of the LeaderCards that he has
+//     *
+//     * @return true if the Player can discard any, false otherwise
+//     */
+//    private boolean canDiscardLeaderCard() {
+//        return personalBoard.getLeaderCards().stream().anyMatch(
+//                leaderCard -> !leaderCard.isActive()
+//        );
+//    }
+//
+//    /**
+//     * This method checks if the Player has only performed LeaderCard activation or discard
+//     * related action
+//     *
+//     * @return true if the Player has only performed such action, false otherwise
+//     */
+//    private boolean hasOnlyPerformedLeaderCardActions() {
+//        return performedActions.stream().filter(
+//                performedAction -> performedAction instanceof ActivateLeaderCardAction || performedAction instanceof DiscardLeaderCardAction
+//        ).collect(Collectors.toList()).containsAll(performedActions);
+//    }
 
     /**
      * This method checks if the Player has performed any of the compulsory Actions
@@ -285,7 +285,7 @@ public class Player implements Comparable<Player> {
      */
     public void startTurn() {
         isPlayersTurn = true;
-        changesHandler.writePlayerTurnFlag(nickname, true);
+        changesHandler.writePlayer(this);
     }
 
     /**
@@ -293,7 +293,7 @@ public class Player implements Comparable<Player> {
      */
     public void finishTurn() {
         isPlayersTurn = false;
-        changesHandler.writePlayerTurnFlag(nickname, false);
+        changesHandler.writePlayer(this);
     }
 
 

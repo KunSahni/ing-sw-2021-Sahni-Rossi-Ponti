@@ -15,14 +15,16 @@ import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 public class FaithTrack implements VictoryPointsElement {
     private int faithMarkerPosition;
     private final List<FavorStatus> popesFavors;
-    private final ChangesHandler changesHandler;
-    private final String nickname;
+    private transient ChangesHandler changesHandler;
+    private transient String nickname;
 
-    public FaithTrack(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
-        this.changesHandler = changesHandler;
+    private FaithTrack() {
+        this.popesFavors = new ArrayList<>();
+    }
+
+    public void init(String nickname, ChangesHandler changesHandler) {
         this.nickname = nickname;
-        this.popesFavors = changesHandler.readPlayerPopesFavors(nickname);
-        this.faithMarkerPosition = changesHandler.readPlayerFaithMarkerPosition(nickname);
+        this.changesHandler = changesHandler;
     }
 
     /**
@@ -86,23 +88,11 @@ public class FaithTrack implements VictoryPointsElement {
     }
 
     /**
-     * Moves the marker a number of times equivalent to the parameter.
-     */
-    public int moveMarker(int steps) {
-        for (int i = 0; i < steps; i++) {
-            moveMarker();
-        }
-        return faithMarkerPosition;
-    }
-
-    /**
      * Moves the Faith Marker up by one position on the Faith Track.
-     * @return updated position.
      */
-    public int moveMarker() {
+    public void moveMarker() {
         faithMarkerPosition++;
-        changesHandler.writePlayerFaithMarkerPosition(nickname, faithMarkerPosition);
-        return faithMarkerPosition;
+        changesHandler.writeFaithTrack(nickname,this);
     }
 
     /**
@@ -136,6 +126,6 @@ public class FaithTrack implements VictoryPointsElement {
         } else {
             popesFavors.set(index - 1, FavorStatus.DISCARDED);
         }
-        changesHandler.writePlayerPopesFavors(nickname, popesFavors);
+        changesHandler.writeFaithTrack(nickname, this);
     }
 }
