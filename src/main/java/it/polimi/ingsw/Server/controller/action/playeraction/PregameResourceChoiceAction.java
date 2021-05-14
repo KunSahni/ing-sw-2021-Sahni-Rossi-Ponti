@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.controller.action.playeraction;
 
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
-import it.polimi.ingsw.server.controller.action.gameaction.InitFaithPositionsAction;
+import it.polimi.ingsw.server.controller.action.gameaction.StartGameAction;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
@@ -29,18 +29,18 @@ public class PregameResourceChoiceAction extends PlayerAction {
         if (game.getPlayerList().stream()
                 .filter(player -> player.getPosition() != 0)
                 .allMatch(player -> player.getPersonalBoard().getResourceCount() > 0)) {
-            consequentAction = new InitFaithPositionsAction(game);
-            game.setNextState(GameState.PRE_GAME_INIT_FAITH_POSITIONS);
+            consequentAction = new StartGameAction(game);
+            game.setState(GameState.PICKED_RESOURCES);
         }
         return consequentAction;
     }
 
     @Override
     public void runChecks() throws InvalidActionException{
-        if (!game.getCurrentState().equals(GameState.PRE_GAME_RESOURCES_CHOICE))
-            throw new InvalidActionException("Wrong game state");
+        if (!game.getCurrentState().equals(GameState.ASSIGNED_INKWELL))
+            throw new InvalidActionException("You cannot choose Pregame Resources at this time.");
         if (game.getPlayer(nickname).getPersonalBoard().getResourceCount() != 0)
-            throw new InvalidActionException("You already have resources in your storages");
+            throw new InvalidActionException("You already have resources in your storages.");
         int resourceCount = resources.values()
                 .stream()
                 .reduce(0, Integer::sum);

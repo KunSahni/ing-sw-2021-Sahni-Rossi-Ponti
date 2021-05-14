@@ -193,6 +193,8 @@ public class Player implements Comparable<Player> {
         } else {
             if (action.isCompulsory())
                 return !hasPerformedCompulsoryAction();
+            else if (action.equals(Actions.TURN_ENDED_ACTION))
+                return hasPerformedCompulsoryAction();
             else return true;
         }
     }

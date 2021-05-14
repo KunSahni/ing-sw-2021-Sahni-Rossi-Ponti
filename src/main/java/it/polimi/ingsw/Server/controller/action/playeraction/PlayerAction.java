@@ -24,7 +24,7 @@ public abstract class PlayerAction implements Action, Serializable {
      * @param nickname server-side reference used to identify the
      *                 Player object.
      */
-    public void setPlayerNickname(String nickname) {
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 

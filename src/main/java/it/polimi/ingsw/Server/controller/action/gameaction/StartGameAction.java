@@ -12,7 +12,7 @@ public class StartGameAction extends GameAction {
     public GameAction execute() {
         game.sortPlayers();
         game.getPlayerList().get(0).startTurn();
-        game.setNextState(GameState.IN_GAME_TURN_STARTED);
+        game.setState(GameState.IN_GAME);
         return null;
     }
 }

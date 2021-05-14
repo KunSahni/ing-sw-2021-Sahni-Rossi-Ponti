@@ -3,10 +3,10 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.controller.action.gameaction.AssignInkwellAction;
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
-import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.utils.GameState;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the action of choosing two LeaderCards at the beginning of the game
@@ -25,24 +25,26 @@ public class PregameLeaderCardsChoiceAction extends PlayerAction {
     @Override
     public GameAction execute() {
         GameAction consequentAction = null;
-        game.getPlayer(nickname).chooseTwoLeaderCards(leaderCards);
+        game.getPlayer(nickname).chooseTwoLeaderCards(leaderCards.stream()
+                .map(DumbLeaderCard::convert).collect(Collectors.toList()));
         if (game.getPlayerList()
                 .stream()
                 .allMatch(player ->
                         player.getPersonalBoard().getLeaderCards().size() == 2)) {
             consequentAction = new AssignInkwellAction(game);
-            game.setNextState(GameState.PRE_GAME_ASSIGN_INKWELL);
+            game.setState(GameState.PICKED_LEADER_CARDS);
         }
         return consequentAction;
     }
 
     @Override
     public void runChecks() throws InvalidActionException {
-        if (!game.getCurrentState().equals(GameState.PRE_GAME_LEADER_CARDS_CHOICE))
-            throw new InvalidActionException("Wrong game state");
+        if (!game.getCurrentState().equals(GameState.DEALT_LEADER_CARDS))
+            throw new InvalidActionException("You cannot pick Leader Cards at this time.");
         if (leaderCards.size() != 2)
             throw new InvalidActionException("You can only pick 2 Leader Cards");
-        if (!game.getPlayer(nickname).getTempLeaderCards().containsAll(leaderCards))
+        if (!game.getPlayer(nickname).getTempLeaderCards().containsAll(
+                leaderCards.stream().map(DumbLeaderCard::convert).collect(Collectors.toList())))
             throw new InvalidActionException("Selected cards are invalid");
     }
 }

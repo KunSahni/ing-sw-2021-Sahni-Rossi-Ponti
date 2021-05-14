@@ -19,7 +19,11 @@ public class AssignInkwellAction extends GameAction{
         Collections.shuffle(playerList);
         IntStream.range(1, playerList.size() + 1)
                 .forEach(i -> playerList.get(i).setPosition(i));
-        game.setNextState(GameState.PRE_GAME_RESOURCES_CHOICE);
+        // Move Faith Markers by one tile for players 3 and 4
+        playerList.stream()
+                .filter(player -> player.getPosition() > 2)
+                .forEach(player -> player.getPersonalBoard().getFaithTrack().moveMarker());
+        game.setState(GameState.ASSIGNED_INKWELL);
         return null;
     }
 }
