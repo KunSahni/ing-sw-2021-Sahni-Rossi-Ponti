@@ -48,6 +48,7 @@ public class Game {
         return new ArrayList<>(players);
     }
 
+    // Always sorted after inkwell assignment
     public Player getPlayer(String nickname) {
         Optional<Player> target = players.stream()
                 .filter(player -> player.getNickname().equals(nickname))
@@ -57,17 +58,6 @@ public class Game {
 
     public void sortPlayers() {
         Collections.sort(players);
-    }
-
-    public void nextTurn() {
-        if (players.stream().anyMatch(Player::isConnected)) {
-            players.getFirst().finishTurn();
-            players.addLast(players.removeFirst());
-            while (!players.getFirst().isConnected())
-                players.addLast(players.removeFirst());
-            players.getFirst().startTurn();
-        }
-
     }
 
     public void connect(String nickname) {
