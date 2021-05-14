@@ -47,6 +47,14 @@ public class PersonalBoard implements VictoryPointsElement {
         return faithTrack;
     }
 
+    public ResourceManager getStrongbox() {
+        return strongbox;
+    }
+
+    public ResourceManager getWarehouseDepots() {
+        return warehouseDepots;
+    }
+
     public int getResourceCount() {
         return proxyStorage.getResourceCount();
     }
