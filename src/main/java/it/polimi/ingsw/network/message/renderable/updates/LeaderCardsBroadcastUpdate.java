@@ -17,27 +17,9 @@ public class LeaderCardsBroadcastUpdate extends BroadcastRenderable {
 
     public LeaderCardsBroadcastUpdate(String nickname, List<LeaderCard> updatedLeaderCards) {
         this.nickname = nickname;
-        this.updatedLeaderCards = updatedLeaderCards.stream().map(
-                leaderCard -> {
-                    switch (leaderCard.getAbility()){
-                        case DISCOUNT -> {
-                            return new DumbDiscountLeaderCard((DiscountLeaderCard) leaderCard);
-                        }
-                        case STORE -> {
-                            return new DumbStoreLeaderCard((StoreLeaderCard) leaderCard);
-                        }
-                        case CONVERT -> {
-                            return new DumbConvertLeaderCard((ConvertLeaderCard) leaderCard);
-                        }
-                        case PRODUCE -> {
-                            return new DumbProduceLeaderCard((ProduceLeaderCard) leaderCard);
-                        }
-                        default -> {
-                            return null;
-                        }
-                    }
-                }
-        ).collect(Collectors.toList());
+        this.updatedLeaderCards = updatedLeaderCards.stream()
+                .map(card -> (card.isActive()) ? card.convertToDumb() : null)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.message.renderable.updates;
 
-import com.sun.source.tree.BreakTree;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
@@ -17,27 +16,9 @@ public class LeaderCardsPrivateUpdate extends PrivateRenderable {
 
     public LeaderCardsPrivateUpdate(String nickname, List<LeaderCard> updatedLeaderCards) {
         super(nickname);
-        this.updatedLeaderCards = updatedLeaderCards.stream().map(
-                leaderCard -> {
-                    switch (leaderCard.getAbility()){
-                        case DISCOUNT -> {
-                            return new DumbDiscountLeaderCard((DiscountLeaderCard) leaderCard);
-                        }
-                        case STORE -> {
-                            return new DumbStoreLeaderCard((StoreLeaderCard) leaderCard);
-                        }
-                        case CONVERT -> {
-                            return new DumbConvertLeaderCard((ConvertLeaderCard) leaderCard);
-                        }
-                        case PRODUCE -> {
-                            return new DumbProduceLeaderCard((ProduceLeaderCard) leaderCard);
-                        }
-                        default -> {
-                            return null;
-                        }
-                    }
-                }
-        ).collect(Collectors.toList());
+        this.updatedLeaderCards = updatedLeaderCards.stream()
+                .map(LeaderCard::convertToDumb)
+                .collect(Collectors.toList());
     }
 
     @Override
