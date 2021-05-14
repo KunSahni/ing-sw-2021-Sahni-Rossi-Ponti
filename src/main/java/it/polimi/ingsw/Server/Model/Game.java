@@ -75,17 +75,10 @@ public class Game {
         player.connect();
         changesHandler.publishMarket(market);
         changesHandler.publishDevelopmentCardsBoard(developmentCardsBoard);
-        switch (currentState) {
-            case DEALT_LEADER_CARDS -> changesHandler.publishPlayerTempLeaderCards(nickname,
-                    player.getTempLeaderCards());
-            case ASSIGNED_INKWELL -> players.forEach(npc ->
-                    changesHandler.publishPlayerPosition(npc.getNickname(), npc.getPosition()));
-            case IN_GAME -> players.forEach(npc -> {
-                        changesHandler.publishPlayerInfo(npc);
-                        changesHandler.publishPlayerPersonalBoard(npc.getPersonalBoard());
-                    }
-            );
-        }
+        players.forEach(npc -> {
+            changesHandler.publishPlayer(npc);
+            changesHandler.publishPersonalBoard(npc.getNickname(), npc.getPersonalBoard());
+        });
     }
 
     public void disconnect(String nickname) {
