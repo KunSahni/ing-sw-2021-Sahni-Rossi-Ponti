@@ -19,7 +19,7 @@ public class PersonalBoard implements VictoryPointsElement {
     private final List<DevelopmentCardSlot> developmentCardSlots;
     private final List<LeaderCard> leaderCards;
     private final FaithTrack faithTrack;
-    private final ResourceManager warehouseDepots, strongbox, proxyStorage;
+    private final ResourceManager warehouseDepots, strongbox;
     private final String nickname;
 
     public PersonalBoard(ChangesHandler changesHandler, String nickname) throws FileNotFoundException {
@@ -27,15 +27,12 @@ public class PersonalBoard implements VictoryPointsElement {
         this.nickname = nickname;
         this.leaderCards = changesHandler.readPlayerLeaderCards(nickname);
         this.developmentCardSlots = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            developmentCardSlots.add(
-                    new DevelopmentCardSlot(changesHandler, nickname, i + 1));
+        for (int i = 1; i <= 3; i++) {
+            developmentCardSlots.add(changesHandler.readPlayerDevelopmentCardSlot(nickname, i));
         }
-        this.faithTrack = new FaithTrack(changesHandler, nickname);
-        this.warehouseDepots =
-                new ResourceManager(changesHandler.readPlayerWarehouseDepots(nickname));
-        this.strongbox = new ResourceManager(changesHandler.readPlayerStrongbox(nickname));
-        this.proxyStorage = new ResourceManager(changesHandler.readPlayerProxyStorage(nickname));
+        this.faithTrack = changesHandler.readPlayerFaithTrack(nickname);
+        this.warehouseDepots = changesHandler.readPlayerWarehouseDepots(nickname);
+        this.strongbox = changesHandler.readPlayerStrongbox(nickname);
     }
 
     public List<LeaderCard> getLeaderCards() {
@@ -56,6 +53,7 @@ public class PersonalBoard implements VictoryPointsElement {
 
     public void setLeaderCards(List<LeaderCard> leaderCards) {
         this.leaderCards.addAll(leaderCards);
+        changesHandler.writePlayerLeaderCards(nickname, leaderCards);
     }
 
     /**

@@ -7,11 +7,14 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
 
 public class LeaderCardsDeck {
     private final LinkedList<LeaderCard> deck;
-    private final ChangesHandler changesHandler;
+    private ChangesHandler changesHandler;
 
-    public LeaderCardsDeck(ChangesHandler changesHandler) throws FileNotFoundException {
+    public LeaderCardsDeck() {
+        this.deck = new LinkedList<>();
+    }
+
+    public void init(ChangesHandler changesHandler) throws FileNotFoundException {
         this.changesHandler = changesHandler;
-        this.deck = new LinkedList<>(changesHandler.readLeaderCardsDeck());
     }
 
     public List<LeaderCard> getDeck() {
@@ -29,7 +32,11 @@ public class LeaderCardsDeck {
         for(int i=0; i<4; i++){
             supp.add(deck.pop());
         }
-        changesHandler.writeLeaderCardsDeck(deck);
+        changesHandler.writeLeaderCardsDeck(this);
         return supp;
+    }
+
+    public void shuffle() {
+        Collections.shuffle(deck);
     }
 }

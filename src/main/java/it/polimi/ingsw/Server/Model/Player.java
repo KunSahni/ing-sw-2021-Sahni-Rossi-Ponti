@@ -17,26 +17,26 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
  */
 
 public class Player implements Comparable<Player> {
-    private final String nickname;
+    private String nickname;
     private int position;
-    private final PersonalBoard personalBoard;
+    private transient PersonalBoard personalBoard;
     private List<LeaderCard> tempLeaderCards;
-    private List<Actions> performedActions;
+    private final List<Actions> performedActions;
     private Map<MarketMarble, Integer> tempMarbles;
     private boolean isPlayersTurn;
     private boolean isConnected;
-    private final ChangesHandler changesHandler;
+    private transient ChangesHandler changesHandler;
 
-    public Player(ChangesHandler changesHandler, String nickname)
+    public Player() {
+        this.performedActions = new ArrayList<>();
+    }
+
+    public void init(ChangesHandler changesHandler, String nickname)
             throws FileNotFoundException {
-        this.nickname = nickname;
+        if (this.nickname == null) {
+            this.nickname = nickname;
+        }
         this.personalBoard = new PersonalBoard(changesHandler, nickname);
-        this.performedActions = changesHandler.readTurnActions(nickname);
-        this.tempMarbles = changesHandler.readTempMarbles(nickname);
-        this.isPlayersTurn = changesHandler.readPlayerTurnFlag(nickname);
-        this.tempLeaderCards = changesHandler.readPlayerTempLeaderCards(nickname);
-        this.position = changesHandler.readPlayerPosition(nickname);
-        this.isConnected = false;
         this.changesHandler = changesHandler;
     }
 
@@ -70,12 +70,10 @@ public class Player implements Comparable<Player> {
 
     public void connect() {
         isConnected = true;
-        changesHandler.playerConnected(nickname);
     }
 
     public void disconnect() {
         isConnected = false;
-        changesHandler.playerDisconnected(nickname);
     }
 
     /**
@@ -91,12 +89,11 @@ public class Player implements Comparable<Player> {
     /**
      * This method takes in input the chosen cards and creates the personalBoard accordingly
      *
-     * @param tempLeaderCards a list of two LeaderCards chosen by the Player
+     * @param chosenCards a list of two LeaderCards chosen by the Player
      */
-    public void chooseTwoLeaderCards(List<LeaderCard> tempLeaderCards) {
-        personalBoard.setLeaderCards(tempLeaderCards);
+    public void chooseTwoLeaderCards(List<LeaderCard> chosenCards) {
+        personalBoard.setLeaderCards(chosenCards);
         this.tempLeaderCards.clear();
-        changesHandler.writePlayerTempLeaderCards(nickname, tempLeaderCards);
     }
 
     /**
@@ -106,6 +103,7 @@ public class Player implements Comparable<Player> {
      */
     public void setPosition(int position) {
         this.position = position;
+        changesHandler.writePlayerPosition(nickname, position);
     }
 
     /**
@@ -114,7 +112,7 @@ public class Player implements Comparable<Player> {
      */
     public void addAction(Actions action) {
         performedActions.add(action);
-        changesHandler.writeTurnActions(nickname, performedActions);
+        changesHandler.writePlayerTurnActions(nickname, performedActions);
     }
 
     /**
@@ -124,7 +122,7 @@ public class Player implements Comparable<Player> {
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
         this.tempMarbles = new HashMap<>(tempMarbles);
-        changesHandler.writeTempMarbles(nickname, this.tempMarbles);
+        changesHandler.writePlayerTempMarbles(nickname, this.tempMarbles);
     }
 
     /**

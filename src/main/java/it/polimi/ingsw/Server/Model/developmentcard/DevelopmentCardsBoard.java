@@ -1,40 +1,19 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
 
-import static java.util.stream.Collectors.toList;
-
 public class DevelopmentCardsBoard {
-    private final ChangesHandler changesHandler;
+    private transient ChangesHandler changesHandler;
     private final DevelopmentCardsDeck[][] board;
 
-
-    /**
-     * Creates Development cards board loading all cards from a json file
-     * Cards are put in a matrix of decks,
-     * all level1 cards are in decks in the row 2, level2 cards are in the decks in the row 1,
-     * level 3 cards are in the deck in the row 0
-     * green cards are in the decks in the column 0, blue cards are in the decks in column 1,
-     * yellow cards are in the decks in column 2, purple cards are in the decks in column 3
-     */
-    public DevelopmentCardsBoard(ChangesHandler changesHandler) throws FileNotFoundException {
-        this.changesHandler = changesHandler;
+    public DevelopmentCardsBoard() {
         this.board = new DevelopmentCardsDeck[3][4];
-        int i = 2, j = 0;
-        for (Level l : Level.values()) {
-            for (Color c : Color.values()) {
-                board[i][j] = new DevelopmentCardsDeck(changesHandler, c, l);
-                j++;
-            }
-            j=0;
-            i--;
-        }
-        this.changesHandler.publishDevelopmentCardsBoard(topViewList());
+    }
+
+    public void init(ChangesHandler changesHandler) {
+        this.changesHandler = changesHandler;
     }
 
     /**
@@ -57,7 +36,7 @@ public class DevelopmentCardsBoard {
         };
 
         DevelopmentCard popped = board[line][column].pop();
-        changesHandler.publishDevelopmentCardsBoard(topViewList());
+        changesHandler.publishDevelopmentCardsBoard(this);
         return popped;
     }
 
@@ -129,10 +108,7 @@ public class DevelopmentCardsBoard {
         }
     }
 
-    private List<DevelopmentCard> topViewList() {
-        return Arrays.stream(board)
-                .flatMap(Arrays::stream)
-                .map(DevelopmentCardsDeck::peek)
-                .collect(Collectors.toList());
+    public void shuffle() {
+        Arrays.stream(board).flatMap(Arrays::stream).forEach(DevelopmentCardsDeck::shuffle);
     }
 }

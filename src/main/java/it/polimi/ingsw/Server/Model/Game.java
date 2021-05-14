@@ -25,14 +25,15 @@ public class Game {
         } else {
             nicknameList = changesHandler.readNicknameList();
         }
-        this.currentState = changesHandler.readGameState();
-        this.market = new Market(changesHandler);
-        this.leaderCardsDeck = new LeaderCardsDeck(changesHandler);
-        this.developmentCardsBoard = new DevelopmentCardsBoard(changesHandler);
         this.players = new LinkedList<>();
         for (String nickname : nicknameList) {
-            players.add(new Player(changesHandler, nickname));
+            players.add(changesHandler.readPlayer(nickname));
         }
+        this.currentState = changesHandler.readGameState();
+        this.market = this.changesHandler.readMarket();
+        this.leaderCardsDeck = this.changesHandler.readLeaderCardsDeck();
+        this.developmentCardsBoard = this.changesHandler.readDevelopmentCardsBoard();
+
     }
 
     public GameState getCurrentState() {
@@ -70,14 +71,28 @@ public class Game {
     }
 
     public void connect(String nickname) {
-        getPlayer(nickname).connect();
+        Player player = getPlayer(nickname);
+        player.connect();
+        changesHandler.publishMarket(market);
+        changesHandler.publishDevelopmentCardsBoard(developmentCardsBoard);
+        switch (currentState) {
+            case DEALT_LEADER_CARDS -> changesHandler.publishPlayerTempLeaderCards(nickname,
+                    player.getTempLeaderCards());
+            case ASSIGNED_INKWELL -> players.forEach(npc ->
+                    changesHandler.publishPlayerPosition(npc.getNickname(), npc.getPosition()));
+            case IN_GAME -> players.forEach(npc -> {
+                        changesHandler.publishPlayerInfo(npc);
+                        changesHandler.publishPlayerPersonalBoard(npc.getPersonalBoard());
+                    }
+            );
+        }
     }
 
     public void disconnect(String nickname) {
         getPlayer(nickname).disconnect();
     }
 
-    public void setNextState(GameState gameState) {
+    public void setState(GameState gameState) {
         currentState = gameState;
         changesHandler.writeGameState(currentState);
     }

@@ -7,10 +7,11 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.message.renderable.updates.*;
 import it.polimi.ingsw.network.message.renderable.updates.LeaderCardsUpdate;
-import it.polimi.ingsw.server.model.developmentcard.Color;
-import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
-import it.polimi.ingsw.server.model.developmentcard.Level;
+import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.model.developmentcard.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardsDeck;
+import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
 import it.polimi.ingsw.network.message.renderable.Renderable;
@@ -22,13 +23,15 @@ import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 // TODO: this has to be async to not interrupt server flow
 // maybe not, it is important that the calls happen in the right order
 public class ChangesHandler {
     private final String root;
     private final SubmissionPublisher<Renderable> submissionPublisher;
     private boolean isNewGame;
-    private Map<Object, Writer> changesBuffer;
+    private Map<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
         this.root = "src/main/resources/" + gameId + "/";
@@ -47,6 +50,7 @@ public class ChangesHandler {
         isNewGame = true;
     }
 
+    // GameState
     public GameState readGameState() throws FileNotFoundException {
         return readValueFromFile(
                 root + "GameState.json",
@@ -55,9 +59,11 @@ public class ChangesHandler {
     }
 
     public void writeGameState(GameState gameState) {
-
+        changesBuffer.put(gameState, root + "GameState.json");
+        writeBufferedChanges();
     }
 
+    // Nicknames List
     public List<String> readNicknameList() throws FileNotFoundException {
         return readListFromFile(
                 root + "Nicknames.json",
@@ -65,32 +71,86 @@ public class ChangesHandler {
         );
     }
 
+    //TODO: call from createFilesFromBlueprint
     public void writeNicknameList(List<String> nicknameList) {
-        changesBuffer.put(nicknameList, createWriter(root + "Nicknames.json"));
+        changesBuffer.put(nicknameList, root + "Nicknames.json");
         writeBufferedChanges();
     }
 
-    public List<MarketMarble> readMarket() throws FileNotFoundException {
-        List<MarketMarble> rawMarbles = readListFromFile(
-                root + "Market.json",
-                MarketMarble.class
-        );
+    // Player
+    public Player readPlayer(String nickname) throws FileNotFoundException {
+        Player player = readValueFromFile(root + nickname + "/Player.json", Player.class);
+        player.init(this, nickname);
+        publishPlayer(player);
+        return player;
+    }
+
+    public void publishPlayer(Player player) {
+        submissionPublisher.submit(new PlayerBroadcastUpdate(player));
+        submissionPublisher.submit(new PlayerPrivateUpdate(player));
+    }
+
+    public void writePlayer(Player player) {
+        publishPlayer(player);
+        changesBuffer.put(player, root + player.getNickname() + "/Player.json");
+    }
+
+    // Market
+    public Market readMarket() throws FileNotFoundException {
+        Market market = readValueFromFile(root + "Market.json", Market.class);
+        market.init(this);
         if (isNewGame)
-            Collections.shuffle(rawMarbles);
-        return rawMarbles;
+            market.shuffle();
+        publishMarket(market);
+        return market;
     }
 
-    public void writeMarket(List<MarketMarble> marketMarbles) {
-        submissionPublisher.submit(new MarketUpdate(marketMarbles));
-        changesBuffer.put(marketMarbles, createWriter(root + "Market.json"));
+    public void publishMarket(Market market) {
+        submissionPublisher.submit(new MarketUpdate(market));
     }
 
-    public void publishDevelopmentCardsBoard(List<DevelopmentCard> board) {
-        List<DumbDevelopmentCard> dumbDevelopmentCards =
-                board.stream().map(DevelopmentCard::convertToDumb).collect(Collectors.toList());
-        submissionPublisher.submit(new DevelopmentCardsBoardUpdate(dumbDevelopmentCards));
+    public void writeMarket(Market market) {
+        publishMarket(market);
+        changesBuffer.put(market, root + "Market.json");
     }
 
+    // Development Cards Board
+    public DevelopmentCardsBoard readDevelopmentCardsBoard() throws FileNotFoundException {
+        DevelopmentCardsBoard developmentCardsBoard = readValueFromFile(root +
+                "DevelopmentCardsBoard.json", DevelopmentCardsBoard.class);
+        developmentCardsBoard.init(this);
+        if (isNewGame)
+            developmentCardsBoard.shuffle();
+        publishDevelopmentCardsBoard(developmentCardsBoard);
+        return developmentCardsBoard;
+    }
+
+    public void publishDevelopmentCardsBoard(DevelopmentCardsBoard developmentCardsBoard) {
+        submissionPublisher.submit(new DevelopmentCardsBoardUpdate(developmentCardsBoard));
+    }
+
+    public void writeDevelopmentCardsBoard(DevelopmentCardsBoard developmentCardsBoard) {
+        publishDevelopmentCardsBoard(developmentCardsBoard);
+        changesBuffer.put(developmentCardsBoard, root + "DevelopmentCardsBoard.json");
+    }
+
+    // Leader Cards Deck
+    public LeaderCardsDeck readLeaderCardsDeck() throws FileNotFoundException {
+        LeaderCardsDeck leaderCardsDeck = readValueFromFile(
+                root + "LeaderCardsDeck.json",
+                LeaderCardsDeck.class
+        );
+        leaderCardsDeck.init(this);
+        if (isNewGame)
+            leaderCardsDeck.shuffle();
+        return leaderCardsDeck;
+    }
+
+    public void writeLeaderCardsDeck(LeaderCardsDeck leaderCardsDeck) {
+        changesBuffer.put(leaderCardsDeck, root + "LeaderCardsDeck.json");
+    }
+
+    // Player on-board Leader Cards
     public List<LeaderCard> readPlayerLeaderCards(String nickname) throws FileNotFoundException {
         return readListFromFile(
                 root + nickname + "/PlayerLeaderCards.json",
@@ -98,7 +158,7 @@ public class ChangesHandler {
         );
     }
 
-    public void writePlayerLeaderCards(String nickname, List<LeaderCard> cards) {
+    public void publishPlayerLeaderCards(String nickname, List<LeaderCard> cards) {
         List<DumbLeaderCard> privateDumbLeaderCards =
                 cards.stream().map(LeaderCard::convertToDumb).collect(Collectors.toList());
         List<DumbLeaderCard> publicDumbLeaderCards =
@@ -107,9 +167,133 @@ public class ChangesHandler {
                         .collect(Collectors.toList());
         submissionPublisher.submit(new LeaderCardsBroadcastUpdate(nickname, publicDumbLeaderCards));
         submissionPublisher.submit(new LeaderCardsPrivateUpdate(nickname, privateDumbLeaderCards));
-        changesBuffer.put(cards, createWriter(root + nickname + "/PlayerLeaderCards.json"));
     }
 
+    public void writePlayerLeaderCards(String nickname, List<LeaderCard> cards) {
+        publishPlayerLeaderCards(nickname, cards);
+        changesBuffer.put(cards, root + nickname + "/PlayerLeaderCards.json");
+    }
+
+    // Information contained in the Player class:
+    // Player temp Leader Cards
+    public List<LeaderCard> readPlayerTempLeaderCards(String nickname)
+            throws FileNotFoundException {
+        return readListFromFile(
+                root + nickname + "/TempLeaderCards.json",
+                LeaderCard.class
+        );
+    }
+
+    public void publishTempLeaderCards(String nickname, List<LeaderCard> cards) {
+        submissionPublisher.submit(new LeaderCardsChoiceUpdate(nickname,
+                cards.stream().map(LeaderCard::convertToDumb).collect(Collectors.toList())));
+    }
+
+    public void writePlayerTempLeaderCards(String nickname, List<LeaderCard> cards) {
+        publishTempLeaderCards(nickname, cards);
+        changesBuffer.put(cards, root + nickname + "/TempLeaderCards.json");
+    }
+
+    // Player Temp Market Marbles
+    public Map<MarketMarble, Integer> readPlayerTempMarbles(String nickname) throws FileNotFoundException {
+        return readMapFromFile(root + nickname + "/TempMarbles.json");
+    }
+
+    public void publishPlayerTempMarbles(String nickname, Map<MarketMarble, Integer> marbles) {
+        submissionPublisher.submit(new TempMarblesUpdate(nickname, marbles));
+    }
+
+    public void writePlayerTempMarbles(String nickname, Map<MarketMarble, Integer> marbles) {
+        publishPlayerTempMarbles(nickname, marbles);
+        changesBuffer.put(marbles, root + nickname + "/TempMarbles.json");
+    }
+
+    // Turn Actions
+    public List<Actions> readPlayerTurnActions(String nickname) throws FileNotFoundException {
+        return readListFromFile(
+                root + nickname + "/TurnActions.json",
+                Actions.class
+        );
+    }
+
+    public void publishPlayerTurnActions(String nickname, List<Actions> actions) {
+        submissionPublisher.submit(new TurnActionsUpdate(nickname, actions));
+    }
+
+    public void writePlayerTurnActions(String nickname, List<Actions> actions) {
+        publishPlayerTurnActions(nickname, actions);
+        changesBuffer.put(actions, root + nickname + "/TurnActions.json");
+        writeBufferedChanges();
+    }
+
+    // Turn boolean flag
+    public boolean readPlayerTurnFlag(String nickname) throws FileNotFoundException {
+        return readValueFromFile(
+                root + nickname + "/PlayerTurnFlag.json",
+                Boolean.class
+        );
+    }
+
+    public void publishPlayerTurnFlag(String nickname, boolean flag) {
+        submissionPublisher.submit(new PlayerTurnFlagUpdate(nickname, flag));
+    }
+
+    public void writePlayerTurnFlag(String nickname, boolean flag) {
+        publishPlayerTurnFlag(nickname, flag);
+        changesBuffer.put(flag, root + nickname + "/PlayerTurnFlag.json");
+        writeBufferedChanges();
+    }
+
+    // Position information
+    public int readPlayerPosition(String nickname) throws FileNotFoundException {
+        return readValueFromFile(
+                root + nickname + "/Position.json",
+                Integer.class
+        );
+    }
+
+    public void publishPlayerPosition(String nickname, int position) {
+        submissionPublisher.submit(new PlayerInfoUpdate(nickname, position));
+    }
+
+    public void writePlayerPosition(String nickname, int position) {
+        publishPlayerPosition(nickname, position);
+        changesBuffer.put(position, root + nickname + "/Position.json");
+    }
+
+    // Personal Board related information
+    // Storages:
+    // Warehouse Depots
+    public Map<Resource, Integer> readPlayerWarehouseDepots(String nickname)
+            throws FileNotFoundException {
+        return readMapFromFile(root + nickname + "WarehouseDepots.json");
+    }
+
+    public void publishPlayerWarehouseDepots(String nickname, Map<Resource, Integer> resources) {
+        submissionPublisher.submit(new DepotsUpdate(nickname, resources));
+    }
+
+    public void writePlayerWarehouseDepots(String nickname, Map<Resource, Integer> resources) {
+        publishPlayerWarehouseDepots(nickname, resources);
+        changesBuffer.put(resources, root + nickname + "WarehouseDepots.json");
+    }
+
+    // Strongbox
+    public Map<Resource, Integer> readPlayerStrongbox(String nickname)
+            throws FileNotFoundException {
+        return readMapFromFile(root + nickname + "Strongbox.json");
+    }
+
+    public void publishPlayerStrongbox(String nickname, Map<Resource, Integer> resources) {
+        submissionPublisher.submit(new StrongboxUpdate(nickname, resources));
+    }
+
+    public void writePlayerStrongbox(String nickname, Map<Resource, Integer> resources) {
+        publishPlayerStrongbox(nickname, resources);
+        changesBuffer.put(resources, root + nickname + "Strongbox.json");
+    }
+
+    // Faith Track
     public List<FavorStatus> readPlayerPopesFavors(String nickname) throws FileNotFoundException {
         return readListFromFile(
                 root + nickname + "/PopesFavors.json",
@@ -117,6 +301,7 @@ public class ChangesHandler {
         );
     }
 
+    public void publishPlayerPopesFavors(String nickname, List<FavorStatus> popesFavors)
     public void writePlayerPopesFavors(String nickname, List<FavorStatus> popesFavors) {
         submissionPublisher.submit(new PopesFavorsUpdate(nickname, popesFavors));
         changesBuffer.put(popesFavors, createWriter(root + nickname + "/PopesFavors.json"));
@@ -154,124 +339,6 @@ public class ChangesHandler {
                 createWriter(root + nickname + "/DevelopmentCardsSlot" + index + ".json"));
     }
 
-    public Map<Resource, Integer> readPlayerWarehouseDepots(String nickname)
-            throws FileNotFoundException {
-        return readMapFromFile(root + nickname + "WarehouseDepots.json");
-    }
-
-    public void writePlayerWarehouseDepots(String nickname, Map<Resource, Integer> resources) {
-        submissionPublisher.submit(new DepotsUpdate(nickname, resources));
-        changesBuffer.put(resources, createWriter(root + nickname + "WarehouseDepots.json"));
-    }
-
-    public Map<Resource, Integer> readPlayerStrongbox(String nickname)
-            throws FileNotFoundException {
-        return readMapFromFile(root + nickname + "Strongbox.json");
-    }
-
-    public void writePlayerStrongbox(String nickname, Map<Resource, Integer> resources) {
-        submissionPublisher.submit(new StrongboxUpdate(nickname, resources));
-        changesBuffer.put(resources, createWriter(root + nickname + "Strongbox.json"));
-    }
-
-    public Map<Resource, Integer> readPlayerProxyStorage(String nickname)
-            throws FileNotFoundException {
-        return readMapFromFile(root + nickname + "ProxyStorage.json");
-    }
-
-    public void writePlayerProxyStorage(String nickname, Map<Resource, Integer> resources) {
-        changesBuffer.put(resources, createWriter(root + nickname + "ProxyStorage.json"));
-    }
-
-    public List<LeaderCard> readLeaderCardsDeck() throws FileNotFoundException {
-        List<LeaderCard> deck = readListFromFile(
-                root + "LeaderCardsDeck.json",
-                LeaderCard.class
-        );
-        if (isNewGame)
-            Collections.shuffle(deck);
-        return deck;
-    }
-
-    public void writeLeaderCardsDeck(List<LeaderCard> deck) {
-        changesBuffer.put(deck, createWriter(root + "LeaderCardsDeck.json"));
-    }
-
-    public List<DevelopmentCard> readDevelopmentCardsDeck(Color color, Level level)
-            throws FileNotFoundException {
-        List<DevelopmentCard> rawDeck = readListFromFile(
-                root + "developmentcardsboard/" + color + level + "deck.json",
-                DevelopmentCard.class
-        );
-        if (isNewGame)
-            Collections.shuffle(rawDeck);
-        return rawDeck;
-    }
-
-    public void writeDevelopmentCardsDeck(Color color, Level level, List<DevelopmentCard> cards) {
-        changesBuffer.put(cards, createWriter(root + "developmentcardsboard/" + color + level +
-                "deck.json"))
-    }
-
-    public List<Actions> readTurnActions(String nickname) throws FileNotFoundException {
-        return readListFromFile(
-                root + nickname + "/TurnActions.json",
-                Actions.class
-        );
-    }
-
-    public void writeTurnActions(String nickname, List<Actions> actions) {
-        changesBuffer.put(actions, createWriter(root + nickname + "/TurnActions.json"));
-        writeBufferedChanges();
-    }
-
-    public Map<MarketMarble, Integer> readTempMarbles(String nickname) throws FileNotFoundException {
-        return readMapFromFile(root + nickname + "/TempMarbles.json");
-    }
-
-    public void writeTempMarbles(String nickname, Map<MarketMarble, Integer> marbles) {
-        submissionPublisher.submit(new TempMarblesUpdate(nickname, marbles));
-        changesBuffer.put(marbles, createWriter(root + nickname + "/TempMarbles.json"));
-    }
-
-    public boolean readPlayerTurnFlag(String nickname) throws FileNotFoundException {
-        return readValueFromFile(
-                root + nickname + "/PlayerTurnFlag.json",
-                Boolean.class
-        );
-    }
-
-    public void writePlayerTurnFlag(String nickname, boolean flag) {
-        changesBuffer.put(flag, createWriter(root + nickname + "/PlayerTurnFlag.json"));
-        writeBufferedChanges();
-    }
-
-    public List<LeaderCard> readPlayerTempLeaderCards(String nickname)
-            throws FileNotFoundException {
-        return readListFromFile(
-                root + nickname + "/TempLeaderCards.json",
-                LeaderCard.class
-        );
-    }
-
-    public void writePlayerTempLeaderCards(String nickname, List<LeaderCard> cards) {
-        submissionPublisher.submit(new LeaderCardsChoiceUpdate(nickname,
-                cards.stream().map(LeaderCard::convertToDumb).collect(Collectors.toList())));
-        changesBuffer.put(cards, createWriter(root + nickname + "/TempLeaderCards.json"));
-    }
-
-    public int readPlayerPosition(String nickname) throws FileNotFoundException {
-        return readValueFromFile(
-                root + nickname + "/Position.json",
-                Integer.class
-        );
-    }
-
-    public void writePlayerPosition(String nickname, int position) {
-        submissionPublisher.submit(new PlayerInfoUpdate(nickname, position));
-        changesBuffer.put(position, createWriter(root + nickname + "/Position.json"));
-    }
-
     /**
      * Utility method used to parse any single-value json file into
      * a variable of the type specified via parameter.
@@ -307,28 +374,12 @@ public class ChangesHandler {
         submissionPublisher.subscribe(remoteView);
     }
 
-    /**
-     * Creates a Writer object for the given filepath, if the target file
-     * throws an exception behavior of the method is undefined.
-     *
-     * @param filepath target file location.
-     * @return Writer object.
-     */
-    private Writer createWriter(String filepath) {
-        Writer outcome = null;
-        try {
-            outcome = new FileWriter(filepath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return outcome;
-    }
-
     private void writeBufferedChanges() {
         Gson gson = new Gson();
-        changesBuffer.forEach((object, writer) -> {
-            gson.toJson(object, writer);
+        changesBuffer.forEach((object, filepath) -> {
             try {
+                Writer writer = new FileWriter(filepath);
+                gson.toJson(object, writer);
                 writer.flush();
                 writer.close();
             } catch (IOException e) {
