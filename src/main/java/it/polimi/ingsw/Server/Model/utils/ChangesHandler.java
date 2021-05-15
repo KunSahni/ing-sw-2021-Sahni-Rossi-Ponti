@@ -18,6 +18,9 @@ import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -31,45 +34,57 @@ public class ChangesHandler {
     private Map<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
-        this.root = "src/main/resources/" + gameId + "/";
+        this.root = "src/main/resources/" + gameId;
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isNewGame = false;
         changesBuffer = new HashMap<>();
     }
 
-    public void createGameFilesFromBlueprint(List<String> nicknames) {
-        // create gameId folder
-        // inside of it:
-        // create json array of nicknames
-        // copy market json from blueprint
-        // copy dev cards board from blueprint
-        // copy leader cards deck from blueprint
+    public void createGameFilesFromBlueprint(List<String> nicknames) throws IOException {
+        copyFolder("src/main/resources/default/game", root);
+        writeNicknameList(nicknames);
+        for (String nickname : nicknames) {
+            copyFolder("src/main/resources/default/player",
+                    root + "/players/" + nickname);
+        }
         isNewGame = true;
+    }
+
+    private void copyFolder(String sourceDir, String destinationDir) throws IOException {
+        Files.walk(Paths.get(sourceDir))
+                .forEach(source -> {
+                    Path destination = Paths.get(destinationDir, source.toString()
+                            .substring(sourceDir.length()));
+                    try {
+                        Files.copy(source, destination);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     // GameState
     public GameState readGameState() throws FileNotFoundException {
         return readValueFromFile(
-                root + "GameState.json",
+                root + "/GameState.json",
                 GameState.class
         );
     }
 
     public void writeGameState(GameState gameState) {
-        changesBuffer.put(gameState, root + "GameState.json");
+        changesBuffer.put(gameState, root + "/GameState.json");
     }
 
     // Nicknames List
     public List<String> readNicknameList() throws FileNotFoundException {
         return readListFromFile(
-                root + "Nicknames.json",
+                root + "/Nicknames.json",
                 String.class
         );
     }
 
-    //TODO: call from createFilesFromBlueprint
     public void writeNicknameList(List<String> nicknameList) {
-        changesBuffer.put(nicknameList, root + "Nicknames.json");
+        changesBuffer.put(nicknameList, root + "/Nicknames.json");
     }
 
     // Large chunks of model publishers
@@ -94,7 +109,7 @@ public class ChangesHandler {
 
     // Player
     public Player readPlayer(String nickname) throws FileNotFoundException {
-        Player player = readValueFromFile(root + nickname + "/Player.json", Player.class);
+        Player player = readValueFromFile(root + "/players/" + nickname + "/Player.json", Player.class);
         player.init(this, nickname);
         return player;
     }
@@ -106,12 +121,12 @@ public class ChangesHandler {
 
     public void writePlayer(Player player) {
         publishPlayer(player);
-        changesBuffer.put(player, root + player.getNickname() + "/Player.json");
+        changesBuffer.put(player, root + "/players/" + player.getNickname() + "/Player.json");
     }
 
     // Market
     public Market readMarket() throws FileNotFoundException {
-        Market market = readValueFromFile(root + "Market.json", Market.class);
+        Market market = readValueFromFile(root + "/Market.json", Market.class);
         market.init(this);
         if (isNewGame)
             market.shuffle();
@@ -124,13 +139,13 @@ public class ChangesHandler {
 
     public void writeMarket(Market market) {
         publishMarket(market);
-        changesBuffer.put(market, root + "Market.json");
+        changesBuffer.put(market, root + "/Market.json");
     }
 
     // Development Cards Board
     public DevelopmentCardsBoard readDevelopmentCardsBoard() throws FileNotFoundException {
         DevelopmentCardsBoard developmentCardsBoard = readValueFromFile(root +
-                "DevelopmentCardsBoard.json", DevelopmentCardsBoard.class);
+                "/DevelopmentCardsBoard.json", DevelopmentCardsBoard.class);
         developmentCardsBoard.init(this);
         if (isNewGame)
             developmentCardsBoard.shuffle();
@@ -143,13 +158,13 @@ public class ChangesHandler {
 
     public void writeDevelopmentCardsBoard(DevelopmentCardsBoard developmentCardsBoard) {
         publishDevelopmentCardsBoard(developmentCardsBoard);
-        changesBuffer.put(developmentCardsBoard, root + "DevelopmentCardsBoard.json");
+        changesBuffer.put(developmentCardsBoard, root + "/DevelopmentCardsBoard.json");
     }
 
     // Leader Cards Deck
     public LeaderCardsDeck readLeaderCardsDeck() throws FileNotFoundException {
         LeaderCardsDeck leaderCardsDeck = readValueFromFile(
-                root + "LeaderCardsDeck.json",
+                root + "/LeaderCardsDeck.json",
                 LeaderCardsDeck.class
         );
         leaderCardsDeck.init(this);
@@ -159,13 +174,13 @@ public class ChangesHandler {
     }
 
     public void writeLeaderCardsDeck(LeaderCardsDeck leaderCardsDeck) {
-        changesBuffer.put(leaderCardsDeck, root + "LeaderCardsDeck.json");
+        changesBuffer.put(leaderCardsDeck, root + "/LeaderCardsDeck.json");
     }
 
     // Player on-board Leader Cards
     public List<LeaderCard> readPlayerLeaderCards(String nickname) throws FileNotFoundException {
         return readListFromFile(
-                root + nickname + "/LeaderCards.json",
+                root + "/players/" + nickname + "/LeaderCards.json",
                 LeaderCard.class
         );
     }
@@ -177,13 +192,13 @@ public class ChangesHandler {
 
     public void writePlayerLeaderCards(String nickname, List<LeaderCard> cards) {
         publishPlayerLeaderCards(nickname, cards);
-        changesBuffer.put(cards, root + nickname + "/LeaderCards.json");
+        changesBuffer.put(cards, root + "/players/" + nickname + "/LeaderCards.json");
     }
 
     // Development Cards Slot
     public DevelopmentCardSlot readDevelopmentCardSlot(String nickname, int index)
             throws FileNotFoundException {
-        DevelopmentCardSlot developmentCardSlot = readValueFromFile(root + nickname +
+        DevelopmentCardSlot developmentCardSlot = readValueFromFile(root + "/players/" + nickname +
                 "/DevelopmentCardSlot" + index + ".json", DevelopmentCardSlot.class);
         developmentCardSlot.init(nickname, this);
         return developmentCardSlot;
@@ -196,16 +211,15 @@ public class ChangesHandler {
 
     public void writeDevelopmentCardSlot(String nickname, DevelopmentCardSlot developmentCardSlot) {
         publishDevelopmentCardSlot(nickname, developmentCardSlot);
-        changesBuffer.put(developmentCardSlot, root + nickname +
+        changesBuffer.put(developmentCardSlot, root + "/players/" + nickname +
                 "/DevelopmentCardSlot" + developmentCardSlot.getSlotIndex() + ".json");
     }
 
     // Warehouse Depots
     public ResourceManager readWarehouseDepots(String nickname)
             throws FileNotFoundException {
-        ResourceManager depots = readValueFromFile(root + nickname + "/WarehouseDepots.json",
+        return readValueFromFile(root + "/players/" + nickname + "/WarehouseDepots.json",
                 ResourceManager.class);
-        return depots;
     }
 
     public void publishWarehouseDepots(String nickname, ResourceManager depots) {
@@ -214,15 +228,14 @@ public class ChangesHandler {
 
     public void writeWarehouseDepots(String nickname, ResourceManager depots) {
         publishWarehouseDepots(nickname, depots);
-        changesBuffer.put(depots, root + nickname + "/WarehouseDepots.json");
+        changesBuffer.put(depots, root + "/players/" + nickname + "/WarehouseDepots.json");
     }
 
     // Strongbox
     public ResourceManager readStrongbox(String nickname)
             throws FileNotFoundException {
-        ResourceManager strongbox = readValueFromFile(root + nickname + "/Strongbox.json",
+        return readValueFromFile(root + "/players/" + nickname + "/Strongbox.json",
                 ResourceManager.class);
-        return strongbox;
     }
 
     public void publishStrongbox(String nickname, ResourceManager strongbox) {
@@ -231,12 +244,12 @@ public class ChangesHandler {
 
     public void writeStrongbox(String nickname, ResourceManager strongbox) {
         publishStrongbox(nickname, strongbox);
-        changesBuffer.put(strongbox, root + nickname + "/Strongbox.json");
+        changesBuffer.put(strongbox, root + "/players/" + nickname + "/Strongbox.json");
     }
 
     // Faith Track
     public FaithTrack readFaithTrack(String nickname) throws FileNotFoundException {
-        FaithTrack faithTrack = readValueFromFile(root + nickname + "/FaithTrack.json",
+        FaithTrack faithTrack = readValueFromFile(root + "/players/" + nickname + "/FaithTrack.json",
                 FaithTrack.class);
         faithTrack.init(nickname, this);
         return faithTrack;
@@ -248,7 +261,7 @@ public class ChangesHandler {
 
     public void writeFaithTrack(String nickname, FaithTrack faithTrack) {
         publishFaithTrack(nickname, faithTrack);
-        changesBuffer.put(faithTrack, root + nickname + "/FaithTrack.json");
+        changesBuffer.put(faithTrack, root + "/players/" + nickname + "/FaithTrack.json");
     }
 
     /**

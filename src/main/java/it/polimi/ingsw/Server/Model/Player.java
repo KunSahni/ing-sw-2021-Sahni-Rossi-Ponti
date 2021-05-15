@@ -35,6 +35,7 @@ public class Player implements Comparable<Player> {
             throws FileNotFoundException {
         this.nickname = nickname;
         this.personalBoard = new PersonalBoard(changesHandler, nickname);
+        this.isConnected = false;
         this.changesHandler = changesHandler;
     }
 

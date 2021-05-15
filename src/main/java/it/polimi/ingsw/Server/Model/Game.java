@@ -8,6 +8,7 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class Game {
@@ -18,7 +19,7 @@ public class Game {
     private final DevelopmentCardsBoard developmentCardsBoard;
     private final ChangesHandler changesHandler;
 
-    public Game(int gameId, List<String> nicknameList) throws FileNotFoundException {
+    public Game(int gameId, List<String> nicknameList) throws IOException {
         this.changesHandler = new ChangesHandler(gameId);
         if (nicknameList != null) {
             changesHandler.createGameFilesFromBlueprint(nicknameList);
