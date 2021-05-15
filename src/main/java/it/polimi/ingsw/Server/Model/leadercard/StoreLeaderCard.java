@@ -51,6 +51,10 @@ public class StoreLeaderCard extends LeaderCard {
         return storedResource;
     }
 
+    public Map<Resource, Integer> getStoredResources() {
+        return storage.getStoredResources();
+    }
+
     @Override
     public DumbLeaderCard convertToDumb() {
         return new DumbStoreLeaderCard(this);
