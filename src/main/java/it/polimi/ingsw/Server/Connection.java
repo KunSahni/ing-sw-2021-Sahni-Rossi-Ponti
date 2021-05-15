@@ -7,6 +7,8 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.network.message.renderable.requests.*;
 import it.polimi.ingsw.network.message.messages.Message;
+import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
+import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 import it.polimi.ingsw.server.state.AuthenticationState;
 import it.polimi.ingsw.server.state.ConnectionState;
@@ -17,7 +19,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 
 public class Connection implements Runnable{
@@ -29,7 +30,7 @@ public class Connection implements Runnable{
     private int gameId;
     private boolean isActive;
     private ConnectionState state;
-    private final SubmissionPublisher<Renderable> renderablePublisher;
+    private final SubmissionPublisher<PlayerAction> submissionPublisher;
 
     /**
      * Create a connection with the given socket and server,set isActive true and set state to AuthenticationState
@@ -40,7 +41,7 @@ public class Connection implements Runnable{
         this.socket = socket;
         this.server = server;
         this.isActive = true;
-        this.renderablePublisher = new SubmissionPublisher<>();
+        this.submissionPublisher = new SubmissionPublisher<>();
         state = new AuthenticationState(this);
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -218,27 +219,18 @@ public class Connection implements Runnable{
 
     /**
      * Send to the client the passed renderable
-     * @param broadcastRenderable is sent to the Client
+     * @param renderable is sent to the Client
      */
-    public void sendMessage(BroadcastRenderable broadcastRenderable){
+    public void send(Renderable renderable){
         try {
-            outputStream.writeObject(broadcastRenderable);
+            outputStream.writeObject(renderable);
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendMessage(PrivateRenderable privateRenderable){
-        try {
-            outputStream.writeObject(privateRenderable);
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void subscribeRemoteView(RemoteView remoteView){
-        this.renderablePublisher.subscribe(remoteView);
+    public void subscribe(RemoteView.NetworkMessageForwarder networkMessageForwarder){
+        this.submissionPublisher.subscribe(networkMessageForwarder);
     }
 }
