@@ -56,7 +56,7 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     public int getResourceCount() {
-        return proxyStorage.getResourceCount();
+        return getTotalResources().values().stream().reduce(0, Integer::sum);
     }
 
     public void setLeaderCards(List<LeaderCard> leaderCards) {
@@ -69,7 +69,7 @@ public class PersonalBoard implements VictoryPointsElement {
      */
     public boolean containsLeaderCardRequirements(LeaderCardRequirements requirements) {
         if (Optional.ofNullable(requirements.getRequiredResources()).isPresent()) {
-            return proxyStorage.contains(requirements.getRequiredResources());
+            return containsResources(requirements.getRequiredResources());
         } else {
             return requirements.getRequiredDevelopmentCards()
                     .entrySet()
@@ -96,7 +96,10 @@ public class PersonalBoard implements VictoryPointsElement {
      * Returns true if the resources listed in parameter are available
      */
     public boolean containsResources(Map<Resource, Integer> requirement) {
-        return proxyStorage.contains(requirement);
+        Map<Resource, Integer> totalResourcesMap = getTotalResources();
+        requirement.forEach((resource, quantity) -> totalResourcesMap.compute(resource,
+                (k, v) -> (v == null) ? -quantity : v - quantity));
+        return totalResourcesMap.values().stream().noneMatch(v -> v < 0);
     }
 
     public boolean depotsContainResources(Map<Resource, Integer> resources) {
@@ -212,7 +215,7 @@ public class PersonalBoard implements VictoryPointsElement {
     @Override
     public int getVictoryPoints() {
         int totalVictoryPoints = 0;
-        totalVictoryPoints += proxyStorage.getResourceCount() / 5;
+        totalVictoryPoints += getResourceCount() / 5;
         totalVictoryPoints += faithTrack.getVictoryPoints();
         totalVictoryPoints += leaderCards.stream()
                 .mapToInt(LeaderCard::getVictoryPoints)
@@ -299,5 +302,24 @@ public class PersonalBoard implements VictoryPointsElement {
         return developmentCardSlots.stream()
                 .mapToInt(DevelopmentCardSlot::getCardsNumber)
                 .sum();
+    }
+
+    private Map<Resource, Integer> getTotalResources() {
+        Map<Resource, Integer> totalResourcesMap = new HashMap<>();
+        List<Map<Resource, Integer>> storages = new ArrayList<>();
+        storages.add(strongbox.getStoredResources());
+        storages.add(warehouseDepots.getStoredResources());
+        leaderCards.stream()
+                .filter(card -> card.isActive()
+                        && card.getAbility().equals(LeaderCardAbility.STORE))
+                .map(card -> (StoreLeaderCard) card)
+                .filter(card -> card.getResourceCount() > 0)
+                .forEach(card -> storages.add(card.getStoredResources()));
+        storages.forEach(
+                resourceIntegerMap -> resourceIntegerMap.forEach((resource, quantity) ->
+                        totalResourcesMap.merge(resource, quantity, (k, v) -> v + quantity)
+                )
+        );
+        return totalResourcesMap;
     }
 }
