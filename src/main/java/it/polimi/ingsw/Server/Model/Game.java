@@ -42,6 +42,7 @@ public class Game {
 
     public void subscribe(RemoteView remoteView) {
         changesHandler.subscribe(remoteView);
+        changesHandler.publishAll(this);
     }
 
     public List<Player> getPlayerList() {
@@ -61,14 +62,8 @@ public class Game {
     }
 
     public void connect(String nickname) {
-        Player player = getPlayer(nickname);
-        player.connect();
-        changesHandler.publishMarket(market);
-        changesHandler.publishDevelopmentCardsBoard(developmentCardsBoard);
-        players.forEach(npc -> {
-            changesHandler.publishPlayer(npc);
-            changesHandler.publishPersonalBoard(npc.getNickname(), npc.getPersonalBoard());
-        });
+        getPlayer(nickname).connect();
+        changesHandler.publishAll(this);
     }
 
     public void disconnect(String nickname) {

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.message.renderable.updates.*;
+import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
@@ -71,11 +72,30 @@ public class ChangesHandler {
         changesBuffer.put(nicknameList, root + "Nicknames.json");
     }
 
+    // Large chunks of model publishers
+    public void publishAll(Game game) {
+        publishMarket(game.getMarket());
+        publishDevelopmentCardsBoard(game.getDevelopmentCardsBoard());
+        game.getPlayerList().forEach(npc -> {
+            publishPlayer(npc);
+            publishPersonalBoard(npc.getNickname(), npc.getPersonalBoard());
+        });
+    }
+
+    public void publishPersonalBoard(String nickname, PersonalBoard personalBoard) {
+        publishPlayerLeaderCards(nickname, personalBoard.getLeaderCards());
+        publishWarehouseDepots(nickname, personalBoard.getWarehouseDepots());
+        publishStrongbox(nickname, personalBoard.getStrongbox());
+        publishFaithTrack(nickname, personalBoard.getFaithTrack());
+        personalBoard.getDevelopmentCardSlots().forEach(
+                slot -> publishDevelopmentCardSlot(nickname, slot)
+        );
+    }
+
     // Player
     public Player readPlayer(String nickname) throws FileNotFoundException {
         Player player = readValueFromFile(root + nickname + "/Player.json", Player.class);
         player.init(this, nickname);
-        publishPlayer(player);
         return player;
     }
 
@@ -95,7 +115,6 @@ public class ChangesHandler {
         market.init(this);
         if (isNewGame)
             market.shuffle();
-        publishMarket(market);
         return market;
     }
 
@@ -115,7 +134,6 @@ public class ChangesHandler {
         developmentCardsBoard.init(this);
         if (isNewGame)
             developmentCardsBoard.shuffle();
-        publishDevelopmentCardsBoard(developmentCardsBoard);
         return developmentCardsBoard;
     }
 
@@ -144,17 +162,6 @@ public class ChangesHandler {
         changesBuffer.put(leaderCardsDeck, root + "LeaderCardsDeck.json");
     }
 
-    // Personal board
-    public void publishPersonalBoard(String nickname, PersonalBoard personalBoard) {
-        publishPlayerLeaderCards(nickname, personalBoard.getLeaderCards());
-        publishWarehouseDepots(nickname, personalBoard.getWarehouseDepots());
-        publishStrongbox(nickname, personalBoard.getStrongbox());
-        publishFaithTrack(nickname, personalBoard.getFaithTrack());
-        personalBoard.getDevelopmentCardSlots().forEach(
-                slot -> publishDevelopmentCardSlot(nickname, slot)
-        );
-    }
-
     // Player on-board Leader Cards
     public List<LeaderCard> readPlayerLeaderCards(String nickname) throws FileNotFoundException {
         return readListFromFile(
@@ -179,7 +186,6 @@ public class ChangesHandler {
         DevelopmentCardSlot developmentCardSlot = readValueFromFile(root + nickname +
                 "/DevelopmentCardSlot" + index + ".json", DevelopmentCardSlot.class);
         developmentCardSlot.init(nickname, this);
-        publishDevelopmentCardSlot(nickname, developmentCardSlot);
         return developmentCardSlot;
     }
 
@@ -199,7 +205,6 @@ public class ChangesHandler {
             throws FileNotFoundException {
         ResourceManager depots = readValueFromFile(root + nickname + "/WarehouseDepots.json",
                 ResourceManager.class);
-        publishWarehouseDepots(nickname, depots);
         return depots;
     }
 
@@ -217,7 +222,6 @@ public class ChangesHandler {
             throws FileNotFoundException {
         ResourceManager strongbox = readValueFromFile(root + nickname + "/Strongbox.json",
                 ResourceManager.class);
-        publishStrongbox(nickname, strongbox);
         return strongbox;
     }
 
@@ -235,7 +239,6 @@ public class ChangesHandler {
         FaithTrack faithTrack = readValueFromFile(root + nickname + "/FaithTrack.json",
                 FaithTrack.class);
         faithTrack.init(nickname, this);
-        publishFaithTrack(nickname, faithTrack);
         return faithTrack;
     }
 
