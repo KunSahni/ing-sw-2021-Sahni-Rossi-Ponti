@@ -36,7 +36,7 @@ public class DevelopmentCardsBoard {
         };
 
         DevelopmentCard popped = board[line][column].pop();
-        changesHandler.publishDevelopmentCardsBoard(this);
+        changesHandler.writeDevelopmentCardsBoard(this);
         return popped;
     }
 
