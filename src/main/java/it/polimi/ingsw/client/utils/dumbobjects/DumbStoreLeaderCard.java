@@ -35,12 +35,17 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
         return storage;
     }
 
-    public Resource getStoredResource() {
+    public Resource getStoredType() {
         return storedResource;
+    }
+
+
+    public Map<Resource, Integer> getStoredResources() {
+        return storage.getStoredResources();
     }
 
     @Override
     public StoreLeaderCard convert() {
-        return new StoreLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), getStoredResource());
+        return new StoreLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), getStoredType(), getStoredResources());
     }
 }
