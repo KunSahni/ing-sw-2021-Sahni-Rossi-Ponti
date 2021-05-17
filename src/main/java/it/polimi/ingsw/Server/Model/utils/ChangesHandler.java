@@ -1,14 +1,14 @@
 package it.polimi.ingsw.server.model.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.message.renderable.updates.*;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.*;
-import it.polimi.ingsw.server.model.leadercard.LeaderCard;
-import it.polimi.ingsw.server.model.leadercard.LeaderCardsDeck;
+import it.polimi.ingsw.server.model.leadercard.*;
 import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 // TODO: this has to be async to not interrupt server flow
 // maybe not, it is important that the calls happen in the right order
@@ -109,7 +111,8 @@ public class ChangesHandler {
 
     // Player
     public Player readPlayer(String nickname) throws FileNotFoundException {
-        Player player = readValueFromFile(root + "/players/" + nickname + "/Player.json", Player.class);
+        Player player = readValueFromFile(root + "/players/" + nickname + "/Player.json",
+                Player.class);
         player.init(this, nickname);
         return player;
     }
@@ -163,10 +166,20 @@ public class ChangesHandler {
 
     // Leader Cards Deck
     public LeaderCardsDeck readLeaderCardsDeck() throws FileNotFoundException {
-        LeaderCardsDeck leaderCardsDeck = readValueFromFile(
-                root + "/LeaderCardsDeck.json",
-                LeaderCardsDeck.class
-        );
+        LeaderCard[] finalDeck = readListFromFile(root + "/LeaderCardsDeck" +
+                "/ConvertLeaderCards.json", ConvertLeaderCard.class).toArray(new LeaderCard[0]);
+        LeaderCard[] storeLeaderCards = readListFromFile(root + "/LeaderCardsDeck" +
+                "/StoreLeaderCards.json", StoreLeaderCard.class).toArray(new LeaderCard[0]);
+        LeaderCard[] produceLeaderCards = readListFromFile(root + "/LeaderCardsDeck" +
+                "/ProduceLeaderCards.json", ProduceLeaderCard.class).toArray(new LeaderCard[0]);
+        LeaderCard[] discountLeaderCards = readListFromFile(root + "/LeaderCardsDeck" +
+                "/DiscountLeaderCards.json", DiscountLeaderCard.class).toArray(new LeaderCard[0]);
+        IntStream.range(0, finalDeck.length).forEach(i -> {
+            Optional.ofNullable(storeLeaderCards[i]).ifPresent(card -> finalDeck[i] = card);
+            Optional.ofNullable(produceLeaderCards[i]).ifPresent(card -> finalDeck[i] = card);
+            Optional.ofNullable(discountLeaderCards[i]).ifPresent(card -> finalDeck[i] = card);
+        });
+        LeaderCardsDeck leaderCardsDeck = new LeaderCardsDeck(Arrays.asList(finalDeck));
         leaderCardsDeck.init(this);
         if (isNewGame)
             leaderCardsDeck.shuffle();
@@ -174,7 +187,19 @@ public class ChangesHandler {
     }
 
     public void writeLeaderCardsDeck(LeaderCardsDeck leaderCardsDeck) {
-        changesBuffer.put(leaderCardsDeck, root + "/LeaderCardsDeck.json");
+        List<LeaderCard> deck = leaderCardsDeck.getDeck();
+        changesBuffer.put(deck.stream().map(card -> (card instanceof ConvertLeaderCard) ? card :
+                null).collect(Collectors.toList()), root + "/LeaderCardsDeck/ConvertLeaderCards" +
+                ".json");
+        changesBuffer.put(deck.stream().map(card -> (card instanceof StoreLeaderCard) ? card :
+                null).collect(Collectors.toList()), root + "/LeaderCardsDeck/StoreLeaderCards" +
+                ".json");
+        changesBuffer.put(deck.stream().map(card -> (card instanceof ProduceLeaderCard) ? card :
+                null).collect(Collectors.toList()), root + "/LeaderCardsDeck/ProduceLeaderCards" +
+                ".json");
+        changesBuffer.put(deck.stream().map(card -> (card instanceof DiscountLeaderCard) ? card :
+                null).collect(Collectors.toList()), root + "/LeaderCardsDeck/DiscountLeaderCards" +
+                ".json");
     }
 
     // Player on-board Leader Cards
@@ -249,7 +274,8 @@ public class ChangesHandler {
 
     // Faith Track
     public FaithTrack readFaithTrack(String nickname) throws FileNotFoundException {
-        FaithTrack faithTrack = readValueFromFile(root + "/players/" + nickname + "/FaithTrack.json",
+        FaithTrack faithTrack = readValueFromFile(root + "/players/" + nickname + "/FaithTrack" +
+                        ".json",
                 FaithTrack.class);
         faithTrack.init(nickname, this);
         return faithTrack;
@@ -282,8 +308,9 @@ public class ChangesHandler {
 
     private <T> List<T> readListFromFile(String filepath, Class<T> classType)
             throws FileNotFoundException {
-        T[] array = new Gson().fromJson(new JsonReader(new FileReader(filepath)),
-                classType.arrayType());
+        T[] array =
+                new GsonBuilder().setPrettyPrinting().serializeNulls().create()
+                        .fromJson(new JsonReader(new FileReader(filepath)), classType.arrayType());
         return Arrays.asList(array);
     }
 
@@ -300,7 +327,7 @@ public class ChangesHandler {
     }
 
     public void flushBufferToDisk() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
         changesBuffer.forEach((object, filepath) -> {
             try {
                 Writer writer = new FileWriter(filepath);

@@ -9,8 +9,8 @@ public class LeaderCardsDeck {
     private final LinkedList<LeaderCard> deck;
     private ChangesHandler changesHandler;
 
-    public LeaderCardsDeck() {
-        this.deck = new LinkedList<>();
+    public LeaderCardsDeck(List<LeaderCard> cards) {
+        this.deck = new LinkedList<>(cards);
     }
 
     public void init(ChangesHandler changesHandler) throws FileNotFoundException {
