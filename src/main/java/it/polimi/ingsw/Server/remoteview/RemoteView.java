@@ -36,7 +36,7 @@ public class RemoteView implements Subscriber<Renderable> {
 
         @Override
         public void onError(Throwable throwable) {
-            System.out.println("Error occurred: " + throwable.getMessage());
+            System.out.println("Error occurred while forwarding a PlayerAction: " + throwable.getMessage());
         }
 
         @Override

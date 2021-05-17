@@ -21,7 +21,7 @@ public class DumbMarket {
     }
 
     private DumbMarket() {
-        market = new MarketMarble[4][3];
+        market = new MarketMarble[3][4];
         extraMarble = null;
         dumbMarket = this;
     }
@@ -30,8 +30,8 @@ public class DumbMarket {
      * @param updatedMarket an unpdated layout of the market
      */
     public void updateMarket(MarketMarble[][] updatedMarket) {
-        IntStream.range(0, 4).forEach(
-                i -> IntStream.range(0,3).forEach(
+        IntStream.range(0, 3).forEach(
+                i -> IntStream.range(0, 4).forEach(
                         j-> market[i][j] = updatedMarket[i][j]
                 )
         );
