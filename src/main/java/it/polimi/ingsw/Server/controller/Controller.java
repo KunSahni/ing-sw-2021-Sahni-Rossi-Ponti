@@ -49,8 +49,8 @@ public class Controller implements Subscriber<PlayerAction> {
     @Override
     public void onNext(PlayerAction playerAction) {
         playerAction.setGame(game);
-        handlePlayerAction(playerAction);
         this.subscription.request(1);
+        handlePlayerAction(playerAction);
     }
 
     @Override

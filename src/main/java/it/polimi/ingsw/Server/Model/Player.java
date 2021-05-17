@@ -296,6 +296,8 @@ public class Player implements Comparable<Player> {
      */
     public void finishTurn() {
         isPlayersTurn = false;
+        performedActions.clear();
+        tempMarbles.clear();
         changesHandler.writePlayer(this);
     }
 

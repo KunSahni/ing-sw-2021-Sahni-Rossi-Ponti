@@ -67,6 +67,7 @@ public class Game {
 
     public void disconnect(String nickname) {
         getPlayer(nickname).disconnect();
+        changesHandler.publishPlayer(getPlayer(nickname));
     }
 
     public void setState(GameState gameState) {
