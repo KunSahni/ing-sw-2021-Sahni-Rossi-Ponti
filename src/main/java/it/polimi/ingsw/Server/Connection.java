@@ -77,9 +77,7 @@ public class Connection implements Runnable{
         try {
             outputStream.writeObject(new CreateLobbyRequest());
             outputStream.flush();
-            state = new WaitingForGameSizeState(this);
             readFromInputStream();
-            state = new AuthenticationState(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,7 +99,7 @@ public class Connection implements Runnable{
             if (state.messageAllowed(message))
                 state.readMessage(message);
             else
-                invalidMessage();
+                state.invalidMessage();
 
         }
     }
@@ -129,7 +127,6 @@ public class Connection implements Runnable{
         try {
             outputStream.writeObject(new ErrorMessage("Your message is not valid"));
             outputStream.flush();
-            authentication();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,7 +180,7 @@ public class Connection implements Runnable{
      */
     public void unavailableGame(){
         try {
-            outputStream.writeBytes(new GameNotFoundNotification().message);
+            outputStream.writeObject(new GameNotFoundNotification());
             outputStream.flush();
             authentication();
         } catch (IOException e) {
@@ -197,7 +194,7 @@ public class Connection implements Runnable{
      */
     public void wrongNickname(){
         try {
-            outputStream.writeBytes(new WrongNicknameNotification().message);
+            outputStream.writeObject(new WrongNicknameNotification());
             outputStream.flush();
             authentication();
         } catch (IOException e) {
@@ -226,5 +223,9 @@ public class Connection implements Runnable{
     public void setGameId(int gameId) {
         this.gameId = gameId;
         server.addNicknameGameId(this.nickname, this.gameId);
+    }
+
+    public void setState(ConnectionState state){
+        this.state=state;
     }
 }

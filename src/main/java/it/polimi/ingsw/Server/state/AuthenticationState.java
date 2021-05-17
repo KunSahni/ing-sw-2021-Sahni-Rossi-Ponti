@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.state;
 
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
+import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.Lobby;
 
@@ -27,7 +28,9 @@ public class AuthenticationState extends ConnectionState {
 
     @Override
     public void invalidMessage() {
-
+            connection.invalidMessage();
+            connection.authentication();
+            connection.readFromInputStream();
     }
 
     /**
@@ -40,29 +43,33 @@ public class AuthenticationState extends ConnectionState {
      */
     @Override
     public synchronized void readMessage(Serializable serializable) {
-        if (((AuthenticationMessage) serializable).getRequestedGameID() == -1){
-            if (Lobby.getInstance().getPlayers().contains(((AuthenticationMessage) serializable).getNickname())){
+        Integer gameID = ((AuthenticationMessage) serializable).getRequestedGameID();
+        String nickname = ((AuthenticationMessage) serializable).getNickname();
+        if (gameID == -1){
+            if (Lobby.getInstance().getPlayers().contains(nickname)){
                 connection.unavailableNickname();
             }
             else {
-                Lobby.getInstance().addPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
-                connection.setNickname(((AuthenticationMessage) serializable).getNickname());
-            }
-            if (Lobby.getInstance().isEmpty()){
-                connection.askForSize();
-            }
-            else {
+                Lobby.getInstance().addPlayer(nickname, connection);
+                connection.setNickname(nickname);
+
+                if (Lobby.getInstance().isEmpty()){
+                    connection.setState(new WaitingForGameSizeState(connection));
+                    connection.askForSize();
+                }
+
+                connection.setState(new WaitingForGameSizeState(connection));
                 connection.waitForPlayers();
             }
         }
 
         else {
-            if (!connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID()) || !connection.getServer().getDormantGames().contains(((AuthenticationMessage) serializable).getRequestedGameID())){
+            if (!connection.getServer().getPlayers().containsValue(gameID) || !connection.getServer().getDormantGames().contains(gameID)){
                 connection.unavailableGame();
             }
             else {
-                if (connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID())){
-                    if (!connection.getServer().getPlayers().containsKey(((AuthenticationMessage) serializable).getNickname())){
+                if (connection.getServer().getPlayers().containsValue(gameID)){
+                    if (!connection.getServer().getPlayers().containsKey(nickname)){
                         connection.wrongNickname();
                     }
                 }
