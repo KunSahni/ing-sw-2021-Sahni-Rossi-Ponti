@@ -3,6 +3,8 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
+import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
+import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.io.PrintWriter;
@@ -37,7 +39,7 @@ public class CLI extends UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-
+        out.write(String.valueOf(leaderCards));
     }
 
     @Override
@@ -47,7 +49,7 @@ public class CLI extends UI {
 
     @Override
     public void renderResourcePregameChoice(int numberOfResources) {
-
+        System.out.println("You need to choose " + numberOfResources + " resources.");
     }
 
     @Override
@@ -57,22 +59,26 @@ public class CLI extends UI {
 
     @Override
     public void renderMessage(String message) {
-
+        System.out.println(message);
     }
 
     @Override
     public void renderErrorMessage(String message) {
-
+        System.out.println(message);
     }
 
     @Override
     public void renderAuthenticationRequest(String message) {
-
+        System.out.println(message);
+        String nickname = in.nextLine();
+        client.sendMessage(new AuthenticationMessage(nickname, -1));
     }
 
     @Override
     public void renderCreateLobbyRequest(String message) {
-
+        System.out.println(message);
+        int size = in.nextInt();
+        client.sendMessage(new CreateLobbyMessage(size));
     }
 
     public void setClient(Client client) {

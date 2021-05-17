@@ -23,7 +23,7 @@ public class Client implements Subscriber<Renderable> {
     public Client(UI ui) {
         this.ui = ui;
         updatesQueue = new LinkedList<>();
-        clientSocket = new ClientSocket("localhost", 1024, this);
+        clientSocket = new ClientSocket("localhost", 8080, this);
     }
 
     /**
