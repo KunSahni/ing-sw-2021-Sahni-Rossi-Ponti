@@ -7,7 +7,6 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -43,7 +42,6 @@ public class Game {
 
     public void subscribe(RemoteView remoteView) {
         changesHandler.subscribe(remoteView);
-        changesHandler.publishAll(this);
     }
 
     public List<Player> getPlayerList() {

@@ -12,8 +12,8 @@ import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 public class DevelopmentCardSlot implements VictoryPointsElement {
     private final LinkedList<DevelopmentCard> cards;
     private int slotIndex;
-    private ChangesHandler changesHandler;
-    private String nickname;
+    private transient ChangesHandler changesHandler;
+    private transient String nickname;
 
     private DevelopmentCardSlot() {
         this.cards = new LinkedList<>();
