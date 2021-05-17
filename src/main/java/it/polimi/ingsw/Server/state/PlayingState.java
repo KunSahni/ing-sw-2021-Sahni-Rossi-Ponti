@@ -1,8 +1,9 @@
 package it.polimi.ingsw.server.state;
 
-import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.network.message.messages.Message;
 import it.polimi.ingsw.server.Connection;
+import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
+
+import java.io.Serializable;
 
 public class PlayingState extends ConnectionState{
     public PlayingState(Connection connection) {
@@ -10,8 +11,8 @@ public class PlayingState extends ConnectionState{
     }
 
     @Override
-    public boolean messageAllowed(Message message) {
-        return message instanceof SerializedMessage;
+    public boolean messageAllowed(Serializable serializable) {
+        return serializable instanceof PlayerAction;
     }
 
     @Override
@@ -19,7 +20,7 @@ public class PlayingState extends ConnectionState{
     }
 
     @Override
-    public void readMessage(Message message) {
-        connection.
+    public void readMessage(Serializable serializable) {
+        connection.publish((PlayerAction) serializable); //todo: how player can disconnect?
     }
 }

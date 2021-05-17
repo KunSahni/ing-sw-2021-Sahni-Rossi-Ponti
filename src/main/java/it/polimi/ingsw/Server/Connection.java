@@ -1,14 +1,12 @@
 package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
 import it.polimi.ingsw.network.message.renderable.ErrorMessage;
-import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.network.message.renderable.requests.*;
 import it.polimi.ingsw.network.message.messages.Message;
-import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
+import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 import it.polimi.ingsw.server.state.AuthenticationState;
 import it.polimi.ingsw.server.state.ConnectionState;
@@ -31,6 +29,7 @@ public class Connection implements Runnable{
     private boolean isActive;
     private ConnectionState state;
     private final SubmissionPublisher<PlayerAction> submissionPublisher;
+    private final Thread pingThread;
 
     /**
      * Create a connection with the given socket and server,set isActive true and set state to AuthenticationState
@@ -41,6 +40,8 @@ public class Connection implements Runnable{
         this.socket = socket;
         this.server = server;
         this.isActive = true;
+        pingThread = new Thread(this::startPing);
+        pingThread.start();
         this.submissionPublisher = new SubmissionPublisher<>();
         state = new AuthenticationState(this);
         try {
@@ -70,6 +71,7 @@ public class Connection implements Runnable{
 
     public synchronized void closeConnection(){
         try{
+            server.getRemoteView(gameId).removeDisconnectedPlayer(nickname);
             isActive = false;
             socket.close();
         }catch (IOException e){
@@ -101,6 +103,7 @@ public class Connection implements Runnable{
         SerializedMessage serializedMessage = null;
         try {
             serializedMessage = (SerializedMessage) inputStream.readObject();
+            pingThread.interrupt();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -127,7 +130,6 @@ public class Connection implements Runnable{
         try {
             outputStream.writeObject(new AuthenticationRequest());
             outputStream.flush();
-            readFromInputStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -232,5 +234,35 @@ public class Connection implements Runnable{
 
     public void subscribe(RemoteView.NetworkMessageForwarder networkMessageForwarder){
         this.submissionPublisher.subscribe(networkMessageForwarder);
+    }
+
+    public void startPing(){
+        while (true){
+            try {
+                Thread.sleep(30000);
+                if (inputStream.read() == -1){
+                    closeConnection();
+                }
+            } catch (InterruptedException | IOException e) {
+                closeConnection();
+            }
+        }
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+        server.addNicknameGameId(this.nickname, this.gameId);
+    }
+
+    public void addCurrentGame(int gameId, Game game){
+        server.addCurrentGames(gameId, game);
+    }
+
+    public void publish(PlayerAction playerAction){
+        submissionPublisher.submit(playerAction);
     }
 }

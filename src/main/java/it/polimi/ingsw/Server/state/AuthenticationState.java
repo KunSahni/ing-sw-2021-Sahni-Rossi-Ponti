@@ -1,12 +1,13 @@
 package it.polimi.ingsw.server.state;
 
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
-import it.polimi.ingsw.network.message.messages.Message;
 import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.model.Game;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
 
 public class AuthenticationState extends ConnectionState {
 
@@ -16,12 +17,12 @@ public class AuthenticationState extends ConnectionState {
 
     /**
      * control if the message is an instance of AuthenticationMessage
-     * @param message is the message sent from the client received by the connection
+     * @param serializable is the message sent from the client received by the connection
      * @return true if message is an instance of AuthenticationMessage, in contrary case false
      */
     @Override
-    public boolean messageAllowed(Message message) {
-        return message instanceof AuthenticationMessage;
+    public boolean messageAllowed(Serializable serializable) {
+        return serializable instanceof AuthenticationMessage;
     }
 
 
@@ -36,16 +37,17 @@ public class AuthenticationState extends ConnectionState {
      * connected to it. If the game Id -1 it checks if a Lobby is already instanced, if it is add the player to it,
      * in contrary case asks to the player which size ha wants for the game (1-4) and instance Lobby with that size.
      * The method eventually control if Lobby is full and in that case start the game.
-     * @param message is the message received from Client
+     * @param serializable is the message received from Client
      */
     @Override
-    public synchronized void readMessage(Message message) {
-        if (((AuthenticationMessage) message).getRequestedGameID() == -1){
-            if (Lobby.getInstance().getPlayers().contains(((AuthenticationMessage) message).getNickname())){
+    public synchronized void readMessage(Serializable serializable) {
+        if (((AuthenticationMessage) serializable).getRequestedGameID() == -1){
+            if (Lobby.getInstance().getPlayers().contains(((AuthenticationMessage) serializable).getNickname())){
                 connection.unavailableNickname();
             }
             else {
-                Lobby.getInstance().addPlayer(((AuthenticationMessage) message).getNickname(), connection);
+                Lobby.getInstance().addPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
+                connection.setNickname(((AuthenticationMessage) serializable).getNickname());
             }
             if (Lobby.getInstance().isEmpty()){
                 connection.askForSize();
@@ -59,28 +61,28 @@ public class AuthenticationState extends ConnectionState {
         }
 
         else {
-            if (!connection.getServer().getPlayers().containsValue(((AuthenticationMessage) message).getRequestedGameID()) || !connection.getServer().getDormantGames().contains(((AuthenticationMessage) message).getRequestedGameID())){
+            if (!connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID()) || !connection.getServer().getDormantGames().contains(((AuthenticationMessage) serializable).getRequestedGameID())){
                 connection.unavailableGame();
             }
             else {
-                if (connection.getServer().getPlayers().containsValue(((AuthenticationMessage) message).getRequestedGameID())){
-                    if (!connection.getServer().getPlayers().containsKey(((AuthenticationMessage) message).getNickname())){
+                if (connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID())){
+                    if (!connection.getServer().getPlayers().containsKey(((AuthenticationMessage) serializable).getNickname())){
                         connection.wrongNickname();
                     }
                     else{
-                        connection.getServer().getCurrentGames().get(((AuthenticationMessage) message).getRequestedGameID()).connect(((AuthenticationMessage) message).getNickname());
+                        connection.getServer().getRemoteView(((AuthenticationMessage) serializable).getRequestedGameID()).addConnectedPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
                     }
                 }
                 else{
-                    if (connection.getServer().getDormantGames().contains(((AuthenticationMessage) message).getRequestedGameID())){
+                    if (connection.getServer().getDormantGames().contains(((AuthenticationMessage) serializable).getRequestedGameID())){
                         Game game = null;//todo: basta questo per ripristinare il game?
                         try {
-                            game = new Game(((AuthenticationMessage) message).getRequestedGameID(), null);
-                        } catch (FileNotFoundException e) {
+                            game = new Game(((AuthenticationMessage) serializable).getRequestedGameID(), null);
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        connection.getServer().restoreGame(((AuthenticationMessage) message).getRequestedGameID(), game);
-                        connection.getServer().getCurrentGames().get(((AuthenticationMessage) message).getRequestedGameID()).connect(((AuthenticationMessage) message).getNickname());
+                        connection.getServer().restoreGame(((AuthenticationMessage) serializable).getRequestedGameID(), game);
+                        connection.getServer().getRemoteView(((AuthenticationMessage) serializable).getRequestedGameID()).addConnectedPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
                     }
                 }
             }

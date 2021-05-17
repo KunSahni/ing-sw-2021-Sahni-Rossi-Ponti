@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,17 +18,15 @@ import java.util.Map;
 
 public class Server {
     private static final int port = 8080;
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
     private Map<String, Integer> players = new HashMap<>();
     private Map<Integer, Game> currentGames = new HashMap<>();
     private List<Integer> dormantGames = new ArrayList<>();
+    private Map<Integer, RemoteView> gameIDRemoteViewMap = new HashMap<>();
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(port);
     }
-
-    //todo: fare submission publisher e un metodo per iscrivere remote view a connessione connection.subscribe
-    //io publisher connection
 
     /**
      * server starts to hear on the port to accept, create and run connections
@@ -47,23 +46,9 @@ public class Server {
     }
 
     /**
-     * check if the nickname inserted is available
-     * @param nickname is the nickname chosen by the player
-     * @return true if there isn't an existing player with the selected nickname, false in contrary case
-     */
-    public boolean checkNicknameAvailability(String nickname){
-        for (String s: players.keySet()) {
-            if (nickname.equals(s)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * check if a player was disconnected from a Game looking for player nickname in players attribute, once found check
      * if his game is in currentGame attribute
-     * @param nickname is the nickname of the polayer
+     * @param nickname is the nickname of the player
      * @param gameId is the gameId of the player
      * @return the game of the disconnected player or null if the game doesn't exist
      */
@@ -106,12 +91,24 @@ public class Server {
         return dormantGames;
     }
 
-    public Map<Integer, Game> getCurrentGames() {
-        return currentGames;
-    }
-
     public void restoreGame(int gameId, Game game){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
+    }
+
+    public void addNicknameGameId(String nickname, int gameId){
+        players.put(nickname, gameId);
+    }
+
+    public void addCurrentGames(int gameId, Game game) {
+        currentGames.putIfAbsent(gameId, game);
+    }
+
+    public void addGameIDRemoteView(int gameID, RemoteView remoteView){
+        gameIDRemoteViewMap.putIfAbsent(gameID, remoteView);
+    }
+
+    public RemoteView getRemoteView(Integer gameID){
+        return gameIDRemoteViewMap.get(gameID);
     }
 }

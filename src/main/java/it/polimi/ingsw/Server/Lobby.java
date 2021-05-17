@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +40,19 @@ public class Lobby {
         return instance;
     }
 
+    /**
+     * add a player to server players map
+     * @param nickname is the nickname of the player
+     * @param connection is the connection of the player
+     */
     public synchronized void addPlayer(String nickname, Connection connection){
         players.put(nickname, connection);
     }
 
+    /**
+     * control if number of players in Lobby equals Lobby size
+     * @return true if Lobby is full, otherwise false
+     */
     public boolean isFull(){
         return players.size() == size;
     }
@@ -57,22 +65,31 @@ public class Lobby {
         this.size = size;
     }
 
+    /**
+     * create a new game with maxGameId as id and all players in Lobby, than create a new controller, a new remote view,
+     * connect all players in Lobby to the game, subscribe remote view to all connections.
+     * It also sets maxGameId as gameId to all connections and add to server currentGames map game just created.
+     * Finally increase maxGameId, overwrite it in memory and call clear method.
+     */
     public void startGame(){
         Game game = null;
         try {
             game = new Game(maxGameId, List.copyOf(players.keySet()));
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         Controller controller = new Controller(game);
-        RemoteView remoteView = new RemoteView(game);
-        //todo: add gameIdRemoteView.put, do we really need it?
+        RemoteView remoteView = new RemoteView(controller);
+        controller.setRemoteView(remoteView);
+        game.subscribe(remoteView);
         for (String s: players.keySet()) {
-            game.connect(s);
+            remoteView.addConnectedPlayer(s, players.get(s));
         }
 
         for (Connection c: players.values()) {
-            c.subscribeRemoteView(remoteView);
+            c.setGameId(maxGameId);
+            c.addCurrentGame(maxGameId, game);
+            c.getServer().addGameIDRemoteView(maxGameId, remoteView);
         }
 
         this.maxGameId++;
@@ -87,6 +104,9 @@ public class Lobby {
         clear();
     }
 
+    /**
+     * Set instance null, players to new Map and size to zero
+     */
     private void clear(){
         instance = null;
         players = new HashMap<>();
@@ -97,6 +117,9 @@ public class Lobby {
         return List.copyOf(players.keySet());
     }
 
+    /**
+     * @return true only if Lobby' size is zero
+     */
     public boolean isEmpty(){
         return size == 0;
     }
