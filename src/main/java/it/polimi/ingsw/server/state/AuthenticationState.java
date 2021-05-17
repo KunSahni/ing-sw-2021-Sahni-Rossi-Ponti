@@ -58,6 +58,8 @@ public class AuthenticationState extends ConnectionState {
 
                 connection.setState(new PlayingState(connection));
 
+                connection.sendJoinLobbyNotification(Lobby.getInstance().getSize());
+
                 if (Lobby.getInstance().isFull()) {
                     Lobby.getInstance().startGame();//todo: settare da Lobby in tutte le connections state a playingstate
                 } else {

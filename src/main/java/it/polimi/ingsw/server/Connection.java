@@ -260,4 +260,12 @@ public class Connection implements Runnable{
     public void setState(ConnectionState state){
         this.state=state;
     }
+    
+    public void sendJoinLobbyNotification(Integer size){
+        try {
+            outputStream.writeObject(new JoinedLobbyNotification(gameId, size));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
