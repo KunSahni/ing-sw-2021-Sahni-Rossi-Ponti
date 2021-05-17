@@ -10,6 +10,7 @@ public class ErrorMessage extends PrivateRenderable{
     private final String message;
 
     public ErrorMessage(String message) {
+        super(null);
         this.message = message;
     }
 

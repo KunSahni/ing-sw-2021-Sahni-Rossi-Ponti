@@ -10,6 +10,7 @@ public abstract class Notification extends PrivateRenderable {
     public final String message;
 
     public Notification(String message) {
+        super(null);
         this.message = message;
     }
 

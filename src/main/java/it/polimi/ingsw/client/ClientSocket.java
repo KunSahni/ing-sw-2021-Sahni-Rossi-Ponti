@@ -36,13 +36,13 @@ public class ClientSocket {
             //A thread which will constantly listen for updates from the server and forward them to Client
             new Thread(() -> {
                 while (socket.isConnected()) {
-                    Renderable message = null;
                     try {
-                        message = (Renderable) inputStream.readObject();
+                        Renderable message = (Renderable) inputStream.readObject();
+                        if(message != null)
+                            renderablePublisher.submit(message);
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
-                    renderablePublisher.submit(message);
                 }
             }).start();
         } catch (IOException e) {

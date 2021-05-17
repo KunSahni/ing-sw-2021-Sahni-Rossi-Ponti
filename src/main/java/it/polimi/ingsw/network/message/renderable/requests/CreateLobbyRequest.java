@@ -11,6 +11,7 @@ public class CreateLobbyRequest extends PrivateRenderable {
     private final String message;
 
     public CreateLobbyRequest() {
+        super(null);
         this.message = "How many players (1-4) will be in the next game?";
     }
 

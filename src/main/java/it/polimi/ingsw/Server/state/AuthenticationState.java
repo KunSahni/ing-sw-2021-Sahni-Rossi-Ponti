@@ -3,7 +3,6 @@ package it.polimi.ingsw.server.state;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
 import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.Lobby;
-import it.polimi.ingsw.server.model.Game;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -52,9 +51,6 @@ public class AuthenticationState extends ConnectionState {
             if (Lobby.getInstance().isEmpty()){
                 connection.askForSize();
             }
-            if (Lobby.getInstance().isFull()){
-                Lobby.getInstance().startGame();
-            }
             else {
                 connection.waitForPlayers();
             }
@@ -68,21 +64,6 @@ public class AuthenticationState extends ConnectionState {
                 if (connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID())){
                     if (!connection.getServer().getPlayers().containsKey(((AuthenticationMessage) serializable).getNickname())){
                         connection.wrongNickname();
-                    }
-                    else{
-                        connection.getServer().getRemoteView(((AuthenticationMessage) serializable).getRequestedGameID()).addConnectedPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
-                    }
-                }
-                else{
-                    if (connection.getServer().getDormantGames().contains(((AuthenticationMessage) serializable).getRequestedGameID())){
-                        Game game = null;//todo: basta questo per ripristinare il game?
-                        try {
-                            game = new Game(((AuthenticationMessage) serializable).getRequestedGameID(), null);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        connection.getServer().restoreGame(((AuthenticationMessage) serializable).getRequestedGameID(), game);
-                        connection.getServer().getRemoteView(((AuthenticationMessage) serializable).getRequestedGameID()).addConnectedPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
                     }
                 }
             }

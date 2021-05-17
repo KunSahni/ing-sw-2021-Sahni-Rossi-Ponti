@@ -11,6 +11,7 @@ public class AuthenticationRequest extends PrivateRenderable {
     private final String message;
 
     public AuthenticationRequest() {
+        super(null);
         this.message = "Insert your nickname";
     }
 
