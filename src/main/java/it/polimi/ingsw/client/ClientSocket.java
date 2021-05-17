@@ -69,6 +69,7 @@ public class ClientSocket {
     public void sendMessage(SerializedMessage message) {
         try {
             outputStream.writeObject(message);
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

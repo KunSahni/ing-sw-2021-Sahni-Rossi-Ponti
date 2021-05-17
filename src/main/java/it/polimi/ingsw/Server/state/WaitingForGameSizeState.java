@@ -20,8 +20,7 @@ public class WaitingForGameSizeState extends ConnectionState {
 
     @Override
     public void invalidMessage() {
-        connection.invalidMessage();
-        connection.readFromInputStream();
+
     }
 
     @Override

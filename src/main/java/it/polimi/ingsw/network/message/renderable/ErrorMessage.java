@@ -9,7 +9,12 @@ import it.polimi.ingsw.client.UI;
 public class ErrorMessage extends PrivateRenderable{
     private final String message;
 
-    public ErrorMessage(String message) {
+    public ErrorMessage(String nickname, String message){
+        super(nickname);
+        this.message = message;
+    }
+
+    public ErrorMessage(String message){
         super(null);
         this.message = message;
     }

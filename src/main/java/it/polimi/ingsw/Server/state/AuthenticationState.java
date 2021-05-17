@@ -1,9 +1,9 @@
 package it.polimi.ingsw.server.state;
 
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
-import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.server.model.Game;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,9 +28,7 @@ public class AuthenticationState extends ConnectionState {
 
     @Override
     public void invalidMessage() {
-            connection.invalidMessage();
-            connection.authentication();
-            connection.readFromInputStream();
+
     }
 
     /**
@@ -43,34 +41,48 @@ public class AuthenticationState extends ConnectionState {
      */
     @Override
     public synchronized void readMessage(Serializable serializable) {
-        Integer gameID = ((AuthenticationMessage) serializable).getRequestedGameID();
-        String nickname = ((AuthenticationMessage) serializable).getNickname();
-        if (gameID == -1){
-            if (Lobby.getInstance().getPlayers().contains(nickname)){
+        if (((AuthenticationMessage) serializable).getRequestedGameID() == -1){
+            if (Lobby.getInstance().getPlayers().contains(((AuthenticationMessage) serializable).getNickname())){
                 connection.unavailableNickname();
             }
             else {
-                Lobby.getInstance().addPlayer(nickname, connection);
-                connection.setNickname(nickname);
-
-                if (Lobby.getInstance().isEmpty()){
-                    connection.setState(new WaitingForGameSizeState(connection));
-                    connection.askForSize();
-                }
-
-                connection.setState(new WaitingForGameSizeState(connection));
+                Lobby.getInstance().addPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
+                connection.setNickname(((AuthenticationMessage) serializable).getNickname());
+            }
+            if (Lobby.getInstance().isEmpty()){
+                connection.askForSize();
+            }
+            if (Lobby.getInstance().isFull()){
+                Lobby.getInstance().startGame();
+            }
+            else {
                 connection.waitForPlayers();
             }
         }
 
         else {
-            if (!connection.getServer().getPlayers().containsValue(gameID) || !connection.getServer().getDormantGames().contains(gameID)){
+            if (!connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID()) || !connection.getServer().getDormantGames().contains(((AuthenticationMessage) serializable).getRequestedGameID())){
                 connection.unavailableGame();
             }
             else {
-                if (connection.getServer().getPlayers().containsValue(gameID)){
-                    if (!connection.getServer().getPlayers().containsKey(nickname)){
+                if (connection.getServer().getPlayers().containsValue(((AuthenticationMessage) serializable).getRequestedGameID())){
+                    if (!connection.getServer().getPlayers().containsKey(((AuthenticationMessage) serializable).getNickname())){
                         connection.wrongNickname();
+                    }
+                    else{
+                        connection.getServer().getRemoteView(((AuthenticationMessage) serializable).getRequestedGameID()).addConnectedPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
+                    }
+                }
+                else{
+                    if (connection.getServer().getDormantGames().contains(((AuthenticationMessage) serializable).getRequestedGameID())){
+                        Game game = null;//todo: basta questo per ripristinare il game?
+                        try {
+                            game = new Game(((AuthenticationMessage) serializable).getRequestedGameID(), null);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        connection.getServer().restoreGame(((AuthenticationMessage) serializable).getRequestedGameID(), game);
+                        connection.getServer().getRemoteView(((AuthenticationMessage) serializable).getRequestedGameID()).addConnectedPlayer(((AuthenticationMessage) serializable).getNickname(), connection);
                     }
                 }
             }

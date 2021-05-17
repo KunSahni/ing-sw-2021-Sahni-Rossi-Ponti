@@ -5,6 +5,9 @@ import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.network.message.renderable.requests.*;
 import it.polimi.ingsw.network.message.messages.Message;
+import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
+import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.remoteview.RemoteView;
 import it.polimi.ingsw.server.state.AuthenticationState;
 import it.polimi.ingsw.server.state.ConnectionState;
 import it.polimi.ingsw.server.state.PlayingState;
@@ -25,6 +28,8 @@ public class Connection implements Runnable{
     private int gameId;
     private boolean isActive;
     private ConnectionState state;
+    private final SubmissionPublisher<PlayerAction> submissionPublisher;
+    private final Thread pingThread;
 
     /**
      * Create a connection with the given socket and server,set isActive true and set state to AuthenticationState
@@ -35,6 +40,9 @@ public class Connection implements Runnable{
         this.socket = socket;
         this.server = server;
         this.isActive = true;
+        pingThread = new Thread(this::startPing);
+        pingThread.start();
+        this.submissionPublisher = new SubmissionPublisher<>();
         state = new AuthenticationState(this);
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -52,6 +60,7 @@ public class Connection implements Runnable{
         try {
             authentication();
 
+            state = new PlayingState(this);
             while(isActive){
                 readFromInputStream();
             }
@@ -62,6 +71,7 @@ public class Connection implements Runnable{
 
     public synchronized void closeConnection(){
         try{
+            server.getRemoteView(gameId).removeDisconnectedPlayer(nickname);
             isActive = false;
             socket.close();
         }catch (IOException e){
@@ -77,7 +87,9 @@ public class Connection implements Runnable{
         try {
             outputStream.writeObject(new CreateLobbyRequest());
             outputStream.flush();
+            state = new WaitingForGameSizeState(this);
             readFromInputStream();
+            state = new AuthenticationState(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,16 +103,19 @@ public class Connection implements Runnable{
         SerializedMessage serializedMessage = null;
         try {
             serializedMessage = (SerializedMessage) inputStream.readObject();
+            pingThread.interrupt();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if (serializedMessage!=null && serializedMessage.message!=null){
+        if (serializedMessage.message!=null){
             message = serializedMessage.message;
-            if (state.messageAllowed(message))
+            boolean allowedFlag = state.messageAllowed(message);
+            if (!allowedFlag){
+                invalidMessage();
+            }
+            else{
                 state.readMessage(message);
-            else
-                state.invalidMessage();
-
+            }
         }
     }
 
@@ -127,6 +142,7 @@ public class Connection implements Runnable{
         try {
             outputStream.writeObject(new ErrorMessage("Your message is not valid"));
             outputStream.flush();
+            authentication();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -167,11 +183,12 @@ public class Connection implements Runnable{
      */
     public void waitForPlayers(){
         try {
-            outputStream.writeObject(new WaitingForPlayersNotification());
+            outputStream.writeBytes(new WaitingForPlayersNotification().message);
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        state = new PlayingState(this);
         //todo: emmò? che faccio?
     }
 
@@ -180,7 +197,7 @@ public class Connection implements Runnable{
      */
     public void unavailableGame(){
         try {
-            outputStream.writeObject(new GameNotFoundNotification());
+            outputStream.writeBytes(new GameNotFoundNotification().message);
             outputStream.flush();
             authentication();
         } catch (IOException e) {
@@ -194,7 +211,7 @@ public class Connection implements Runnable{
      */
     public void wrongNickname(){
         try {
-            outputStream.writeObject(new WrongNicknameNotification());
+            outputStream.writeBytes(new WrongNicknameNotification().message);
             outputStream.flush();
             authentication();
         } catch (IOException e) {
@@ -215,6 +232,22 @@ public class Connection implements Runnable{
         }
     }
 
+    public void subscribe(RemoteView.NetworkMessageForwarder networkMessageForwarder){
+        this.submissionPublisher.subscribe(networkMessageForwarder);
+    }
+
+    public void startPing(){
+        while (true){
+            try {
+                Thread.sleep(30000);
+                if (inputStream.read() == -1){
+                    closeConnection();
+                }
+            } catch (InterruptedException | IOException e) {
+                closeConnection();
+            }
+        }
+    }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
@@ -225,7 +258,11 @@ public class Connection implements Runnable{
         server.addNicknameGameId(this.nickname, this.gameId);
     }
 
-    public void setState(ConnectionState state){
-        this.state=state;
+    public void addCurrentGame(int gameId, Game game){
+        server.addCurrentGames(gameId, game);
+    }
+
+    public void publish(PlayerAction playerAction){
+        submissionPublisher.submit(playerAction);
     }
 }

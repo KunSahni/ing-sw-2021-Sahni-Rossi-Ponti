@@ -1,7 +1,9 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.network.message.SerializedMessage;
+import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.network.message.messages.Message;
+import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 
 import java.util.LinkedList;
@@ -12,6 +14,7 @@ import java.util.concurrent.Flow.*;
  * This is the Client of the game which receives and elaborates all the Renderables sent by the Server
  */
 public class Client implements Subscriber<Renderable> {
+    private Player currentPlayer;
     private final Queue<Renderable> updatesQueue;
     private final UI ui;
     private final ClientSocket clientSocket;
@@ -20,7 +23,7 @@ public class Client implements Subscriber<Renderable> {
     public Client(UI ui) {
         this.ui = ui;
         updatesQueue = new LinkedList<>();
-        clientSocket = new ClientSocket("localhost", 8080, this);
+        clientSocket = new ClientSocket("localhost", 1024, this);
     }
 
     /**
@@ -52,6 +55,12 @@ public class Client implements Subscriber<Renderable> {
         clientSocket.sendMessage(new SerializedMessage(message));
     }
 
+    /**
+     * @param action an action which the clients wants to execute
+     */
+    public void sendAction(Action action) {
+        clientSocket.sendMessage(new SerializedMessage(action));
+    }
 
     /**
      * Method invoked prior to invoking any other Subscriber
@@ -113,6 +122,13 @@ public class Client implements Subscriber<Renderable> {
 
     }
 
+    private void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    private Player getCurrentPlayer() {
+        return currentPlayer;
+    }
 
     public UI getUI() {
         return ui;

@@ -2,6 +2,9 @@ package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -60,6 +63,45 @@ public class Lobby {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    /**
+     * create a new game with maxGameId as id and all players in Lobby, than create a new controller, a new remote view,
+     * connect all players in Lobby to the game, subscribe remote view to all connections.
+     * It also sets maxGameId as gameId to all connections and add to server currentGames map game just created.
+     * Finally increase maxGameId, overwrite it in memory and call clear method.
+     */
+    public void startGame(){
+        Game game = null;
+        try {
+            game = new Game(maxGameId, List.copyOf(players.keySet()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Controller controller = new Controller(game);
+        RemoteView remoteView = new RemoteView(controller);
+        controller.setRemoteView(remoteView);
+        game.subscribe(remoteView);
+        for (String s: players.keySet()) {
+            remoteView.addConnectedPlayer(s, players.get(s));
+        }
+
+        for (Connection c: players.values()) {
+            c.setGameId(maxGameId);
+            c.addCurrentGame(maxGameId, game);
+            c.getServer().addGameIDRemoteView(maxGameId, remoteView);
+        }
+
+        this.maxGameId++;
+
+        try {
+            FileWriter file = new FileWriter("src/main/resources/maxId");
+            file.write(maxGameId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        clear();
     }
 
     /**
