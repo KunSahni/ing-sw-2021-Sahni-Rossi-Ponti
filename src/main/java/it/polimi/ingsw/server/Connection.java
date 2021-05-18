@@ -96,16 +96,26 @@ public class Connection implements Runnable{
      */
     public void readFromInputStream(){
         Message message;
+        PlayerAction action;
         SerializedMessage serializedMessage = null;
         try {
             serializedMessage = (SerializedMessage) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if (serializedMessage!=null && serializedMessage.message!=null){
+        if (serializedMessage!=null && serializedMessage.getMessage()!=null){
             message = serializedMessage.message;
             if (state.messageAllowed(message))
                 state.readMessage(message, this);
+            else {
+                state.invalidMessage(this);
+            }
+        }
+
+        if (serializedMessage!=null && serializedMessage.getAction()!=null){
+            action = (PlayerAction) serializedMessage.getAction();
+            if (state.messageAllowed(action))
+                state.readMessage(action, this);
             else {
                 state.invalidMessage(this);
             }
