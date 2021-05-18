@@ -5,9 +5,12 @@ import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
+import it.polimi.ingsw.server.controller.action.playeraction.PregameLeaderCardsChoiceAction;
+import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -39,7 +42,9 @@ public class CLI extends UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-        out.write(String.valueOf(leaderCards));
+        System.out.println(String.valueOf(leaderCards));
+        PregameLeaderCardsChoiceAction pregameLeaderCardsChoiceAction = new PregameLeaderCardsChoiceAction(new ArrayList<>(leaderCards.subList(0,2)));
+        client.sendAction(pregameLeaderCardsChoiceAction);
     }
 
     @Override

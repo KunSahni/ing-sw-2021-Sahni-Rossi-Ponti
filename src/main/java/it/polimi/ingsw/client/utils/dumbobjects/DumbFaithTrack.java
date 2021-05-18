@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * This is a dumber version of a regular FaithTrack,
  * this class only contains data contained in a FaithTrack but has none of its logic.
  */
-public class DumbFaithTrack {
+public class DumbFaithTrack implements Serializable {
     private int faithMarkerPosition;
     private List<FavorStatus> popesFavors;
 

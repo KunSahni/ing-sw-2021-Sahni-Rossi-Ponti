@@ -91,6 +91,7 @@ public abstract class UI {
      */
     public void updateMarket(MarketMarble[][] updatedMarket, MarketMarble updatedExtraMarble){
         dumbModel.getMarket().updateMarket(updatedMarket);
+        dumbModel.getMarket().updateExtraMarble(updatedExtraMarble);
     }
 
     /**

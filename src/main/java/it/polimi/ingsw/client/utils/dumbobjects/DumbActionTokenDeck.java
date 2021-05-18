@@ -2,13 +2,14 @@ package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This is a dumber version of a regular ActionTokenDeck,
  * this class only contains data contained in a ActionTokenDeck but has none of its logic.
  */
-public class DumbActionTokenDeck {
+public class DumbActionTokenDeck implements Serializable {
     private List<ActionToken> actionTokens;
 
     public DumbActionTokenDeck() {

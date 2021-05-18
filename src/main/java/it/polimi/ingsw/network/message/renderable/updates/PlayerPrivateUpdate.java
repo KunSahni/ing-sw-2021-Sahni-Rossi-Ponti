@@ -57,9 +57,9 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
     public void render(UI ui) {
         ui.updatePersonalBoard(getNickname(), position, updatedTurnStatus, updatedConnectionStatus);
         ui.updateTurnActions(performedActions);
-        if(tempMarbles != null)
+        if(tempMarbles != null && tempMarbles.size()>0)
             ui.renderTempMarbles(tempMarbles);
-        else if(tempLeaderCards != null)
+        else if(tempLeaderCards != null && tempLeaderCards.size()>0)
             ui.renderLeaderCardsChoice(tempLeaderCards);
     }
 }

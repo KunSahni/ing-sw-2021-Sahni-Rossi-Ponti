@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -8,7 +9,7 @@ import java.util.Stack;
  * This is a dumber version of a regular DevelopmentCardSlot,
  * this class only contains the data stored in a DevelopmentCardSlot but has none of its logic.
  */
-public class DumbDevelopmentCardSlot {
+public class DumbDevelopmentCardSlot implements Serializable {
     private final Stack<DumbDevelopmentCard> developmentCards;
     private final int slotIndex;
 

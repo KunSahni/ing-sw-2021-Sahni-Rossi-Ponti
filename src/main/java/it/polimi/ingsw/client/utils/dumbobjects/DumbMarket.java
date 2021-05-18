@@ -37,6 +37,10 @@ public class DumbMarket {
         );
     }
 
+    public void updateExtraMarble(MarketMarble updatedExtraMarble) {
+        this.extraMarble = updatedExtraMarble;
+    }
+
     public MarketMarble[][] getMarket() {
         return market;
     }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import java.io.Serializable;
 import java.util.stream.IntStream;
 
 /**
@@ -7,7 +8,7 @@ import java.util.stream.IntStream;
  * this class only contains the top layer of the cards contained in the DevelopmentCardsBoard on the server.
  * Also it contains none of the regular DevelopmentCardsBoard's logic.
  */
-public class DumbDevelopmentCardsBoard {
+public class DumbDevelopmentCardsBoard implements Serializable {
     private DumbDevelopmentCard[][] board;
 
 
