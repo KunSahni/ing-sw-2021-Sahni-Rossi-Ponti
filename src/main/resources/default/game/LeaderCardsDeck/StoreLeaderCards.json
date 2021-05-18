@@ -26,7 +26,7 @@
         "COIN":0
       }
     },
-    "storedType" : "COIN"
+    "storedResource" : "COIN"
   },
   {
     "ability" : "STORE",
@@ -43,7 +43,7 @@
         "SHIELD":0
       }
     },
-    "storedType" : "SHIELD"
+    "storedResource" : "SHIELD"
   },
   {
     "ability" : "STORE",
@@ -60,7 +60,7 @@
         "SERVANT":0
       }
     },
-    "storedType" : "SERVANT"
+    "storedResource" : "SERVANT"
   },
   {
     "ability" : "STORE",
@@ -77,6 +77,6 @@
         "STONE":0
       }
     },
-    "storedType" : "STONE"
+    "storedResource" : "STONE"
   }
 ]
