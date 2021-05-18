@@ -31,6 +31,8 @@ public class PlayingState extends ConnectionState{
 
     @Override
     public void readMessage(Serializable serializable, Connection connection) {
-        connection.publish((PlayerAction) serializable); //todo: how player can disconnect?
+        PlayerAction playerAction = (PlayerAction) serializable;
+        playerAction.setNickname(connection.getNickname());
+        connection.publish(playerAction); //todo: how player can disconnect?
     }
 }

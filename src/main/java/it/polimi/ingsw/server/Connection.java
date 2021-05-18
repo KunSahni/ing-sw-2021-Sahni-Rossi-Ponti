@@ -18,7 +18,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.SubmissionPublisher;
 
-public class Connection implements Runnable{
+public class Connection implements Runnable {
     private final Socket socket;
     private final Server server;
     private ObjectOutputStream outputStream;
@@ -31,7 +31,9 @@ public class Connection implements Runnable{
     private final Thread pingThread;
 
     /**
-     * Create a connection with the given socket and server,set isActive true and set state to AuthenticationState
+     * Create a connection with the given socket and server,set isActive true and set state to
+     * AuthenticationState
+     *
      * @param socket is the Client socket
      * @param server is the server from which this method is called
      */
@@ -52,14 +54,19 @@ public class Connection implements Runnable{
         }
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
     /**
-     * At the begin call sendAuthenticationRequest method, then hear for communications from view or virtual view
+     * At the begin call sendAuthenticationRequest method, then hear for communications from view
+     * or virtual view
      */
-    public void run(){
+    public void run() {
         try {
             sendAuthenticationRequest();
 
-            while(isActive){
+            while (isActive) {
                 readFromInputStream();
             }
         } finally {
@@ -67,12 +74,12 @@ public class Connection implements Runnable{
         }
     }
 
-    public synchronized void closeConnection(){
-        try{
+    public synchronized void closeConnection() {
+        try {
             server.getRemoteView(gameId).removeDisconnectedPlayer(nickname);
             isActive = false;
             socket.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             System.err.println(e.getMessage());
         }
     }
@@ -81,7 +88,7 @@ public class Connection implements Runnable{
      * Ask to the player which size he wants for the game by sending a CreateLobbyRequest
      * The state is changed to WaitingForGameSizeState
      */
-    public void askForSize(){
+    public void askForSize() {
         try {
             outputStream.writeObject(new CreateLobbyRequest());
             outputStream.flush();
@@ -92,9 +99,10 @@ public class Connection implements Runnable{
     }
 
     /**
-     * Depending by current state control validity of received messages and invoke corresponding readMessage method
+     * Depending by current state control validity of received messages and invoke corresponding
+     * readMessage method
      */
-    public void readFromInputStream(){
+    public void readFromInputStream() {
         Message message;
         PlayerAction action;
         SerializedMessage serializedMessage = null;
@@ -103,8 +111,8 @@ public class Connection implements Runnable{
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if (serializedMessage!=null && serializedMessage.getMessage()!=null){
-            message = serializedMessage.message;
+        if (serializedMessage != null && serializedMessage.getMessage() != null) {
+            message = serializedMessage.getMessage();
             if (state.messageAllowed(message))
                 state.readMessage(message, this);
             else {
@@ -112,8 +120,8 @@ public class Connection implements Runnable{
             }
         }
 
-        if (serializedMessage!=null && serializedMessage.getAction()!=null){
-            action = (PlayerAction) serializedMessage.getAction();
+        if (serializedMessage != null && serializedMessage.getAction() != null) {
+            action = serializedMessage.getAction();
             if (state.messageAllowed(action))
                 state.readMessage(action, this);
             else {
@@ -129,7 +137,7 @@ public class Connection implements Runnable{
     /**
      * send an AuthenticationRequest to the client
      */
-    public void sendAuthenticationRequest(){
+    public void sendAuthenticationRequest() {
         try {
             outputStream.writeObject(new AuthenticationRequest());
             outputStream.flush();
@@ -141,7 +149,7 @@ public class Connection implements Runnable{
     /**
      * Send to the client a message to tell that the message he sent is not valid
      */
-    public void invalidMessage(){
+    public void invalidMessage() {
         try {
             outputStream.writeObject(new ErrorMessage("Your message is not valid"));
             outputStream.flush();
@@ -157,7 +165,7 @@ public class Connection implements Runnable{
     /**
      * Send to the client a message to tell him that the nickname he chose is unavailable
      */
-    public void unavailableNickname(){
+    public void unavailableNickname() {
         try {
             outputStream.writeObject(new ErrorMessage("Nickname you selected is unavailable"));
             outputStream.flush();
@@ -170,7 +178,7 @@ public class Connection implements Runnable{
     /**
      * Send to the client a message to tell him that the size he selected is not valid
      */
-    public void invalidSize(){
+    public void invalidSize() {
         try {
             outputStream.writeObject(new ErrorMessage("Game size you selected is invalid"));
             outputStream.flush();
@@ -183,7 +191,7 @@ public class Connection implements Runnable{
     /**
      * Communicate to the player that he is waiting for other players to start game
      */
-    public void waitForPlayers(){
+    public void waitForPlayers() {
         try {
             outputStream.writeObject(new WaitingForPlayersNotification());
             outputStream.flush();
@@ -196,7 +204,7 @@ public class Connection implements Runnable{
     /**
      * Communicate to player that the game he's trying to reconnect is unavailable
      */
-    public void unavailableGame(){
+    public void unavailableGame() {
         try {
             outputStream.writeObject(new GameNotFoundNotification());
             outputStream.flush();
@@ -208,9 +216,10 @@ public class Connection implements Runnable{
 
 
     /**
-     * Communicate to the player that the game he's trying to reconnect is available but nickname he selected is wrong
+     * Communicate to the player that the game he's trying to reconnect is available but nickname
+     * he selected is wrong
      */
-    public void wrongNickname(){
+    public void wrongNickname() {
         try {
             outputStream.writeObject(new WrongNicknameNotification());
             outputStream.flush();
@@ -222,9 +231,10 @@ public class Connection implements Runnable{
 
     /**
      * Send to the client the passed renderable
+     *
      * @param renderable is sent to the Client
      */
-    public void send(Renderable renderable){
+    public void send(Renderable renderable) {
         try {
             outputStream.writeObject(renderable);
             outputStream.flush();
@@ -233,15 +243,15 @@ public class Connection implements Runnable{
         }
     }
 
-    public void subscribe(RemoteView.NetworkMessageForwarder networkMessageForwarder){
+    public void subscribe(RemoteView.NetworkMessageForwarder networkMessageForwarder) {
         this.submissionPublisher.subscribe(networkMessageForwarder);
     }
 
-    public void startPing(){
-        while (true){
+    public void startPing() {
+        while (true) {
             try {
                 Thread.sleep(30000);
-                if (inputStream.read() == -1){
+                if (inputStream.read() == -1) {
                     closeConnection();
                 }
             } catch (InterruptedException | IOException e) {
@@ -259,19 +269,19 @@ public class Connection implements Runnable{
         server.addNicknameGameId(this.nickname, this.gameId);
     }
 
-    public void addCurrentGame(int gameId, Game game){
+    public void addCurrentGame(int gameId, Game game) {
         server.addCurrentGames(gameId, game);
     }
 
-    public void publish(PlayerAction playerAction){
+    public void publish(PlayerAction playerAction) {
         submissionPublisher.submit(playerAction);
     }
 
-    public void setState(ConnectionState state){
-        this.state=state;
+    public void setState(ConnectionState state) {
+        this.state = state;
     }
-    
-    public void sendJoinLobbyNotification(Integer size){
+
+    public void sendJoinLobbyNotification(Integer size) {
         try {
             outputStream.writeObject(new JoinedLobbyNotification(gameId, size));
         } catch (IOException e) {
