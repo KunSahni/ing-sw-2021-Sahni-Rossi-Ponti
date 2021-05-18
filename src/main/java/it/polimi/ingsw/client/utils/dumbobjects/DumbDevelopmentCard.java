@@ -28,7 +28,10 @@ public class DumbDevelopmentCard {
         this.level = developmentCard.getLevel();
         this.victoryPoints = developmentCard.getVictoryPoints();
         this.inputResources = new HashMap<>(developmentCard.getInputResources());
-        this.outputResources = new HashMap<>(developmentCard.getOutputResources());
+        if(developmentCard.getOutputResources() !=null)
+            this.outputResources = new HashMap<>(developmentCard.getOutputResources());
+        else
+            this.outputResources = null;
         this.cost = new HashMap<>(developmentCard.getCost());
         this.faithIncrement = developmentCard.getFaithIncrement();
     }
