@@ -19,9 +19,9 @@ public class DevelopmentCardsBoardUpdate extends BroadcastRenderable {
     private final DumbDevelopmentCard[][] updatedDevelopmentCardsBoard;
 
     public DevelopmentCardsBoardUpdate(DevelopmentCardsBoard updatedDevelopmentCardsBoard) {
-        this.updatedDevelopmentCardsBoard = new DumbDevelopmentCard[4][3];
-        IntStream.range(0,4).forEach(
-                i->IntStream.range(0,3).forEach(
+        this.updatedDevelopmentCardsBoard = new DumbDevelopmentCard[3][4];
+        IntStream.range(0,3).forEach(
+                i->IntStream.range(0,4).forEach(
                         j-> this.updatedDevelopmentCardsBoard[i][j] = new DumbDevelopmentCard(updatedDevelopmentCardsBoard.peekBoard()[i][j].peek())
                 )
         );
