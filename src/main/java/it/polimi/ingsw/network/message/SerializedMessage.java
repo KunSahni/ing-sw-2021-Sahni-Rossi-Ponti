@@ -9,8 +9,8 @@ import java.io.Serializable;
  * This class can contain either an action or a message which will be transmitted to the server via the network
  */
 public class SerializedMessage implements Serializable {
-    public final PlayerAction action;
-    public final Message message;
+    private final PlayerAction action;
+    private final Message message;
 
     /**
      * @param action the action which the client wants to send to the server

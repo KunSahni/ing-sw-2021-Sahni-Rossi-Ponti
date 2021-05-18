@@ -18,8 +18,12 @@ public class CLI extends UI {
     private Scanner in;
     private PrintWriter out;
     private Client client;
+    private final String nickname;
+    private final int size;
 
-    public CLI() {
+    public CLI(String nickname, int size) {
+        this.nickname = nickname;
+        this.size = size;
         in = new Scanner(System.in);
         out = new PrintWriter(System.out);
     }
@@ -74,14 +78,12 @@ public class CLI extends UI {
     @Override
     public void renderAuthenticationRequest(String message) {
         System.out.println(message);
-        String nickname = in.nextLine();
         client.sendMessage(new AuthenticationMessage(nickname, -1));
     }
 
     @Override
     public void renderCreateLobbyRequest(String message) {
         System.out.println(message);
-        int size = in.nextInt();
         client.sendMessage(new CreateLobbyMessage(size));
     }
 
