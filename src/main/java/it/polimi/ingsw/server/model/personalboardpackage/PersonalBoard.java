@@ -17,7 +17,7 @@ import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 public class PersonalBoard implements VictoryPointsElement {
     private final ChangesHandler changesHandler;
     private final List<DevelopmentCardSlot> developmentCardSlots;
-    private final List<LeaderCard> leaderCards;
+    private List<LeaderCard> leaderCards;
     private final FaithTrack faithTrack;
     private final ResourceManager warehouseDepots, strongbox;
     private final String nickname;
@@ -60,7 +60,7 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     public void setLeaderCards(List<LeaderCard> leaderCards) {
-        this.leaderCards.addAll(leaderCards);
+        this.leaderCards = new ArrayList<>(leaderCards);
         changesHandler.writePlayerLeaderCards(nickname, leaderCards);
     }
 
