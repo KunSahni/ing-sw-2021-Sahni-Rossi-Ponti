@@ -6,10 +6,7 @@ import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +24,7 @@ public class Lobby {
         players = new HashMap<>();
         size = 0;
         try {
-            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/maxId")), Integer.class);
+            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/maxId.json")), Integer.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -72,6 +69,15 @@ public class Lobby {
      * Finally increase maxGameId, overwrite it in memory and call clear method.
      */
     public void startGame(){
+
+        try {
+            Writer writer = new FileWriter("src/main/resources/maxId.json");
+            new Gson().toJson(maxGameId+1, writer);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Game game = null;
         try {
             game = new Game(maxGameId, List.copyOf(players.keySet()));
@@ -93,13 +99,6 @@ public class Lobby {
         }
 
         this.maxGameId++;
-
-        try {
-            FileWriter file = new FileWriter("src/main/resources/maxId");
-            file.write(maxGameId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         clear();
     }
