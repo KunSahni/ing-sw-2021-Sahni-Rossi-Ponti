@@ -44,4 +44,12 @@ public class ProduceLeaderCard extends LeaderCard {
         return new DumbProduceLeaderCard(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ProduceLeaderCard that = (ProduceLeaderCard) o;
+        return faithIncrement == that.faithIncrement && inputResource == that.inputResource;
+    }
 }

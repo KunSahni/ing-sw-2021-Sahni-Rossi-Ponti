@@ -22,4 +22,13 @@ public class DiscountLeaderCard extends LeaderCard {
     public DumbLeaderCard convertToDumb() {
         return new DumbDiscountLeaderCard(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DiscountLeaderCard that = (DiscountLeaderCard) o;
+        return discountedResource == that.discountedResource;
+    }
 }

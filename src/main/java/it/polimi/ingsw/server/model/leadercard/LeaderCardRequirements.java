@@ -7,6 +7,7 @@ import it.polimi.ingsw.server.model.utils.Resource;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -96,5 +97,13 @@ public class LeaderCardRequirements implements Serializable {
                 key, new LevelQuantityPair(value.getLevel(), value.getQuantity())
         ));
         return copyMap;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LeaderCardRequirements that = (LeaderCardRequirements) o;
+        return Objects.equals(requiredDevelopmentCards, that.requiredDevelopmentCards) && Objects.equals(requiredResources, that.requiredResources);
     }
 }

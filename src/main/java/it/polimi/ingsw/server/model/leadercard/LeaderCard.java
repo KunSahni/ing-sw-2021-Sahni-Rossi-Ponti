@@ -37,4 +37,12 @@ public abstract class LeaderCard implements VictoryPointsElement {
     }
 
     public abstract DumbLeaderCard convertToDumb();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LeaderCard)) return false;
+        LeaderCard that = (LeaderCard) o;
+        return victoryPoints == that.victoryPoints && active == that.active && ability == that.ability && leaderCardRequirements.equals(that.leaderCardRequirements);
+    }
 }

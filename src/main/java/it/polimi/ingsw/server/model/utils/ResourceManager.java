@@ -62,4 +62,12 @@ public class ResourceManager {
                 .stream()
                 .reduce(0, Integer::sum);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResourceManager that = (ResourceManager) o;
+        return storedResources.equals(that.storedResources);
+    }
 }
