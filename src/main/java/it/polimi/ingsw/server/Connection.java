@@ -113,8 +113,8 @@ public class Connection implements Runnable {
         }
         if (serializedMessage != null && serializedMessage.getMessage() != null) {
             message = serializedMessage.getMessage();
-            if (state.messageAllowed(message))
-                state.readMessage(message, this);
+            if (state.messageAllowed(serializedMessage))
+                state.readMessage((SerializedMessage) message, this);
             else {
                 state.invalidMessage(this);
             }
@@ -122,8 +122,8 @@ public class Connection implements Runnable {
 
         if (serializedMessage != null && serializedMessage.getAction() != null) {
             action = serializedMessage.getAction();
-            if (state.messageAllowed(action))
-                state.readMessage(action, this);
+            if (state.messageAllowed(serializedMessage))
+                state.readMessage(serializedMessage, this);
             else {
                 state.invalidMessage(this);
             }

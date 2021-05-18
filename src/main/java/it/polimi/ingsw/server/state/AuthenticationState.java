@@ -1,12 +1,12 @@
 package it.polimi.ingsw.server.state;
 
+import it.polimi.ingsw.network.message.SerializedMessage;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
 import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.model.Game;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 public class AuthenticationState extends ConnectionState {
     private static AuthenticationState instance;
@@ -24,12 +24,12 @@ public class AuthenticationState extends ConnectionState {
 
     /**
      * control if the message is an instance of AuthenticationMessage
-     * @param serializable is the message sent from the client received by the connection
+     * @param serializedMessage is the message sent from the client received by the connection
      * @return true if message is an instance of AuthenticationMessage, in contrary case false
      */
     @Override
-    public boolean messageAllowed(Serializable serializable) {
-        return serializable instanceof AuthenticationMessage;
+    public boolean messageAllowed(SerializedMessage serializedMessage) {
+        return serializedMessage.getMessage() instanceof AuthenticationMessage;
     }
 
 
@@ -46,12 +46,12 @@ public class AuthenticationState extends ConnectionState {
      * connected to it. If the game Id -1 it checks if a Lobby is already instanced, if it is add the player to it,
      * in contrary case asks to the player which size ha wants for the game (1-4) and instance Lobby with that size.
      * The method eventually control if Lobby is full and in that case start the game.
-     * @param serializable is the message received from Client
+     * @param serializedMessage is the message received from Client
      */
     @Override
-    public synchronized void readMessage(Serializable serializable, Connection connection) {
-        Integer gameID = ((AuthenticationMessage) serializable).getRequestedGameID();
-        String nickname = ((AuthenticationMessage) serializable).getNickname();
+    public synchronized void readMessage(SerializedMessage serializedMessage, Connection connection) {
+        Integer gameID = ((AuthenticationMessage) serializedMessage.getMessage()).getRequestedGameID();
+        String nickname = ((AuthenticationMessage) serializedMessage.getMessage()).getNickname();
         if (gameID == -1){
             if (Lobby.getInstance().getPlayers().contains(nickname)){
                 connection.unavailableNickname();
