@@ -1,0 +1,90 @@
+[
+  null,
+  null,
+  null,
+  null,
+  {
+    "ability" : "DISCOUNT",
+    "victoryPoints" : 2,
+    "active" : false,
+    "leaderCardRequirements" : {
+      "requiredDevelopmentCards" : {
+        "YELLOW":{
+          "level":"LEVEL1",
+          "quantity":1
+        },
+        "PURPLE":{
+          "level":"LEVEL1",
+          "quantity":1
+        }
+      },
+      "requiredResources":null
+    },
+    "discountedResource" : "COIN"
+  },
+  {
+    "ability" : "DISCOUNT",
+    "victoryPoints" : 2,
+    "active" : false,
+    "leaderCardRequirements" : {
+      "requiredDevelopmentCards" : {
+        "GREEN":{
+          "level":"LEVEL1",
+          "quantity":1
+        },
+        "BLUE":{
+          "level":"LEVEL1",
+          "quantity":1
+        }
+      },
+      "requiredResources":null
+    },
+    "discountedResource" : "STONE"
+  },
+  {
+    "ability" : "DISCOUNT",
+    "victoryPoints" : 2,
+    "active" : false,
+    "leaderCardRequirements" : {
+      "requiredDevelopmentCards" : {
+        "BLUE":{
+          "level":"LEVEL1",
+          "quantity":1
+        },
+        "PURPLE":{
+          "level":"LEVEL1",
+          "quantity":1
+        }
+      },
+      "requiredResources":null
+    },
+    "discountedResource" : "SHIELD"
+  },
+  {
+    "ability" : "DISCOUNT",
+    "victoryPoints" : 2,
+    "active" : false,
+    "leaderCardRequirements" : {
+      "requiredDevelopmentCards" : {
+        "YELLOW":{
+          "level":"LEVEL1",
+          "quantity":1
+        },
+        "GREEN":{
+          "level":"LEVEL1",
+          "quantity":1
+        }
+      },
+      "requiredResources":null
+    },
+    "discountedResource" : "SERVANT"
+  },
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null
+]
