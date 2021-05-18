@@ -28,27 +28,8 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
         this.position = updatedPlayer.getPosition();
         this.updatedTurnStatus = updatedPlayer.isPlayersTurn();
         this.updatedConnectionStatus = updatedPlayer.isConnected();
-        this.tempLeaderCards = updatedPlayer.getTempLeaderCards().stream().map(
-                leaderCard -> {
-                    switch (leaderCard.getAbility()){
-                        case DISCOUNT -> {
-                            return new DumbDiscountLeaderCard((DiscountLeaderCard) leaderCard);
-                        }
-                        case STORE -> {
-                            return new DumbStoreLeaderCard((StoreLeaderCard) leaderCard);
-                        }
-                        case CONVERT -> {
-                            return new DumbConvertLeaderCard((ConvertLeaderCard) leaderCard);
-                        }
-                        case PRODUCE -> {
-                            return new DumbProduceLeaderCard((ProduceLeaderCard) leaderCard);
-                        }
-                        default -> {
-                            return null;
-                        }
-                    }
-                }
-        ).collect(Collectors.toList());
+        this.tempLeaderCards = updatedPlayer.getTempLeaderCards().stream().map(LeaderCard::convertToDumb)
+                .collect(Collectors.toList());
         this.performedActions = updatedPlayer.getPerformedActions();
         this.tempMarbles = updatedPlayer.getTempMarbles();
     }
@@ -57,9 +38,9 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
     public void render(UI ui) {
         ui.updatePersonalBoard(getNickname(), position, updatedTurnStatus, updatedConnectionStatus);
         ui.updateTurnActions(performedActions);
-        if(tempMarbles != null)
+        if(tempMarbles != null && tempMarbles.size()>0)
             ui.renderTempMarbles(tempMarbles);
-        else if(tempLeaderCards != null)
+        else if(tempLeaderCards != null && tempLeaderCards.size()>0)
             ui.renderLeaderCardsChoice(tempLeaderCards);
     }
 }

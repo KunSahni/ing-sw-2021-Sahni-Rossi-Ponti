@@ -18,8 +18,8 @@ public class StartNextTurnAction extends GameAction {
     public GameAction execute() {
         GameAction consequentAction = null;
         List<Player> players = game.getPlayerList();
-        Player currentPlayer = players.stream().filter(Player::isPlayersTurn).findFirst().get();
-        if (game.getPlayerList().stream().anyMatch(Player::isConnected)) {
+        Player currentPlayer = game.getCurrentTurnPlayer();
+        if (players.stream().anyMatch(Player::isConnected)) {
             if (!game.getCurrentState().equals(GameState.LAST_ROUND)) {
                 players.addAll(game.getPlayerList());
             }

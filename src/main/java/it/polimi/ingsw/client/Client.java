@@ -1,13 +1,14 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.server.controller.message.action.Action;
+import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.network.message.messages.Message;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow.*;
 
 /**
@@ -15,14 +16,14 @@ import java.util.concurrent.Flow.*;
  */
 public class Client implements Subscriber<Renderable> {
     private Player currentPlayer;
-    private final Queue<Renderable> updatesQueue;
+    private final ConcurrentLinkedQueue<Renderable> updatesQueue;
     private final UI ui;
     private final ClientSocket clientSocket;
     private Subscription subscription;
 
     public Client(UI ui) {
         this.ui = ui;
-        updatesQueue = new LinkedList<>();
+        updatesQueue = new ConcurrentLinkedQueue<>();
         clientSocket = new ClientSocket("localhost", 8080, this);
     }
 
@@ -58,7 +59,7 @@ public class Client implements Subscriber<Renderable> {
     /**
      * @param action an action which the clients wants to execute
      */
-    public void sendAction(Action action) {
+    public void sendAction(PlayerAction action) {
         clientSocket.sendMessage(new SerializedMessage(action));
     }
 

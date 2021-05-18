@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  * This is a dumber version of a regular ResourceManager,
  * this class only contains data contained in a ResourceManager but has none of its logic.
  */
-public class DumbResourceManager {
+public class DumbResourceManager implements Serializable {
     private Map<Resource, Integer> storedResources;
 
 

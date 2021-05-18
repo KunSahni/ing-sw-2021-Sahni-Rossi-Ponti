@@ -4,12 +4,14 @@ import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 
+import java.io.Serializable;
+
 
 /**
  * This is a dumber version of a regular LeaderCard,
  * this class only contains the data stored in a LeaderCard but has none of its logic.
  */
-public abstract class DumbLeaderCard {
+public abstract class DumbLeaderCard implements Serializable {
     private final LeaderCardAbility ability;
     private final int victoryPoints;
     private boolean active;

@@ -4,6 +4,7 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,8 +13,8 @@ import java.util.Optional;
  * Data structure created to store and parse the set of resources required to activate a
  * LeaderCard
  */
-public class LeaderCardRequirements {
-    public static class LevelQuantityPair {
+public class LeaderCardRequirements implements Serializable {
+    public static class LevelQuantityPair implements Serializable{
         private final Level level;
         private final int quantity;
 
