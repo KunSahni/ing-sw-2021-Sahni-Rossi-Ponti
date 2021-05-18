@@ -8,7 +8,6 @@ import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.Actions;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Flow.*;
 
@@ -19,13 +18,14 @@ public class Controller implements Subscriber<PlayerAction> {
 
     public Controller(Game game) {
         this.game = game;
+        runGame();
     }
 
     public void setRemoteView(RemoteView remoteView) {
         this.remoteView = remoteView;
     }
 
-    public void runGame() {
+    private void runGame() {
         GameAction initiator = switch (game.getCurrentState()) {
             case NOT_STARTED -> new DealLeaderCardsAction(game);
             case PICKED_LEADER_CARDS -> new AssignInkwellAction(game);
