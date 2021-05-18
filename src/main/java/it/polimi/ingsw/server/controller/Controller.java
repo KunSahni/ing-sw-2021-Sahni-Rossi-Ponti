@@ -55,7 +55,7 @@ public class Controller implements Subscriber<PlayerAction> {
 
     @Override
     public void onError(Throwable throwable) {
-        System.out.println("Error occurred: " + throwable.getMessage());
+        throwable.printStackTrace();
     }
 
     @Override
