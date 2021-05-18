@@ -28,27 +28,8 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
         this.position = updatedPlayer.getPosition();
         this.updatedTurnStatus = updatedPlayer.isPlayersTurn();
         this.updatedConnectionStatus = updatedPlayer.isConnected();
-        this.tempLeaderCards = updatedPlayer.getTempLeaderCards().stream().map(
-                leaderCard -> {
-                    switch (leaderCard.getAbility()){
-                        case DISCOUNT -> {
-                            return new DumbDiscountLeaderCard((DiscountLeaderCard) leaderCard);
-                        }
-                        case STORE -> {
-                            return new DumbStoreLeaderCard((StoreLeaderCard) leaderCard);
-                        }
-                        case CONVERT -> {
-                            return new DumbConvertLeaderCard((ConvertLeaderCard) leaderCard);
-                        }
-                        case PRODUCE -> {
-                            return new DumbProduceLeaderCard((ProduceLeaderCard) leaderCard);
-                        }
-                        default -> {
-                            return null;
-                        }
-                    }
-                }
-        ).collect(Collectors.toList());
+        this.tempLeaderCards = updatedPlayer.getTempLeaderCards().stream().map(LeaderCard::convertToDumb)
+                .collect(Collectors.toList());
         this.performedActions = updatedPlayer.getPerformedActions();
         this.tempMarbles = updatedPlayer.getTempMarbles();
     }

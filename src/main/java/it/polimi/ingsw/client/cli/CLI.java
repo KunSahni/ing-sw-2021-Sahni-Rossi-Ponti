@@ -6,7 +6,6 @@ import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
 import it.polimi.ingsw.server.controller.action.playeraction.PregameLeaderCardsChoiceAction;
-import it.polimi.ingsw.server.controller.message.choice.LeaderCardsChoiceMessage;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.io.PrintWriter;

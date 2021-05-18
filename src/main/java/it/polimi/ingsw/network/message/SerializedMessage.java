@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
-import it.polimi.ingsw.server.controller.message.action.Action;
 import it.polimi.ingsw.network.message.messages.Message;
 
 import java.io.Serializable;
