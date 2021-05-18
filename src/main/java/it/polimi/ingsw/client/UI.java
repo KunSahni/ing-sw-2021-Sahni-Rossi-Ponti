@@ -152,7 +152,7 @@ public abstract class UI {
      */
     public void updateDevelopmentCardSlot(String nickname, int position, List<DumbDevelopmentCard> updatedDevelopmentCardSlot){
         getPersonalBoard(nickname).ifPresent(
-                dumbPersonalBoard -> dumbPersonalBoard.getDevelopmentCardSlots().get(position).updateDevelopmentCards(updatedDevelopmentCardSlot)
+                dumbPersonalBoard -> dumbPersonalBoard.getDevelopmentCardSlots().get(position-1).updateDevelopmentCards(updatedDevelopmentCardSlot)
         );
     }
 
