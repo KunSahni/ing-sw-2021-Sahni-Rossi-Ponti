@@ -42,7 +42,7 @@ public class Connection implements Runnable{
         pingThread = new Thread(this::startPing);
         pingThread.start();
         this.submissionPublisher = new SubmissionPublisher<>();
-        state = new AuthenticationState(this);
+        state = AuthenticationState.getInstance();
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -105,9 +105,9 @@ public class Connection implements Runnable{
         if (serializedMessage!=null && serializedMessage.message!=null){
             message = serializedMessage.message;
             if (state.messageAllowed(message))
-                state.readMessage(message);
+                state.readMessage(message, this);
             else {
-                state.invalidMessage();
+                state.invalidMessage(this);
             }
         }
     }

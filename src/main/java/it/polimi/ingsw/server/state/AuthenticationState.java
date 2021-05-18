@@ -9,9 +9,17 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public class AuthenticationState extends ConnectionState {
+    private static AuthenticationState instance;
 
-    public AuthenticationState(Connection connection) {
-        super(connection);
+    public static AuthenticationState getInstance(){
+        if (instance == null){
+            instance = new AuthenticationState();
+        }
+        return instance;
+    }
+
+    private AuthenticationState() {
+        super();
     }
 
     /**
@@ -26,7 +34,7 @@ public class AuthenticationState extends ConnectionState {
 
 
     @Override
-    public void invalidMessage() {
+    public void invalidMessage(Connection connection) {
         connection.invalidMessage();
         connection.sendAuthenticationRequest();
         connection.readFromInputStream();
@@ -41,7 +49,7 @@ public class AuthenticationState extends ConnectionState {
      * @param serializable is the message received from Client
      */
     @Override
-    public synchronized void readMessage(Serializable serializable) {
+    public synchronized void readMessage(Serializable serializable, Connection connection) {
         Integer gameID = ((AuthenticationMessage) serializable).getRequestedGameID();
         String nickname = ((AuthenticationMessage) serializable).getNickname();
         if (gameID == -1){
@@ -52,11 +60,11 @@ public class AuthenticationState extends ConnectionState {
                 Lobby.getInstance().addPlayer(nickname, connection);
                 connection.setNickname(nickname);
                 if (Lobby.getInstance().isEmpty()) {
-                    connection.setState(new WaitingForGameSizeState(connection));
+                    connection.setState(WaitingForGameSizeState.getInstance());
                     connection.askForSize();
                 }
 
-                connection.setState(new PlayingState(connection));
+                connection.setState(PlayingState.getInstance());
 
                 connection.sendJoinLobbyNotification(Lobby.getInstance().getSize());
 
@@ -91,7 +99,7 @@ public class AuthenticationState extends ConnectionState {
                             e.printStackTrace();
                         }
                         connection.getServer().restoreGame(gameID, game);
-                        connection.setState(new PlayingState(connection));
+                        connection.setState(PlayingState.getInstance());
                         connection.getServer().getRemoteView(gameID).addConnectedPlayer(nickname, connection);
                     }
                 }

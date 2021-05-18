@@ -5,15 +5,13 @@ import it.polimi.ingsw.server.Connection;
 import java.io.Serializable;
 
 public abstract class ConnectionState {
-    Connection connection;
 
-    public ConnectionState(Connection connection) {
-        this.connection = connection;
+    public ConnectionState() {
     }
 
     public abstract boolean messageAllowed(Serializable serializable);
 
-    public abstract void invalidMessage();
+    public abstract void invalidMessage(Connection connection);
 
-    public abstract void readMessage(Serializable serializable);
+    public abstract void readMessage(Serializable serializable, Connection connection);
 }

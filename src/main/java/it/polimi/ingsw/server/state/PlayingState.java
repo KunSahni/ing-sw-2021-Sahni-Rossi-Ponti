@@ -6,8 +6,16 @@ import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import java.io.Serializable;
 
 public class PlayingState extends ConnectionState{
-    public PlayingState(Connection connection) {
-        super(connection);
+    private static PlayingState instance;
+
+    public static PlayingState getInstance(){
+        if (instance == null){
+            instance = new PlayingState();
+        }
+        return instance;
+    }
+    private PlayingState() {
+        super();
     }
 
     @Override
@@ -16,13 +24,13 @@ public class PlayingState extends ConnectionState{
     }
 
     @Override
-    public void invalidMessage() {
+    public void invalidMessage(Connection connection) {
         connection.invalidMessage();
         connection.readFromInputStream();
     }
 
     @Override
-    public void readMessage(Serializable serializable) {
+    public void readMessage(Serializable serializable, Connection connection) {
         connection.publish((PlayerAction) serializable); //todo: how player can disconnect?
     }
 }
