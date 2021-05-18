@@ -48,12 +48,15 @@ public class Game {
         return new ArrayList<>(players);
     }
 
-    // Always sorted after inkwell assignment
     public Player getPlayer(String nickname) {
         Optional<Player> target = players.stream()
                 .filter(player -> player.getNickname().equals(nickname))
                 .findAny();
         return target.orElse(null);
+    }
+
+    public Player getCurrentTurnPlayer() {
+        return players.stream().filter(Player::isPlayersTurn).findFirst().get();
     }
 
     public void sortPlayers() {
@@ -73,6 +76,7 @@ public class Game {
     public void setState(GameState gameState) {
         currentState = gameState;
         changesHandler.writeGameState(currentState);
+        changesHandler.flushBufferToDisk();
     }
 
     public Market getMarket() {

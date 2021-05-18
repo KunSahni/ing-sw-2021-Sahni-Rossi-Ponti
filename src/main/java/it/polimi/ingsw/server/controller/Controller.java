@@ -1,12 +1,14 @@
 package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.server.controller.action.Action;
-import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
+import it.polimi.ingsw.server.controller.action.gameaction.*;
 import it.polimi.ingsw.server.controller.action.playeraction.InvalidActionException;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.model.utils.Actions;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Flow.*;
 
@@ -21,6 +23,23 @@ public class Controller implements Subscriber<PlayerAction> {
 
     public void setRemoteView(RemoteView remoteView) {
         this.remoteView = remoteView;
+    }
+
+    public void runGame() {
+        GameAction initiator = switch (game.getCurrentState()) {
+            case NOT_STARTED -> new DealLeaderCardsAction(game);
+            case PICKED_LEADER_CARDS -> new AssignInkwellAction(game);
+            case PICKED_RESOURCES -> new StartGameAction(game);
+            case IN_GAME, LAST_ROUND -> game.getCurrentTurnPlayer()
+                    .getPerformedActions()
+                    .get(game.getCurrentTurnPlayer().getPerformedActions().size() - 1)
+                    .equals(Actions.TURN_ENDED_ACTION)
+                    ? new StartNextTurnAction(game)
+                    : null;
+            case GAME_FINISHED -> new EndGameAction(game);
+            case ASSIGNED_INKWELL, DEALT_LEADER_CARDS -> null;
+        };
+        handleGameAction(initiator);
     }
 
     private void handleGameAction(GameAction gameAction) {
