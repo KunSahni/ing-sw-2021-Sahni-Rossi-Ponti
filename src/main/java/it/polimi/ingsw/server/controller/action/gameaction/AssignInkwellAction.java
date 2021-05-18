@@ -18,7 +18,7 @@ public class AssignInkwellAction extends GameAction{
         List<Player> playerList = game.getPlayerList();
         Collections.shuffle(playerList);
         IntStream.range(1, playerList.size() + 1)
-                .forEach(i -> playerList.get(i).setPosition(i));
+                .forEach(i -> playerList.get(i - 1).setPosition(i));
         // Move Faith Markers by one tile for players 3 and 4
         playerList.stream()
                 .filter(player -> player.getPosition() > 2)
