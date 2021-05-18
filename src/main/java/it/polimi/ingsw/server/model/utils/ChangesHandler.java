@@ -36,7 +36,7 @@ public class ChangesHandler {
     private Map<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
-        this.root = "src/main/resources/" + gameId;
+        this.root = "src/main/resources/games/" + gameId;
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isNewGame = false;
         changesBuffer = new HashMap<>();
