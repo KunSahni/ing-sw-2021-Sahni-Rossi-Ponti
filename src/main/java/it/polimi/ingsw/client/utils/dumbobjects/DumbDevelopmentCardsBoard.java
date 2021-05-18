@@ -12,15 +12,15 @@ public class DumbDevelopmentCardsBoard {
 
 
     public DumbDevelopmentCardsBoard() {
-        board = new DumbDevelopmentCard[4][3];
+        board = new DumbDevelopmentCard[3][4];
     }
 
     /**
      * @param updatedDevelopmentCardsBoard an updated version of the cards contained in the DevelopmentCardsBoard
      */
     public void updateBoard(DumbDevelopmentCard[][] updatedDevelopmentCardsBoard) {
-        IntStream.range(0,4).forEach(
-                i->IntStream.range(0,3).forEach(
+        IntStream.range(0,3).forEach(
+                i->IntStream.range(0,4).forEach(
                         j-> this.board[i][j] = updatedDevelopmentCardsBoard[i][j]
                 )
         );

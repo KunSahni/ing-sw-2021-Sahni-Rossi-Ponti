@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * This is a dumber version of a regular DevelopmentCard,
  * this class only contains the data stored in a DevelopmentCard but has none of its logic.
  */
-public class DumbDevelopmentCard {
+public class DumbDevelopmentCard implements Serializable {
     private final Color color;
     private final Level level;
     private final int victoryPoints;
