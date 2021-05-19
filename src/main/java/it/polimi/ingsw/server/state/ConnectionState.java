@@ -1,17 +1,16 @@
 package it.polimi.ingsw.server.state;
 
+import it.polimi.ingsw.network.message.SerializedMessage;
 import it.polimi.ingsw.server.Connection;
-
-import java.io.Serializable;
 
 public abstract class ConnectionState {
 
     public ConnectionState() {
     }
 
-    public abstract boolean messageAllowed(Serializable serializable);
+    public abstract boolean messageAllowed(SerializedMessage serializedMessage);
 
     public abstract void invalidMessage(Connection connection);
 
-    public abstract void readMessage(Serializable serializable, Connection connection);
+    public abstract void readMessage(SerializedMessage serializedMessage, Connection connection);
 }
