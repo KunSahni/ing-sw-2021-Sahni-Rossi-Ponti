@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
 import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.ArrayList;
@@ -22,10 +23,10 @@ public abstract class UI {
     public abstract void renderPersonalBoard(DumbPersonalBoard personalBoard);
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
     public abstract void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
+    public abstract void renderMarket(DumbMarket market);
     public abstract void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
     public abstract void renderTempMarbles(Map<MarketMarble, Integer> updateMarbles);
     public abstract void renderResourcePregameChoice(int numberOfResources);
-    public abstract void renderMarket(DumbMarket market);
     public abstract void renderMessage(String message);
     public abstract void renderErrorMessage(String message);
     public abstract void renderAuthenticationRequest(String message);
@@ -191,6 +192,21 @@ public abstract class UI {
         getPersonalBoard(nickname).ifPresent(
                 dumbPersonalBoard -> dumbPersonalBoard.getStrongbox().updateStoredResources(updatedStrongbox)
         );
+    }
+
+    /**
+     * This method is called every time the client receives an update regarding the state of a game
+     * @param updatedGameState the updated state of a game
+     */
+    public void updateGameState(GameState updatedGameState) {
+        dumbModel.updateGameState(updatedGameState);
+        if(updatedGameState.equals(GameState.ASSIGNED_INKWELL))
+            getPersonalBoard(nickname).ifPresent(
+                    dumbPersonalBoard -> {
+                        if(dumbPersonalBoard.getDepots().getResourceCount() != dumbPersonalBoard.getPosition()/2)
+                            renderResourcePregameChoice(dumbPersonalBoard.getPosition()/2);
+                    }
+            );
     }
 
     /**

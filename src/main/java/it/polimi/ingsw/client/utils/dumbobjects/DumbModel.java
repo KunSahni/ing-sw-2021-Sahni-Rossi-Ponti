@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.utils.dumbobjects;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
+import it.polimi.ingsw.server.model.utils.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class DumbModel {
     private final DumbActionTokenDeck actionTokenDeck;  //todo: potrebbe non servire visto che fa tutto il server
     private final int size;
     private final int gameID;
+    private GameState gameState;
 
     public DumbModel(int gameID, int size) {
         this.gameID = gameID;
@@ -31,6 +33,10 @@ public class DumbModel {
 
     public void addPersonalBoard(String nickname, int position){
         personalBoards.add(new DumbPersonalBoard(nickname, position, size==1));
+    }
+
+    public void updateGameState(GameState updatedGameState) {
+        this.gameState = updatedGameState;
     }
 
     public List<DumbPersonalBoard> getPersonalBoards() {
@@ -55,5 +61,9 @@ public class DumbModel {
 
     public int getGameID() {
         return gameID;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 }

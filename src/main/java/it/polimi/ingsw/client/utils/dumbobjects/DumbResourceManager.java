@@ -25,6 +25,12 @@ public class DumbResourceManager implements Serializable {
         this.storedResources = new HashMap<>(updatedStoredResources);
     }
 
+    public int getResourceCount() {
+        return storedResources.values()
+                .stream()
+                .reduce(0, Integer::sum);
+    }
+
     public Map<Resource, Integer> getStoredResources() {
         return storedResources;
     }
