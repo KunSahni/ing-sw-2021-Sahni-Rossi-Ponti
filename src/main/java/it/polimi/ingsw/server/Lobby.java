@@ -5,6 +5,8 @@ import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
+import it.polimi.ingsw.server.state.PlayingState;
+import it.polimi.ingsw.server.state.WaitingForGameSizeState;
 
 import java.io.*;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class Lobby {
      * @param nickname is the nickname of the player
      * @param connection is the connection of the player
      */
-    public synchronized void addPlayer(String nickname, Connection connection){
+    public void addPlayer(String nickname, Connection connection){
         players.put(nickname, connection);
     }
 
@@ -89,13 +91,13 @@ public class Lobby {
         controller.setRemoteView(remoteView);
         game.subscribe(remoteView);
         for (String s: players.keySet()) {
-            remoteView.addConnectedPlayer(s, players.get(s));
+            controller.connectPlayer(s, players.get(s));
         }
 
         for (Connection c: players.values()) {
             c.setGameId(maxGameId);
             c.addCurrentGame(maxGameId, game);
-            c.getServer().addGameIDRemoteView(maxGameId, remoteView);
+            c.getServer().addGameIDRemoteView(maxGameId, controller);
         }
 
         this.maxGameId++;
@@ -121,5 +123,29 @@ public class Lobby {
      */
     public boolean isEmpty(){
         return size == 0;
+    }
+
+    public synchronized boolean checkNicknameAvailability(String nickname, Connection connection){
+        if(players.containsKey(nickname)){
+            return false;
+        }
+        else{
+            addPlayer(nickname, connection);
+            if (isEmpty()){
+                connection.setState(new WaitingForGameSizeState(connection));
+                connection.askForSize();
+            }
+
+            connection.setState(new PlayingState(connection));
+
+            connection.sendJoinLobbyNotification(size);
+
+            if (isFull()) {
+                startGame();
+            } else {
+                connection.waitForPlayers();
+            }
+            return true;
+        }
     }
 }

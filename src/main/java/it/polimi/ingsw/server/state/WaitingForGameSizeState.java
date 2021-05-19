@@ -6,17 +6,11 @@ import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.Lobby;
 
 public class WaitingForGameSizeState extends ConnectionState {
-    private static WaitingForGameSizeState instance;
+    private final Connection connection;
 
-    public static WaitingForGameSizeState getInstance(){
-        if (instance == null){
-            instance = new WaitingForGameSizeState();
-        }
-        return instance;
-    }
-
-    private WaitingForGameSizeState() {
-        super();
+    public WaitingForGameSizeState(Connection connection) {
+        super(connection);
+        this.connection = connection;
     }
 
     @Override
@@ -25,13 +19,13 @@ public class WaitingForGameSizeState extends ConnectionState {
     }
 
     @Override
-    public void invalidMessage(Connection connection) {
+    public void invalidMessage() {
         connection.invalidMessage();
         connection.readFromInputStream();
     }
 
     @Override
-    public void readMessage(SerializedMessage serializedMessage, Connection connection) {
+    public void readMessage(SerializedMessage serializedMessage) {
         if (((CreateLobbyMessage) serializedMessage.getMessage()).getSize()<=0 || ((CreateLobbyMessage) serializedMessage.getMessage()).getSize()>4){
             connection.invalidSize();
         }

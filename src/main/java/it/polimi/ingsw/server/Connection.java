@@ -10,7 +10,6 @@ import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 import it.polimi.ingsw.server.state.AuthenticationState;
 import it.polimi.ingsw.server.state.ConnectionState;
-import it.polimi.ingsw.server.state.PlayingState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,7 +43,7 @@ public class Connection implements Runnable {
         pingThread = new Thread(this::startPing);
         pingThread.start();
         this.submissionPublisher = new SubmissionPublisher<>();
-        state = AuthenticationState.getInstance();
+        state = new AuthenticationState(this);
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
             outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -74,9 +73,9 @@ public class Connection implements Runnable {
         }
     }
 
-    public synchronized void closeConnection() {
+    public void closeConnection() {
         try {
-            server.getRemoteView(gameId).removeDisconnectedPlayer(nickname);
+            server.getController(gameId).disconnectPlayer(nickname);
             isActive = false;
             socket.close();
         } catch (IOException e) {
@@ -114,18 +113,18 @@ public class Connection implements Runnable {
         if (serializedMessage != null && serializedMessage.getMessage() != null) {
             message = serializedMessage.getMessage();
             if (state.messageAllowed(serializedMessage))
-                state.readMessage((SerializedMessage) message, this);
+                state.readMessage((SerializedMessage) message);
             else {
-                state.invalidMessage(this);
+                state.invalidMessage();
             }
         }
 
         if (serializedMessage != null && serializedMessage.getAction() != null) {
             action = serializedMessage.getAction();
             if (state.messageAllowed(serializedMessage))
-                state.readMessage(serializedMessage, this);
+                state.readMessage(serializedMessage);
             else {
-                state.invalidMessage(this);
+                state.invalidMessage();
             }
         }
     }

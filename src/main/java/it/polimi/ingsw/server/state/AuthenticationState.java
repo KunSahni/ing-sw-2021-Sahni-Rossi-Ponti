@@ -9,17 +9,11 @@ import it.polimi.ingsw.server.model.Game;
 import java.io.IOException;
 
 public class AuthenticationState extends ConnectionState {
-    private static AuthenticationState instance;
+    private final Connection connection;
 
-    public static AuthenticationState getInstance(){
-        if (instance == null){
-            instance = new AuthenticationState();
-        }
-        return instance;
-    }
-
-    private AuthenticationState() {
-        super();
+    public AuthenticationState(Connection connection) {
+        super(connection);
+        this.connection = connection;
     }
 
     /**
@@ -34,7 +28,7 @@ public class AuthenticationState extends ConnectionState {
 
 
     @Override
-    public void invalidMessage(Connection connection) {
+    public void invalidMessage() {
         connection.invalidMessage();
         connection.sendAuthenticationRequest();
         connection.readFromInputStream();
@@ -49,30 +43,12 @@ public class AuthenticationState extends ConnectionState {
      * @param serializedMessage is the message received from Client
      */
     @Override
-    public synchronized void readMessage(SerializedMessage serializedMessage, Connection connection) {
+    public void readMessage(SerializedMessage serializedMessage) {
         Integer gameID = ((AuthenticationMessage) serializedMessage.getMessage()).getRequestedGameID();
         String nickname = ((AuthenticationMessage) serializedMessage.getMessage()).getNickname();
         if (gameID == -1){
-            if (Lobby.getInstance().getPlayers().contains(nickname)){
+            if (!Lobby.getInstance().checkNicknameAvailability(nickname, connection)){
                 connection.unavailableNickname();
-            }
-            else {
-                Lobby.getInstance().addPlayer(nickname, connection);
-                connection.setNickname(nickname);
-                if (Lobby.getInstance().isEmpty()) {
-                    connection.setState(WaitingForGameSizeState.getInstance());
-                    connection.askForSize();
-                }
-
-                connection.setState(PlayingState.getInstance());
-
-                connection.sendJoinLobbyNotification(Lobby.getInstance().getSize());
-
-                if (Lobby.getInstance().isFull()) {
-                    Lobby.getInstance().startGame();//todo: settare da Lobby in tutte le connections state a playingstate
-                } else {
-                    connection.waitForPlayers();
-                }
             }
         }
 
@@ -87,7 +63,7 @@ public class AuthenticationState extends ConnectionState {
                         connection.readFromInputStream();
                     }
                     else{
-                        connection.getServer().getRemoteView(gameID).addConnectedPlayer(nickname, connection);
+                        connection.getServer().getController(gameID).connectPlayer(nickname, connection);
                     }
                 }
                 else{
@@ -99,8 +75,8 @@ public class AuthenticationState extends ConnectionState {
                             e.printStackTrace();
                         }
                         connection.getServer().restoreGame(gameID, game);
-                        connection.setState(PlayingState.getInstance());
-                        connection.getServer().getRemoteView(gameID).addConnectedPlayer(nickname, connection);
+                        connection.setState(new PlayingState(connection));
+                        connection.getServer().getController(gameID).connectPlayer(nickname, connection);
                     }
                 }
             }

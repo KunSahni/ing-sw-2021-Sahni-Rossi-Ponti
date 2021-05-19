@@ -2,8 +2,8 @@ package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +22,7 @@ public class Server {
     private Map<String, Integer> players = new HashMap<>();
     private Map<Integer, Game> currentGames = new HashMap<>();
     private List<Integer> dormantGames = new ArrayList<>();
-    private Map<Integer, RemoteView> gameIDRemoteViewMap = new HashMap<>();
+    private Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -104,11 +104,11 @@ public class Server {
         currentGames.putIfAbsent(gameId, game);
     }
 
-    public void addGameIDRemoteView(int gameID, RemoteView remoteView){
-        gameIDRemoteViewMap.putIfAbsent(gameID, remoteView);
+    public void addGameIDRemoteView(int gameID, Controller controller){
+        gameIDControllerMap.putIfAbsent(gameID, controller);
     }
 
-    public RemoteView getRemoteView(Integer gameID){
-        return gameIDRemoteViewMap.get(gameID);
+    public Controller getController(Integer gameID){
+        return gameIDControllerMap.get(gameID);
     }
 }
