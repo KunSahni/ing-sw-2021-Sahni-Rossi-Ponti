@@ -13,7 +13,6 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
 import it.polimi.ingsw.network.message.renderable.Renderable;
-import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.*;
@@ -89,24 +88,9 @@ public class ChangesHandler {
         changesBuffer.put(nicknameList, root + "/Nicknames.json");
     }
 
-    // Large chunks of model publishers
-    public void publishAll(Game game) {
-        publishMarket(game.getMarket());
-        publishDevelopmentCardsBoard(game.getDevelopmentCardsBoard());
-        game.getPlayerList().forEach(npc -> {
-            publishPlayer(npc);
-            publishPersonalBoard(npc.getNickname(), npc.getPersonalBoard());
-        });
-    }
-
-    public void publishPersonalBoard(String nickname, PersonalBoard personalBoard) {
-        publishPlayerLeaderCards(nickname, personalBoard.getLeaderCards());
-        publishWarehouseDepots(nickname, personalBoard.getWarehouseDepots());
-        publishStrongbox(nickname, personalBoard.getStrongbox());
-        publishFaithTrack(nickname, personalBoard.getFaithTrack());
-        personalBoard.getDevelopmentCardSlots().forEach(
-                slot -> publishDevelopmentCardSlot(nickname, slot)
-        );
+    // Publisher on reconnection
+    public void publishModel(String nickname, Game game) {
+        submissionPublisher.submit(new ModelUpdate(nickname, game));
     }
 
     // Player
