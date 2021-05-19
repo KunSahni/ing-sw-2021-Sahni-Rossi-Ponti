@@ -5,8 +5,6 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.controller.Controller;
-import it.polimi.ingsw.server.controller.action.playeraction.ConnectPlayerAction;
-import it.polimi.ingsw.server.controller.action.playeraction.DisconnectPlayerAction;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 
 import java.util.HashMap;
@@ -68,12 +66,9 @@ public class RemoteView implements Subscriber<Renderable> {
      * @param connection Connection object from which the player sends
      *                   and receives data to and from the server.
      */
-    public void addConnectedPlayer(String nickname, Connection connection) {
+    public void connectPlayer(String nickname, Connection connection) {
         connectedPlayers.put(nickname, connection);
         connection.subscribe(new NetworkMessageForwarder());
-        PlayerAction connectPlayerToGame = new ConnectPlayerAction();
-        connectPlayerToGame.setNickname(nickname);
-        submissionPublisher.submit(connectPlayerToGame);
     }
 
     /**
@@ -82,11 +77,8 @@ public class RemoteView implements Subscriber<Renderable> {
      * from model updates.
      * @param nickname disconnected player.
      */
-    public void removeDisconnectedPlayer(String nickname) {
+    public void disconnectPlayer(String nickname) {
         connectedPlayers.remove(nickname);
-        PlayerAction disconnectPlayerFromGame = new DisconnectPlayerAction();
-        disconnectPlayerFromGame.setNickname(nickname);
-        submissionPublisher.submit(disconnectPlayerFromGame);
     }
 
     /**

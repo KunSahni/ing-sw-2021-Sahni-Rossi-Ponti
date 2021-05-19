@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.controller;
 
+import it.polimi.ingsw.server.Connection;
 import it.polimi.ingsw.server.controller.action.Action;
 import it.polimi.ingsw.server.controller.action.gameaction.*;
 import it.polimi.ingsw.server.controller.action.playeraction.InvalidActionException;
@@ -23,6 +24,19 @@ public class Controller implements Subscriber<PlayerAction> {
 
     public void setRemoteView(RemoteView remoteView) {
         this.remoteView = remoteView;
+    }
+
+    public void connectPlayer(String nickname, Connection connection) {
+        remoteView.connectPlayer(nickname, connection);
+        game.connect(nickname);
+    }
+
+    public void disconnectPlayer(String nickname) {
+        remoteView.disconnectPlayer(nickname);
+        game.disconnect(nickname);
+        if (game.getPlayer(nickname).isPlayersTurn()) {
+            handleGameAction(new StartNextTurnAction(game));
+        }
     }
 
     private void runGame() {
