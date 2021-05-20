@@ -34,7 +34,7 @@ public class Controller implements Subscriber<PlayerAction> {
     public void disconnectPlayer(String nickname) {
         remoteView.disconnectPlayer(nickname);
         game.disconnect(nickname);
-        if (game.getPlayer(nickname).isPlayersTurn()) {
+        if (game.getPlayer(nickname).isTurn()) {
             handleGameAction(new StartNextTurnAction(game));
         }
     }

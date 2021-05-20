@@ -16,7 +16,7 @@ public class PlayerBroadcastUpdate extends BroadcastRenderable {
     public PlayerBroadcastUpdate(Player updatedPlayer) {
         this.nickname = updatedPlayer.getNickname();
         this.position = updatedPlayer.getPosition();
-        this.updatedTurnStatus = updatedPlayer.isPlayersTurn();
+        this.updatedTurnStatus = updatedPlayer.isTurn();
         this.updatedConnectionStatus = updatedPlayer.isConnected();
     }
 

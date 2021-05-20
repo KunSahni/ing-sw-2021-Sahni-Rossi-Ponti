@@ -48,7 +48,7 @@ public abstract class PlayerAction implements Action, Serializable {
      * state of the model.
      */
     public void runChecks() throws InvalidActionException {
-        if (!player.isPlayersTurn())
+        if (!player.isTurn())
             throw new InvalidActionException("Not your turn");
     }
 

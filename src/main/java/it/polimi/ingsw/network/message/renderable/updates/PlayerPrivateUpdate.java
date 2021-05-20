@@ -26,7 +26,7 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
     public PlayerPrivateUpdate(Player updatedPlayer) {
         super(updatedPlayer.getNickname());
         this.position = updatedPlayer.getPosition();
-        this.updatedTurnStatus = updatedPlayer.isPlayersTurn();
+        this.updatedTurnStatus = updatedPlayer.isTurn();
         this.updatedConnectionStatus = updatedPlayer.isConnected();
         this.tempLeaderCards = updatedPlayer.getTempLeaderCards().stream().map(LeaderCard::convertToDumb)
                 .collect(Collectors.toList());

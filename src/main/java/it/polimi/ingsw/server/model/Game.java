@@ -89,7 +89,7 @@ public class Game {
      * @return instance of the Player currently playing its turn.
      */
     public Player getCurrentTurnPlayer() {
-        return players.stream().filter(Player::isPlayersTurn).findFirst().get();
+        return players.stream().filter(Player::isTurn).findFirst().get();
     }
 
     /**

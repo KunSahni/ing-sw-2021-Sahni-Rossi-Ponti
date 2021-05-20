@@ -20,7 +20,7 @@ public class Player implements Comparable<Player> {
     private List<LeaderCard> tempLeaderCards;
     private final List<ExecutedActions> performedActions;
     private Map<MarketMarble, Integer> tempMarbles;
-    private boolean isPlayersTurn;
+    private boolean isTurn;
     private transient boolean isConnected;
     private transient ChangesHandler changesHandler;
 
@@ -83,8 +83,8 @@ public class Player implements Comparable<Player> {
         return performedActions;
     }
 
-    public boolean isPlayersTurn() {
-        return isPlayersTurn;
+    public boolean isTurn() {
+        return isTurn;
     }
 
     public boolean isConnected() {
@@ -308,7 +308,7 @@ public class Player implements Comparable<Player> {
     }
 
     public void startTurn() {
-        isPlayersTurn = true;
+        isTurn = true;
         changesHandler.writePlayer(this);
         changesHandler.flushBufferToDisk();
     }
@@ -317,7 +317,7 @@ public class Player implements Comparable<Player> {
      * Executes end-of-turn routines on the Player Object.
      */
     public void finishTurn() {
-        isPlayersTurn = false;
+        isTurn = false;
         performedActions.clear();
         tempMarbles.clear();
         changesHandler.writePlayer(this);
