@@ -262,7 +262,7 @@ public class Connection implements Runnable {
     public void startPing() {
         while (true) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
                 if (inputStream.read() == -1) {
                     closeConnection();
                 }
