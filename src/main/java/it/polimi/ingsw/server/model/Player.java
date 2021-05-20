@@ -2,12 +2,11 @@ package it.polimi.ingsw.server.model;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import it.polimi.ingsw.server.controller.action.playeraction.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
-import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
+import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
 import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.Actions;
 import it.polimi.ingsw.server.model.utils.ChangesHandler;
@@ -15,7 +14,6 @@ import it.polimi.ingsw.server.model.utils.ChangesHandler;
 /**
  * This class represents a Player
  */
-
 public class Player implements Comparable<Player> {
     private transient String nickname;
     private int position;
@@ -31,6 +29,13 @@ public class Player implements Comparable<Player> {
         this.performedActions = new ArrayList<>();
     }
 
+    /**
+     * Completes Player Object initialization by injecting all elements that
+     * are not read from disk.
+     * @param changesHandler ChangesHandler Object of the game which the Player is part of.
+     * @param nickname player identifier.
+     * @throws FileNotFoundException thrown when PersonalBoard cannot be read properly from disk.
+     */
     public void init(ChangesHandler changesHandler, String nickname)
             throws FileNotFoundException {
         this.nickname = nickname;
@@ -43,6 +48,11 @@ public class Player implements Comparable<Player> {
         return nickname;
     }
 
+    /**
+     * Returns the positional index (1-4) of the player. If the Inkwell has
+     * not been assigned yet, the returned value is 0.
+     * @return position index integer.
+     */
     public int getPosition() {
         return position;
     }
@@ -51,10 +61,21 @@ public class Player implements Comparable<Player> {
         return personalBoard;
     }
 
+    /**
+     * If the Player has not picked its Leader Cards yet, returns a list of 4 cards.
+     * Otherwise returns an empty list.
+     */
     public List<LeaderCard> getTempLeaderCards() {
         return List.copyOf(tempLeaderCards);
     }
 
+    /**
+     * Returns a copy of the MarketMarbles temporarily stored inside of the Player during
+     * a {@link TakeFromMarketAction}. This map can contain any type of MarketMarble except
+     * RED ones, which are used to move the Faith Marker on the {@link FaithTrack}, therefore
+     * not getting stored.
+     * @return a map of MarketMarbles.
+     */
     public Map<MarketMarble, Integer> getTempMarbles() {
         return Map.copyOf(tempMarbles);
     }
@@ -80,9 +101,8 @@ public class Player implements Comparable<Player> {
     }
 
     /**
-     * This method assigns 4 LeaderCards to the Player from which he picks two
-     *
-     * @param leaderCards a list of 4 LeaderCards
+     * Assigns a List of LeaderCards which the Player can pick from.
+     * @param leaderCards With the current game rules, a list of 4 LeaderCards should be passed.
      */
     public void setTempLeaderCards(List<LeaderCard> leaderCards) {
         this.tempLeaderCards = leaderCards;
@@ -90,9 +110,10 @@ public class Player implements Comparable<Player> {
     }
 
     /**
-     * This method takes in input the chosen cards and creates the personalBoard accordingly
-     *
-     * @param chosenCards a list of two LeaderCards chosen by the Player
+     * Sets the List of Leader Cards passed as parameter as the final cards that
+     * the Player will use for the entire game.
+     * @param chosenCards With the current game rules, a list of 2 LeaderCards, matching
+     *                    the ones temporarily stored, should be passed.
      */
     public void chooseTwoLeaderCards(List<LeaderCard> chosenCards) {
         personalBoard.setLeaderCards(chosenCards);
@@ -102,7 +123,6 @@ public class Player implements Comparable<Player> {
 
     /**
      * This method sets the Player's position in the game
-     *
      * @param position an integer between 1 and 4
      */
     public void setPosition(int position) {
@@ -122,7 +142,6 @@ public class Player implements Comparable<Player> {
 
     /**
      * Creates a map of temporarily stored MarketMarbles
-     *
      * @param tempMarbles map of MarketMarbles taken from the Market.
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
@@ -278,25 +297,25 @@ public class Player implements Comparable<Player> {
 //    }
 
     /**
-     * This method checks if the Player has performed any of the compulsory Actions
-     * (TakeResourceAction, BuyDevelopmentCardAction, ActivateProductionAction)
-     *
-     * @return true if the Player has performed any of such action, false otherwise
+     * This method checks if the Player has successfully completed any of the
+     * compulsory Actions:
+     * {@link TakeFromMarketAction},
+     * {@link BuyDevelopmentCardAction},
+     * {@link ActivateProductionAction}
+     * @return true if the Player has performed one of these, false otherwise
      */
     private boolean hasPerformedCompulsoryAction() {
         return performedActions.stream().anyMatch(Actions::isCompulsory);
     }
 
-    /**
-     * sets the isPlayersTurn flag to true
-     */
     public void startTurn() {
         isPlayersTurn = true;
         changesHandler.writePlayer(this);
+        changesHandler.flushBufferToDisk();
     }
 
     /**
-     * sets the isPlayersTurn flag to false
+     * Executes end-of-turn routines on the Player Object.
      */
     public void finishTurn() {
         isPlayersTurn = false;
