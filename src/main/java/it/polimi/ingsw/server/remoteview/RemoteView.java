@@ -9,6 +9,7 @@ import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Flow.*;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -106,7 +107,8 @@ public class RemoteView implements Subscriber<Renderable> {
     @Override
     public void onNext(Renderable item) {
         if(item instanceof PrivateRenderable) {
-            connectedPlayers.get(((PrivateRenderable) item).getNickname()).send(item);
+            Optional<Connection> connection = Optional.ofNullable(connectedPlayers.get(((PrivateRenderable) item).getNickname()));
+            connection.ifPresent(c -> c.send(item));
         } else {
             for (Connection connection : connectedPlayers.values()) {
                 connection.send(item);
