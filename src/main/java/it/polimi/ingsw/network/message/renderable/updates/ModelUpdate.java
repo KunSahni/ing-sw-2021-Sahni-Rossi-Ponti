@@ -70,9 +70,7 @@ public class ModelUpdate extends PrivateRenderable {
         faithTrackUpdates = game
                 .getPlayerList()
                 .stream()
-                .filter(
-                        player -> !player.getNickname().equals(nickname)
-                ).map(
+                .map(
                         player -> new FaithTrackUpdate(player.getNickname(), player.getPersonalBoard().getFaithTrack())
                 ).collect(
                         Collectors.toCollection(ArrayList::new)
@@ -81,9 +79,7 @@ public class ModelUpdate extends PrivateRenderable {
         depotsUpdates = game
                 .getPlayerList()
                 .stream()
-                .filter(
-                        player -> !player.getNickname().equals(nickname)
-                ).map(
+                .map(
                         player -> new DepotsUpdate(player.getNickname(), player.getPersonalBoard().getWarehouseDepots())
                 ).collect(
                         Collectors.toCollection(ArrayList::new)
@@ -92,9 +88,7 @@ public class ModelUpdate extends PrivateRenderable {
         strongboxUpdates = game
                 .getPlayerList()
                 .stream()
-                .filter(
-                        player -> !player.getNickname().equals(nickname)
-                ).map(
+                .map(
                         player -> new StrongboxUpdate(player.getNickname(), player.getPersonalBoard().getStrongbox())
                 ).collect(
                         Collectors.toCollection(ArrayList::new)
@@ -106,7 +100,7 @@ public class ModelUpdate extends PrivateRenderable {
                 .filter(
                         player -> !player.getNickname().equals(nickname)
                 ).map(
-                        player -> new PlayerBroadcastUpdate(player)
+                        PlayerBroadcastUpdate::new
                 ).collect(
                         Collectors.toCollection(ArrayList::new)
                 );
