@@ -5,6 +5,7 @@ import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.network.message.renderable.requests.*;
 import it.polimi.ingsw.network.message.messages.Message;
+import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.Game;
@@ -76,7 +77,12 @@ public class Connection implements Runnable {
 
     public void closeConnection() {
         try {
-            server.getController(gameId).disconnectPlayer(nickname);
+            if (server.getController(gameId)!=null){
+                server.getController(gameId).disconnectPlayer(nickname);
+            }
+            else{
+                Lobby.getInstance().removePlayer(nickname);
+            }
             isActive = false;
             socket.close();
         } catch (IOException e) {
@@ -95,6 +101,7 @@ public class Connection implements Runnable {
             readFromInputStream();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -103,16 +110,14 @@ public class Connection implements Runnable {
      * readMessage method
      */
     public void readFromInputStream() {
-        Message message;
-        PlayerAction action;
         SerializedMessage serializedMessage = null;
         try {
             serializedMessage = (SerializedMessage) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            closeConnection();
         }
         if (serializedMessage != null && serializedMessage.getMessage() != null) {
-            message = serializedMessage.getMessage();
             if (state.messageAllowed(serializedMessage))
                 state.readMessage(serializedMessage);
             else {
@@ -121,7 +126,6 @@ public class Connection implements Runnable {
         }
 
         if (serializedMessage != null && serializedMessage.getAction() != null) {
-            action = serializedMessage.getAction();
             if (state.messageAllowed(serializedMessage))
                 state.readMessage(serializedMessage);
             else {
@@ -143,6 +147,7 @@ public class Connection implements Runnable {
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -155,6 +160,7 @@ public class Connection implements Runnable {
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -172,6 +178,7 @@ public class Connection implements Runnable {
             sendAuthenticationRequest();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -185,6 +192,7 @@ public class Connection implements Runnable {
             askForSize();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -197,6 +205,7 @@ public class Connection implements Runnable {
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
         //todo: emmò? che faccio?
     }
@@ -211,6 +220,7 @@ public class Connection implements Runnable {
             sendAuthenticationRequest();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -226,6 +236,7 @@ public class Connection implements Runnable {
             sendAuthenticationRequest();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -240,6 +251,7 @@ public class Connection implements Runnable {
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 
@@ -250,7 +262,7 @@ public class Connection implements Runnable {
     public void startPing() {
         while (true) {
             try {
-                Thread.sleep(30000);
+                Thread.sleep(1000);
                 if (inputStream.read() == -1) {
                     closeConnection();
                 }
@@ -284,8 +296,10 @@ public class Connection implements Runnable {
     public void sendJoinLobbyNotification(Integer size) {
         try {
             outputStream.writeObject(new JoinedLobbyNotification(gameId, size));
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            closeConnection();
         }
     }
 }

@@ -150,4 +150,11 @@ public class Lobby {
             return true;
         }
     }
+
+    public void removePlayer(String nickname){
+        players.remove(nickname);
+        if (players.size()==0){
+            size=0;
+        }
+    }
 }
