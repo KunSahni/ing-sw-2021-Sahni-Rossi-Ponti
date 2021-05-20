@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
-import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
 /**
  * This class represents the action of activating a LeaderCard chosen by a Player
@@ -21,14 +21,14 @@ public class ActivateLeaderCardAction extends PlayerAction {
     @Override
     public GameAction execute() {
         player.getPersonalBoard().activateLeaderCard(leaderCard.convert());
-        player.addAction(Actions.ACTIVATED_LEADER_CARD_ACTION);
+        player.addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
         return null;
     }
 
     @Override
     public void runChecks() throws InvalidActionException{
         super.runChecks();
-        if (player.isValidNextAction(Actions.ACTIVATED_LEADER_CARD_ACTION))
+        if (player.isValidNextAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION))
             throw new InvalidActionException("You cannot activate a LeaderCard at this time");
         if (player.getPersonalBoard()
                 .getLeaderCards()

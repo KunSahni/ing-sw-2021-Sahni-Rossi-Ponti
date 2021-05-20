@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.*;
 import it.polimi.ingsw.server.model.market.MarketMarble;
-import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
     private final boolean updatedTurnStatus;
     private final boolean updatedConnectionStatus;
     private final List<DumbLeaderCard> tempLeaderCards;
-    private final List<Actions> performedActions;
+    private final List<ExecutedActions> performedActions;
     private final Map<MarketMarble, Integer> tempMarbles;
 
     public PlayerPrivateUpdate(Player updatedPlayer) {

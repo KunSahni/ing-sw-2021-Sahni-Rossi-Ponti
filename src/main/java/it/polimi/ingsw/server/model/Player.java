@@ -6,10 +6,9 @@ import java.util.*;
 import it.polimi.ingsw.server.controller.action.playeraction.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.market.MarketMarble;
-import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
-import it.polimi.ingsw.server.model.personalboardpackage.PersonalBoard;
-import it.polimi.ingsw.server.model.utils.Actions;
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.personalboard.FaithTrack;
+import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
 /**
  * This class represents a Player
@@ -19,7 +18,7 @@ public class Player implements Comparable<Player> {
     private int position;
     private transient PersonalBoard personalBoard;
     private List<LeaderCard> tempLeaderCards;
-    private final List<Actions> performedActions;
+    private final List<ExecutedActions> performedActions;
     private Map<MarketMarble, Integer> tempMarbles;
     private boolean isPlayersTurn;
     private transient boolean isConnected;
@@ -80,7 +79,7 @@ public class Player implements Comparable<Player> {
         return Map.copyOf(tempMarbles);
     }
 
-    public List<Actions> getPerformedActions() {
+    public List<ExecutedActions> getPerformedActions() {
         return performedActions;
     }
 
@@ -134,7 +133,7 @@ public class Player implements Comparable<Player> {
      * @param action an action that has been chosen by the Player and performed,
      *               so therefore can be stored as performed
      */
-    public void addAction(Actions action) {
+    public void addAction(ExecutedActions action) {
         performedActions.add(action);
         changesHandler.writePlayer(this);
         changesHandler.flushBufferToDisk();
@@ -210,14 +209,14 @@ public class Player implements Comparable<Player> {
      * Actions list without violating action-order related game
      * logic.
      */
-    public boolean isValidNextAction(Actions action) {
+    public boolean isValidNextAction(ExecutedActions action) {
         if (performedActions.get(performedActions.size() - 1)
-                .equals(Actions.STORED_TEMP_MARBLES_ACTION)) {
-            return action.equals(Actions.STORED_MARKET_RESOURCES_ACTION);
+                .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION)) {
+            return action.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
         } else {
             if (action.isCompulsory())
                 return !hasPerformedCompulsoryAction();
-            else if (action.equals(Actions.TURN_ENDED_ACTION))
+            else if (action.equals(ExecutedActions.TURN_ENDED_ACTION))
                 return hasPerformedCompulsoryAction();
             else return true;
         }
@@ -305,7 +304,7 @@ public class Player implements Comparable<Player> {
      * @return true if the Player has performed one of these, false otherwise
      */
     private boolean hasPerformedCompulsoryAction() {
-        return performedActions.stream().anyMatch(Actions::isCompulsory);
+        return performedActions.stream().anyMatch(ExecutedActions::isCompulsory);
     }
 
     public void startTurn() {

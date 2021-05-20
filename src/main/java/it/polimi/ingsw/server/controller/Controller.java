@@ -1,12 +1,12 @@
 package it.polimi.ingsw.server.controller;
 
-import it.polimi.ingsw.server.Connection;
+import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.action.Action;
 import it.polimi.ingsw.server.controller.action.gameaction.*;
 import it.polimi.ingsw.server.controller.action.playeraction.InvalidActionException;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.util.Optional;
@@ -47,7 +47,7 @@ public class Controller implements Subscriber<PlayerAction> {
             case IN_GAME, LAST_ROUND -> game.getCurrentTurnPlayer()
                     .getPerformedActions()
                     .get(game.getCurrentTurnPlayer().getPerformedActions().size() - 1)
-                    .equals(Actions.TURN_ENDED_ACTION)
+                    .equals(ExecutedActions.TURN_ENDED_ACTION)
                     ? new StartNextTurnAction(game)
                     : null;
             case GAME_FINISHED -> new EndGameAction(game);

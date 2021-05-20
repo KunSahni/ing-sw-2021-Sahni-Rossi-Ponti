@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
-import it.polimi.ingsw.server.model.personalboardpackage.FavorStatus;
+import it.polimi.ingsw.server.model.personalboard.FavorStatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;

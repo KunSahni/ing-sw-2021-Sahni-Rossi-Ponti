@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model.personalboardpackage;
+package it.polimi.ingsw.server.model.personalboard;
 public enum FavorStatus {
     INACTIVE,
     ACTIVE,

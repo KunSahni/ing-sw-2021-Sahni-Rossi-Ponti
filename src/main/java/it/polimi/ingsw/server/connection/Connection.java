@@ -1,15 +1,16 @@
-package it.polimi.ingsw.server;
+package it.polimi.ingsw.server.connection;
 
 import it.polimi.ingsw.network.message.SerializedMessage;
 import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.network.message.renderable.requests.*;
 import it.polimi.ingsw.network.message.messages.Message;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
-import it.polimi.ingsw.server.state.AuthenticationState;
-import it.polimi.ingsw.server.state.ConnectionState;
+import it.polimi.ingsw.server.connection.state.AuthenticationState;
+import it.polimi.ingsw.server.connection.state.ConnectionState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

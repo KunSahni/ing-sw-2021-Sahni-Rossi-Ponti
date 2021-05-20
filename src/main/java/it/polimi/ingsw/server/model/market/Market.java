@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.model.market;
 
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.ChangesHandler;
 
 import java.util.*;
 import java.util.stream.Collectors;

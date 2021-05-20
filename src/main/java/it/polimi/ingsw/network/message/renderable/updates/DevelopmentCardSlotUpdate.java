@@ -3,9 +3,8 @@ package it.polimi.ingsw.network.message.renderable.updates;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
-import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
+import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

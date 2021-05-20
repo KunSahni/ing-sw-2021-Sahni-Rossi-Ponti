@@ -5,8 +5,8 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
-import it.polimi.ingsw.server.model.personalboardpackage.DefaultSlot;
-import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
+import it.polimi.ingsw.server.model.personalboard.DefaultSlot;
+import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.utils.*;
 
 import java.util.*;
@@ -46,14 +46,14 @@ public class ActivateProductionAction extends PlayerAction {
                 .discardFromDepots(productionCombo.getDiscardedResourcesFromDepots());
         player.getPersonalBoard()
                 .discardFromStrongbox(productionCombo.getDiscardedResourcesFromStrongbox());
-        player.addAction(Actions.ACTIVATED_PRODUCTION_ACTION);
+        player.addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
         return null;
     }
 
     @Override
     public void runChecks() throws InvalidActionException {
         super.runChecks();
-        if (!player.isValidNextAction(Actions.ACTIVATED_PRODUCTION_ACTION))
+        if (!player.isValidNextAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION))
             throw new InvalidActionException("You cannot activate a production at this time.");
         if (productionComboIsEmpty())
             throw new InvalidActionException("You supplied an empty Production Combo");

@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.model.leadercard;
 
 import java.io.*;
 import java.util.*;
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.ChangesHandler;
 
 
 public class LeaderCardsDeck {

@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
 import it.polimi.ingsw.server.model.market.MarketMarble;
-import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,14 +33,14 @@ public class TakeFromMarketAction extends PlayerAction {
             tempMarbles.remove(MarketMarble.RED);
         }
         player.setTempMarbles(tempMarbles);
-        player.addAction(Actions.STORED_TEMP_MARBLES_ACTION);
+        player.addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
         return null;
     }
 
     @Override
     public void runChecks() throws InvalidActionException {
         super.runChecks();
-        if (!player.isValidNextAction(Actions.STORED_TEMP_MARBLES_ACTION))
+        if (!player.isValidNextAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION))
             throw new InvalidActionException("You cannot take from market at this time");
     }
 }

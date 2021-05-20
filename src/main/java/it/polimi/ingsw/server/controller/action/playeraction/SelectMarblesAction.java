@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
-import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.ResourceBank;
 
 import java.util.ArrayList;
@@ -28,14 +28,14 @@ public class SelectMarblesAction extends PlayerAction {
         int othersIncrement = player.getTempMarbles().values().stream().reduce(0, Integer::sum)
                 - selectedMarbles.values().stream().reduce(0, Integer::sum);
         moveOtherMarkers(othersIncrement);
-        player.addAction(Actions.STORED_MARKET_RESOURCES_ACTION);
+        player.addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
         return null;
     }
 
     @Override
     public void runChecks() throws InvalidActionException {
         super.runChecks();
-        if (!player.isValidNextAction(Actions.STORED_MARKET_RESOURCES_ACTION))
+        if (!player.isValidNextAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION))
             throw new InvalidActionException("You cannot store market resources at this time.");
         if (!tempMarblesContainSelectedMarbles())
             throw new InvalidActionException("The marbles you have supplied are not an acceptable" +

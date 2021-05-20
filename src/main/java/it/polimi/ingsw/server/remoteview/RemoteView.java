@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.remoteview;
 import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.network.message.renderable.Renderable;
-import it.polimi.ingsw.server.Connection;
+import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 

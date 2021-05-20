@@ -1,18 +1,18 @@
-package it.polimi.ingsw.server.model.utils;
+package it.polimi.ingsw.server.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.message.renderable.updates.*;
-import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.developmentcard.*;
 import it.polimi.ingsw.server.model.leadercard.*;
 import it.polimi.ingsw.server.model.market.Market;
-import it.polimi.ingsw.server.model.personalboardpackage.DevelopmentCardSlot;
-import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
+import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
+import it.polimi.ingsw.server.model.personalboard.FaithTrack;
 import it.polimi.ingsw.network.message.renderable.Renderable;
+import it.polimi.ingsw.server.model.utils.GameState;
+import it.polimi.ingsw.server.model.utils.ResourceManager;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.*;

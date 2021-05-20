@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
-import it.polimi.ingsw.server.model.utils.Actions;
+import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.HashMap;
@@ -64,14 +64,14 @@ public class BuyDevelopmentCardAction extends PlayerAction {
         );
         player.getPersonalBoard().discardFromDepots(discardedResourcesFromDepots);
         player.getPersonalBoard().discardFromStrongbox(discardedResourcesFromStrongbox);
-        player.addAction(Actions.BOUGHT_DEVELOPMENT_CARD_ACTION);
+        player.addAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION);
         return null;
     }
 
     @Override
     public void runChecks() throws InvalidActionException {
         super.runChecks();
-        if (player.isValidNextAction(Actions.BOUGHT_DEVELOPMENT_CARD_ACTION))
+        if (player.isValidNextAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION))
             throw new InvalidActionException("You cannot buy a Development Card at this time");
         if (game.getDevelopmentCardsBoard().peekCard(level, color) == null)
             throw new InvalidActionException(color + " " + level + "Development Cards are not " +

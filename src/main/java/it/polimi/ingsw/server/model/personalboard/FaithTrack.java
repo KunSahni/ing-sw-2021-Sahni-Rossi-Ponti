@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model.personalboardpackage;
+package it.polimi.ingsw.server.model.personalboard;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,7 +6,7 @@ import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
 /**

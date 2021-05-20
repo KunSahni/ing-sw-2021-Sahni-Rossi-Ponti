@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.server.controller.action.Action;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
-import it.polimi.ingsw.server.model.personalboardpackage.FaithTrack;
+import it.polimi.ingsw.server.model.personalboard.FaithTrack;
 
 import java.io.Serializable;
 

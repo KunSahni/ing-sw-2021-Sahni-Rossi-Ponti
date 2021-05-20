@@ -2,11 +2,12 @@ package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
-import it.polimi.ingsw.server.state.PlayingState;
-import it.polimi.ingsw.server.state.WaitingForGameSizeState;
+import it.polimi.ingsw.server.connection.state.PlayingState;
+import it.polimi.ingsw.server.connection.state.WaitingForGameSizeState;
 
 import java.io.*;
 import java.util.HashMap;

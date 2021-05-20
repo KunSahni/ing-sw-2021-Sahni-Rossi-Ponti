@@ -1,7 +1,7 @@
-package it.polimi.ingsw.server.state;
+package it.polimi.ingsw.server.connection.state;
 
 import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.server.Connection;
+import it.polimi.ingsw.server.connection.Connection;
 
 public abstract class ConnectionState {
     private Connection connection;

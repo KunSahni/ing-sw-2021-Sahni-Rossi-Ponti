@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model.personalboardpackage;
+package it.polimi.ingsw.server.model.personalboard;
 
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.ResourceBank;

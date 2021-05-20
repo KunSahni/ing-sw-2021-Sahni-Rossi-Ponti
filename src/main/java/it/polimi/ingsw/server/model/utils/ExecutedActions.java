@@ -4,7 +4,7 @@ package it.polimi.ingsw.server.model.utils;
  * A set of enums in which each entry represents an action that can be chosen by a Player
  */
 
-public enum Actions {
+public enum ExecutedActions {
     ACTIVATED_LEADER_CARD_ACTION,
     ACTIVATED_PRODUCTION_ACTION,
     BOUGHT_DEVELOPMENT_CARD_ACTION,

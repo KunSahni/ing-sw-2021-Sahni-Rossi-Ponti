@@ -1,10 +1,10 @@
-package it.polimi.ingsw.server.model.personalboardpackage;
+package it.polimi.ingsw.server.model.personalboard;
 
 import java.util.*;
 
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 

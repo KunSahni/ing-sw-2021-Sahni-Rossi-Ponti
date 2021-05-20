@@ -1,4 +1,4 @@
-package it.polimi.ingsw.server.model.personalboardpackage;
+package it.polimi.ingsw.server.model.personalboard;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -9,7 +9,7 @@ import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.Resource;
 import it.polimi.ingsw.server.model.utils.ResourceManager;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;

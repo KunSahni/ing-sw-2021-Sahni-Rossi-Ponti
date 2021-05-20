@@ -2,7 +2,7 @@ package it.polimi.ingsw.server.model.developmentcard;
 
 import java.util.Arrays;
 
-import it.polimi.ingsw.server.model.utils.ChangesHandler;
+import it.polimi.ingsw.server.model.ChangesHandler;
 
 public class DevelopmentCardsBoard {
     private transient ChangesHandler changesHandler;
