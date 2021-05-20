@@ -45,6 +45,7 @@ public class Lobby {
      * @param connection is the connection of the player
      */
     public void addPlayer(String nickname, Connection connection){
+        connection.setNickname(nickname);
         players.put(nickname, connection);
     }
 
