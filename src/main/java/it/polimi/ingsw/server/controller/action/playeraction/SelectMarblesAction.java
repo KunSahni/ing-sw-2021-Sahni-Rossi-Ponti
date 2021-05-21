@@ -24,7 +24,7 @@ public class SelectMarblesAction extends PlayerAction {
 
     @Override
     public GameAction execute() {
-        player.getPersonalBoard().storeInDepots(ResourceBank.getResourceFromMarble(selectedMarbles));
+        player.getPersonalBoard().storeInDepots(ResourceBank.getResourcesFromMarbles(selectedMarbles));
         int othersIncrement = player.getTempMarbles().values().stream().reduce(0, Integer::sum)
                 - selectedMarbles.values().stream().reduce(0, Integer::sum);
         moveOtherMarkers(othersIncrement);
@@ -42,7 +42,7 @@ public class SelectMarblesAction extends PlayerAction {
                     " subset of the marbles you have taken from the market.");
         if (!player.getPersonalBoard()
                 .depotsCanContain(
-                        ResourceBank.getResourceFromMarble(selectedMarbles)))
+                        ResourceBank.getResourcesFromMarbles(selectedMarbles)))
             throw new InvalidActionException("Your depots cannot contain the selected resources.");
     }
 

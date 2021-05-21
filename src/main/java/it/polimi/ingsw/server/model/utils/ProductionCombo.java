@@ -6,9 +6,6 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import java.util.List;
 import java.util.Map;
 
-
-//todo: this class should be moved to it.polimi.ingsw.network.utils
-
 public class ProductionCombo {
     private List<DumbDevelopmentCard> developmentCards;
     private Map<Resource, Integer> defaultSlotOutput;

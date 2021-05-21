@@ -13,7 +13,7 @@ public class Market {
     private final MarketMarble[][] market;
     private MarketMarble extraMarble;
 
-    public Market() {
+    private Market() {
         this.market = new MarketMarble[3][4];
         extraMarble = null;
     }
