@@ -163,8 +163,7 @@ public class ChangesHandler {
             Optional.ofNullable(produceLeaderCards[i]).ifPresent(card -> finalDeck[i] = card);
             Optional.ofNullable(discountLeaderCards[i]).ifPresent(card -> finalDeck[i] = card);
         });
-        LeaderCardsDeck leaderCardsDeck = new LeaderCardsDeck(Arrays.asList(finalDeck));
-        leaderCardsDeck.init(this);
+        LeaderCardsDeck leaderCardsDeck = new LeaderCardsDeck(Arrays.asList(finalDeck), this);
         if (isNewGame)
             leaderCardsDeck.shuffle();
         return leaderCardsDeck;
