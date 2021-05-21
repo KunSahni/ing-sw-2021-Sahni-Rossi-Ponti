@@ -82,8 +82,4 @@ public class DevelopmentCard implements VictoryPointsElement {
     public ProductionOutput produce() {
         return new ProductionOutput(faithIncrement, outputResources);
     }
-
-    public DumbDevelopmentCard convertToDumb() {
-        return new DumbDevelopmentCard(this);
-    }
 }
