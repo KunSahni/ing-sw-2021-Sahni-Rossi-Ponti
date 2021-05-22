@@ -2,16 +2,22 @@ package it.polimi.ingsw.server.model.actiontoken;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.server.model.ChangesHandler;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
 public class ActionTokenDeck {
     private final Stack<ActionToken> currentDeck;
+    private transient ChangesHandler changesHandler;
 
-    public ActionTokenDeck() {
+    private ActionTokenDeck() {
         this.currentDeck = new Stack<>();
-        reset();
+    }
+
+    public void init(ChangesHandler changesHandler) {
+        this.changesHandler = changesHandler;
     }
 
     /**
@@ -44,7 +50,9 @@ public class ActionTokenDeck {
      * @return top-most ActionToken, removed from deck.
      */
     public ActionToken pop() {
-        return currentDeck.pop();
+        ActionToken actionToken = currentDeck.pop();
+        changesHandler.writeActionTokenDeck(this);
+        return actionToken;
     }
 
     /**
@@ -58,6 +66,11 @@ public class ActionTokenDeck {
             currentDeck.push(actionToken);
         }
         //shuffle the deck
+        shuffle();
+        changesHandler.writeActionTokenDeck(this);
+    }
+
+    public void shuffle() {
         Collections.shuffle(currentDeck);
     }
 }

@@ -5,12 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.message.renderable.updates.*;
+import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.model.developmentcard.*;
 import it.polimi.ingsw.server.model.leadercard.*;
 import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboard.FaithTrack;
 import it.polimi.ingsw.network.message.renderable.Renderable;
+import it.polimi.ingsw.server.model.personalboard.SinglePlayerFaithTrack;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.ResourceManager;
 import it.polimi.ingsw.server.remoteview.RemoteView;
@@ -32,11 +34,13 @@ public class ChangesHandler {
     private final String root;
     private final SubmissionPublisher<Renderable> submissionPublisher;
     private boolean isNewGame;
+    private boolean isSinglePlayerGame;
     private Map<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
         this.root = "src/main/resources/games/" + gameId;
         this.submissionPublisher = new SubmissionPublisher<>();
+        this.isSinglePlayerGame = false;
         this.isNewGame = false;
         changesBuffer = new HashMap<>();
     }
@@ -49,6 +53,16 @@ public class ChangesHandler {
                     root + "/players/" + nickname);
         }
         isNewGame = true;
+        if (nicknames.size() == 1) {
+            isSinglePlayerGame = true;
+            (new File(root + "/players/" + nicknames.get(0) + "/FaithTrack.json")).delete();
+        } else {
+            (new File(root + "/ActionTokenDeck.json")).delete();
+            for (String nickname : nicknames) {
+                (new File(root + "/players/" + nickname + "/SinglePlayerFaithTrack.json"))
+                        .delete();
+            }
+        }
     }
 
     private void copyFolder(String sourceDir, String destinationDir) throws IOException {
@@ -185,6 +199,23 @@ public class ChangesHandler {
                 ".json");
     }
 
+    // Action Token Deck
+    public ActionTokenDeck readActionTokenDeck() throws FileNotFoundException {
+        ActionTokenDeck deck = readValueFromFile(root + "/ActionTokenDeck.json",
+                ActionTokenDeck.class);
+        if (isNewGame) deck.shuffle();
+        return deck;
+    }
+
+    public void publishActionTokenDeck(ActionTokenDeck actionTokenDeck) {
+        submissionPublisher.submit(new ActionTokenDeckUpdate(actionTokenDeck));
+    }
+
+    public void writeActionTokenDeck(ActionTokenDeck actionTokenDeck) {
+        publishActionTokenDeck(actionTokenDeck);
+        changesBuffer.put(actionTokenDeck, root + "/ActionTokenDeck.json");
+    }
+
     // Player on-board Leader Cards
     public List<LeaderCard> readPlayerLeaderCards(String nickname) throws FileNotFoundException {
         return readListFromFile(
@@ -257,9 +288,11 @@ public class ChangesHandler {
 
     // Faith Track
     public FaithTrack readFaithTrack(String nickname) throws FileNotFoundException {
-        FaithTrack faithTrack = readValueFromFile(root + "/players/" + nickname + "/FaithTrack" +
-                        ".json",
-                FaithTrack.class);
+        FaithTrack faithTrack = isSinglePlayerGame
+                ? readValueFromFile(root + "/players/" + nickname +
+                "/SinglePlayerFaithTrack.json", SinglePlayerFaithTrack.class)
+                : readValueFromFile(root + "/players/" + nickname +
+                "/FaithTrack.json", FaithTrack.class);
         faithTrack.init(nickname, this);
         return faithTrack;
     }

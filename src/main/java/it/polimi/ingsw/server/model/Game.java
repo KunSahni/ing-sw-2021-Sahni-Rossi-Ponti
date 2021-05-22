@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardsDeck;
@@ -15,6 +16,7 @@ public class Game {
     private final Market market;
     private final LeaderCardsDeck leaderCardsDeck;
     private final DevelopmentCardsBoard developmentCardsBoard;
+    private final ActionTokenDeck actionTokenDeck;
     private final ChangesHandler changesHandler;
 
     /**
@@ -40,7 +42,9 @@ public class Game {
         this.market = this.changesHandler.readMarket();
         this.leaderCardsDeck = this.changesHandler.readLeaderCardsDeck();
         this.developmentCardsBoard = this.changesHandler.readDevelopmentCardsBoard();
-
+        this.actionTokenDeck = (size() == 1)
+                ? this.changesHandler.readActionTokenDeck()
+                : null;
     }
 
     /**

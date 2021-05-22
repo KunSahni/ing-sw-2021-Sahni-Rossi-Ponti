@@ -15,10 +15,10 @@ import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 public class FaithTrack implements VictoryPointsElement {
     private int faithMarkerPosition;
     private final List<FavorStatus> popesFavors;
-    private transient ChangesHandler changesHandler;
-    private transient String nickname;
+    protected transient ChangesHandler changesHandler;
+    protected transient String nickname;
 
-    private FaithTrack() {
+    protected FaithTrack() {
         this.popesFavors = new ArrayList<>();
     }
 
