@@ -25,7 +25,7 @@ public abstract class UI {
     public abstract void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     public abstract void renderMarket(DumbMarket market);
     public abstract void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
-    public abstract void renderTempMarbles(Map<MarketMarble, Integer> updateMarbles);
+    public abstract void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles);
     public abstract void renderResourcePregameChoice(int numberOfResources);
     public abstract void renderMessage(String message);
     public abstract void renderErrorMessage(String message);
@@ -39,6 +39,7 @@ public abstract class UI {
      */
     public void createModelView(int gameId, int size) {
         dumbModel = new DumbModel(gameId, size);
+        //todo: add write gameId to memory
     }
 
     /**

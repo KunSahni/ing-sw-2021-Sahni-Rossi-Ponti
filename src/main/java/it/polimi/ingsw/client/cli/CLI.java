@@ -51,7 +51,7 @@ public class CLI extends UI {
     }
 
     @Override
-    public void renderTempMarbles(Map<MarketMarble, Integer> updateMarbles) {
+    public void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles) {
 
     }
 
