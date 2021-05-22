@@ -17,8 +17,12 @@ import java.util.Optional;
 
 public abstract class UI {
     private DumbModel dumbModel;
-    private String nickname;
+    protected final String nickname;
     private ArrayList<ExecutedActions> turnActions;
+
+    public UI(String nickname) {
+        this.nickname = nickname;
+    }
 
     public abstract void renderPersonalBoard(DumbPersonalBoard personalBoard);
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
@@ -113,11 +117,12 @@ public abstract class UI {
 
     /**
      * This method is called every time the client receives an update regarding the faith track in a single player game
+     * @param nickname the nickname of the player whose position will be updated
      * @param updatedFaithTrackPosition the updated position of his faithMarker
      * @param updatedPopesFavors the updated list of popesFavors of the player
      * @param updatedBlackCrossPosition the updated position of the black cross on the faith track
      */
-    public void updateSinglePlayerFaithTrack(int updatedFaithTrackPosition, List<FavorStatus> updatedPopesFavors, int updatedBlackCrossPosition){
+    public void updateSinglePlayerFaithTrack(String nickname, int updatedFaithTrackPosition, List<FavorStatus> updatedPopesFavors, int updatedBlackCrossPosition){
         if(dumbModel.getSize()==1) {
             updateFaithTrack(nickname, updatedFaithTrackPosition, updatedPopesFavors);
             getPersonalBoard(nickname).ifPresent(

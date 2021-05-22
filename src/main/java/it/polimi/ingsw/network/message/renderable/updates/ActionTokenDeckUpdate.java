@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.message.renderable.updates;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
+import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,8 @@ import java.util.List;
 public class ActionTokenDeckUpdate extends BroadcastRenderable {
     private final List<ActionToken> updatedActionTokenDeck;
 
-    public ActionTokenDeckUpdate(List<ActionToken> updatedActionTokenDeck) {
-        this.updatedActionTokenDeck = new ArrayList<>(updatedActionTokenDeck);
+    public ActionTokenDeckUpdate(ActionTokenDeck updatedActionTokenDeck) {
+        this.updatedActionTokenDeck = updatedActionTokenDeck.getCurrentDeck();
     }
 
     @Override

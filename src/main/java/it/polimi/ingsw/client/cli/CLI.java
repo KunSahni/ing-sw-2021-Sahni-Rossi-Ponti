@@ -18,11 +18,10 @@ public class CLI extends UI {
     private Scanner in;
     private PrintWriter out;
     private Client client;
-    private final String nickname;
     private final int size;
 
     public CLI(String nickname, int size) {
-        this.nickname = nickname;
+        super(nickname);
         this.size = size;
         in = new Scanner(System.in);
         out = new PrintWriter(System.out);
@@ -78,7 +77,7 @@ public class CLI extends UI {
     @Override
     public void renderAuthenticationRequest(String message) {
         System.out.println(message);
-        client.sendMessage(new AuthenticationMessage(nickname, -1));
+        client.sendMessage(new AuthenticationMessage(this.nickname, -1));
     }
 
     @Override
