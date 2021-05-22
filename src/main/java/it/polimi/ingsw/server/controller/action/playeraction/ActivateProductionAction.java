@@ -85,9 +85,9 @@ public class ActivateProductionAction extends PlayerAction {
     }
 
     private boolean productionComboIsEmpty() {
-        return productionCombo.getDevelopmentCards() != null
-                || productionCombo.getLeaderCardProduction() != null
-                || productionCombo.getDefaultSlotOutput() != null;
+        return productionCombo.getDevelopmentCards() == null
+                && productionCombo.getLeaderCardProduction() == null
+                && productionCombo.getDefaultSlotOutput() == null;
     }
 
     private boolean developmentCardsAvailable() {
