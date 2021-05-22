@@ -203,6 +203,7 @@ public class ChangesHandler {
     public ActionTokenDeck readActionTokenDeck() throws FileNotFoundException {
         ActionTokenDeck deck = readValueFromFile(root + "/ActionTokenDeck.json",
                 ActionTokenDeck.class);
+        deck.init(this);
         if (isNewGame) deck.shuffle();
         return deck;
     }
