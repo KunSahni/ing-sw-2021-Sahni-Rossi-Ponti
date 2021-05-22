@@ -61,6 +61,13 @@ public class Game {
     }
 
     /**
+     * Returns the number of players in the game.
+     */
+    public int size() {
+        return players.size();
+    }
+
+    /**
      * The returned list of players contains all Player objects in
      * the current game. The list is sorted, the first element is the
      * Player with the Inkwell marker, in position 1. If the Inkwell
