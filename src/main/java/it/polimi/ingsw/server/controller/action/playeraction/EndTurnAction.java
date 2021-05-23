@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.controller.action.playeraction;
 
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
+import it.polimi.ingsw.server.controller.action.gameaction.LorenzoAction;
 import it.polimi.ingsw.server.controller.action.gameaction.StartNextTurnAction;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
@@ -17,7 +18,11 @@ public class EndTurnAction extends PlayerAction {
                 game.setState(GameState.LAST_ROUND);
             }
         }
-        return new StartNextTurnAction(game);
+        GameAction consequentAction;
+        if (game.size() == 1)
+            consequentAction = new LorenzoAction(game);
+        else consequentAction = new StartNextTurnAction(game);
+        return consequentAction;
     }
 
     @Override

@@ -78,6 +78,23 @@ public class ChangesHandler {
                 });
     }
 
+    public void publishGameOutcome(Game game) {
+        if (deleteDirectory(new File(root)))
+            submissionPublisher.submit(game.size() == 1
+                    ? new SinglePlayerGameOutcomeUpdate(game)
+                    : new MultiPlayerGameOutcomeUpdate(game));
+    }
+
+    private boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
     // GameState
     public GameState readGameState() throws FileNotFoundException {
         return readValueFromFile(
@@ -304,7 +321,9 @@ public class ChangesHandler {
 
     public void writeFaithTrack(String nickname, FaithTrack faithTrack) {
         publishFaithTrack(nickname, faithTrack);
-        changesBuffer.put(faithTrack, root + "/players/" + nickname + "/FaithTrack.json");
+        String filepath = root + "/players/" + nickname +
+                (isSinglePlayerGame ? "/SinglePlayerFaithTrack.json" : "/FaithTrack.json");
+        changesBuffer.put(faithTrack, filepath);
     }
 
     /**

@@ -50,7 +50,6 @@ public class Controller implements Subscriber<PlayerAction> {
                     .equals(ExecutedActions.TURN_ENDED_ACTION)
                     ? new StartNextTurnAction(game)
                     : null;
-            case GAME_FINISHED -> new EndGameAction(game);
             case ASSIGNED_INKWELL, DEALT_LEADER_CARDS -> null;
         };
         handleGameAction(initiator);

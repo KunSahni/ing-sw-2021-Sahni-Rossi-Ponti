@@ -16,13 +16,17 @@ public class StartNextTurnAction extends GameAction {
 
     @Override
     public GameAction execute() {
-        GameAction consequentAction = null;
         List<Player> players = game.getPlayerList();
         Player currentPlayer = game.getCurrentTurnPlayer();
+        // If at least one of the players is connected
         if (players.stream().anyMatch(Player::isConnected)) {
+            // If the game is not in LAST_ROUND state
             if (!game.getCurrentState().equals(GameState.LAST_ROUND)) {
                 players.addAll(game.getPlayerList());
             }
+            // If the game is not in LAST_ROUND a player will always be found
+            // In LAST_ROUND a player will be found only if there are players
+            // that still have to play their turn in LAST_ROUND
             Optional<Player> nextPlayer =
                     findNextConnected(players.subList(players.indexOf(currentPlayer) + 1,
                             players.size() + 1));
@@ -30,11 +34,10 @@ public class StartNextTurnAction extends GameAction {
                 currentPlayer.finishTurn();
                 nextPlayer.get().startTurn();
             } else {
-                game.setState(GameState.GAME_FINISHED);
-                consequentAction = new EndGameAction(game);
+                game.end();
             }
         }
-        return consequentAction;
+        return null;
     }
 
     private Optional<Player> findNextConnected(List<Player> players) {

@@ -27,7 +27,9 @@ public class SinglePlayerFaithTrack extends FaithTrack {
      * vatican report starts.
      */
     public void moveBlackCross() {
-        blackCrossPosition++;
-        changesHandler.writeFaithTrack(nickname, this);
+        if (blackCrossPosition < 24) {
+            blackCrossPosition++;
+            changesHandler.writeFaithTrack(nickname, this);
+        }
     }
 }

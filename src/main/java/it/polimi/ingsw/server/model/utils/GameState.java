@@ -11,6 +11,5 @@ public enum GameState {
     ASSIGNED_INKWELL,
     PICKED_RESOURCES,
     IN_GAME,
-    LAST_ROUND,
-    GAME_FINISHED
+    LAST_ROUND
 }

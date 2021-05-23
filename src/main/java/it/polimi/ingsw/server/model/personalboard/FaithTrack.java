@@ -91,8 +91,10 @@ public class FaithTrack implements VictoryPointsElement {
      * Moves the Faith Marker up by one position on the Faith Track.
      */
     public void moveMarker() {
-        faithMarkerPosition++;
-        changesHandler.writeFaithTrack(nickname,this);
+        if (faithMarkerPosition < 24) {
+            faithMarkerPosition++;
+            changesHandler.writeFaithTrack(nickname,this);
+        }
     }
 
     /**

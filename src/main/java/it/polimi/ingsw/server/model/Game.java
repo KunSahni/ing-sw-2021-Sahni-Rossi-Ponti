@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
@@ -9,8 +10,10 @@ import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.SubmissionPublisher;
 
 public class Game {
+    private final int gameId;
     private GameState currentState;
     private final LinkedList<Player> players;
     private final Market market;
@@ -18,6 +21,7 @@ public class Game {
     private final DevelopmentCardsBoard developmentCardsBoard;
     private final ActionTokenDeck actionTokenDeck;
     private final ChangesHandler changesHandler;
+    private final SubmissionPublisher<Integer> gameEndedPublisher;
 
     /**
      * Creates a game instance.
@@ -27,7 +31,8 @@ public class Game {
      *                     game instance is created.
      * @throws IOException exception thrown when game files or folders are corrupt.
      */
-    public Game(int gameId, List<String> nicknameList) throws IOException {
+    public Game(Server server, int gameId, List<String> nicknameList) throws IOException {
+        this.gameId = gameId;
         this.changesHandler = new ChangesHandler(gameId);
         if (nicknameList != null) {
             changesHandler.createGameFilesFromBlueprint(nicknameList);
@@ -45,6 +50,8 @@ public class Game {
         this.actionTokenDeck = (size() == 1)
                 ? this.changesHandler.readActionTokenDeck()
                 : null;
+        this.gameEndedPublisher = new SubmissionPublisher<>();
+        this.gameEndedPublisher.subscribe(server);
     }
 
     /**
@@ -104,6 +111,13 @@ public class Game {
     }
 
     /**
+     * @return ActionTokenDeck instance associated to the game.
+     */
+    public ActionTokenDeck getActionTokenDeck() {
+        return actionTokenDeck;
+    }
+
+    /**
      * Sorts the players' list in ascending order. Must be called only after
      * the Inkwell has been assigned otherwise the sorting process is meaningless.
      */
@@ -158,5 +172,10 @@ public class Game {
      */
     public DevelopmentCardsBoard getDevelopmentCardsBoard() {
         return developmentCardsBoard;
+    }
+
+    public void end() {
+        changesHandler.publishGameOutcome(this);
+        gameEndedPublisher.submit(gameId);
     }
 }
