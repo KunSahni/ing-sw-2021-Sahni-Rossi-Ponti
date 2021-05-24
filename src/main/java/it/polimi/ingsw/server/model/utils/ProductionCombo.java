@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model.utils;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
 
 import java.util.List;
 import java.util.Map;
@@ -9,11 +10,11 @@ import java.util.Map;
 public class ProductionCombo {
     private List<DumbDevelopmentCard> developmentCards;
     private Map<Resource, Integer> defaultSlotOutput;
-    private Map<DumbLeaderCard, Resource> leaderCardProduction;
+    private Map<DumbProduceLeaderCard, Resource> leaderCardProduction;
     private Map<Resource, Integer> discardedResourcesFromDepots;
     private Map<Resource, Integer> discardedResourcesFromStrongbox;
 
-    public void setDevelopmentCardSlots(List<DumbDevelopmentCard> developmentCards) {
+    public void setDevelopmentCards(List<DumbDevelopmentCard> developmentCards) {
         this.developmentCards = developmentCards;
     }
 
@@ -21,7 +22,7 @@ public class ProductionCombo {
         this.defaultSlotOutput = defaultSlotOutput;
     }
 
-    public void setLeaderCardProduction(Map<DumbLeaderCard, Resource> leaderCardProduction) {
+    public void setLeaderCardProduction(Map<DumbProduceLeaderCard, Resource> leaderCardProduction) {
         this.leaderCardProduction = leaderCardProduction;
     }
 

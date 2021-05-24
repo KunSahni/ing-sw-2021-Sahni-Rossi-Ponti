@@ -8,10 +8,7 @@ import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 //todo: implement pub/sub for rendering
 
@@ -28,6 +25,8 @@ public abstract class UI {
     public abstract void renderDevelopmentCardsBoard(DumbDevelopmentCardsBoard developmentCardsBoard);
     public abstract void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     public abstract void renderMarket(DumbMarket market);
+    public abstract void renderGameOutcome(int finalScore);
+    public abstract void renderGameOutcome(TreeMap<Integer, String> finalScores);
     public abstract void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
     public abstract void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles);
     public abstract void renderResourcePregameChoice(int numberOfResources);
@@ -174,7 +173,7 @@ public abstract class UI {
                 .stream()
                 .filter(
                         dumbLeaderCard -> dumbLeaderCard instanceof DumbStoreLeaderCard && dumbLeaderCard.equals(leaderCard)
-                ).findFirst()).ifPresent(dumbLeaderCard -> ((DumbStoreLeaderCard) dumbLeaderCard).updateStoredResources(leaderCard.getStorage().getStoredResources()));
+                ).findFirst()).ifPresent(dumbLeaderCard -> ((DumbStoreLeaderCard) dumbLeaderCard).updateStoredResources(leaderCard.getStoredResources()));
     }
 
     /**
@@ -234,5 +233,4 @@ public abstract class UI {
                         dumbPersonalBoard -> dumbPersonalBoard.getNickname().equals(nickname)
                 ).findFirst();
     }
-
 }

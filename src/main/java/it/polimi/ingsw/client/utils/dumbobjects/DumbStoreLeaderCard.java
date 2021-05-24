@@ -31,14 +31,16 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
         this.storage.updateStoredResources(updatedStoredResources);
     }
 
-    public DumbResourceManager getStorage() {
-        return storage;
-    }
-
     public Resource getStoredType() {
         return storedResource;
     }
 
+    /**
+     * Returns the number of resources contained in the StoreLeaderCard
+     */
+    public int getResourceCount() {
+        return storage.getResourceCount();
+    }
 
     public Map<Resource, Integer> getStoredResources() {
         return storage.getStoredResources();
