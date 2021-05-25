@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
+import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
 
@@ -27,8 +28,8 @@ public class DumbModel {
         this.size = size;
         personalBoards = new ArrayList<>();
         market = DumbMarket.getInstance();
-        developmentCardsBoard = new DumbDevelopmentCardsBoard();
-        actionTokenDeck = (size<=1) ? null: new DumbActionTokenDeck();
+        developmentCardsBoard = DumbDevelopmentCardsBoard.getInstance();
+        actionTokenDeck = (size<=1) ? null: DumbActionTokenDeck.getInstance();
     }
 
     public void addPersonalBoard(String nickname, int position){

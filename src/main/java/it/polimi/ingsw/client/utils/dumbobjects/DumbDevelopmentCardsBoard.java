@@ -10,9 +10,16 @@ import java.util.stream.IntStream;
  */
 public class DumbDevelopmentCardsBoard implements Serializable {
     private DumbDevelopmentCard[][] board;
+    private static DumbDevelopmentCardsBoard dumbDevelopmentCardsBoard;
+
+    public static DumbDevelopmentCardsBoard getInstance(){
+        if(dumbDevelopmentCardsBoard!=null)
+            return dumbDevelopmentCardsBoard;
+        return new DumbDevelopmentCardsBoard();
+    }
 
 
-    public DumbDevelopmentCardsBoard() {
+    private DumbDevelopmentCardsBoard() {
         board = new DumbDevelopmentCard[3][4];
     }
 
