@@ -70,7 +70,7 @@ public class AuthenticationState extends ConnectionState {
                     if (connection.getServer().getDormantGames().contains(gameID)){
                         Game game = null;//todo: basta questo per ripristinare il game?
                         try {
-                            game = new Game(gameID, null);
+                            game = new Game(connection.getServer(), gameID, null);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

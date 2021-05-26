@@ -84,7 +84,7 @@ public class Lobby {
 
         Game game = null;
         try {
-            game = new Game(maxGameId, List.copyOf(players.keySet()));
+            game = new Game(players.get(0).getServer(), maxGameId, List.copyOf(players.keySet()));
         } catch (IOException e) {
             e.printStackTrace();
         }
