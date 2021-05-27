@@ -48,7 +48,7 @@ public class LeaderCardsDeckTest {
         @Test
         @DisplayName("The correct cards have been returned")
         void correctCardsDrawnTest() {
-            List<LeaderCard> trailingFourCards = initialDeck.subList(initialDeck.size() - 4, initialDeck.size());
+            List<LeaderCard> trailingFourCards = initialDeck.subList(0, 4);
             assertTrue(trailingFourCards.containsAll(fourCards));
         }
 
@@ -67,7 +67,7 @@ public class LeaderCardsDeckTest {
         @Test
         @DisplayName("Rest of the deck unchanged")
         void restOfDeckUnchanged() {
-            assertEquals(initialDeck.subList(0, initialDeck.size() - 4), finalDeck);
+            assertEquals(initialDeck.subList(4, initialDeck.size()), finalDeck);
         }
     }
 }

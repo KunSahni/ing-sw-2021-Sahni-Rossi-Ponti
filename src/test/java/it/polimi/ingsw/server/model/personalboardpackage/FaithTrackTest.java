@@ -25,7 +25,7 @@ class FaithTrackTest {
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        Game game = new Game(null,1, nicknames);
+        Game game = new Game(null,2, nicknames);
         faithTrack = game.getPlayer("Mario").getPersonalBoard().getFaithTrack();
     }
 

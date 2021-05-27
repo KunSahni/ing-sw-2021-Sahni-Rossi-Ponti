@@ -27,7 +27,7 @@ public class ActionTokenDeck {
     public static List<ActionToken> getFullDeck() {
         ActionToken[] actionTokens = new ActionToken[7];
         try {
-            JsonReader reader = new JsonReader(new FileReader("src/main/resources/ActionTokenFullDeck.json"));
+            JsonReader reader = new JsonReader(new FileReader("src/main/resources/default/game/ActionTokenDeck.json"));
             actionTokens = new Gson().fromJson(reader, ActionToken[].class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

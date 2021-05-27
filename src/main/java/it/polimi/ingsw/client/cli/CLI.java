@@ -9,10 +9,7 @@ import it.polimi.ingsw.server.controller.action.playeraction.PregameLeaderCardsC
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class CLI extends UI {
     private Scanner in;
@@ -61,6 +58,16 @@ public class CLI extends UI {
 
     @Override
     public void renderMarket(DumbMarket market) {
+
+    }
+
+    @Override
+    public void renderGameOutcome(int finalScore) {
+
+    }
+
+    @Override
+    public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
 
     }
 

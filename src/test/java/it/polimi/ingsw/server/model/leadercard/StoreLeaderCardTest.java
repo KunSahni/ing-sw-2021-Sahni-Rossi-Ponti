@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.leadercard;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,12 +36,31 @@ public class StoreLeaderCardTest {
         }};
     }
 
-    @BeforeEach
-    void init() {
-        leaderCard = new StoreLeaderCard(1,
-                new LeaderCardRequirements(null, null),
-                Resource.SHIELD, null);
+    /**
+     * This method returns a LeaderCard with a specified LeaderCardAbility
+     * @param leaderCardAbility the ability that the returned LeaderCard should have
+     * @return a LeaderCard of the specified LeaderCardAbility
+     */
+    private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
+        LeaderCardsDeck leaderCardsDeck = new ChangesHandler(1).readLeaderCardsDeck();
+        leaderCardsDeck.shuffle();
+        Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
+                leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
+        ).findFirst();
+        return leaderCard.orElseGet(() -> {
+            try {
+                return getLeaderCardWithAbility(leaderCardAbility);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
     }
+
+    @BeforeEach
+    void init() throws FileNotFoundException {
+        leaderCard = (StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE);
+    } //todo:i costruttori delle LC non dovrebbero essere privati?
 
     @DisplayName("storeResources tests")
     @ParameterizedTest(name = "Store {0} resource/s")

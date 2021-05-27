@@ -29,11 +29,10 @@ public class ChangesHandlerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        Server server = new Server();
         nicknames = new ArrayList<>();
         nicknames.add("Mario");
         changesHandler = new ChangesHandler(1);
-        game = new Game(server, 1, nicknames);
+        game = new Game(null, 1, nicknames);
     }
 
     @Test

@@ -15,10 +15,7 @@ import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.personalboard.FaithTrack;
 import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -46,6 +43,11 @@ class PersonalBoardTest {
         game = new Game(null,1, nicknames);
         player = game.getPlayer("Mario");
         personalBoard = game.getPlayer("Mario").getPersonalBoard();
+    }
+
+    @AfterEach
+    void tearDown() {
+        changesHandler.publishGameOutcome(game);
     }
 
     @Nested
@@ -433,7 +435,8 @@ class PersonalBoardTest {
      * @return a LeaderCard of the specified LeaderCardAbility
      */
     private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
-        LeaderCardsDeck leaderCardsDeck = changesHandler.readLeaderCardsDeck();
+        LeaderCardsDeck leaderCardsDeck = new ChangesHandler(1).readLeaderCardsDeck();
+        leaderCardsDeck.shuffle();
         Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
                 leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
         ).findFirst();
