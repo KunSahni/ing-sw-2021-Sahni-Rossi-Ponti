@@ -24,13 +24,18 @@ public class Server implements Flow.Subscriber<Integer> {
     private final Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
 
     public Server() throws IOException {
+        this.serverSocket = null;
     }
 
     /**
      * server starts to hear on the port to accept, create and run connections
      */
-    public void start() throws IOException {
-        this.serverSocket = new ServerSocket(port);
+    public void start(){
+        try {
+            this.serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         checkDormantGames();
         while(true){
             try {

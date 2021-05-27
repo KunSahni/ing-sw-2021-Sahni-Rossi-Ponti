@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.Game;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,9 +21,21 @@ public class AssignInkwellActionTest {
     List<String> nickList;
     Server server;
 
+    void deleteDir(File file) {
+        File[] contents = file.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                deleteDir(f);
+            }
+        }
+        file.delete();
+    }
+
     @Test
     @DisplayName("Players positions are set correctly")
     void executeTest(){
+        File file = new File("src/main/resources/games/1");
+        deleteDir(file);
         try {
             server = new Server();
         } catch (IOException e) {

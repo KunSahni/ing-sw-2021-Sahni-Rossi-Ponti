@@ -6,11 +6,11 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class StartGameActionTest {
     StartGameAction startGameAction;
@@ -22,6 +22,7 @@ public class StartGameActionTest {
 
     @BeforeEach
     void init(){
+        deleteDir(new File("src/main/resources/games/1"));
         try {
             server = new Server();
         } catch (IOException e) {
@@ -42,5 +43,15 @@ public class StartGameActionTest {
     void executeTest() {
         startGameAction.execute();
         assertEquals(GameState.IN_GAME, game.getCurrentState());
+    }
+
+    void deleteDir(File file) {
+        File[] contents = file.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                deleteDir(f);
+            }
+        }
+        file.delete();
     }
 }

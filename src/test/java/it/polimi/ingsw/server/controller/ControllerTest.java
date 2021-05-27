@@ -4,12 +4,14 @@ import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,8 +26,18 @@ public class ControllerTest {
     String nick2;
     Server server;
 
-    @BeforeEach
-    void init(){
+    @BeforeAll
+    static void deleteActions(){
+        deleteDir("src/main/resources/games");
+        new File("src/main/resources/games").mkdirs();
+    }
+
+    /**@AfterEach
+    void shutdownServer(){
+        server.shutdown();
+    }*/
+
+    private void init(Integer gameId){
         try {
             server = new Server();
         } catch (IOException e) {
@@ -34,7 +46,6 @@ public class ControllerTest {
         nick1 = "qwe";
         nick2 = "asd";
         nicknameList = List.of(nick1, nick2);
-        gameId = 1;
         try {
             game = new Game(server, gameId, nicknameList);
         } catch (IOException e) {
@@ -48,6 +59,7 @@ public class ControllerTest {
     @Test
     @DisplayName("Player has been connected correctly")
     void connectPlayerTest() {
+        init(1);
         try {
             controller.connectPlayer(nick1, new Connection(new Socket(), new Server()));
         } catch (IOException e) {
@@ -63,6 +75,7 @@ public class ControllerTest {
     @Test
     @DisplayName("Player has been disconnected correctly")
     void disconnectPlayerTest() {
+        init(2);
         try {
             controller.connectPlayer(nick1, new Connection(new Socket(), new Server()));
         } catch (IOException e) {
@@ -73,5 +86,16 @@ public class ControllerTest {
                 //()-> assertFalse(remoteView.getConnectedPlayers.containsKey("qwe")),
                 ()-> assertFalse(game.getPlayer(nick1).isConnected())
         );
+    }
+
+    static void deleteDir(String pathToBeDeleted) {
+        try {
+            Files.walk(Path.of(pathToBeDeleted))
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
