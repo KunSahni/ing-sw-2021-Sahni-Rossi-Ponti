@@ -6,12 +6,17 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +30,12 @@ public class BuyDevelopmentCardActionTest {
     String nick2;
     Map<Resource, Integer> cardCost;
     Server server;
+
+    @BeforeAll
+    static void deleteActions(){
+        deleteDir("src/main/resources/games");
+        new File("src/main/resources/games").mkdirs();
+    }
 
     public void init(Integer gameId){
         try {
@@ -176,6 +187,17 @@ public class BuyDevelopmentCardActionTest {
                     throw new AssertionError("Wrong exception was thrown");
                 }
             }
+        }
+    }
+
+    static void deleteDir(String pathToBeDeleted) {
+        try {
+            Files.walk(Path.of(pathToBeDeleted))
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

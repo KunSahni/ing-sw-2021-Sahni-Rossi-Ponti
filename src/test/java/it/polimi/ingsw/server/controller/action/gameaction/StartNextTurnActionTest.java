@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class StartNextTurnActionTest {
 
     @BeforeEach
     void init(){
+        deleteDir(new File("src/main/resources/games/1"));
         try {
             server = new Server();
         } catch (IOException e) {
@@ -44,5 +46,15 @@ public class StartNextTurnActionTest {
         game.getPlayer(nick1).startTurn();
         startNextTurnAction.execute();
         assertEquals(nick2, game.getCurrentTurnPlayer().getNickname());
+    }
+
+    void deleteDir(File file) {
+        File[] contents = file.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                deleteDir(f);
+            }
+        }
+        file.delete();
     }
 }
