@@ -1,12 +1,11 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.personalboard.FaithTrack;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -15,18 +14,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FaithTrackTest {
     FaithTrack faithTrack;
+    ChangesHandler changesHandler;
+    Game game;
 
     @BeforeEach
     void setUp() throws IOException {
+        changesHandler = new ChangesHandler(1);
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        Game game = new Game(null,2, nicknames);
+        game = new Game(new Server(),2, nicknames);
         faithTrack = game.getPlayer("Mario").getPersonalBoard().getFaithTrack();
+    }
+
+    @AfterEach
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
     }
 
     @ParameterizedTest

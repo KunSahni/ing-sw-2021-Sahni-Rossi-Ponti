@@ -12,6 +12,7 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.ResourceManager;
 import org.junit.jupiter.api.*;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
@@ -32,14 +33,19 @@ public class ChangesHandlerTest {
         nicknames = new ArrayList<>();
         nicknames.add("Mario");
         changesHandler = new ChangesHandler(1);
-        game = new Game(null, 1, nicknames);
+        game = new Game(new Server(), 1, nicknames);
+    }
+
+    @AfterEach
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        changesHandler.flushBufferToDisk();
     }
 
     @Test
     void createGameFilesFromBlueprint() throws IOException {
-        assertFalse(Files.exists(Paths.get("src/main/resources/games/1")), "Error: Directory already exists");
-
         changesHandler.createGameFilesFromBlueprint(nicknames);
+        changesHandler.flushBufferToDisk();
         //LeaderCardsDeck
         File file1 = new File("src/main/resources/default/game/LeaderCardsDeck/ConvertLeaderCards.json");
         File file2 = new File("src/main/resources/games/1/LeaderCardsDeck/ConvertLeaderCards.json");
@@ -114,6 +120,7 @@ public class ChangesHandlerTest {
     @DisplayName("Game state write/read test")
     void gameStateTest() throws FileNotFoundException {
         changesHandler.writeGameState(GameState.DEALT_LEADER_CARDS);
+        changesHandler.flushBufferToDisk();
         assertEquals(GameState.DEALT_LEADER_CARDS, changesHandler.readGameState(), "Error: changes handler did not correctly write/read game state");
     }
 
@@ -121,6 +128,7 @@ public class ChangesHandlerTest {
     @DisplayName("Nicknames write/read test")
     void nicknameListTest() throws FileNotFoundException {
         changesHandler.writeNicknameList(nicknames);
+        changesHandler.flushBufferToDisk();
         List<String> actualNicknames = changesHandler.readNicknameList();
         assertAll(
                 () -> assertEquals(1, actualNicknames.size(), "Error: file contains different amount of nicknames"),
@@ -132,6 +140,7 @@ public class ChangesHandlerTest {
     @DisplayName("Player write/read test")
     void playerTest() throws FileNotFoundException {
         changesHandler.writePlayer(game.getPlayer("Mario"));
+        changesHandler.flushBufferToDisk();
         Player actualPlayer = changesHandler.readPlayer("Mario");
         assertEquals(game.getPlayer("Mario"), actualPlayer, "Error: change handler did not properly write/read player");
     }
@@ -140,6 +149,7 @@ public class ChangesHandlerTest {
     @DisplayName("Market write/read test")
     void marketTest() throws FileNotFoundException {
         changesHandler.writeMarket(game.getMarket());
+        changesHandler.flushBufferToDisk();
         Market actualMarket = changesHandler.readMarket();
         assertEquals(game.getMarket(), actualMarket, "Error: change handler did not properly write/read market");
     }
@@ -148,6 +158,7 @@ public class ChangesHandlerTest {
     @DisplayName("Development cards board write/read test")
     void developmentCardsBoardTest() throws FileNotFoundException {
         changesHandler.writeDevelopmentCardsBoard(game.getDevelopmentCardsBoard());
+        changesHandler.flushBufferToDisk();
         DevelopmentCardsBoard actualDevelopmentCardsBoard = changesHandler.readDevelopmentCardsBoard();
         assertEquals(game.getDevelopmentCardsBoard(), actualDevelopmentCardsBoard, "Error: change handler did not properly write/read development cards board");
     }
@@ -156,6 +167,7 @@ public class ChangesHandlerTest {
     @DisplayName("Leader cards deck write/read test")
     void leaderCardsDeckTest() throws FileNotFoundException {
         changesHandler.writeLeaderCardsDeck(game.getLeaderCardsDeck());
+        changesHandler.flushBufferToDisk();
         LeaderCardsDeck actualLeaderCardsDeck = changesHandler.readLeaderCardsDeck();
         assertEquals(game.getLeaderCardsDeck(), actualLeaderCardsDeck, "Error: change handler did not properly write/read leader cards deck");
     }
@@ -164,6 +176,7 @@ public class ChangesHandlerTest {
     @DisplayName("Action token deck write/read test")
     void actionTokenDeckTest() throws FileNotFoundException {
         changesHandler.writeActionTokenDeck(game.getActionTokenDeck());
+        changesHandler.flushBufferToDisk();
         ActionTokenDeck actualActionTokenDeck = changesHandler.readActionTokenDeck();
         assertEquals(game.getActionTokenDeck(), actualActionTokenDeck, "Error: change handler did not properly write/read action token deck");
     }
@@ -172,6 +185,7 @@ public class ChangesHandlerTest {
     @DisplayName("Player's leader cards write/read test")
     void playerLeaderCardsTest() throws FileNotFoundException {
         changesHandler.writePlayerLeaderCards("Mario", game.getPlayer("Mario").getTempLeaderCards());
+        changesHandler.flushBufferToDisk();
         List<LeaderCard> actualLeaderCards = changesHandler.readPlayerLeaderCards("Mario");
         assertEquals(game.getPlayer("Mario").getTempLeaderCards(), actualLeaderCards, "Error: change handler did not properly write/read player's leader cards");
     }
@@ -180,6 +194,7 @@ public class ChangesHandlerTest {
     @DisplayName("Development card slot write/read test")
     void developmentCardSlotTest() throws FileNotFoundException {
         changesHandler.writeDevelopmentCardSlot("Mario", game.getPlayer("Mario").getPersonalBoard().getDevelopmentCardSlots().get(0));
+        changesHandler.flushBufferToDisk();
         DevelopmentCardSlot actualDevelopmentCardSlot = changesHandler.readDevelopmentCardSlot("Mario", 1);
         assertEquals(game.getPlayer("Mario").getPersonalBoard().getDevelopmentCardSlots().get(0), actualDevelopmentCardSlot, "Error: change handler did not properly write/read player's development cards slot");
     }
@@ -188,6 +203,7 @@ public class ChangesHandlerTest {
     @DisplayName("Warehouse depots write/read test")
     void warehouseDepotsTest() throws FileNotFoundException {
         changesHandler.writeWarehouseDepots("Mario", game.getPlayer("Mario").getPersonalBoard().getWarehouseDepots());
+        changesHandler.flushBufferToDisk();
         ResourceManager actualWarehouseDepots = changesHandler.readWarehouseDepots("Mario");
         assertEquals(game.getPlayer("Mario").getPersonalBoard().getWarehouseDepots(), actualWarehouseDepots, "Error: change handler did not properly write/read player's warehouse depots");
     }
@@ -196,6 +212,7 @@ public class ChangesHandlerTest {
     @DisplayName("Strongbox write/read test")
     void strongboxTest() throws FileNotFoundException {
         changesHandler.writeStrongbox("Mario", game.getPlayer("Mario").getPersonalBoard().getStrongbox());
+        changesHandler.flushBufferToDisk();
         ResourceManager actualStrongbox = changesHandler.readWarehouseDepots("Mario");
         assertEquals(game.getPlayer("Mario").getPersonalBoard().getStrongbox(), actualStrongbox, "Error: change handler did not properly write/read player's strongbox");
     }
@@ -204,6 +221,7 @@ public class ChangesHandlerTest {
     @DisplayName("Faith track write/read test")
     void faithTrackTest() throws FileNotFoundException {
         changesHandler.writeFaithTrack("Mario", game.getPlayer("Mario").getPersonalBoard().getFaithTrack());
+        changesHandler.flushBufferToDisk();
         FaithTrack actualFaithTrack = changesHandler.readFaithTrack("Mario");
         assertEquals(game.getPlayer("Mario").getPersonalBoard().getFaithTrack(), actualFaithTrack, "Error: change handler did not properly write/read player's leader cards");
     }

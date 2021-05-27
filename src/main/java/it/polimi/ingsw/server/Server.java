@@ -17,20 +17,20 @@ import java.util.concurrent.Flow;
 
 public class Server implements Flow.Subscriber<Integer> {
     private static final int port = 8080;
-    private final ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     private final Map<String, Integer> players = new HashMap<>();
     private final Map<Integer, Game> currentGames = new HashMap<>();
     private final List<Integer> dormantGames = new ArrayList<>();
     private final Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
 
     public Server() throws IOException {
-        this.serverSocket = new ServerSocket(port);
     }
 
     /**
      * server starts to hear on the port to accept, create and run connections
      */
-    public void start(){
+    public void start() throws IOException {
+        this.serverSocket = new ServerSocket(port);
         checkDormantGames();
         while(true){
             try {
