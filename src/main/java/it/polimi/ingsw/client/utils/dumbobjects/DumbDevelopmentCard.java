@@ -83,4 +83,13 @@ public class DumbDevelopmentCard implements Serializable {
     public DevelopmentCard convert(){
         return new DevelopmentCard(color, level, victoryPoints, inputResources, outputResources, cost, faithIncrement);
     }
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    public String formatPrintableStringAt(int x, int y) {
+
+    };
 }

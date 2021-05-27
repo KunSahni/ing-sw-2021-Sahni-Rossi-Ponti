@@ -1,7 +1,15 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import it.polimi.ingsw.client.utils.constants.Constants;
+import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.utils.Resource;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This is a dumber version of a regular ConvertLeaderCard,
@@ -23,5 +31,38 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
     @Override
     public ConvertLeaderCard convert() {
         return new ConvertLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), convertedResource);
+    }
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    @Override
+    public String formatPrintableStringAt(int x, int y) {
+        //contains the color of the requirement with a quantity equal to one
+        Color color1 = this.getLeaderCardRequirements().getRequiredDevelopmentCards().entrySet().stream().sorted(
+                Comparator.comparingInt(
+                        obj -> obj.getValue().getQuantity()
+                )
+        ).collect(Collectors.toList()).get(0).getKey();
+
+        //contains the color of the requirement with a quantity equal to two
+        Color color2 = this.getLeaderCardRequirements().getRequiredDevelopmentCards().entrySet().stream().sorted(
+                Comparator.comparingInt(
+                        obj -> obj.getValue().getQuantity()
+                )
+        ).collect(Collectors.toList()).get(1).getKey();
+
+        return    "\033["+ x +";"+ y +"H╔══════════╗"
+                + "\033["+ (x+1) +";"+ y +"H║ 2x " + color2 + Constants.LEVEL + Constants.ANSI_RESET + "     ║"
+                + "\033["+ (x+2) +";"+ y +"H║ 1x " + color1 + Constants.LEVEL + Constants.ANSI_RESET + "     ║"
+                + "\033["+ (x+3) +";"+ y +"H║          ║"
+                + "\033["+ (x+4) +";"+ y +"H║          ║"
+                + "\033["+ (x+5) +";"+ y +"H║          ║"
+                + "\033["+ (x+6) +";"+ y +"H║  " + Constants.WHITE_MARBLE + " -> " + convertedResource.toString() + "  ║"
+                + "\033["+ (x+7) +";"+ y +"H║          ║"
+                + "\033["+ (x+8) +";"+ y +"H║    " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
+                + "\033["+ (x+9) +";"+ y +"H╚══════════╝";
     }
 }
