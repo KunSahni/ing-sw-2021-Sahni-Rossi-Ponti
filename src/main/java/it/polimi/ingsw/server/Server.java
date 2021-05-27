@@ -12,18 +12,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Flow;
 
-public class Server {
+public class Server implements Flow.Subscriber<Integer> {
     private static final int port = 8080;
     private final ServerSocket serverSocket;
-    private Map<String, Integer> players = new HashMap<>();
-    private Map<Integer, Game> currentGames = new HashMap<>();
-    private List<Integer> dormantGames = new ArrayList<>();
-    private Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
+    private final Map<String, Integer> players = new HashMap<>();
+    private final Map<Integer, Game> currentGames = new HashMap<>();
+    private final List<Integer> dormantGames = new ArrayList<>();
+    private final Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
 
     public Server() throws IOException {
         this.serverSocket = new ServerSocket(port);
@@ -111,5 +109,29 @@ public class Server {
 
     public Controller getController(Integer gameID){
         return gameIDControllerMap.get(gameID);
+    }
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+
+    }
+
+    @Override
+    public void onNext(Integer item) {
+        currentGames.remove(item);
+        gameIDControllerMap.remove(item);
+        while (players.containsValue(item)){
+            players.values().removeIf(value -> value.equals(item));
+        }
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

@@ -193,27 +193,6 @@ public class ActivateProductionActionTest {
         }
 
         @Test
-        @DisplayName("A not produce leader card is rejected")
-        void wrongLeaderCardTypeTest() {
-            init(8);
-            ConvertLeaderCard convertLeaderCard = new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.PURPLE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)), Resource.COIN);
-            game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard));
-            game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(convertLeaderCard);
-            productionCombo.setLeaderCardProduction(Map.of(new DumbConvertLeaderCard(convertLeaderCard), Resource.COIN));
-
-            try {
-                activateProductionAction.runChecks();
-                throw new AssertionError("Exception was not thrown");
-            } catch (InvalidActionException e) {
-                if (!e.getMessage().equals("You must supply Produce Type Leader Cards to " +
-                        "activate a production.")){
-                    e.printStackTrace();
-                    throw new AssertionError("Wrong exception was thrown");
-                }
-            }
-        }
-
-        @Test
         @DisplayName("Selected discarded resources from depots and production cost don't match")
         void noMatchBetweenProductionCostAndSelectedDiscardedDepotsTest() {
             init(9);
