@@ -5,10 +5,7 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,16 +17,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
     Player player;
+    Game game;
 
     @BeforeEach
     void init() throws IOException {
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        Game game = new Game(null,1, nicknames);
+        game = new Game(null,3, nicknames);
         player = game.getPlayer("Mario");
     }
 
+    @AfterEach
+    void tearDown() {
+        new ChangesHandler(1).publishGameOutcome(game);
+    }
 
     @Test
     @DisplayName("setPosition method test")

@@ -52,14 +52,14 @@ public class DevelopmentCardsDeckTest {
         @Test
         @DisplayName("Correct card popped")
         void correctCardPoppedTest() {
-            DevelopmentCard expectedCard = initialDeck.get(initialDeck.size() - 1);
+            DevelopmentCard expectedCard = initialDeck.get(0);
             assertEquals(expectedCard, poppedCard);
         }
 
         @Test
         @DisplayName("Rest of the deck remains unchanged")
         void restOfDeckUnchangedTest() {
-            assertEquals(initialDeck.subList(0, initialDeck.size() - 1), finalDeck);
+            assertEquals(initialDeck.subList(1, initialDeck.size()), finalDeck);
         }
     }
 
@@ -95,7 +95,7 @@ public class DevelopmentCardsDeckTest {
         @Test
         @DisplayName("Correct card peeked")
         void correctCardPeekedTest() {
-            DevelopmentCard expectedCard = initialDeck.get(initialDeck.size() - 1);
+            DevelopmentCard expectedCard = initialDeck.get(0);
             assertEquals(expectedCard, peekedCard);
         }
     }

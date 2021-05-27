@@ -2,6 +2,9 @@ package it.polimi.ingsw.server.model.utils;
 
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.developmentcard.Color;
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
+import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.leadercard.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,12 +31,12 @@ public class ProductionComboTest {
     @DisplayName("setDevelopmentCards method test")
     void setDevelopmentCardsTest() throws FileNotFoundException {
         ChangesHandler changesHandler = new ChangesHandler(1);
-        DevelopmentCardSlot developmentCardSlot1 = changesHandler.readDevelopmentCardSlot("Mario", 1);
-        DevelopmentCardSlot developmentCardSlot2 = changesHandler.readDevelopmentCardSlot("Mario", 2);
+        DevelopmentCard developmentCard1 = changesHandler.readDevelopmentCardsBoard().peekCard(Level.LEVEL1, Color.GREEN);
+        DevelopmentCard developmentCard2 = changesHandler.readDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.BLUE);
         List<DumbDevelopmentCard> developmentCardSlots = new ArrayList<>();
 
-        developmentCardSlots.add(new DumbDevelopmentCard(developmentCardSlot1.peek()));
-        developmentCardSlots.add(new DumbDevelopmentCard(developmentCardSlot2.peek()));
+        developmentCardSlots.add(new DumbDevelopmentCard(developmentCard1));
+        developmentCardSlots.add(new DumbDevelopmentCard(developmentCard2));
         productionCombo.setDevelopmentCards(developmentCardSlots);
         assertEquals(productionCombo.getDevelopmentCards(), developmentCardSlots);
     }

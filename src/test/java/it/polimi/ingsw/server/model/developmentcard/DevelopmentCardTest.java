@@ -33,6 +33,7 @@ public class DevelopmentCardTest {
         void getOutputResourcesSafetyTest() {
             assertNotSame(card.getOutputResources(), card.getOutputResources());
         }
+        //todo: outputResources in DevelopmentCard non viene settato, tutto il resto si
 
         @Test
         @DisplayName("getCost safety test")

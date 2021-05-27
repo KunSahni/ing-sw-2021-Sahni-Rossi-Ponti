@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.utils.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -82,4 +83,13 @@ public class DevelopmentCard implements VictoryPointsElement {
     public ProductionOutput produce() {
         return new ProductionOutput(faithIncrement, outputResources);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DevelopmentCard that = (DevelopmentCard) o;
+        return victoryPoints == that.victoryPoints && faithIncrement == that.faithIncrement && color == that.color && level == that.level && inputResources.equals(that.inputResources) && outputResources.equals(that.outputResources) && cost.equals(that.cost);
+    }
+
 }

@@ -8,7 +8,6 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.utils.GameState;
 import org.junit.jupiter.api.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,13 +23,16 @@ public class GameTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        Server server = new Server();
         nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        game = new Game(server, 1, nicknames);
+        game = new Game(null, 1, nicknames);
     }
 
+    @AfterEach
+    void tearDown() {
+        new ChangesHandler(1).publishGameOutcome(game);
+    }
 
     @Test
     @DisplayName("size method test")

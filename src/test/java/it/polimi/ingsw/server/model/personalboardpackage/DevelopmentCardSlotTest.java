@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,8 @@ class DevelopmentCardSlotTest {
     @Test
     @DisplayName("Test placeDevelopmentCards")
     void placeAndGetDevelopmentCardsTest() {
-        assertEquals(developmentCards, developmentCardSlot.getDevelopmentCards(), "Error: was expecting " + developmentCards + ", but received " + developmentCardSlot.getDevelopmentCards());
+        Collections.reverse(developmentCards);
+        assertEquals(developmentCards, developmentCardSlot.getDevelopmentCards(), "Error: slot doesn't contains the same cards");
     }
 
     @Test

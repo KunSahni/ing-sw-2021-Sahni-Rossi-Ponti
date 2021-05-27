@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.model.leadercard;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,16 +9,38 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProduceLeaderCardTest {
     ProduceLeaderCard testCard;
 
+    /**
+     * This method returns a LeaderCard with a specified LeaderCardAbility
+     * @param leaderCardAbility the ability that the returned LeaderCard should have
+     * @return a LeaderCard of the specified LeaderCardAbility
+     */
+    private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
+        LeaderCardsDeck leaderCardsDeck = new ChangesHandler(1).readLeaderCardsDeck();
+        leaderCardsDeck.shuffle();
+        Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
+                leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
+        ).findFirst();
+        return leaderCard.orElseGet(() -> {
+            try {
+                return getLeaderCardWithAbility(leaderCardAbility);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
+
     @BeforeEach
-    void init() {
-        testCard = new ProduceLeaderCard(1,
-                new LeaderCardRequirements(null, null),
-                Resource.COIN, 1);
+    void init() throws FileNotFoundException {
+        testCard = (ProduceLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.PRODUCE);
     }
 
     /**
@@ -56,21 +79,6 @@ public class ProduceLeaderCardTest {
         void getAbilityMethodTest() {
             assertEquals(LeaderCardAbility.PRODUCE, testCard.getAbility());
         }
-    }
-
-    @Test
-    @DisplayName("equals method test")
-    void equalsTest(){
-        ProduceLeaderCard leaderCard2 = new ProduceLeaderCard(1,
-                new LeaderCardRequirements(null, null),
-                Resource.COIN, 1);
-        assertEquals(testCard, leaderCard2, "Error: equals method returned false on two identical objects");
-    }
-
-    @Test
-    @DisplayName("getInputResource method test")
-    void getInputResourceTest(){
-        assertEquals(testCard.getInputResource(), Resource.COIN, "Error: leader card contains a different input resource than the one passed in the constructor");
     }
 
     @Test

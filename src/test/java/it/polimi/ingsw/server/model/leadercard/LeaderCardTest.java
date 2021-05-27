@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.leadercard;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +62,7 @@ public class LeaderCardTest {
     @Test
     @DisplayName("convertToDumb method test")
     void convertToDumbTest(){
-        DumbStoreLeaderCard dumbStoreLeaderCard = (DumbStoreLeaderCard) leaderCard.convertToDumb();
+        DumbConvertLeaderCard dumbStoreLeaderCard = (DumbConvertLeaderCard) leaderCard.convertToDumb();
         assertAll(
                 ()-> assertEquals(leaderCard.getAbility(), dumbStoreLeaderCard.getAbility(),"Error: dumb leader card has a different ability than the real leader card"),
                 ()-> assertEquals(leaderCard.getVictoryPoints(), dumbStoreLeaderCard.getVictoryPoints(),"Error: dumb leader card has different victory points than the real leader card"),
