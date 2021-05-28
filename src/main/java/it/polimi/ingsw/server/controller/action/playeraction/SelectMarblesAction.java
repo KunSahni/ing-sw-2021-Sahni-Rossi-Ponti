@@ -53,6 +53,7 @@ public class SelectMarblesAction extends PlayerAction {
     private boolean tempMarblesContainSelectedMarbles() {
         // Convert tempMarbles map to a list of marbles
         Map<MarketMarble, Integer> playerTempMarbles = player.getTempMarbles();
+        // todo: why are RED marbles getting removed? they should not be stored there in the first place
         playerTempMarbles.remove(MarketMarble.RED);
         List<MarketMarble> tempMarblesList = new ArrayList<>();
         playerTempMarbles.forEach((k, v) -> {
@@ -100,7 +101,7 @@ public class SelectMarblesAction extends PlayerAction {
                 }
             }
         });
-        return tempMarblesList.size() == 0;
+        return selectedMarblesList.size() == 0;
     }
 
     /**
@@ -110,15 +111,15 @@ public class SelectMarblesAction extends PlayerAction {
      */
     private void moveOtherMarkers(int steps) {
         // Move all other markers
-        Stream<Player> otherPlayersStream =
-                game.getPlayerList().stream().filter(npc -> npc != player);
-        otherPlayersStream.forEach(
+        List<Player> otherPlayersList =
+                game.getPlayerList().stream().filter(npc -> npc != player).collect(Collectors.toList());
+        otherPlayersList.forEach(
                 npc -> IntStream.range(0, steps).forEach(
                        $ -> npc.getPersonalBoard().getFaithTrack().moveMarker()
                 )
 
         );
-        otherPlayersStream.forEach(
+        otherPlayersList.forEach(
                 npc -> {
                     int faithPos = npc.getPersonalBoard().getFaithTrack().getFaithMarkerPosition();
                     if (npc.getPersonalBoard().getFaithTrack().checkVaticanReport(faithPos / 8 * 8))
