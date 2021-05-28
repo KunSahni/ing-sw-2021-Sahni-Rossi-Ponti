@@ -26,7 +26,7 @@ public class PlayerTest {
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        game = new Game(new Server(),3, nicknames);
+        game = new Game(new Server(),1, nicknames);
         player = game.getPlayer("Mario");
     }
 
@@ -83,12 +83,14 @@ public class PlayerTest {
         @Test
         @DisplayName("connect method test")
         void connect() {
+            player.connect();
             assertTrue(player.isConnected(), "Error: method returned false even though player is connected");
         }
 
         @Test
         @DisplayName("disconnect method test")
         void disconnectTest(){
+            player.disconnect();
             assertFalse(player.isConnected(), "Error: method returned true even though player is disconnected");
         }
     }
@@ -130,6 +132,7 @@ public class PlayerTest {
 
         @BeforeEach
         void setUp(){
+            executedActions = new ArrayList<>();
             executedActions.add(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
             executedActions.add(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
             player.addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
@@ -176,7 +179,10 @@ public class PlayerTest {
     @DisplayName("compareTo method test")
     void compareToTest() throws IOException {
         Player player2 = game.getPlayer("Luigi");
+        player.setPosition(0);
+        player2.setPosition(1);
 
+        //todo: implement better assertions
         assertAll(
                 () -> assertEquals(0, player.compareTo(player), "Error: compareTo returned value different than 0 on same object"),
                 () -> assertNotEquals(0, player.compareTo(player2), "Error: compareTo returned 0 on different objects")

@@ -1,22 +1,30 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DevelopmentCardTest {
     DevelopmentCard card;
+    Game game;
 
     @BeforeEach
-    void init() throws FileNotFoundException {
-        card = new ChangesHandler(1).readDevelopmentCardsBoard().peekBoard()[2][1].peek();
+    void init() throws IOException {
+        game = new Game(new Server(), 1, new ArrayList<>());
+        card = game.getDevelopmentCardsBoard().peekBoard()[2][1].peek();
+    }
+
+    @AfterEach
+    void tearDown() {
+        new ChangesHandler(1).publishGameOutcome(game);
     }
 
     @Nested

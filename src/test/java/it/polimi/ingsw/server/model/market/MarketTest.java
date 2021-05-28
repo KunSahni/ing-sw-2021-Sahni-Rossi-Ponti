@@ -1,8 +1,11 @@
 package it.polimi.ingsw.server.model.market;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.Game;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class MarketTest {
     private Market market;
+    Game game;
 
     /**
      * Returns a List of all MarketMarbles from the market.
@@ -30,8 +34,14 @@ public class MarketTest {
     }
 
     @BeforeEach
-    void init() throws FileNotFoundException {
-        market = new ChangesHandler(1).readMarket();
+    void init() throws IOException {
+        game = new Game(new Server(), 1, new ArrayList<>());
+        market = game.getMarket();
+    }
+
+    @AfterEach
+    void tearDown() {
+        new ChangesHandler(1).publishGameOutcome(game);
     }
 
     @Nested

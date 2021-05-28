@@ -4,7 +4,9 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.Game;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -16,12 +18,18 @@ import java.util.*;
 public class DevelopmentCardsBoardTest {
     DevelopmentCardsBoard board;
     ChangesHandler changesHandler;
+    Game game;
 
     @BeforeEach
     void init() throws IOException {
         changesHandler = new ChangesHandler(1);
-        changesHandler.createGameFilesFromBlueprint(new ArrayList<>());
-        board = changesHandler.readDevelopmentCardsBoard();
+        game = new Game(new Server(), 1, new ArrayList<>());
+        board = game.getDevelopmentCardsBoard();
+    }
+
+    @AfterEach
+    void tearDown() {
+        changesHandler.publishGameOutcome(game);
     }
 
     /**

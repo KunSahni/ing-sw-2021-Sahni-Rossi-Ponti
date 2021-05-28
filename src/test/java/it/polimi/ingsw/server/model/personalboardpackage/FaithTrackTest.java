@@ -28,7 +28,7 @@ class FaithTrackTest {
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        game = new Game(new Server(),2, nicknames);
+        game = new Game(new Server(),1, nicknames);
         faithTrack = game.getPlayer("Mario").getPersonalBoard().getFaithTrack();
     }
 
@@ -52,8 +52,12 @@ class FaithTrackTest {
     @ValueSource(ints = {1, 8, 16, 24})
     @DisplayName("Test getVictoryPoints")
     void getVictoryPointsTest(int steps) {
-        IntStream.range(0, steps).forEach(
-                $ -> faithTrack.moveMarker()
+        IntStream.range(1, steps+1).forEach(
+                i -> {
+                    faithTrack.moveMarker();
+                    if(i%8==0)
+                        faithTrack.flipPopesFavor(i/8);
+                }
         );
         int actualVictoryPoints = faithTrack.getVictoryPoints();
         int expectedVictoryPoints = switch (steps) {
@@ -81,11 +85,15 @@ class FaithTrackTest {
     @ValueSource(ints = {8, 16, 24})
     @DisplayName("checkVaticanReport method test")
     void checkVaticanReportTest(int position){
-        assertFalse(faithTrack.checkVaticanReport(position), "Error: vatican report results true even though no vatican reports were started so far");
-        IntStream.range(0, position).forEach(
-                $-> faithTrack.moveMarker()
+        assertTrue(faithTrack.checkVaticanReport(position), "Error: vatican report results true even though no vatican reports were started so far");
+        IntStream.range(1, position+1).forEach(
+                i -> {
+                    faithTrack.moveMarker();
+                    if(i%8==0)
+                        faithTrack.flipPopesFavor(i/8);
+                }
         );
-        assertTrue(faithTrack.checkVaticanReport(position), "Error: vatican report results false even though is currently on an inactive vatican report cell");
+        assertFalse(faithTrack.checkVaticanReport(position), "Error: vatican report results false even though is currently on an inactive vatican report cell");
     }
 
     @Nested
