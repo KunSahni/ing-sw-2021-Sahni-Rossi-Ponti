@@ -3,24 +3,24 @@ package it.polimi.ingsw.server.controller.action.gameaction;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.model.Player;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DealLeaderCardsActionTest {
     DealLeaderCardsAction dealLeaderCardsAction;
     Game game;
     String nick1;
     String nick2;
+    String nick3;
+    String nick4;
     List<String> nicknameList;
     Server server;
     ChangesHandler changesHandler;
@@ -30,7 +30,9 @@ public class DealLeaderCardsActionTest {
         changesHandler = new ChangesHandler(1);
         nick1 = "qwe";
         nick2 = "asd";
-        nicknameList = List.of(nick1, nick2);
+        nick3 = "zxc";
+        nick4 = "poi";
+        nicknameList = List.of(nick1, nick2, nick3, nick4);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -50,8 +52,26 @@ public class DealLeaderCardsActionTest {
         dealLeaderCardsAction.execute();
         assertAll(
                 ()-> assertEquals(4, game.getPlayer(nick1).getTempLeaderCards().size()),
-                ()-> assertEquals(4, game.getPlayer(nick2).getTempLeaderCards().size())
+                ()-> assertEquals(4, game.getPlayer(nick2).getTempLeaderCards().size()),
+                ()-> assertEquals(4, game.getPlayer(nick3).getTempLeaderCards().size()),
+                ()-> assertEquals(4, game.getPlayer(nick4).getTempLeaderCards().size())
         );
+    }
+
+    @Test
+    @DisplayName("All assigned leader cards are different")
+    void differentCardsTest(){
+        List <LeaderCard> leaderCards = new ArrayList<>();
+        for (Player player: game.getPlayerList()) {
+            for (LeaderCard leaderCard: player.getTempLeaderCards()) {
+                if (leaderCards.contains(leaderCard)){
+                    fail();
+                }
+                else{
+                    leaderCards.add(leaderCard);
+                }
+            }
+        }
     }
 
     @AfterEach

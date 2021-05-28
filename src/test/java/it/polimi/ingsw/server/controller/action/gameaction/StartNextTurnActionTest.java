@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class StartNextTurnActionTest {
     Game game;
     String nick1;
     String nick2;
+    String nick3;
     List<String> nicknameList;
     Server server;
     ChangesHandler changesHandler;
@@ -32,7 +34,11 @@ public class StartNextTurnActionTest {
         }
         nick1 = "qwe";
         nick2 = "asd";
-        nicknameList = List.of(nick1, nick2);
+        nick3 = "zxc";
+        nicknameList = List.of(nick1, nick2, nick3);
+        game.getPlayer(nick1).setPosition(1);
+        game.getPlayer(nick2).setPosition(2);
+        game.getPlayer(nick3).setPosition(3);
         try {
             game = new Game(server, 1, nicknameList);
         } catch (IOException e) {
@@ -42,12 +48,13 @@ public class StartNextTurnActionTest {
     }
 
     @Test
+    @DisplayName("Action has been executed correctly")
     void executeTest() {
         game.connect(nick1);
-        game.connect(nick2);
+        game.connect(nick3);
         game.getPlayer(nick1).startTurn();
         startNextTurnAction.execute();
-        assertEquals(nick2, game.getCurrentTurnPlayer().getNickname());
+        assertEquals(nick3, game.getCurrentTurnPlayer().getNickname());
     }
 
     @AfterEach

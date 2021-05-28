@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.GameState;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -43,10 +44,11 @@ public class StartGameActionTest {
     }
 
     @Test
+    @DisplayName("Game state is set to IN_GAME")
     void executeTest() {
         startGameAction.execute();
         assertEquals(GameState.IN_GAME, game.getCurrentState());
-    }
+    } // todo: players shouldn't be shuffle
 
     @AfterEach
     void tearDown() throws InterruptedException {
