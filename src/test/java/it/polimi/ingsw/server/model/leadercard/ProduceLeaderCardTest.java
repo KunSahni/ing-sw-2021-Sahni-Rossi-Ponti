@@ -1,21 +1,23 @@
 package it.polimi.ingsw.server.model.leadercard;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProduceLeaderCardTest {
     ProduceLeaderCard testCard;
+    Game game;
 
     /**
      * This method returns a LeaderCard with a specified LeaderCardAbility
@@ -23,7 +25,7 @@ public class ProduceLeaderCardTest {
      * @return a LeaderCard of the specified LeaderCardAbility
      */
     private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
-        LeaderCardsDeck leaderCardsDeck = new ChangesHandler(1).readLeaderCardsDeck();
+        LeaderCardsDeck leaderCardsDeck = game.getLeaderCardsDeck();
         leaderCardsDeck.shuffle();
         Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
                 leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
@@ -39,8 +41,14 @@ public class ProduceLeaderCardTest {
     }
 
     @BeforeEach
-    void init() throws FileNotFoundException {
+    void init() throws IOException {
+        game = new Game(new Server(), 1, new ArrayList<>());
         testCard = (ProduceLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.PRODUCE);
+    } //todo:i costruttori delle LC non dovrebbero essere privati?
+
+    @AfterEach
+    void tearDown() {
+        new ChangesHandler(1).publishGameOutcome(game);
     }
 
     /**

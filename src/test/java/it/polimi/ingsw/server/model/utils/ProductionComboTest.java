@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +30,9 @@ public class ProductionComboTest {
 
     @Test
     @DisplayName("setDevelopmentCards method test")
-    void setDevelopmentCardsTest() throws FileNotFoundException {
+    void setDevelopmentCardsTest() throws IOException {
         ChangesHandler changesHandler = new ChangesHandler(1);
+        changesHandler.createGameFilesFromBlueprint(new ArrayList<>());
         DevelopmentCard developmentCard1 = changesHandler.readDevelopmentCardsBoard().peekCard(Level.LEVEL1, Color.GREEN);
         DevelopmentCard developmentCard2 = changesHandler.readDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.BLUE);
         List<DumbDevelopmentCard> developmentCardSlots = new ArrayList<>();

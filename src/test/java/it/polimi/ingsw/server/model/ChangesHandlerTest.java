@@ -39,7 +39,6 @@ public class ChangesHandlerTest {
     @AfterEach
     void tearDown() throws InterruptedException {
         changesHandler.publishGameOutcome(game);
-        changesHandler.flushBufferToDisk();
     }
 
     @Test
@@ -107,13 +106,6 @@ public class ChangesHandlerTest {
                 () -> assertArrayEquals(Files.readAllBytes(file33.toPath()), Files.readAllBytes(file34.toPath()), "Error: files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file35.toPath()), Files.readAllBytes(file36.toPath()), "Error: files are not identical")
         );
-    }
-
-    @Test
-    @DisplayName("publishGameOutcome method test")
-    void publishGameOutcomeTest() throws IOException {
-        changesHandler.publishGameOutcome(new Game(null,1, nicknames));
-        assertFalse(Files.exists(Paths.get("src/main/resources/games/1")), "Error: changes handler did not properly remove directory");
     }
 
     @Test

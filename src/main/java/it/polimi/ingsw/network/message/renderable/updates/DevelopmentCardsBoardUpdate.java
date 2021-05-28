@@ -22,7 +22,7 @@ public class DevelopmentCardsBoardUpdate extends BroadcastRenderable {
         this.updatedDevelopmentCardsBoard = new DumbDevelopmentCard[3][4];
         IntStream.range(0,3).forEach(
                 i->IntStream.range(0,4).forEach(
-                        j-> this.updatedDevelopmentCardsBoard[i][j] = new DumbDevelopmentCard(updatedDevelopmentCardsBoard.peekBoard()[i][j].peek())
+                        j-> this.updatedDevelopmentCardsBoard[i][j] = updatedDevelopmentCardsBoard.peekBoard()[i][j].peek()==null? null : new DumbDevelopmentCard(updatedDevelopmentCardsBoard.peekBoard()[i][j].peek())
                 )
         );
     }

@@ -57,6 +57,7 @@ class PersonalBoardTest {
 
         @BeforeEach
         void setUp() {
+            player.setTempLeaderCards(game.getLeaderCardsDeck().popFour());
             leaderCards = player.getTempLeaderCards();
             leaderCards.remove(3);
             leaderCards.remove(2);
@@ -87,6 +88,8 @@ class PersonalBoardTest {
             assertEquals(leaderCards, actualLeaderCards, "Error: was expecting " + leaderCards + ", but received " + actualLeaderCards);
         }
 
+
+        //todo: double check test
         @ParameterizedTest
         @EnumSource(LeaderCardAbility.class)
         @DisplayName("Test containsLeaderCardRequirements when the PersonalBoard does contain such requirements")
@@ -125,7 +128,7 @@ class PersonalBoardTest {
                 //STORE and CONVERT LeaderCards have similar requirements, so this places all the required DevelopmentCards on the on the personalBoard
                 default -> leaderCard.getLeaderCardRequirements()
                         .getRequiredDevelopmentCards()
-                        .forEach((key, value) -> IntStream.range(0, value.getQuantity())
+                        .forEach((key, value) -> IntStream.range(1, value.getQuantity()+1)
                                 .forEach(
                                         i -> personalBoard.placeDevelopmentCard(
                                                 developmentCardsBoard.pick(
@@ -170,9 +173,9 @@ class PersonalBoardTest {
             developmentCardSlots.get(2).placeCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW));
 
             //Adds the DevelopmentCards to the personalBoard
-            IntStream.range(0, 3)
+            IntStream.range(1, 4)
                     .forEach(
-                            position -> developmentCardSlots.get(position).getDevelopmentCards()
+                            position -> developmentCardSlots.get(position-1).getDevelopmentCards()
                                             .stream()
                                             .sorted(Comparator.comparing(DevelopmentCard::getLevel))
                                             .forEach(
@@ -399,7 +402,7 @@ class PersonalBoardTest {
         developmentCardSlots.get(1).placeCard(developmentCardsBoard.pick(Level.LEVEL3, Color.PURPLE));
         developmentCardSlots.add(changesHandler.readDevelopmentCardSlot("Mario", 3));
         developmentCardSlots.get(2).placeCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW));
-        IntStream.range(0, 2)
+        IntStream.range(1, 4)
                 .forEach(
                         position -> developmentCardSlots.forEach(
                                 developmentCardSlot -> developmentCardSlot.getDevelopmentCards()

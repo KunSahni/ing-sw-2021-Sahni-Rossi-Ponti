@@ -1,6 +1,8 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.Game;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,17 +14,18 @@ import java.util.List;
 
 public class DevelopmentCardsDeckTest {
     DevelopmentCardsDeck deck;
+    Game game;
 
     @BeforeEach
     void init() throws IOException {
         ChangesHandler changesHandler = new ChangesHandler(1);
-        changesHandler.createGameFilesFromBlueprint(new ArrayList<>());
+        game = new Game(new Server(),1, new ArrayList<>());
         deck = changesHandler.readDevelopmentCardsBoard().peekBoard()[2][1];
     }
 
     @AfterEach
     void tearDown() {
-        new ChangesHandler(1).publishGameOutcome(null);
+        new ChangesHandler(1).publishGameOutcome(game);
     }
 
     /**
