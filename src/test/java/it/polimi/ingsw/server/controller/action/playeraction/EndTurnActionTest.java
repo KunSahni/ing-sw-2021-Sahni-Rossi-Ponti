@@ -8,10 +8,7 @@ import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +29,7 @@ public class EndTurnActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -63,7 +60,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("A player has reached the end of the faithTrack and Last Round has been triggered")
         void playerReachedEndOfFaithTrackTest() {
-            init(1);
+            init(36);
             for (int i=0; i<=23; i++) {
                 game.getPlayer(nick1).getPersonalBoard().getFaithTrack().moveMarker(); //todo: a player can move aside from faithTrack 24 position
             }
@@ -74,7 +71,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("A player has bought 7 development cards so last round has been triggered")
         void playerBought7DevelopmentCardsTest() {
-            init(2);
+            init(37);
             game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.COIN, 1), Map.of(Resource.COIN, 1), Map.of(Resource.COIN, 1), 1), 1);
             game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(new DevelopmentCard(Color.GREEN, Level.LEVEL2, 1, Map.of(Resource.COIN, 1), Map.of(Resource.COIN, 1), Map.of(Resource.COIN, 1), 1), 1);
             game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(new DevelopmentCard(Color.GREEN, Level.LEVEL3, 1, Map.of(Resource.COIN, 1), Map.of(Resource.COIN, 1), Map.of(Resource.COIN, 1), 1), 1);
@@ -95,7 +92,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(3);
+            init(38);
             try {
                 endTurnAction.runChecks();
             } catch (InvalidActionException e) {
@@ -107,7 +104,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
         void wrongTurnTest(){
-            init(4);
+            init(39);
             game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try {
@@ -124,7 +121,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            init(5);
+            init(40);
             game.getPlayer(nick1).addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
 
             try {
@@ -139,14 +136,19 @@ public class EndTurnActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

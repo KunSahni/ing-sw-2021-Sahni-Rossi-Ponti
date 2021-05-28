@@ -5,10 +5,7 @@ import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +26,7 @@ public class PregameResourceChoiceActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -61,7 +58,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("All resources have been stored correctly")
         void rightResourcesStorageTest() {
-            init(1);
+            init(47);
             pregameResourceChoiceAction.execute();
             assertTrue(game.getPlayer(nick1).getPersonalBoard().depotsCanContain(Map.of(Resource.COIN, 1)));
         }
@@ -69,7 +66,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("All players have received their resources and game state is changed")
         void setNewStateTest() {
-            init(2);
+            init(48);
             pregameResourceChoiceAction.execute();
             assertEquals(GameState.PICKED_RESOURCES, game.getCurrentState());
         }
@@ -77,7 +74,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Not all players have still received their resources, so the game doesn't start")
         void name() {
-            init(3);
+            init(49);
             game.getPlayer(nick2).setPosition(3);
             assertNull(pregameResourceChoiceAction.execute());
         }
@@ -90,7 +87,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(4);
+            init(50);
             try {
                 pregameResourceChoiceAction.runChecks();
             } catch (InvalidActionException e) {
@@ -102,7 +99,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTimeTest() {
-            init(5);
+            init(51);
             game.setState(GameState.IN_GAME);
             try {
                 pregameResourceChoiceAction.runChecks();
@@ -118,7 +115,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Resources are not given because player already have some resources")
         void alreadyPresentResourcesTest() {
-            init(6);
+            init(52);
             game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(Map.of(Resource.STONE, 1));
 
             try {
@@ -135,7 +132,7 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Only players that have the right obtain resources")
         void resourcesGivenToRightPlayersTest() {
-            init(7);
+            init(53);
             game.getPlayer(nick1).setPosition(1);
 
             try {
@@ -150,14 +147,18 @@ public class PregameResourceChoiceActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

@@ -20,7 +20,6 @@ public class ControllerTest {
     Controller controller;
     Game game;
     List<String> nicknameList;
-    Integer gameId;
     RemoteView remoteView;
     String nick1;
     String nick2;
@@ -28,14 +27,9 @@ public class ControllerTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
-
-    /**@AfterEach
-    void shutdownServer(){
-        server.shutdown();
-    }*/
 
     private void init(Integer gameId){
         try {
@@ -59,7 +53,7 @@ public class ControllerTest {
     @Test
     @DisplayName("Player has been connected correctly")
     void connectPlayerTest() {
-        init(1);
+        init(62);
         try {
             controller.connectPlayer(nick1, new Connection(new Socket(), new Server()));
         } catch (IOException e) {
@@ -75,7 +69,7 @@ public class ControllerTest {
     @Test
     @DisplayName("Player has been disconnected correctly")
     void disconnectPlayerTest() {
-        init(2);
+        init(63);
         try {
             controller.connectPlayer(nick1, new Connection(new Socket(), new Server()));
         } catch (IOException e) {
@@ -86,16 +80,22 @@ public class ControllerTest {
                 //()-> assertFalse(remoteView.getConnectedPlayers.containsKey("qwe")),
                 ()-> assertFalse(game.getPlayer(nick1).isConnected())
         );
+        deleteDir();
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

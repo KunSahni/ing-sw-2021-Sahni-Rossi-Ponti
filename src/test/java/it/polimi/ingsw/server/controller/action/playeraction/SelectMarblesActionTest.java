@@ -5,10 +5,7 @@ import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +26,7 @@ public class SelectMarblesActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -61,14 +58,14 @@ public class SelectMarblesActionTest {
         @Test
         @DisplayName("Resources have been added correctly")
         void marblesAddedTest() {
-            init(1);
+            init(54);
             selectMarblesAction.execute();
             assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.SHIELD, 1)));
         }
 
         @Test
         void otherMarkersMovedTest() {
-            init(2);
+            init(55);
             assertEquals(1, game.getPlayer(nick2).getPersonalBoard().getFaithTrack().getFaithMarkerPosition());
         }
     }
@@ -80,7 +77,7 @@ public class SelectMarblesActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(3);
+            init(56);
             try {
                 selectMarblesAction.runChecks();
             } catch (InvalidActionException e) {
@@ -91,14 +88,19 @@ public class SelectMarblesActionTest {
         //todo: control for marbles don't exceed tempMarbles doesn't work
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

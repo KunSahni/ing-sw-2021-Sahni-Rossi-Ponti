@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,7 +27,7 @@ public class DealLeaderCardsActionTest {
 
     @BeforeEach
     void init(){
-        deleteDir(new File("src/main/resources/games/1"));
+        deleteDir();
         nick1 = "qwe";
         nick2 = "asd";
         nicknameList = List.of(nick1, nick2);
@@ -34,7 +37,7 @@ public class DealLeaderCardsActionTest {
             e.printStackTrace();
         }
         try {
-            game = new Game(server, 1, nicknameList);
+            game = new Game(server, 3, nicknameList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,13 +54,14 @@ public class DealLeaderCardsActionTest {
         );
     }
 
-    void deleteDir(File file) {
-        File[] contents = file.listFiles();
-        if (contents != null) {
-            for (File f : contents) {
-                deleteDir(f);
-            }
+    static void deleteDir() {
+        try {
+            Files.walk(Path.of("src/main/resources/games"))
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        file.delete();
     }
 }
