@@ -9,10 +9,7 @@ import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +33,7 @@ public class DiscardLeaderCardActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -67,7 +64,7 @@ public class DiscardLeaderCardActionTest {
     @Test
     @DisplayName("Selected Leader Card is discarded correctly and the faith marker has been moved correctly")
     void executeTest() {
-        init(1);
+        init(30);
         discardLeaderCardAction.execute();
         assertEquals(faithMarkerPosition+1, game.getPlayer(nick1).getPersonalBoard().getFaithTrack().getFaithMarkerPosition());
     }
@@ -79,7 +76,7 @@ public class DiscardLeaderCardActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(2);
+            init(31);
             try {
                 discardLeaderCardAction.runChecks();
             } catch (InvalidActionException e) {
@@ -91,7 +88,7 @@ public class DiscardLeaderCardActionTest {
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
         void wrongTurnTest(){
-            init(3);
+            init(32);
             game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try {
@@ -108,7 +105,7 @@ public class DiscardLeaderCardActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            init(4);
+            init(33);
             game.getPlayer(nick1).addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
             try {
                 discardLeaderCardAction.runChecks();
@@ -123,7 +120,7 @@ public class DiscardLeaderCardActionTest {
 
         @Test
         void notOwnedLeaderCardTest() {
-            init(5);
+            init(34);
             game.getPlayer(nick1).getPersonalBoard().discardLeaderCard(convertLeaderCard);
 
             try {
@@ -139,7 +136,7 @@ public class DiscardLeaderCardActionTest {
 
         @Test
         void discardAnActiveLeaderCardTest() {
-            init(6);
+            init(35);
             game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(convertLeaderCard);
 
             try {
@@ -154,14 +151,19 @@ public class DiscardLeaderCardActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

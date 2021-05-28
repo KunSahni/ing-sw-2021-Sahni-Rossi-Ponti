@@ -9,10 +9,7 @@ import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +32,7 @@ public class ActivateLeaderCardActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -64,7 +61,7 @@ public class ActivateLeaderCardActionTest {
     @Test
     @DisplayName("Leader card has been activated")
     void executeTest() {
-        init(1);
+        init(6);
         activateLeaderCardAction.execute();
         assertAll(
                 ()-> assertEquals(leaderCard, game.getPlayer(nick1).getPersonalBoard().getLeaderCards().get(0)),
@@ -78,7 +75,7 @@ public class ActivateLeaderCardActionTest {
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
         void wrongTurnTest() throws Exception{
-            init(2);
+            init(7);
             game.getPlayer(nick2).startTurn();
             try{
                 activateLeaderCardAction.runChecks();
@@ -90,7 +87,7 @@ public class ActivateLeaderCardActionTest {
         @Test
         @DisplayName("A not owned leader card hasn't been activated")
         void invalidLeaderCardTest() {
-            init(3);
+            init(8);
             game.getPlayer(nick1).startTurn();
 
             DumbConvertLeaderCard dumbLeaderCard1 = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 0)), Map.of(Resource.STONE, 0)), Resource.COIN));
@@ -109,7 +106,7 @@ public class ActivateLeaderCardActionTest {
         @Test
         @DisplayName("Player hasn't enough resources and can't afford leader card")
         void notEnoughResourcesTest() {
-            init(4);
+            init(9);
             game.getPlayer(nick1).startTurn();
 
             DumbConvertLeaderCard dumbLeaderCard1 = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 0)), Map.of(Resource.STONE, 1)), Resource.COIN));
@@ -129,14 +126,19 @@ public class ActivateLeaderCardActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

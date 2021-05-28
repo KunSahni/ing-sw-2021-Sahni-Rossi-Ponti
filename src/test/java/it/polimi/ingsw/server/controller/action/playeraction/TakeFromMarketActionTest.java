@@ -3,10 +3,7 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +24,7 @@ public class TakeFromMarketActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -58,7 +55,7 @@ public class TakeFromMarketActionTest {
         @Test
         @DisplayName("Marbles have been added correctly")
         void marblesAddedTest() {
-            init(1);
+            init(57);
             takeFromMarketAction.execute();
             assertNotNull(game.getPlayer(nick1).getTempMarbles());
         }
@@ -66,7 +63,7 @@ public class TakeFromMarketActionTest {
         @Test
         @DisplayName("Action has been added correctly")
         void actionAddedTest() {
-            init(2);
+            init(58);
             takeFromMarketAction.execute();
             assertTrue(game.getPlayer(nick1).getPerformedActions().contains(ExecutedActions.STORED_TEMP_MARBLES_ACTION));
         }
@@ -79,7 +76,7 @@ public class TakeFromMarketActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(3);
+            init(59);
             try {
                 takeFromMarketAction.runChecks();
             } catch (InvalidActionException e) {
@@ -91,7 +88,7 @@ public class TakeFromMarketActionTest {
         @Test
         @DisplayName("A player can't perform an action not during his turn")
         void invalidTurnTest() {
-            init(4);
+            init(60);
             game.getPlayer(nick1).finishTurn();
             try {
                 takeFromMarketAction.runChecks();
@@ -107,7 +104,7 @@ public class TakeFromMarketActionTest {
         @Test
         @DisplayName("Invalid action is rejected")
         void invalidActionTest() {
-            init(5);
+            init(61);
             game.getPlayer(nick1).addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
             try {
                 takeFromMarketAction.runChecks();
@@ -121,14 +118,19 @@ public class TakeFromMarketActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

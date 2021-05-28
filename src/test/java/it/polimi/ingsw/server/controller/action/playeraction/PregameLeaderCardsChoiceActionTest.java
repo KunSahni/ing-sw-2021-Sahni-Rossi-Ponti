@@ -11,10 +11,7 @@ import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +34,7 @@ public class PregameLeaderCardsChoiceActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -72,14 +69,14 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("Not all players have two leader cards")
         void notAllPlayersHave2LeadersCardTest() {
-            init(1);
+            init(41);
             assertNull(pregameLeaderCardsChoiceAction.execute());
         }
 
         @Test
         @DisplayName("All players have two leader cards so next action is to assign inkwell")
         void allPlayersWithTwoLeaderCards() {
-            init(2);
+            init(42);
             game.getPlayer(nick2).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard1, convertLeaderCard2));
             assertAll(
                     ()-> assertTrue(pregameLeaderCardsChoiceAction.execute() instanceof AssignInkwellAction),
@@ -95,7 +92,7 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(3);
+            init(43);
             try {
                 pregameLeaderCardsChoiceAction.runChecks();
             } catch (InvalidActionException e) {
@@ -107,7 +104,7 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedPickTimeTest() {
-            init(4);
+            init(44);
             game.setState(GameState.IN_GAME);
 
             try {
@@ -124,7 +121,7 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("The attempt to pick more or less than two leader card is rejected")
         void notTwoLeaderCardsPickingTest() {
-            init(5);
+            init(45);
             ConvertLeaderCard convertLeaderCard3 = new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.COIN, 1)), Resource.COIN);
             PregameLeaderCardsChoiceAction pregameLeaderCardsChoiceAction1 = new PregameLeaderCardsChoiceAction(List.of(new DumbConvertLeaderCard(convertLeaderCard1), new DumbConvertLeaderCard(convertLeaderCard2), new DumbConvertLeaderCard(convertLeaderCard3)));
             pregameLeaderCardsChoiceAction1.setNickname(nick1);
@@ -145,7 +142,7 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("The action is rejected cause player doesn't own a selected leader card")
         void notOwnedLeaderCardChooseTest() {
-            init(6);
+            init(46);
             ConvertLeaderCard convertLeaderCard3 = new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.COIN, 1)), Resource.COIN);
             PregameLeaderCardsChoiceAction pregameLeaderCardsChoiceAction1 = new PregameLeaderCardsChoiceAction(List.of(new DumbConvertLeaderCard(convertLeaderCard1), new DumbConvertLeaderCard(convertLeaderCard3)));
             pregameLeaderCardsChoiceAction1.setNickname(nick1);
@@ -163,14 +160,19 @@ public class PregameLeaderCardsChoiceActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }

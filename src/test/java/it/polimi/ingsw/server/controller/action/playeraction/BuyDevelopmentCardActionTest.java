@@ -6,14 +6,10 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -33,7 +29,7 @@ public class BuyDevelopmentCardActionTest {
 
     @BeforeAll
     static void deleteActions(){
-        deleteDir("src/main/resources/games");
+        deleteDir();
         new File("src/main/resources/games").mkdirs();
     }
 
@@ -63,7 +59,7 @@ public class BuyDevelopmentCardActionTest {
     @Test
     @DisplayName("Action has been executed correctly")
     void executeTest() {
-        init(1);
+        init(22);
         assertNull(buyDevelopmentCardAction.execute());
     }
 
@@ -74,7 +70,7 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(2);
+            init(23);
             try {
                 buyDevelopmentCardAction.runChecks();
             } catch (InvalidActionException e) {
@@ -86,7 +82,7 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
         void wrongTurnTest() throws Exception {
-            init(8);
+            init(24);
             game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try {
@@ -103,7 +99,7 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            init(3);
+            init(25);
             game.getPlayer(nick1).addAction(ExecutedActions.DISCARDED_LEADER_CARD_ACTION);
             try {
                 buyDevelopmentCardAction.runChecks();
@@ -119,7 +115,7 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("Cards of level and color specified are not available, so the action is rejected")
         void noMoreCardsAvailable() {
-            init(4);
+            init(26);
             game.getDevelopmentCardsBoard().discardTwo(Color.GREEN);
             game.getDevelopmentCardsBoard().discardTwo(Color.GREEN);
             try {
@@ -136,7 +132,7 @@ public class BuyDevelopmentCardActionTest {
 
         @Test
         void passedResourceDontMatchCostTest() {
-            init(5);
+            init(27);
             BuyDevelopmentCardAction buyDevelopmentCardAction1 = new BuyDevelopmentCardAction(Level.LEVEL1, Color.GREEN, 1, null, Map.of(Resource.COIN, 1));
             buyDevelopmentCardAction1.setNickname(nick1);
             buyDevelopmentCardAction1.setGame(game);
@@ -155,7 +151,7 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("The player doesn't have enough resources, so the action is rejected")
         void notEnoughResourcesTest() {
-            init(6);
+            init(28);
             game.getPlayer(nick1).getPersonalBoard().getStrongbox().discardResources(cardCost);
             game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().discardResources(cardCost);
             try {
@@ -171,7 +167,7 @@ public class BuyDevelopmentCardActionTest {
 
         @Test
         void illegalCardPositionTest() {
-            init(7);
+            init(29);
             cardCost = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.GREEN).getCost();
             BuyDevelopmentCardAction buyDevelopmentCardAction1 = new BuyDevelopmentCardAction(Level.LEVEL2, Color.GREEN, 1, null, cardCost);
             buyDevelopmentCardAction1.setNickname(nick1);
@@ -190,14 +186,19 @@ public class BuyDevelopmentCardActionTest {
         }
     }
 
-    static void deleteDir(String pathToBeDeleted) {
+    static void deleteDir() {
         try {
-            Files.walk(Path.of(pathToBeDeleted))
+            Files.walk(Path.of("src/main/resources/games"))
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterEach
+    void delete(){
+        deleteDir();
     }
 }
