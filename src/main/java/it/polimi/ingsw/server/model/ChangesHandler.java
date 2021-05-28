@@ -92,7 +92,13 @@ public class ChangesHandler {
                 deleteDirectory(file);
             }
         }
-        return directoryToBeDeleted.delete();
+        try {
+            Files.delete(directoryToBeDeleted.toPath());
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // GameState
@@ -339,14 +345,27 @@ public class ChangesHandler {
      */
     private <T> T readValueFromFile(String filepath, Class<T> classType)
             throws FileNotFoundException {
-        return new Gson().fromJson(new JsonReader(new FileReader(filepath)), classType);
+        JsonReader reader = new JsonReader(new FileReader(filepath));
+        T fileContent = new Gson().fromJson(reader, classType);
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileContent;
     }
 
     private <T> List<T> readListFromFile(String filepath, Class<T> classType)
             throws FileNotFoundException {
+        JsonReader reader = new JsonReader(new FileReader(filepath));
         T[] array =
                 new GsonBuilder().setPrettyPrinting().serializeNulls().create()
-                        .fromJson(new JsonReader(new FileReader(filepath)), classType.arrayType());
+                        .fromJson(reader, classType.arrayType());
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return Arrays.asList(array);
     }
 
