@@ -10,7 +10,6 @@ public class StartGameAction extends GameAction {
 
     @Override
     public GameAction execute() {
-        game.sortPlayers();
         game.getPlayerList().get(0).startTurn();
         game.setState(GameState.IN_GAME);
         return null;

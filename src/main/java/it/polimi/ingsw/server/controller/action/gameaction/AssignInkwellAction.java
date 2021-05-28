@@ -23,6 +23,7 @@ public class AssignInkwellAction extends GameAction{
         playerList.stream()
                 .filter(player -> player.getPosition() > 2)
                 .forEach(player -> player.getPersonalBoard().getFaithTrack().moveMarker());
+        game.sortPlayers();
         game.setState(GameState.ASSIGNED_INKWELL);
         return null;
     }
