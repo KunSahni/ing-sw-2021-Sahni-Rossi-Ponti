@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
@@ -40,7 +41,7 @@ class PersonalBoardTest {
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        game = new Game(null,1, nicknames);
+        game = new Game(new Server(),1, nicknames);
         player = game.getPlayer("Mario");
         personalBoard = game.getPlayer("Mario").getPersonalBoard();
     }

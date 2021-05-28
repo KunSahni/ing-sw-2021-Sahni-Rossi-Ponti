@@ -1,12 +1,13 @@
 package it.polimi.ingsw.server.model.actiontoken;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import it.polimi.ingsw.server.model.Game;
+import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,11 +20,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ActionTokenDeckTest {
     ActionTokenDeck actionTokenDeck;
     ChangesHandler changesHandler;
+    Game game;
 
     @BeforeEach
-    void init() throws FileNotFoundException {
+    void init() throws IOException {
         changesHandler = new ChangesHandler(1);
+        ArrayList<String> nicknames = new ArrayList<>();
+        nicknames.add("Mario");
+        game = new Game(new Server(),1, nicknames);
         actionTokenDeck = changesHandler.readActionTokenDeck();
+    }
+
+    @AfterEach
+    void tearDown() {
+        changesHandler.publishGameOutcome(game);
     }
 
     @Nested

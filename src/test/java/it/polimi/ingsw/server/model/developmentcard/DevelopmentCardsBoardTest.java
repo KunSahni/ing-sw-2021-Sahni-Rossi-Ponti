@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class DevelopmentCardsBoardTest {
@@ -17,8 +18,9 @@ public class DevelopmentCardsBoardTest {
     ChangesHandler changesHandler;
 
     @BeforeEach
-    void init() throws FileNotFoundException {
+    void init() throws IOException {
         changesHandler = new ChangesHandler(1);
+        changesHandler.createGameFilesFromBlueprint(new ArrayList<>());
         board = changesHandler.readDevelopmentCardsBoard();
     }
 

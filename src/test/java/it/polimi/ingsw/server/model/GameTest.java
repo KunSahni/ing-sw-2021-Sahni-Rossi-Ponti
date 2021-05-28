@@ -15,23 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
     Game game;
     ArrayList<String> nicknames;
+    ChangesHandler changesHandler;
 
     @BeforeEach
     void setUp() throws IOException {
         nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        game = new Game(null, 1, nicknames);
+        changesHandler = new ChangesHandler(1);
+        Server server = new Server();
+        game = new Game(server, 1, nicknames);
     }
 
     @AfterEach
-    void tearDown() {
-        new ChangesHandler(1).publishGameOutcome(game);
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 
     @Test
@@ -54,7 +59,7 @@ public class GameTest {
     void getPlayerTest() {
         assertAll(
                 () -> assertNotNull(game.getPlayer("Mario")),
-                () -> assertEquals(new ChangesHandler(1).readPlayer("Mario"), game.getPlayer("Mario"))
+                () -> assertEquals(changesHandler.readPlayer("Mario"), game.getPlayer("Mario"))
         );
     }
 

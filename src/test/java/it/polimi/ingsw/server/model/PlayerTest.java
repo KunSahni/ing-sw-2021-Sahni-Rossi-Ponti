@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.market.MarketMarble;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
@@ -24,12 +26,12 @@ public class PlayerTest {
         ArrayList<String> nicknames = new ArrayList<>();
         nicknames.add("Mario");
         nicknames.add("Luigi");
-        game = new Game(null,3, nicknames);
+        game = new Game(new Server(),3, nicknames);
         player = game.getPlayer("Mario");
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws InterruptedException {
         new ChangesHandler(1).publishGameOutcome(game);
     }
 
@@ -173,10 +175,6 @@ public class PlayerTest {
     @Test
     @DisplayName("compareTo method test")
     void compareToTest() throws IOException {
-        ArrayList<String> nicknames = new ArrayList<>();
-        nicknames.add("Mario");
-        nicknames.add("Luigi");
-        Game game = new Game(null,1, nicknames);
         Player player2 = game.getPlayer("Luigi");
 
         assertAll(

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.personalboardpackage;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,12 +25,19 @@ class DevelopmentCardSlotTest {
     DevelopmentCardSlot developmentCardSlot;
     List<DevelopmentCard> developmentCards;
     DevelopmentCardsBoard developmentCardsBoard;
+    Game game;
+    ChangesHandler changesHandler;
 
     @BeforeEach
-    void setUp() throws FileNotFoundException {
-        developmentCardSlot = new ChangesHandler(1).readDevelopmentCardSlot("Mario", 1);
+    void setUp() throws IOException {
+        List<String> nicknames = new ArrayList<>();
+        nicknames.add("Mario");
+        nicknames.add("Luigi");
+        game = new Game(new Server(), 1, nicknames);
+        changesHandler = new ChangesHandler(1);
+        developmentCardSlot = changesHandler.readDevelopmentCardSlot("Mario", 1);
         developmentCards = new ArrayList<>();
-        developmentCardsBoard = new ChangesHandler(1).readDevelopmentCardsBoard();
+        developmentCardsBoard = changesHandler.readDevelopmentCardsBoard();
 
         //Add the DevelopmentCards to a List
         developmentCards.add(developmentCardsBoard.pick(Level.LEVEL1, Color.BLUE));
@@ -121,7 +130,7 @@ class DevelopmentCardSlotTest {
     @Test
     @DisplayName("canPlaceCard method test")
     void canPlaceCardTest() throws FileNotFoundException {
-        developmentCardSlot = new ChangesHandler(1).readDevelopmentCardSlot("Luigi", 1);
+        developmentCardSlot = changesHandler.readDevelopmentCardSlot("Luigi", 1);
         developmentCards.remove(2);
         //Place the DevelopmentCards inside the DevelopmentCardSlot
         developmentCards.forEach(

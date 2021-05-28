@@ -78,7 +78,7 @@ public class FaithTrack implements VictoryPointsElement {
      */
     private int calculateTrackPositionVictoryPoints() {
         try {
-            JsonReader reader = new JsonReader(new FileReader("src/main/resources/FaithTrackPoints.json"));
+            JsonReader reader = new JsonReader(new FileReader("src/main/resources/default/FaithTrackPoints.json"));
             Map<String, Double> victoryPointsMap = new Gson().fromJson(reader, Map.class);
             return victoryPointsMap.get(Integer.toString(getFaithMarkerPosition())).intValue();
         } catch (FileNotFoundException e) {
