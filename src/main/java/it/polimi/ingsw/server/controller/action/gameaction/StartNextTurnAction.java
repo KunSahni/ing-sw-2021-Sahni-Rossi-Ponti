@@ -29,7 +29,7 @@ public class StartNextTurnAction extends GameAction {
             // that still have to play their turn in LAST_ROUND
             Optional<Player> nextPlayer =
                     findNextConnected(players.subList(players.indexOf(currentPlayer) + 1,
-                            players.size() + 1));
+                            players.size()));
             if (nextPlayer.isPresent()) {
                 currentPlayer.finishTurn();
                 nextPlayer.get().startTurn();
