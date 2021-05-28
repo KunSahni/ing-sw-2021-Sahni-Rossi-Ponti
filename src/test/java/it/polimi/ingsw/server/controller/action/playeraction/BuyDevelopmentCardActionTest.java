@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.controller.action.playeraction;
 
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
@@ -8,16 +9,12 @@ import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.lang.Thread.sleep;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BuyDevelopmentCardActionTest {
     BuyDevelopmentCardAction buyDevelopmentCardAction;
@@ -26,14 +23,11 @@ public class BuyDevelopmentCardActionTest {
     String nick2;
     Map<Resource, Integer> cardCost;
     Server server;
+    ChangesHandler changesHandler;
 
-    @BeforeAll
-    static void deleteActions(){
-        deleteDir();
-        new File("src/main/resources/games").mkdirs();
-    }
-
-    public void init(Integer gameId){
+    @BeforeEach
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -42,7 +36,7 @@ public class BuyDevelopmentCardActionTest {
         nick1 = "qwe";
         nick2 = "asd";
         try {
-            game = new Game(server, gameId, List.of(nick1, nick2));
+            game = new Game(server, 1, List.of(nick1, nick2));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,7 +53,6 @@ public class BuyDevelopmentCardActionTest {
     @Test
     @DisplayName("Action has been executed correctly")
     void executeTest() {
-        init(22);
         assertNull(buyDevelopmentCardAction.execute());
     }
 
@@ -70,19 +63,17 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(23);
             try {
                 buyDevelopmentCardAction.runChecks();
             } catch (InvalidActionException e) {
                 e.printStackTrace();
-                assertTrue(false);
+                fail();
             }
         } //todo: il controllo delle risorse sufficienti non va , il controllo per poter posizionare la carta in un certo slot non va
 
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
-        void wrongTurnTest() throws Exception {
-            init(24);
+        void wrongTurnTest(){
             game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try {
@@ -99,7 +90,6 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            init(25);
             game.getPlayer(nick1).addAction(ExecutedActions.DISCARDED_LEADER_CARD_ACTION);
             try {
                 buyDevelopmentCardAction.runChecks();
@@ -115,7 +105,6 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("Cards of level and color specified are not available, so the action is rejected")
         void noMoreCardsAvailable() {
-            init(26);
             game.getDevelopmentCardsBoard().discardTwo(Color.GREEN);
             game.getDevelopmentCardsBoard().discardTwo(Color.GREEN);
             try {
@@ -132,7 +121,6 @@ public class BuyDevelopmentCardActionTest {
 
         @Test
         void passedResourceDontMatchCostTest() {
-            init(27);
             BuyDevelopmentCardAction buyDevelopmentCardAction1 = new BuyDevelopmentCardAction(Level.LEVEL1, Color.GREEN, 1, null, Map.of(Resource.COIN, 1));
             buyDevelopmentCardAction1.setNickname(nick1);
             buyDevelopmentCardAction1.setGame(game);
@@ -151,7 +139,6 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("The player doesn't have enough resources, so the action is rejected")
         void notEnoughResourcesTest() {
-            init(28);
             game.getPlayer(nick1).getPersonalBoard().getStrongbox().discardResources(cardCost);
             game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().discardResources(cardCost);
             try {
@@ -167,7 +154,6 @@ public class BuyDevelopmentCardActionTest {
 
         @Test
         void illegalCardPositionTest() {
-            init(29);
             cardCost = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.GREEN).getCost();
             BuyDevelopmentCardAction buyDevelopmentCardAction1 = new BuyDevelopmentCardAction(Level.LEVEL2, Color.GREEN, 1, null, cardCost);
             buyDevelopmentCardAction1.setNickname(nick1);
@@ -186,19 +172,9 @@ public class BuyDevelopmentCardActionTest {
         }
     }
 
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @AfterEach
-    void delete(){
-        deleteDir();
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server.controller.action.playeraction;
 
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
@@ -15,6 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PregameResourceChoiceActionTest {
@@ -23,14 +25,11 @@ public class PregameResourceChoiceActionTest {
     String nick1;
     String nick2;
     Server server;
+    ChangesHandler changesHandler;
 
-    @BeforeAll
-    static void deleteActions(){
-        deleteDir();
-        new File("src/main/resources/games").mkdirs();
-    }
-
-    public void init(Integer gameId){
+    @BeforeEach
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -39,7 +38,7 @@ public class PregameResourceChoiceActionTest {
         nick1 = "qwe";
         nick2 = "asd";
         try {
-            game = new Game(server, gameId, List.of(nick1, nick2));
+            game = new Game(server, 1, List.of(nick1, nick2));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,7 +57,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("All resources have been stored correctly")
         void rightResourcesStorageTest() {
-            init(47);
             pregameResourceChoiceAction.execute();
             assertTrue(game.getPlayer(nick1).getPersonalBoard().depotsCanContain(Map.of(Resource.COIN, 1)));
         }
@@ -66,7 +64,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("All players have received their resources and game state is changed")
         void setNewStateTest() {
-            init(48);
             pregameResourceChoiceAction.execute();
             assertEquals(GameState.PICKED_RESOURCES, game.getCurrentState());
         }
@@ -74,7 +71,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Not all players have still received their resources, so the game doesn't start")
         void name() {
-            init(49);
             game.getPlayer(nick2).setPosition(3);
             assertNull(pregameResourceChoiceAction.execute());
         }
@@ -87,7 +83,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(50);
             try {
                 pregameResourceChoiceAction.runChecks();
             } catch (InvalidActionException e) {
@@ -99,7 +94,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTimeTest() {
-            init(51);
             game.setState(GameState.IN_GAME);
             try {
                 pregameResourceChoiceAction.runChecks();
@@ -115,7 +109,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Resources are not given because player already have some resources")
         void alreadyPresentResourcesTest() {
-            init(52);
             game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(Map.of(Resource.STONE, 1));
 
             try {
@@ -132,7 +125,6 @@ public class PregameResourceChoiceActionTest {
         @Test
         @DisplayName("Only players that have the right obtain resources")
         void resourcesGivenToRightPlayersTest() {
-            init(53);
             game.getPlayer(nick1).setPosition(1);
 
             try {
@@ -147,18 +139,9 @@ public class PregameResourceChoiceActionTest {
         }
     }
 
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     @AfterEach
-    void delete(){
-        deleteDir();
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

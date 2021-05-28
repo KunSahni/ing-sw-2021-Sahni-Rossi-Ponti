@@ -3,6 +3,7 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.controller.action.gameaction.AssignInkwellAction;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
@@ -13,14 +14,11 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PregameLeaderCardsChoiceActionTest {
@@ -31,14 +29,11 @@ public class PregameLeaderCardsChoiceActionTest {
     Server server;
     ConvertLeaderCard convertLeaderCard1;
     ConvertLeaderCard convertLeaderCard2;
+    ChangesHandler changesHandler;
 
-    @BeforeAll
-    static void deleteActions(){
-        deleteDir();
-        new File("src/main/resources/games").mkdirs();
-    }
-
-    public void init(Integer gameId){
+    @BeforeEach
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -47,7 +42,7 @@ public class PregameLeaderCardsChoiceActionTest {
         nick1 = "qwe";
         nick2 = "asd";
         try {
-            game = new Game(server, gameId, List.of(nick1, nick2));
+            game = new Game(server, 1, List.of(nick1, nick2));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,14 +64,12 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("Not all players have two leader cards")
         void notAllPlayersHave2LeadersCardTest() {
-            init(41);
             assertNull(pregameLeaderCardsChoiceAction.execute());
         }
 
         @Test
         @DisplayName("All players have two leader cards so next action is to assign inkwell")
         void allPlayersWithTwoLeaderCards() {
-            init(42);
             game.getPlayer(nick2).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard1, convertLeaderCard2));
             assertAll(
                     ()-> assertTrue(pregameLeaderCardsChoiceAction.execute() instanceof AssignInkwellAction),
@@ -92,7 +85,6 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(43);
             try {
                 pregameLeaderCardsChoiceAction.runChecks();
             } catch (InvalidActionException e) {
@@ -104,7 +96,6 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedPickTimeTest() {
-            init(44);
             game.setState(GameState.IN_GAME);
 
             try {
@@ -121,7 +112,6 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("The attempt to pick more or less than two leader card is rejected")
         void notTwoLeaderCardsPickingTest() {
-            init(45);
             ConvertLeaderCard convertLeaderCard3 = new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.COIN, 1)), Resource.COIN);
             PregameLeaderCardsChoiceAction pregameLeaderCardsChoiceAction1 = new PregameLeaderCardsChoiceAction(List.of(new DumbConvertLeaderCard(convertLeaderCard1), new DumbConvertLeaderCard(convertLeaderCard2), new DumbConvertLeaderCard(convertLeaderCard3)));
             pregameLeaderCardsChoiceAction1.setNickname(nick1);
@@ -142,7 +132,6 @@ public class PregameLeaderCardsChoiceActionTest {
         @Test
         @DisplayName("The action is rejected cause player doesn't own a selected leader card")
         void notOwnedLeaderCardChooseTest() {
-            init(46);
             ConvertLeaderCard convertLeaderCard3 = new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.COIN, 1)), Resource.COIN);
             PregameLeaderCardsChoiceAction pregameLeaderCardsChoiceAction1 = new PregameLeaderCardsChoiceAction(List.of(new DumbConvertLeaderCard(convertLeaderCard1), new DumbConvertLeaderCard(convertLeaderCard3)));
             pregameLeaderCardsChoiceAction1.setNickname(nick1);
@@ -160,19 +149,9 @@ public class PregameLeaderCardsChoiceActionTest {
         }
     }
 
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @AfterEach
-    void delete(){
-        deleteDir();
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

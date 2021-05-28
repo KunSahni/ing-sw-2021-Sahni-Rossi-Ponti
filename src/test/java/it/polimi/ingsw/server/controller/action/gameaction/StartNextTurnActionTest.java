@@ -1,18 +1,16 @@
 package it.polimi.ingsw.server.controller.action.gameaction;
 
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
-import it.polimi.ingsw.server.model.Player;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StartNextTurnActionTest {
@@ -22,10 +20,11 @@ public class StartNextTurnActionTest {
     String nick2;
     List<String> nicknameList;
     Server server;
+    ChangesHandler changesHandler;
 
     @BeforeEach
-    void init(){
-        deleteDir();
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -35,7 +34,7 @@ public class StartNextTurnActionTest {
         nick2 = "asd";
         nicknameList = List.of(nick1, nick2);
         try {
-            game = new Game(server, 5, nicknameList);
+            game = new Game(server, 1, nicknameList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,14 +50,9 @@ public class StartNextTurnActionTest {
         assertEquals(nick2, game.getCurrentTurnPlayer().getNickname());
     }
 
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @AfterEach
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

@@ -1,14 +1,13 @@
 package it.polimi.ingsw.server.controller.action.playeraction;
 
-import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
-import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
@@ -16,14 +15,11 @@ import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ActivateProductionActionTest {
@@ -35,14 +31,11 @@ public class ActivateProductionActionTest {
     ProduceLeaderCard produceLeaderCard;
     DevelopmentCard developmentCard;
     Server server;
+    ChangesHandler changesHandler;
 
-    @BeforeAll
-    static void deleteActions(){
-        deleteDir();
-        new File("src/main/resources/games").mkdirs();
-    }
-
-    private void init(Integer gameId){
+    @BeforeEach
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -51,7 +44,7 @@ public class ActivateProductionActionTest {
         nick1 = "qwe";
         nick2 = "asd";
         try {
-            game = new Game(server, gameId, List.of(nick1, nick2));
+            game = new Game(server, 1, List.of(nick1, nick2));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,7 +74,6 @@ public class ActivateProductionActionTest {
 
     @Test
     void executeTest() {
-        init(10);
         game.getPlayer(nick1).getPersonalBoard().storeInDepots(Map.of(Resource.SERVANT, 3));
         game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.SHIELD, 3));
         activateProductionAction.execute();
@@ -99,8 +91,7 @@ public class ActivateProductionActionTest {
 
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
-        void wrongTurnTest() throws Exception {
-            init(11);
+        void wrongTurnTest(){
             game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try {
@@ -117,7 +108,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            init(12);
             game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
             try {
                 activateProductionAction.runChecks();
@@ -133,7 +123,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("The action is not performed cause leader card production is null")
         void emptyProductionComboTest() {
-            init(13);
             productionCombo.setLeaderCardProduction(null);
             try {
                 activateProductionAction.runChecks();
@@ -149,7 +138,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("The attempt to produce more than one resource with a default slot activation is rejected")
         void moreThanOneDefaultSlotOutput() {
-            init(14);
             productionCombo.setDefaultSlotOutput(Map.of(Resource.SHIELD, 1, Resource.STONE, 1));
             try {
                 activateProductionAction.runChecks();
@@ -164,7 +152,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("A not owned development production is rejected")
         void noMatchingDevelopmentCardTest() {
-            init(15);
             game.getPlayer(nick1).setTempLeaderCards(List.of(new ProduceLeaderCard(1,
                     new LeaderCardRequirements(Map.of(Color.PURPLE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)),
                     Resource.COIN, 1)));
@@ -182,7 +169,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("A not owned production Leader Card is rejected")
         void noLeaderCardMatchingTest() {//todo: quando setto leaderCardProduction in productionCombo viene messo active di leader card a false, quindi le leader cards non possono matchare
-            init(16);
             ProduceLeaderCard newLeaderCard = new ProduceLeaderCard(1,
                     new LeaderCardRequirements(Map.of(Color.PURPLE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)),
                     Resource.COIN, 1);
@@ -203,7 +189,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Selected discarded resources from depots and production cost don't match")
         void noMatchBetweenProductionCostAndSelectedDiscardedDepotsTest() {
-            init(17);
             productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.SHIELD, 1));
 
             try {
@@ -221,7 +206,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Selected discarded resources from strongbox and production cost don't match")
         void noMatchBetweenProductionCostAndSelectedDiscardedStrongboxTest() {
-            init(18);
             productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.SERVANT, 1));
 
             try {
@@ -239,7 +223,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Not enough resources are in depots, so the action is rejected")
         void notEnoughResourcesInDepotsTest() {
-            init(19);
             game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().discardResources(Map.of(Resource.COIN, 1));
             try {
                 activateProductionAction.runChecks();
@@ -256,7 +239,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Not enough resources are in strongbox, so the action is rejected")
         void notEnoughResourcesInStrongboxTest() {
-            init(20);
             game.getPlayer(nick1).getPersonalBoard().getStrongbox().discardResources(Map.of(Resource.STONE, 1));
             try {
                 activateProductionAction.runChecks();
@@ -273,7 +255,6 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(21);
             try {
                 activateProductionAction.runChecks();
             } catch (InvalidActionException e) {
@@ -283,19 +264,9 @@ public class ActivateProductionActionTest {
         }
     }
 
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @AfterEach
-    void delete(){
-        deleteDir();
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

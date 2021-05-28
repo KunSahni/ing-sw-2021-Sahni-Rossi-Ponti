@@ -2,18 +2,16 @@ package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.connection.Connection;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ControllerTest {
@@ -24,14 +22,11 @@ public class ControllerTest {
     String nick1;
     String nick2;
     Server server;
+    ChangesHandler changesHandler;
 
-    @BeforeAll
-    static void deleteActions(){
-        deleteDir();
-        new File("src/main/resources/games").mkdirs();
-    }
-
-    private void init(Integer gameId){
+    @BeforeEach
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -41,7 +36,7 @@ public class ControllerTest {
         nick2 = "asd";
         nicknameList = List.of(nick1, nick2);
         try {
-            game = new Game(server, gameId, nicknameList);
+            game = new Game(server, 1, nicknameList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +48,6 @@ public class ControllerTest {
     @Test
     @DisplayName("Player has been connected correctly")
     void connectPlayerTest() {
-        init(62);
         try {
             controller.connectPlayer(nick1, new Connection(new Socket(), new Server()));
         } catch (IOException e) {
@@ -69,7 +63,6 @@ public class ControllerTest {
     @Test
     @DisplayName("Player has been disconnected correctly")
     void disconnectPlayerTest() {
-        init(63);
         try {
             controller.connectPlayer(nick1, new Connection(new Socket(), new Server()));
         } catch (IOException e) {
@@ -80,22 +73,11 @@ public class ControllerTest {
                 //()-> assertFalse(remoteView.getConnectedPlayers.containsKey("qwe")),
                 ()-> assertFalse(game.getPlayer(nick1).isConnected())
         );
-        deleteDir();
-    }
-
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @AfterEach
-    void delete(){
-        deleteDir();
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

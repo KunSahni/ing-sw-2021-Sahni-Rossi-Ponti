@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
@@ -11,16 +12,12 @@ import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.lang.Thread.sleep;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DiscardLeaderCardActionTest {
     DiscardLeaderCardAction discardLeaderCardAction;
@@ -30,14 +27,11 @@ public class DiscardLeaderCardActionTest {
     ConvertLeaderCard convertLeaderCard;
     Integer faithMarkerPosition;
     Server server;
+    ChangesHandler changesHandler;
 
-    @BeforeAll
-    static void deleteActions(){
-        deleteDir();
-        new File("src/main/resources/games").mkdirs();
-    }
-
-    public void init(Integer gameId){
+    @BeforeEach
+    void setUp(){
+        changesHandler = new ChangesHandler(1);
         try {
             server = new Server();
         } catch (IOException e) {
@@ -46,7 +40,7 @@ public class DiscardLeaderCardActionTest {
         nick1 = "qwe";
         nick2 = "asd";
         try {
-            game = new Game(server, gameId, List.of(nick1, nick2));
+            game = new Game(server, 1, List.of(nick1, nick2));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,7 +58,6 @@ public class DiscardLeaderCardActionTest {
     @Test
     @DisplayName("Selected Leader Card is discarded correctly and the faith marker has been moved correctly")
     void executeTest() {
-        init(30);
         discardLeaderCardAction.execute();
         assertEquals(faithMarkerPosition+1, game.getPlayer(nick1).getPersonalBoard().getFaithTrack().getFaithMarkerPosition());
     }
@@ -76,19 +69,17 @@ public class DiscardLeaderCardActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
-            init(31);
             try {
                 discardLeaderCardAction.runChecks();
             } catch (InvalidActionException e) {
                 e.printStackTrace();
-                assertTrue(false);
+                fail();
             }
         } //todo: il controllo per vedere se si ha la leader card non va, la leader card viene scartata anche se è attiva
 
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
         void wrongTurnTest(){
-            init(32);
             game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try {
@@ -105,7 +96,6 @@ public class DiscardLeaderCardActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            init(33);
             game.getPlayer(nick1).addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
             try {
                 discardLeaderCardAction.runChecks();
@@ -120,7 +110,6 @@ public class DiscardLeaderCardActionTest {
 
         @Test
         void notOwnedLeaderCardTest() {
-            init(34);
             game.getPlayer(nick1).getPersonalBoard().discardLeaderCard(convertLeaderCard);
 
             try {
@@ -136,7 +125,6 @@ public class DiscardLeaderCardActionTest {
 
         @Test
         void discardAnActiveLeaderCardTest() {
-            init(35);
             game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(convertLeaderCard);
 
             try {
@@ -151,19 +139,9 @@ public class DiscardLeaderCardActionTest {
         }
     }
 
-    static void deleteDir() {
-        try {
-            Files.walk(Path.of("src/main/resources/games"))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @AfterEach
-    void delete(){
-        deleteDir();
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 }

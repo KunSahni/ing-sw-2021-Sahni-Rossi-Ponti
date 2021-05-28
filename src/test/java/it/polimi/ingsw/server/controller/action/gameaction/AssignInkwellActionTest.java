@@ -1,7 +1,10 @@
 package it.polimi.ingsw.server.controller.action.gameaction;
 
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssignInkwellActionTest {
@@ -20,22 +24,22 @@ public class AssignInkwellActionTest {
     String nick4;
     List<String> nickList;
     Server server;
+    ChangesHandler changesHandler;
 
-    void deleteDir(File file) {
-        File[] contents = file.listFiles();
-        if (contents != null) {
-            for (File f : contents) {
-                deleteDir(f);
-            }
-        }
-        file.delete();
+    @BeforeEach
+    void setUp() {
+        changesHandler = new ChangesHandler(1);
+    }
+
+    @AfterEach
+    void tearDown() throws InterruptedException {
+        changesHandler.publishGameOutcome(game);
+        sleep(100);
     }
 
     @Test
     @DisplayName("Players positions are set correctly")
     void executeTest(){
-        File file = new File("src/main/resources/games/1");
-        deleteDir(file);
         try {
             server = new Server();
         } catch (IOException e) {
