@@ -36,14 +36,14 @@ public class StartNextTurnActionTest {
         nick2 = "asd";
         nick3 = "zxc";
         nicknameList = List.of(nick1, nick2, nick3);
-        game.getPlayer(nick1).setPosition(1);
-        game.getPlayer(nick2).setPosition(2);
-        game.getPlayer(nick3).setPosition(3);
         try {
             game = new Game(server, 1, nicknameList);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        game.getPlayer(nick1).setPosition(1);
+        game.getPlayer(nick2).setPosition(2);
+        game.getPlayer(nick3).setPosition(3);
         startNextTurnAction = new StartNextTurnAction(game);
     }
 
