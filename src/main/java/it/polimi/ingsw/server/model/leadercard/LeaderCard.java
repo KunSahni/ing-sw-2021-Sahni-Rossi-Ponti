@@ -43,6 +43,6 @@ public abstract class LeaderCard implements VictoryPointsElement {
         if (this == o) return true;
         if (!(o instanceof LeaderCard)) return false;
         LeaderCard that = (LeaderCard) o;
-        return victoryPoints == that.victoryPoints && active == that.active && ability == that.ability && leaderCardRequirements.equals(that.leaderCardRequirements);
+        return victoryPoints == that.victoryPoints && ability == that.ability && leaderCardRequirements.equals(that.leaderCardRequirements);
     }
 }
