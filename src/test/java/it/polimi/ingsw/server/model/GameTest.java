@@ -187,7 +187,7 @@ public class GameTest {
             Server server = new Server();
             nicknames = new ArrayList<>();
             nicknames.add("Mario");
-            game = new Game(server, 2, nicknames);
+            game = new Game(server, 1, nicknames);
             actionTokenDeck = game.getActionTokenDeck();
         }
 
