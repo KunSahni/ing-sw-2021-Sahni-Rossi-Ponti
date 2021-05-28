@@ -105,8 +105,9 @@ public class FaithTrack implements VictoryPointsElement {
      */
     public boolean checkVaticanReport(int tile) {
         // Pope Spaces are located on tiles with positions multiples of 8
-        return (tile % 8) == 0 &&
-                popesFavors.get(tile / 8 - 1) == FavorStatus.INACTIVE;
+        if ((tile % 8) == 0 && tile > 0)
+            return popesFavors.get(tile / 8 - 1) == FavorStatus.INACTIVE;
+        else return false;
     }
 
     /**
