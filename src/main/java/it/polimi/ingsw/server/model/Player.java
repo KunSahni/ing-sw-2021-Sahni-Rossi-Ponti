@@ -65,7 +65,7 @@ public class Player implements Comparable<Player> {
      * Otherwise returns an empty list.
      */
     public List<LeaderCard> getTempLeaderCards() {
-        return List.copyOf(tempLeaderCards);
+        return new ArrayList<>(tempLeaderCards);
     }
 
     /**
@@ -76,7 +76,7 @@ public class Player implements Comparable<Player> {
      * @return a map of MarketMarbles.
      */
     public Map<MarketMarble, Integer> getTempMarbles() {
-        return Map.copyOf(tempMarbles);
+        return new HashMap<>(tempMarbles);
     }
 
     public List<ExecutedActions> getPerformedActions() {
@@ -104,7 +104,7 @@ public class Player implements Comparable<Player> {
      * @param leaderCards With the current game rules, a list of 4 LeaderCards should be passed.
      */
     public void setTempLeaderCards(List<LeaderCard> leaderCards) {
-        this.tempLeaderCards = leaderCards;
+        this.tempLeaderCards = new ArrayList<>(leaderCards);
         changesHandler.writePlayer(this);
     }
 
