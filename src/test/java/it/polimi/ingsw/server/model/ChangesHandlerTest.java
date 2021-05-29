@@ -142,33 +142,29 @@ public class ChangesHandlerTest {
         changesHandler.writePlayer(game.getPlayer("Mario"));
         changesHandler.flushBufferToDisk();
         Player actualPlayer = changesHandler.readPlayer("Mario");
-        assertEquals(game.getPlayer("Mario"), actualPlayer, "Error: change handler did not properly write/read player");
+        assertAll(
+                () -> assertEquals(game.getPlayer("Mario").getNickname(), actualPlayer.getNickname(), "Changes handler didn't properly read/write nickname"),
+                () -> assertEquals(game.getPlayer("Mario").getTempLeaderCards(), actualPlayer.getTempLeaderCards(), "Changes handler didn't properly read/write temp leader cards"),
+                () -> assertEquals(game.getPlayer("Mario").getTempMarbles(), actualPlayer.getTempMarbles(), "Changes handler didn't properly read/write temp marbles"),
+                () -> assertEquals(game.getPlayer("Mario").getPosition(), actualPlayer.getPosition(), "Changes handler didn't properly read/write position"),
+                () -> assertEquals(game.getPlayer("Mario").getPerformedActions(), actualPlayer.getPerformedActions(), "Changes handler didn't properly read/write performed actions")
+        );
     }
 
-    //todo:fix test logic
     @Test
-    @Disabled
     @DisplayName("Market write/read test")
     void marketTest() throws FileNotFoundException {
         changesHandler.writeMarket(game.getMarket());
         changesHandler.flushBufferToDisk();
         Market actualMarket = changesHandler.readMarket();
         assertAll(
-                () -> assertEquals(
-                        Arrays.stream(game.getMarket().getMarblesLayout())
-                                .flatMap(Arrays::stream)
-                                .map(MarketMarble::getColor)
-                                .collect(Collectors.toList()),
-                        Arrays.stream(actualMarket.getMarblesLayout())
-                                .flatMap(Arrays::stream)
-                                .map(MarketMarble::getColor)
-                                .collect(Collectors.toList()),
+                () -> assertArrayEquals(game.getMarket().getMarblesLayout(),
+                        actualMarket.getMarblesLayout(),
                         "Error: change handler did not properly write/read market"),
                 () -> assertEquals(game.getMarket().getExtraMarble().getColor(), actualMarket.getExtraMarble().getColor(), "Error: change handler did not properly write/read market's extra marble")
 
 
         );
-        assertEquals(game.getMarket().getMarblesLayout(), actualMarket.getMarblesLayout(), "Error: change handler did not properly write/read market");
     }
 
     @Test
