@@ -48,7 +48,7 @@ public class ActionTokenDeckTest {
         @Test
         @DisplayName("getFullDeck safety test")
         void getFullDeckSafetyTest() {
-            assertNotSame(ActionTokenDeck.getFullDeck(), ActionTokenDeck.getFullDeck());
+            assertNotSame(actionTokenDeck.getFullDeck(), actionTokenDeck.getFullDeck());
         }
     }
 
@@ -77,13 +77,13 @@ public class ActionTokenDeckTest {
         @Test
         @DisplayName("Returns correctly sized deck")
         void fullSizedDeckTest() {
-            assertEquals(ActionTokenDeck.getFullDeck().size(), currentDeck.size());
+            assertEquals(actionTokenDeck.getFullDeck().size(), currentDeck.size());
         }
 
         @Test
         @DisplayName("All elements match the actual deck")
         void allElementsMatchTest() {
-            assertTrue(currentDeck.containsAll(ActionTokenDeck.getFullDeck()));
+            assertTrue(currentDeck.containsAll(actionTokenDeck.getFullDeck()));
         }
     }
 
