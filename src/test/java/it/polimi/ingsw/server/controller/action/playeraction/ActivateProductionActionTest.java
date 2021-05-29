@@ -49,39 +49,54 @@ public class ActivateProductionActionTest {
             e.printStackTrace();
         }
         produceLeaderCard = new ProduceLeaderCard(1,
-                new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)),
-                Resource.COIN, 1);//1 coin
-        developmentCard = new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), 1);
-        //1 stone
+                new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), null),
+                Resource.COIN, 1);
+        developmentCard = new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.SHIELD, 1), Map.of(Resource.STONE, 1), 1);
+
+
         productionCombo = new ProductionCombo();
-        productionCombo.setDefaultSlotOutput(Map.of(Resource.STONE, 1));
-        productionCombo.setLeaderCardProduction(Map.of(new DumbProduceLeaderCard(produceLeaderCard), Resource.COIN)
-        );
-        productionCombo.setDevelopmentCards(List.of(new DumbDevelopmentCard(developmentCard)));
-        productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.COIN, 1));
-        productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.STONE, 1));
+
+        productionCombo.setDefaultSlotOutput(Map.of(Resource.STONE, 1));//+1 stone
+
+        productionCombo.setLeaderCardProduction(Map.of(new DumbProduceLeaderCard(produceLeaderCard), Resource.SERVANT));//+1 servant
+
+        productionCombo.setDevelopmentCards(List.of(new DumbDevelopmentCard(developmentCard))); //+1 shield
+
+        productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.STONE, 1)); //-1 stone
+
+        productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.COIN, 1)); //-1 coin
+
         activateProductionAction = new ActivateProductionAction(productionCombo);
+
         activateProductionAction.setNickname(nick1);
+
         activateProductionAction.setGame(game);
+
         game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(produceLeaderCard));
+
         game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(produceLeaderCard);
+
         game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(developmentCard, 1);
+
         game.getPlayer(nick1).startTurn();
+
         game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
-        game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().storeResources(Map.of(Resource.COIN, 1));
-        game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(Map.of(Resource.STONE, 1));
+
+        game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().storeResources(Map.of(Resource.STONE, 1));
+
+        game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(Map.of(Resource.COIN, 1));
+
     }
 
     @Test
-    void executeTest() {
-        game.getPlayer(nick1).getPersonalBoard().storeInDepots(Map.of(Resource.SERVANT, 3));
-        game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.SHIELD, 3));
+    void    executeTest() {
         activateProductionAction.execute();
         assertAll(
-                ()-> assertEquals(2, game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().getStoredResources().get(Resource.SERVANT)), //depotsCanContain(Map.of(Resource.SERVANT, 2))),
-                ()->assertEquals(2, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SHIELD)),
-                ()->assertEquals(2, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.STONE)),
-                ()->assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.COIN)) //strongboxContainsResources(Map.of(Resource.SHIELD, 2, Resource.STONE, 2, Resource.COIN, 1)))
+                ()-> assertEquals(0, game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().getStoredResources().get(Resource.STONE)),
+                ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.STONE)),
+                ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SERVANT)),
+                ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SHIELD)),//depotsCanContain(Map.of(Resource.SERVANT, 2))),
+                ()->assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.COIN))
         );
     }
 
@@ -168,7 +183,7 @@ public class ActivateProductionActionTest {
 
         @Test
         @DisplayName("A not owned production Leader Card is rejected")
-        void noLeaderCardMatchingTest() {//todo: quando setto leaderCardProduction in productionCombo viene messo active di leader card a false, quindi le leader cards non possono matchare
+        void noLeaderCardMatchingTest() {
             ProduceLeaderCard newLeaderCard = new ProduceLeaderCard(1,
                     new LeaderCardRequirements(Map.of(Color.PURPLE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)),
                     Resource.COIN, 1);
@@ -259,7 +274,7 @@ public class ActivateProductionActionTest {
                 activateProductionAction.runChecks();
             } catch (InvalidActionException e) {
                 e.printStackTrace();
-                assertTrue(false);
+                fail();
             }
         }
     }
