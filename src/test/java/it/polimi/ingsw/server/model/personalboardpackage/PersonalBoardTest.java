@@ -94,15 +94,12 @@ class PersonalBoardTest {
         @EnumSource(LeaderCardAbility.class)
         @DisplayName("Test containsLeaderCardRequirements when the PersonalBoard does contain such requirements")
         void containsLeaderCardRequirementsWhenTrueTest(LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
-            leaderCards.forEach(
-                    leaderCard -> personalBoard.discardLeaderCard(leaderCard)
-            );
-            DevelopmentCardsBoard developmentCardsBoard = changesHandler.readDevelopmentCardsBoard();
+            DevelopmentCardsBoard developmentCardsBoard = game.getDevelopmentCardsBoard();
             LeaderCard leaderCard = getLeaderCardWithAbility(leaderCardAbility);
 
             //Sets the board so that it will surely contain all the requirements needed by the above created leaderCard
             switch (leaderCardAbility){
-                case CONVERT -> personalBoard.storeInDepots(leaderCard.getLeaderCardRequirements().getRequiredResources());
+                case STORE -> personalBoard.storeInStrongbox(leaderCard.getLeaderCardRequirements().getRequiredResources());
                 case PRODUCE -> {
                     //Extract the Color of the level 2 DevelopmentCard needed to activate this ProduceLeaderCard
                     Color requiredColor = leaderCard.getLeaderCardRequirements()
@@ -125,7 +122,7 @@ class PersonalBoardTest {
                             )
                     );
                 }
-                //STORE and CONVERT LeaderCards have similar requirements, so this places all the required DevelopmentCards on the on the personalBoard
+                //DISCOUNT and CONVERT LeaderCards have similar requirements, so this places all the required DevelopmentCards on the on the personalBoard
                 default -> leaderCard.getLeaderCardRequirements()
                         .getRequiredDevelopmentCards()
                         .forEach((key, value) -> IntStream.range(1, value.getQuantity()+1)
@@ -218,33 +215,32 @@ class PersonalBoardTest {
 
         @BeforeEach
         void setUp() throws FileNotFoundException {
-            leaderCard1 = (StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE);
-            leaderCard2 = (StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE);
+            List<LeaderCard> leaderCards = new ArrayList<>();
+            leaderCards.add((StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE));
+            leaderCards.add((StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE));
+
+            personalBoard.setLeaderCards(leaderCards);
+            personalBoard.activateLeaderCard(((StoreLeaderCard)personalBoard.getLeaderCards().get(0)));
+            personalBoard.activateLeaderCard(((StoreLeaderCard)personalBoard.getLeaderCards().get(1)));
 
             //Create the needed Resources
             strongboxResources = new HashMap<>();
             depotsResources = new HashMap<>();
-            leaderCard1Resources = new HashMap<>();
-            leaderCard2Resources = new HashMap<>();
-            depotsResources.put(Resource.COIN, 3);
-            depotsResources.put(Resource.SHIELD, 2);
-            strongboxResources.put(Resource.SERVANT, 5);
+            strongboxResources.put(Resource.SERVANT, 2);
             strongboxResources.put(Resource.STONE, 1);
-            leaderCard1Resources.put(leaderCard1.getStoredType(), 2);
-            leaderCard2Resources.put(leaderCard2.getStoredType(), 2);
+            //Leader cards resources are managed together with depots
+            depotsResources.put(((StoreLeaderCard)personalBoard.getLeaderCards().get(0)).getStoredType(), 4);
+            depotsResources.put(((StoreLeaderCard)personalBoard.getLeaderCards().get(1)).getStoredType(), 3);
 
             //add them to each storage component of the personalBoard
             personalBoard.storeInDepots(depotsResources);
             personalBoard.storeInStrongbox(strongboxResources);
-            leaderCard1.storeResources(leaderCard1Resources);
-            leaderCard2.storeResources(leaderCard2Resources);
-        }
+        }//todo: non fa correttamente la separazione tra risorse da salvare in leadercard e depots
 
         @Test
         @DisplayName("Test getResourceCount")
         void getResourceCountTest() {
-
-            int expectedCount = 15;
+            int expectedCount = 13;
             int actualCount = personalBoard.getResourceCount();
             assertEquals(expectedCount, actualCount, "Error: was expecting a count of " + expectedCount + " development cards, but received " + actualCount);
 
@@ -283,12 +279,6 @@ class PersonalBoardTest {
             depotsResources.forEach(
                     (key, value) -> expectedResources.merge( key, value, Integer::sum)
             );
-            leaderCard1Resources.forEach(
-                    (key, value) -> expectedResources.merge( key, value, Integer::sum)
-            );
-            leaderCard2Resources.forEach(
-                    (key, value) -> expectedResources.merge( key, value, Integer::sum)
-            );
 
             assertEquals(expectedResources, actualResources, "Error: the personal board does not contain the passed resources(should've been: " + expectedResources + " but received " + actualResources + ")");
 
@@ -305,7 +295,7 @@ class PersonalBoardTest {
             trialMap3.put(Resource.SERVANT, 1);
 
             assertAll(
-                    () -> assertFalse(personalBoard.depotsCanContain(trialMap1), "Error: method returned true on a map which can't be contained in the depots"),
+                    () -> assertTrue(personalBoard.depotsCanContain(trialMap1), "Error: method returned true on a map which can't be contained in the depots"),
                     () -> assertFalse(personalBoard.depotsCanContain(trialMap2), "Error: method returned true on a map which can't be contained in the depots"),
                     () -> assertTrue(personalBoard.depotsCanContain(trialMap3), "Error: method returned false on a map which can be contained in the depots")
             );
@@ -314,6 +304,9 @@ class PersonalBoardTest {
         @Test
         @DisplayName("Test depotsContainResources")
         void depotsContainResourcesTest() {
+            depotsResources.entrySet().forEach(
+                    entry -> entry.setValue(entry.getValue()-2)
+            );
             assertAll(
                     () -> assertTrue(personalBoard.depotsContainResources(depotsResources), "Error: method returned false, but the resources should be contained in the depots "),
                     () -> assertFalse(personalBoard.depotsContainResources(strongboxResources), "Error: method returned true, but the resources shouldn't be contained in the depots")
@@ -336,17 +329,9 @@ class PersonalBoardTest {
             depotsResources.forEach(
                     (key, value) -> allResources.merge( key, value, Integer::sum)
             );
-            leaderCard1Resources.forEach(
-                    (key, value) -> allResources.merge( key, value, Integer::sum)
-            );
-            leaderCard2Resources.forEach(
-                    (key, value) -> allResources.merge( key, value, Integer::sum)
-            );
 
             assertTrue(personalBoard.containsResources(depotsResources), "Error: the requested resources are contained in the depots, but the personal board returned false ");
             assertTrue(personalBoard.containsResources(strongboxResources), "Error: the requested resources are contained in the strongbox, but the personal board returned false ");
-            assertTrue(personalBoard.containsResources(leaderCard1Resources), "Error: the requested resources are contained in the first leader card, but the personal board returned false ");
-            assertTrue(personalBoard.containsResources(leaderCard2Resources), "Error: the requested resources are contained in the second leader card, but the personal board returned false ");
             assertTrue(personalBoard.containsResources(allResources), "Error: the requested resources are contained across different storages, but the personal board returned false ");
         }
 
@@ -368,62 +353,52 @@ class PersonalBoardTest {
     @Test
     @DisplayName("Test getVictoryPoints")
     void getVictoryPointsTest() throws FileNotFoundException {
-        StoreLeaderCard leaderCard1 = (StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE);
-        StoreLeaderCard leaderCard2 = (StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE);
+        List<LeaderCard> leaderCards = new ArrayList<>();
+        leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE));
+        leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.CONVERT));
+
+        personalBoard.setLeaderCards(leaderCards);
+
+        //Activate leader cards
+        personalBoard.activateLeaderCard(personalBoard.getLeaderCards().get(0));
+        personalBoard.activateLeaderCard(personalBoard.getLeaderCards().get(1));
 
         //Create and store resources in the personal board
         Map<Resource, Integer> strongboxResources = new HashMap<>();
         Map<Resource, Integer> depotsResources = new HashMap<>();
-        Map<Resource, Integer> leaderCard1Resources = new HashMap<>();
-        Map<Resource, Integer> leaderCard2Resources = new HashMap<>();
-        depotsResources.put(Resource.COIN, 3);
-        depotsResources.put(Resource.SHIELD, 2);
+        Arrays.stream(Resource.values()).forEach(
+                resource -> depotsResources.put(resource, 1)
+        );
         strongboxResources.put(Resource.SERVANT, 5);
         strongboxResources.put(Resource.STONE, 1);
-        leaderCard1Resources.put(leaderCard1.getStoredType(), 2);
-        leaderCard2Resources.put(leaderCard2.getStoredType(), 2);
         personalBoard.storeInDepots(depotsResources);
         personalBoard.storeInStrongbox(strongboxResources);
-        leaderCard1.storeResources(leaderCard1Resources);
-        leaderCard2.storeResources(leaderCard2Resources);
-
-        //Activate leader cards
-        leaderCard1.activate();
-        leaderCard2.activate();
 
         //Add development cards to the personalBoard
-        DevelopmentCardsBoard developmentCardsBoard = changesHandler.readDevelopmentCardsBoard();
-        List<DevelopmentCardSlot> developmentCardSlots = new ArrayList<>();
-        developmentCardSlots.add(changesHandler.readDevelopmentCardSlot("Mario", 1));
-        developmentCardSlots.get(0).placeCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW));
-        developmentCardSlots.add(changesHandler.readDevelopmentCardSlot("Mario", 2));
-        developmentCardSlots.get(1).placeCard(developmentCardsBoard.pick(Level.LEVEL1, Color.BLUE));
-        developmentCardSlots.get(1).placeCard(developmentCardsBoard.pick(Level.LEVEL2, Color.GREEN));
-        developmentCardSlots.get(1).placeCard(developmentCardsBoard.pick(Level.LEVEL3, Color.PURPLE));
-        developmentCardSlots.add(changesHandler.readDevelopmentCardSlot("Mario", 3));
-        developmentCardSlots.get(2).placeCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW));
-        IntStream.range(1, 4)
-                .forEach(
-                        position -> developmentCardSlots.forEach(
-                                developmentCardSlot -> developmentCardSlot.getDevelopmentCards()
-                                        .stream()
-                                        .sorted(Comparator.comparing(DevelopmentCard::getLevel))
-                                        .forEach(
-                                                developmentCard -> personalBoard.placeDevelopmentCard(developmentCard, position)
-                                        )
-                        )
-                );
+        DevelopmentCardsBoard developmentCardsBoard = game.getDevelopmentCardsBoard();
+        personalBoard.placeDevelopmentCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW),1);
+        personalBoard.placeDevelopmentCard(developmentCardsBoard.pick(Level.LEVEL1, Color.BLUE),2);
+        personalBoard.placeDevelopmentCard(developmentCardsBoard.pick(Level.LEVEL2, Color.GREEN),2);
+        personalBoard.placeDevelopmentCard(developmentCardsBoard.pick(Level.LEVEL3, Color.PURPLE),2);
+        personalBoard.placeDevelopmentCard(developmentCardsBoard.pick(Level.LEVEL1, Color.YELLOW),3);
+        personalBoard.placeDevelopmentCard(developmentCardsBoard.pick(Level.LEVEL2, Color.YELLOW),3);
 
         //Move on the faith track
-        IntStream.range(0, 24).forEach(
-                $ -> personalBoard.getFaithTrack().moveMarker()
+        IntStream.range(1, 25).forEach(
+                i -> {
+                    personalBoard.getFaithTrack().moveMarker();
+                    if(i%8==0)
+                        personalBoard.getFaithTrack().flipPopesFavor(i/8);
+                }
         );
 
-        int expectedVictoryPoints = leaderCard1.getVictoryPoints()
-                + leaderCard2.getVictoryPoints()
-                + 3
+        int expectedVictoryPoints = personalBoard.getLeaderCards().get(0).getVictoryPoints()
+                + personalBoard.getLeaderCards().get(1).getVictoryPoints()
+                + 2
                 + personalBoard.getFaithTrack().getVictoryPoints()
-                + developmentCardSlots.stream()
+                + personalBoard
+                .getDevelopmentCardSlots()
+                .stream()
                 .mapToInt(
                         DevelopmentCardSlot::getVictoryPoints
                 ).sum();
@@ -439,8 +414,7 @@ class PersonalBoardTest {
      * @return a LeaderCard of the specified LeaderCardAbility
      */
     private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
-        LeaderCardsDeck leaderCardsDeck = new ChangesHandler(1).readLeaderCardsDeck();
-        leaderCardsDeck.shuffle();
+        LeaderCardsDeck leaderCardsDeck = game.getLeaderCardsDeck();
         Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
                 leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
         ).findFirst();

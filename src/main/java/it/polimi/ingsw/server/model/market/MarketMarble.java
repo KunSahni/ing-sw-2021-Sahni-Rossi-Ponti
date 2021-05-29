@@ -6,12 +6,22 @@ import it.polimi.ingsw.server.model.utils.Resource;
  * this enumeration represents the market marbles colors
  */
 public enum MarketMarble {
-    WHITE,
-    RED,
-    GREY,
-    BLUE,
-    YELLOW,
-    PURPLE;
+    WHITE("white"),
+    RED("red"),
+    GREY("grey"),
+    BLUE("blue"),
+    YELLOW("yellow"),
+    PURPLE("purple");
+
+    private final String color;
+
+    private MarketMarble(String color) {
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
 
     public Resource toResource() {
         return switch(this) {
@@ -22,4 +32,6 @@ public enum MarketMarble {
             case RED, WHITE -> null;
         };
     }
+
+
 }

@@ -289,8 +289,16 @@ public class DevelopmentCardsBoardTest {
             List<DevelopmentCard> getLastCards(List<DevelopmentCard> cardsList, int number) {
                 List<DevelopmentCard> allCardsOfColor = cardsList.stream()
                         .filter(card -> card.getColor() == Color.BLUE)
+                        .sorted(
+                                new Comparator<DevelopmentCard>() {
+                                    @Override
+                                    public int compare(DevelopmentCard o1, DevelopmentCard o2) {
+                                        return o1.getLevel().getLevel() - o2.getLevel().getLevel();
+                                    }
+                                }
+                        )
                         .collect(toList());
-                return new ArrayList<>(allCardsOfColor.subList(allCardsOfColor.size() - number, allCardsOfColor.size()));
+                return new ArrayList<>(allCardsOfColor.subList(0, allCardsOfColor.size()>=2 ? number : allCardsOfColor.size()));
             }
 
             @DisplayName("Tests with different deck arrangements")
