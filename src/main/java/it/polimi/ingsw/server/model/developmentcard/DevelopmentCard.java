@@ -89,7 +89,7 @@ public class DevelopmentCard implements VictoryPointsElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DevelopmentCard that = (DevelopmentCard) o;
-        return victoryPoints == that.victoryPoints && faithIncrement == that.faithIncrement && color == that.color && level == that.level && inputResources.equals(that.inputResources) && outputResources.equals(that.outputResources) && cost.equals(that.cost);
+        return victoryPoints == that.victoryPoints && faithIncrement == that.faithIncrement && color == that.color && level == that.level && inputResources.equals(that.inputResources) && (Objects.equals(outputResources, that.outputResources)) && cost.equals(that.cost);
     }
 
 }
