@@ -60,6 +60,7 @@ public class SelectMarblesActionTest {
         @Test
         @DisplayName("Other players marker have been moved")
         void otherMarkersMovedTest() {
+            selectMarblesAction.execute();
             assertEquals(1, game.getPlayer(nick2).getPersonalBoard().getFaithTrack().getFaithMarkerPosition());
         }
     }
