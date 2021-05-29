@@ -1,18 +1,13 @@
 package it.polimi.ingsw.server.model.actiontoken;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.server.model.ChangesHandler;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 public class ActionTokenDeck {
     private final Stack<ActionToken> currentDeck;
     private transient ChangesHandler changesHandler;
+    private transient List<ActionToken> fullDeck;
 
     private ActionTokenDeck() {
         this.currentDeck = new Stack<>();
@@ -20,25 +15,16 @@ public class ActionTokenDeck {
 
     public void init(ChangesHandler changesHandler) {
         this.changesHandler = changesHandler;
+        this.fullDeck = new ArrayList<>(currentDeck);
+
     }
 
     /**
      * Returns a List containing the deck of ActionTokens specified in a resource file.
      * @return ActionToken list without a meaningful order.
      */
-    public static List<ActionToken> getFullDeck() {
-        JsonReader reader = null;
-        ActionToken[] actionTokens = null;
-        try {
-            reader = new JsonReader(new FileReader("src/main/resources/default/game/ActionTokenDeck.json"));
-            actionTokens =
-                    new GsonBuilder().setPrettyPrinting().serializeNulls().create()
-                            .fromJson(reader, ActionToken.class.arrayType());
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>(Arrays.asList(actionTokens));
+    public List<ActionToken> getFullDeck() {
+        return new ArrayList<>(fullDeck);
     }
 
     /**
