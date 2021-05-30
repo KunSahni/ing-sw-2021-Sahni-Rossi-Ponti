@@ -48,23 +48,25 @@ public class ActivateProductionActionTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         produceLeaderCard = new ProduceLeaderCard(1,
                 new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), null),
-                Resource.COIN, 1);
-        developmentCard = new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.SHIELD, 1), Map.of(Resource.STONE, 1), 1);
+                Resource.COIN, 1);//-1 coin from strongbox
 
+        developmentCard = new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.SHIELD, 1), Map.of(Resource.STONE, 1), 1);
+        //-1 stone from depots +1 shield
 
         productionCombo = new ProductionCombo();
 
-        productionCombo.setDefaultSlotOutput(Map.of(Resource.STONE, 1));//+1 stone
+        productionCombo.setDefaultSlotOutput(Map.of(Resource.STONE, 1));//+1 stone -2 shield
 
         productionCombo.setLeaderCardProduction(Map.of(new DumbProduceLeaderCard(produceLeaderCard), Resource.SERVANT));//+1 servant
 
-        productionCombo.setDevelopmentCards(List.of(new DumbDevelopmentCard(developmentCard))); //+1 shield
+        productionCombo.setDevelopmentCards(List.of(new DumbDevelopmentCard(developmentCard)));
 
-        productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.STONE, 1)); //-1 stone
+        productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2));
 
-        productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.COIN, 1)); //-1 coin
+        productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.COIN, 1));
 
         activateProductionAction = new ActivateProductionAction(productionCombo);
 
@@ -82,21 +84,22 @@ public class ActivateProductionActionTest {
 
         game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
 
-        game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().storeResources(Map.of(Resource.STONE, 1));
+        game.getPlayer(nick1).getPersonalBoard().storeInDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2));
 
-        game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(Map.of(Resource.COIN, 1));
+        game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.COIN, 1));
 
     }
 
     @Test
     void    executeTest() {
         activateProductionAction.execute();
+
         assertAll(
-                ()-> assertEquals(0, game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().getStoredResources().get(Resource.STONE)),
+                ()-> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().getStoredResources().isEmpty()),
                 ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.STONE)),
                 ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SERVANT)),
                 ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SHIELD)),//depotsCanContain(Map.of(Resource.SERVANT, 2))),
-                ()->assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.COIN))
+                ()->assertNull(game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.COIN))
         );
     }
 
@@ -136,9 +139,11 @@ public class ActivateProductionActionTest {
         }
 
         @Test
-        @DisplayName("The action is not performed cause leader card production is null")
+        @DisplayName("The action is not performed cause production combo is null")
         void emptyProductionComboTest() {
             productionCombo.setLeaderCardProduction(null);
+            productionCombo.setDefaultSlotOutput(null);
+            productionCombo.setDevelopmentCards(null);
             try {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
@@ -167,9 +172,8 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("A not owned development production is rejected")
         void noMatchingDevelopmentCardTest() {
-            game.getPlayer(nick1).setTempLeaderCards(List.of(new ProduceLeaderCard(1,
-                    new LeaderCardRequirements(Map.of(Color.PURPLE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)),
-                    Resource.COIN, 1)));
+            DevelopmentCard notOwnedDevelopmentCard = new DevelopmentCard(Color.BLUE, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.SHIELD, 1), Map.of(Resource.STONE, 1), 1);
+            productionCombo.setDevelopmentCards(List.of(new DumbDevelopmentCard(notOwnedDevelopmentCard)));
             try {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
@@ -187,8 +191,8 @@ public class ActivateProductionActionTest {
             ProduceLeaderCard newLeaderCard = new ProduceLeaderCard(1,
                     new LeaderCardRequirements(Map.of(Color.PURPLE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.SERVANT, 1)),
                     Resource.COIN, 1);
-            game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(newLeaderCard);
             game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(newLeaderCard));
+            game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(newLeaderCard);
             try {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
@@ -219,7 +223,7 @@ public class ActivateProductionActionTest {
         }
 
         @Test
-        @DisplayName("Selected discarded resources from strongbox and production cost don't match")
+        @DisplayName("Selected discarded resources and production cost don't match")
         void noMatchBetweenProductionCostAndSelectedDiscardedStrongboxTest() {
             productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.SERVANT, 1));
 
@@ -238,7 +242,7 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Not enough resources are in depots, so the action is rejected")
         void notEnoughResourcesInDepotsTest() {
-            game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().discardResources(Map.of(Resource.COIN, 1));
+            game.getPlayer(nick1).getPersonalBoard().discardFromDepots(Map.of(Resource.COIN, 1));
             try {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
@@ -254,7 +258,7 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Not enough resources are in strongbox, so the action is rejected")
         void notEnoughResourcesInStrongboxTest() {
-            game.getPlayer(nick1).getPersonalBoard().getStrongbox().discardResources(Map.of(Resource.STONE, 1));
+            game.getPlayer(nick1).getPersonalBoard().discardFromStrongbox(Map.of(Resource.COIN, 1));
             try {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
