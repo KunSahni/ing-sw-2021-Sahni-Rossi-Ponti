@@ -69,7 +69,7 @@ public class BuyDevelopmentCardActionTest {
                 e.printStackTrace();
                 fail();
             }
-        } //todo: il controllo delle risorse sufficienti non va , il controllo per poter posizionare la carta in un certo slot non va
+        } //todo: il controllo delle risorse sufficienti non va (la condizione va negata), il controllo per poter posizionare la carta in un certo slot non va (la condizione va negata)
 
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
@@ -120,6 +120,7 @@ public class BuyDevelopmentCardActionTest {
         }
 
         @Test
+        @DisplayName("Wrong resources amount is passed so the action is rejected")
         void passedResourceDontMatchCostTest() {
             BuyDevelopmentCardAction buyDevelopmentCardAction1 = new BuyDevelopmentCardAction(Level.LEVEL1, Color.GREEN, 1, null, Map.of(Resource.COIN, 1));
             buyDevelopmentCardAction1.setNickname(nick1);
@@ -139,8 +140,8 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("The player doesn't have enough resources, so the action is rejected")
         void notEnoughResourcesTest() {
-            game.getPlayer(nick1).getPersonalBoard().getStrongbox().discardResources(cardCost);
-            game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().discardResources(cardCost);
+            game.getPlayer(nick1).getPersonalBoard().discardFromStrongbox(cardCost);
+            game.getPlayer(nick1).getPersonalBoard().discardFromDepots(cardCost);
             try {
                 buyDevelopmentCardAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
