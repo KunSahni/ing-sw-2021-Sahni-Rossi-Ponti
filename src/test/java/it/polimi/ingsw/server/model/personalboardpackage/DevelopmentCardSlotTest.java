@@ -8,10 +8,7 @@ import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,6 +45,11 @@ class DevelopmentCardSlotTest {
         developmentCards.forEach(
                 developmentCard -> developmentCardSlot.placeCard(developmentCard)
         );
+    }
+
+    @AfterEach
+    void tearDown() {
+        changesHandler.publishGameOutcome(game);
     }
 
     @Test

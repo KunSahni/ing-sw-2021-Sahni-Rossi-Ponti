@@ -1,7 +1,9 @@
 package it.polimi.ingsw.server.model.utils;
 
 import it.polimi.ingsw.client.utils.dumbobjects.*;
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
+import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
@@ -31,10 +33,10 @@ public class ProductionComboTest {
     @Test
     @DisplayName("setDevelopmentCards method test")
     void setDevelopmentCardsTest() throws IOException {
-        ChangesHandler changesHandler = new ChangesHandler(1);
-        changesHandler.createGameFilesFromBlueprint(new ArrayList<>());
-        DevelopmentCard developmentCard1 = changesHandler.readDevelopmentCardsBoard().peekCard(Level.LEVEL1, Color.GREEN);
-        DevelopmentCard developmentCard2 = changesHandler.readDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.BLUE);
+        Game game = new Game(new Server(), 1, new ArrayList<>());
+        DevelopmentCard developmentCard1 = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL1, Color.GREEN);
+        DevelopmentCard developmentCard2 = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.BLUE);
+        new ChangesHandler(1).publishGameOutcome(game);
         List<DumbDevelopmentCard> developmentCardSlots = new ArrayList<>();
 
         developmentCardSlots.add(new DumbDevelopmentCard(developmentCard1));

@@ -36,9 +36,20 @@ public class DevelopmentCardTest {
             assertNotSame(card.getInputResources(), card.getInputResources());
         }
 
+        DevelopmentCard getCardWithOutputResources(){
+            if(game.getDevelopmentCardsBoard().peekBoard()[2][1].peek().getOutputResources() != null)
+                return game.getDevelopmentCardsBoard().peekBoard()[2][1].peek();
+            else{
+                game.getDevelopmentCardsBoard().pick(Level.LEVEL1, Color.BLUE);
+                return getCardWithOutputResources();
+            }
+        }
+
         @Test
         @DisplayName("getOutputResources safety test")
         void getOutputResourcesSafetyTest() {
+            if(card.getOutputResources() == null)
+                card = getCardWithOutputResources();
             assertNotSame(card.getOutputResources(), card.getOutputResources());
         }
         //todo: outputResources in DevelopmentCard non viene settato, tutto il resto si

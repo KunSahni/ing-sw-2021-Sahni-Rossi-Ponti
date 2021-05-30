@@ -34,7 +34,7 @@ public class GameTest {
     }
 
     @AfterEach
-    void tearDown() throws InterruptedException {
+    void tearDown() {
         changesHandler.publishGameOutcome(game);
     }
 
@@ -183,10 +183,11 @@ public class GameTest {
         ActionTokenDeck actionTokenDeck;
 
         @BeforeEach
-        void init() throws IOException {
+        void init() throws IOException, InterruptedException {
             Server server = new Server();
             nicknames = new ArrayList<>();
             nicknames.add("Mario");
+            tearDown();
             game = new Game(server, 1, nicknames);
             actionTokenDeck = game.getActionTokenDeck();
         }

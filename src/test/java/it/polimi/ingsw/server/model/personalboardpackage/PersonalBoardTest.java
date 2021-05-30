@@ -216,12 +216,12 @@ class PersonalBoardTest {
         @BeforeEach
         void setUp() throws FileNotFoundException {
             List<LeaderCard> leaderCards = new ArrayList<>();
-            leaderCards.add((StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE));
-            leaderCards.add((StoreLeaderCard) getLeaderCardWithAbility(LeaderCardAbility.STORE));
+            leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE));
+            leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE));
 
             personalBoard.setLeaderCards(leaderCards);
-            personalBoard.activateLeaderCard(((StoreLeaderCard)personalBoard.getLeaderCards().get(0)));
-            personalBoard.activateLeaderCard(((StoreLeaderCard)personalBoard.getLeaderCards().get(1)));
+            personalBoard.activateLeaderCard(personalBoard.getLeaderCards().get(0));
+            personalBoard.activateLeaderCard(personalBoard.getLeaderCards().get(1));
 
             //Create the needed Resources
             strongboxResources = new HashMap<>();
@@ -240,7 +240,7 @@ class PersonalBoardTest {
         @Test
         @DisplayName("Test getResourceCount")
         void getResourceCountTest() {
-            int expectedCount = 13;
+            int expectedCount = 10;
             int actualCount = personalBoard.getResourceCount();
             assertEquals(expectedCount, actualCount, "Error: was expecting a count of " + expectedCount + " development cards, but received " + actualCount);
 
@@ -307,19 +307,13 @@ class PersonalBoardTest {
             depotsResources.entrySet().forEach(
                     entry -> entry.setValue(entry.getValue()-2)
             );
-            assertAll(
-                    () -> assertTrue(personalBoard.depotsContainResources(depotsResources), "Error: method returned false, but the resources should be contained in the depots "),
-                    () -> assertFalse(personalBoard.depotsContainResources(strongboxResources), "Error: method returned true, but the resources shouldn't be contained in the depots")
-            );
+            assertTrue(personalBoard.depotsContainResources(depotsResources), "Error: method returned false, but the resources should be contained in the depots ");
         }
 
         @Test
         @DisplayName("Test strongboxContainsResources")
         void strongboxContainsResourcesTest() {
-            assertAll(
-                    () -> assertTrue(personalBoard.strongboxContainsResources(strongboxResources), "Error: method returned false, but the resources should be contained in the strongbox"),
-                    () -> assertFalse(personalBoard.strongboxContainsResources(depotsResources), "Error: method returned true, but the resources shouldn't be contained in the strongbox")
-            );
+            assertTrue(personalBoard.strongboxContainsResources(strongboxResources), "Error: method returned false, but the resources should be contained in the strongbox");
         }
 
         @Test

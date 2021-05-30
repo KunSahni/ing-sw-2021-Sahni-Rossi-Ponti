@@ -30,7 +30,7 @@ class SinglePlayerFaithTrackTest {
     }
 
     @AfterEach
-    void tearDown() throws InterruptedException {
+    void tearDown() {
         changesHandler.publishGameOutcome(game);
     }
 

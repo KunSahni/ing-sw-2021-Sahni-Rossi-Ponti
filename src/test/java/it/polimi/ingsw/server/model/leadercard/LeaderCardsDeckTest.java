@@ -1,22 +1,32 @@
 package it.polimi.ingsw.server.model.leadercard;
 
+import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import it.polimi.ingsw.server.model.Game;
+import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LeaderCardsDeckTest {
     LeaderCardsDeck deck;
+    ChangesHandler changesHandler;
+    Game game;
 
     @BeforeEach
-    void init() throws FileNotFoundException {
-        deck = new ChangesHandler(1).readLeaderCardsDeck();
+    void init() throws IOException {
+        game = new Game(new Server(), 1, new ArrayList<>());
+        changesHandler = new ChangesHandler(1);
+        deck = game.getLeaderCardsDeck();
+    }
+
+    @AfterEach
+    void tearDown() {
+        changesHandler.publishGameOutcome(game);
     }
 
     @Test
