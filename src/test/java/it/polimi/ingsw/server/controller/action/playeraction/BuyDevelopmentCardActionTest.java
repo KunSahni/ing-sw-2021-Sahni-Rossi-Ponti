@@ -61,7 +61,7 @@ public class BuyDevelopmentCardActionTest {
     class runChecksTest {
 
         @Test
-        @DisplayName("All checks are passed")
+        @DisplayName("All checks are passed") //todo: condition that controls if a card can be placed in a certain slot (in BuyDevelopmentCardAction, line 86) should be denied
         void allChecksPassedTest() {
             try {
                 buyDevelopmentCardAction.runChecks();
@@ -69,7 +69,7 @@ public class BuyDevelopmentCardActionTest {
                 e.printStackTrace();
                 fail();
             }
-        } //todo: il controllo delle risorse sufficienti non va (la condizione va negata), il controllo per poter posizionare la carta in un certo slot non va (la condizione va negata)
+        }
 
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
@@ -151,9 +151,10 @@ public class BuyDevelopmentCardActionTest {
                     throw new AssertionError("Wrong exception was thrown");
                 }
             }
-        }//todo: controllare anche metodo discardResources in Strongbox e WarehouseDepots
+        }
 
-        @Test
+        @Test //todo: canPlaceDevelopmentCard (in developmentCardSlot, line 51) try to peek a card, but if there isn't any card an exception is thrown
+        @DisplayName("A player can't place a card if doesn't own a card of inferior level")
         void illegalCardPositionTest() {
             cardCost = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.GREEN).getCost();
             BuyDevelopmentCardAction buyDevelopmentCardAction1 = new BuyDevelopmentCardAction(Level.LEVEL2, Color.GREEN, 1, null, cardCost);
@@ -162,7 +163,7 @@ public class BuyDevelopmentCardActionTest {
             game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(cardCost);
             game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().storeResources(cardCost);
             try {
-                buyDevelopmentCardAction.runChecks();
+                buyDevelopmentCardAction1.runChecks();
                 throw new AssertionError("Exception was not thrown");
             } catch (InvalidActionException e) {
                 if (!e.getMessage().equals("You cannot place a LEVEL2 Development Card  in the Development Cards Slot number 1")) {

@@ -239,7 +239,7 @@ public class ActivateProductionActionTest {
             }
         }
 
-        @Test
+        @Test //todo: In activate production action where Calculate the total cost to activate the selected development cards (line 122) should consider development card input resources and NOT development card cost
         @DisplayName("Not enough resources are in depots, so the action is rejected")
         void notEnoughResourcesInDepotsTest() {
             game.getPlayer(nick1).getPersonalBoard().discardFromDepots(Map.of(Resource.COIN, 1));
