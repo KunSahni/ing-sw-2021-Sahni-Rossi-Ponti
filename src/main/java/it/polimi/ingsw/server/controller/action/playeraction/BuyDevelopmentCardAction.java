@@ -79,8 +79,8 @@ public class BuyDevelopmentCardAction extends PlayerAction {
         if (!passedResourcesMatchCardCost())
             throw new InvalidActionException("You did not pass the correct amount of resources to" +
                     " purchase the selected Development Card");
-        if (player.getPersonalBoard().depotsContainResources(discardedResourcesFromDepots)
-                && player.getPersonalBoard()
+        if (!player.getPersonalBoard().depotsContainResources(discardedResourcesFromDepots)
+                || !player.getPersonalBoard()
                 .strongboxContainsResources(discardedResourcesFromStrongbox))
             throw new InvalidActionException("Your storages do not have enough resources.");
         if (player.getPersonalBoard().getDevelopmentCardSlots().get(index - 1)
