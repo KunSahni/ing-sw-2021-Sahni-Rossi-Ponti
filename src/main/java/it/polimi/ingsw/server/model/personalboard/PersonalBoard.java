@@ -230,9 +230,10 @@ public class PersonalBoard implements VictoryPointsElement {
      * Stores the given resources in the Warehouse Depots and, if possible, in Storage
      * Leader Cards
      *
-     * @param resources map containing the resources to add
+     * @param addedResources map containing the resources to add
      */
-    public void storeInDepots(Map<Resource, Integer> resources) {
+    public void storeInDepots(Map<Resource, Integer> addedResources) {
+        Map<Resource, Integer> resources = new HashMap<>(addedResources);
         Map<Resource, Integer> storeInLeaderCards = leaderCards.stream()
                 .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
                 .map(x -> (StoreLeaderCard) x)
