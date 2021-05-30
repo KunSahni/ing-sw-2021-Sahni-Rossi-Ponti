@@ -317,7 +317,10 @@ public class PersonalBoard implements VictoryPointsElement {
                 .forEach(card -> storages.add(card.getStoredResources()));
         storages.forEach(
                 resourceIntegerMap -> resourceIntegerMap.forEach((resource, quantity) ->
-                        totalResourcesMap.merge(resource, quantity, (k, v) -> v + quantity)
+                        totalResourcesMap.compute(resource,
+                                (k, v) -> (v == null)
+                                        ? quantity
+                                        : v + quantity)
                 )
         );
         return totalResourcesMap;
