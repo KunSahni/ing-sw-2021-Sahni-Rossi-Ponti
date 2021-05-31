@@ -43,7 +43,7 @@ public class BuyDevelopmentCardActionTest {
             e.printStackTrace();
         }
         game.getPlayer(nick1).startTurn();
-        game.getPlayer(nick1).addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
+        game.getPlayer(nick1).addAction(ExecutedActions.DISCARDED_LEADER_CARD_ACTION);
         cardCost = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL1, Color.GREEN).getCost();
         buyDevelopmentCardAction = new BuyDevelopmentCardAction(Level.LEVEL1, Color.GREEN, 1, null, cardCost);
         buyDevelopmentCardAction.setNickname(nick1);
@@ -109,7 +109,7 @@ public class BuyDevelopmentCardActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            game.getPlayer(nick1).addAction(ExecutedActions.DISCARDED_LEADER_CARD_ACTION);
+            game.getPlayer(nick1).addAction(ExecutedActions.TURN_ENDED_ACTION);
             try {
                 buyDevelopmentCardAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
