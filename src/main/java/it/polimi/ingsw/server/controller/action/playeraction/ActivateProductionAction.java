@@ -3,7 +3,9 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.controller.action.gameaction.GameAction;
+import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.personalboard.DefaultSlot;
 import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
@@ -117,32 +119,41 @@ public class ActivateProductionAction extends PlayerAction {
         Map<Resource, Integer> totalDiscardMap =
                 new HashMap<>(productionCombo.getDiscardedResourcesFromDepots());
         productionCombo.getDiscardedResourcesFromStrongbox().forEach(
-                (key, value) -> totalDiscardMap.merge(key, value, Integer::sum)
+                (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)
+                        ? value : v + value)
         );
-        // Calculate the total cost to activate the selected development cards
-        Map<Resource, Integer> devCardsCost = new HashMap<>();
+        // Subtract the dev card inputs from the total discards map
         productionCombo.getDevelopmentCards()
-                .forEach(card -> card.getCost().forEach(
-                        (k, v) -> devCardsCost.merge(k, v, Integer::sum)
+                .forEach(card -> card.getInputResources().forEach(
+                        (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)
+                                ? -value : v - value)
                 ));
-        // Subtract the dev card cost from the total discards map
-        devCardsCost.forEach((key, value) -> totalDiscardMap.compute(
-                key, (k, v) -> (v == null) ? -value : v - value
-        ));
+        // Subtract leader card inputs from the total discards map
+        productionCombo.getLeaderCardProduction().keySet()
+                .stream()
+                .map(DumbLeaderCard::convert)
+                .forEach(card -> totalDiscardMap.compute(((ProduceLeaderCard) card).getInputResource(),
+                        (k, v) -> (v == null) ? -1 : v - 1));
+        // Consider discounts from Leader Cards
+        player.getPersonalBoard().getLeaderCards()
+                .stream()
+                .filter(card -> card.isActive()
+                        && card.getAbility().equals(LeaderCardAbility.DISCOUNT))
+                .forEach(
+                        card -> totalDiscardMap.compute(((DiscountLeaderCard) card).getDiscountedResource(),
+                                (k, v) -> (v == null) ? null : v + 1)
+                );
         // If any field of the discard map went negative while counting dev cards
         // costs it means that the player did not supply enough resources to cover
         // the production
         if (totalDiscardMap.values().stream().allMatch(value -> value >= 0)) {
             // Count how many resources are left in the discard map
             int resourcesLeft = totalDiscardMap.values().stream().reduce(0, Integer::sum);
-            int singles = 0;
-            // If the default slot gets activated a resource is needed
+            int resourcesNeeded = 0;
+            // If the default slot gets activated 2 resources are needed
             if (productionCombo.getDefaultSlotOutput() != null)
-                singles++;
-                // For each activated leader card a resource is needed
-            else if (productionCombo.getLeaderCardProduction() != null)
-                singles += productionCombo.getLeaderCardProduction().size();
-            return resourcesLeft == singles;
+                resourcesNeeded += 2;
+            return resourcesLeft == resourcesNeeded;
         } else {
             return false;
         }

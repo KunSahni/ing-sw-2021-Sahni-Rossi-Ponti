@@ -83,7 +83,7 @@ public class BuyDevelopmentCardAction extends PlayerAction {
                 || !player.getPersonalBoard()
                 .strongboxContainsResources(discardedResourcesFromStrongbox))
             throw new InvalidActionException("Your storages do not have enough resources.");
-        if (player.getPersonalBoard().getDevelopmentCardSlots().get(index - 1)
+        if (!player.getPersonalBoard().getDevelopmentCardSlots().get(index - 1)
                 .canPlaceCard(game.getDevelopmentCardsBoard().peekCard(level, color)))
             throw new InvalidActionException("You cannot place a " + level + " Development Card " +
                     " in the Development Cards Slot number " + index);
