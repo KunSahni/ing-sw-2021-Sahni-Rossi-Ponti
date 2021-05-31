@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
@@ -44,13 +45,17 @@ public class ActivateLeaderCardActionTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dumbLeaderCard = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 0)), Map.of(Resource.STONE, 0)), Resource.COIN));
+        dumbLeaderCard = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.STONE, 1)), Resource.COIN));
         activateLeaderCardAction = new ActivateLeaderCardAction(dumbLeaderCard);
         activateLeaderCardAction.setNickname(nick1);
         activateLeaderCardAction.setGame(game);
         game.getPlayer(nick1).setTempLeaderCards(List.of(dumbLeaderCard.convert()));
         leaderCard = dumbLeaderCard.convert();
         game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(leaderCard));
+        game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
+        game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), 1), 1);
+        game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.STONE, 1));
+        game.getPlayer(nick1).startTurn();
     }
 
     @Test
@@ -68,51 +73,110 @@ public class ActivateLeaderCardActionTest {
     class runChecksTest{
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
-        void wrongTurnTest() throws Exception{
+        void wrongTurnTest(){
+            game.getPlayer(nick1).finishTurn();
             game.getPlayer(nick2).startTurn();
             try{
                 activateLeaderCardAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
             }catch (InvalidActionException e) {
+                if (!e.getMessage().equals("Not your turn")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
             }
         }
 
         @Test
         @DisplayName("A not owned leader card hasn't been activated")
         void invalidLeaderCardTest() {
-            game.getPlayer(nick1).startTurn();
 
             DumbConvertLeaderCard dumbLeaderCard1 = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 0)), Map.of(Resource.STONE, 0)), Resource.COIN));
             ActivateLeaderCardAction activateLeaderCardAction1 = new ActivateLeaderCardAction(dumbLeaderCard1);
             activateLeaderCardAction1.setNickname(nick1);
             activateLeaderCardAction1.setGame(game);
 
-            game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
             try{
                 activateLeaderCardAction1.runChecks();
                 throw new AssertionError("Exception was not thrown");
             }catch (InvalidActionException e) {
+                if (!e.getMessage().equals("You do not have the selected LeaderCard")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
             }
         }
 
         @Test
         @DisplayName("Player hasn't enough resources and can't afford leader card")
         void notEnoughResourcesTest() {
-            game.getPlayer(nick1).startTurn();
 
-            DumbConvertLeaderCard dumbLeaderCard1 = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 0)), Map.of(Resource.STONE, 1)), Resource.COIN));
-            ActivateLeaderCardAction activateLeaderCardAction1 = new ActivateLeaderCardAction(dumbLeaderCard1);
-            activateLeaderCardAction1.setNickname(nick1);
-            activateLeaderCardAction1.setGame(game);
-            game.getPlayer(nick1).setTempLeaderCards(List.of(dumbLeaderCard1.convert()));
-            leaderCard = dumbLeaderCard1.convert();
-            game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(leaderCard));
+            game.getPlayer(nick1).getPersonalBoard().discardFromStrongbox(Map.of(Resource.STONE, 1));
 
-            game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
             try{
-                activateLeaderCardAction1.runChecks();
+                activateLeaderCardAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
             }catch (InvalidActionException e) {
+                if (!e.getMessage().equals("You cannot afford to activate this LeaderCard")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("Player can't perform this action at this time")
+        void cantPerformActionTest() {
+
+            game.getPlayer(nick1).addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
+
+            try{
+                activateLeaderCardAction.runChecks();
+                throw new AssertionError("Exception was not thrown");
+            }catch (InvalidActionException e) {
+                if (!e.getMessage().equals("You cannot activate a LeaderCard at this time")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("Leader card is already active")
+        void alreadyActiveLeaderCard() {
+
+            game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(leaderCard);
+
+            try{
+                activateLeaderCardAction.runChecks();
+                throw new AssertionError("Exception was not thrown");
+            }catch (InvalidActionException e) {
+                if (!e.getMessage().equals("LeaderCard is already active")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Player doesn't own request development card")
+    void noDevelopmentCardTest() {
+        DumbConvertLeaderCard dumbLeaderCard1 = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.BLUE, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), null), Resource.COIN));
+        ActivateLeaderCardAction activateLeaderCardAction1 = new ActivateLeaderCardAction(dumbLeaderCard1);
+        activateLeaderCardAction1.setNickname(nick1);
+        activateLeaderCardAction1.setGame(game);
+        game.getPlayer(nick1).setTempLeaderCards(List.of(dumbLeaderCard1.convert()));
+        ConvertLeaderCard leaderCard1 = dumbLeaderCard1.convert();
+        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(leaderCard1));
+
+        try{
+            activateLeaderCardAction1.runChecks();
+            throw new AssertionError("Exception was not thrown");
+        }catch (InvalidActionException e) {
+            if (!e.getMessage().equals("You cannot afford to activate this LeaderCard")){
+                e.printStackTrace();
+                throw new AssertionError("Wrong exception was thrown");
             }
         }
     }

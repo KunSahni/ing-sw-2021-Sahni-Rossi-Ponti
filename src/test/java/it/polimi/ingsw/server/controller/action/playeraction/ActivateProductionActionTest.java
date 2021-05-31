@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
+import it.polimi.ingsw.server.model.personalboard.FavorStatus;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -28,6 +29,7 @@ public class ActivateProductionActionTest {
     Game game;
     String nick1;
     String nick2;
+    String nick3;
     ProduceLeaderCard produceLeaderCard;
     DevelopmentCard developmentCard;
     Server server;
@@ -43,8 +45,9 @@ public class ActivateProductionActionTest {
         }
         nick1 = "qwe";
         nick2 = "asd";
+        nick3 = "zxc";
         try {
-            game = new Game(server, 1, List.of(nick1, nick2));
+            game = new Game(server, 1, List.of(nick1, nick2, nick3));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,7 +94,8 @@ public class ActivateProductionActionTest {
     }
 
     @Test
-    void    executeTest() {
+    @DisplayName("Action has been executed correctly")
+    void executeTest() {
         activateProductionAction.execute();
 
         assertAll(
@@ -100,6 +104,21 @@ public class ActivateProductionActionTest {
                 ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SERVANT)),
                 ()-> assertEquals(1, game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.SHIELD)),//depotsCanContain(Map.of(Resource.SERVANT, 2))),
                 ()->assertNull(game.getPlayer(nick1).getPersonalBoard().getStrongbox().getStoredResources().get(Resource.COIN))
+        );
+    }
+
+    @Test
+    void flipPopesFavorTest() {
+        while(game.getPlayer(nick1).getPersonalBoard().getFaithTrack().getFaithMarkerPosition()!=7) {
+            game.getPlayer(nick1).getPersonalBoard().getFaithTrack().moveMarker();
+            game.getPlayer(nick2).getPersonalBoard().getFaithTrack().moveMarker();
+        }
+        activateProductionAction.execute();
+
+        assertAll(
+                () -> assertEquals(FavorStatus.ACTIVE, game.getPlayer(nick1).getPersonalBoard().getFaithTrack().getPopesFavors().get(0)),
+                () -> assertEquals(FavorStatus.ACTIVE, game.getPlayer(nick2).getPersonalBoard().getFaithTrack().getPopesFavors().get(0)),
+                () -> assertEquals(FavorStatus.DISCARDED, game.getPlayer(nick3).getPersonalBoard().getFaithTrack().getPopesFavors().get(0))
         );
     }
 

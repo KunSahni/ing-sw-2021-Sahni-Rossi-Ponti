@@ -5,6 +5,8 @@ import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
+import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
@@ -47,13 +49,30 @@ public class BuyDevelopmentCardActionTest {
         buyDevelopmentCardAction.setNickname(nick1);
         buyDevelopmentCardAction.setGame(game);
         game.getPlayer(nick1).getPersonalBoard().getStrongbox().storeResources(cardCost);
-        game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().storeResources(cardCost);
     }
 
     @Test
     @DisplayName("Action has been executed correctly")
     void executeTest() {
         assertNull(buyDevelopmentCardAction.execute());
+    }
+
+    @Test
+    void discountWorksTest() {
+        DiscountLeaderCard discountLeaderCard = new DiscountLeaderCard(1, new LeaderCardRequirements(null, Map.of(Resource.SHIELD, 1)), Resource.SHIELD);
+        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(discountLeaderCard));
+        game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(discountLeaderCard);
+
+        try {
+            buyDevelopmentCardAction.runChecks();
+            throw new AssertionError("Exception was not thrown");
+        } catch (InvalidActionException e) {
+            if (!e.getMessage().equals("You did not pass the correct amount of resources to" +
+                    " purchase the selected Development Card")){
+                e.printStackTrace();
+                throw new AssertionError("Wrong exception was thrown");
+            }
+        }
     }
 
     @Nested
@@ -141,7 +160,6 @@ public class BuyDevelopmentCardActionTest {
         @DisplayName("The player doesn't have enough resources, so the action is rejected")
         void notEnoughResourcesTest() {
             game.getPlayer(nick1).getPersonalBoard().discardFromStrongbox(cardCost);
-            game.getPlayer(nick1).getPersonalBoard().discardFromDepots(cardCost);
             try {
                 buyDevelopmentCardAction.runChecks();
                 throw new AssertionError("Exception was not thrown");

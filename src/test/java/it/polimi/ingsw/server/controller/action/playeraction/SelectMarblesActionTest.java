@@ -3,6 +3,8 @@ package it.polimi.ingsw.server.controller.action.playeraction;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -78,9 +80,72 @@ public class SelectMarblesActionTest {
                 e.printStackTrace();
                 fail();
             }
-        } //todo: in tempMarblesContainSelectedMarbles method by default a red marble is removed from player's temp marble
+        }
+
+        @Test
+        @DisplayName("Player can't perform this  action at this time")
+        void actionInWrongTime() {
+            game.getPlayer(nick1).addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
+
+            try {
+                selectMarblesAction.runChecks();
+                throw new AssertionError("Exception was not thrown");
+            } catch (InvalidActionException e) {
+                if (!e.getMessage().equals("You cannot store market resources at this time.")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("Player has selected an illegal amount of marbles")
+        void invalidAmountOfMarblesTest() {
+            SelectMarblesAction selectMarblesAction1 = new SelectMarblesAction(Map.of(MarketMarble.BLUE, 3));
+            selectMarblesAction1.setNickname(nick1);
+            selectMarblesAction1.setGame(game);
+
+            try {
+                selectMarblesAction1.runChecks();
+                throw new AssertionError("Exception was not thrown");
+            } catch (InvalidActionException e) {
+                if (!e.getMessage().equals("The marbles you have supplied are not an acceptable" +
+                        " subset of the marbles you have taken from the market.")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("Player's depots are full")
+        void fullDepotsTest() {
+            game.getPlayer(nick1).getPersonalBoard().storeInDepots(Map.of(Resource.SHIELD, 3, Resource.COIN, 2, Resource.STONE, 1));
+
+            try {
+                selectMarblesAction.runChecks();
+                throw new AssertionError("Exception was not thrown");
+            } catch (InvalidActionException e) {
+                if (!e.getMessage().equals("Your depots cannot contain the selected resources.")){
+                    e.printStackTrace();
+                    throw new AssertionError("Wrong exception was thrown");
+                }
+            }
+        }
+
+        //todo: in tempMarblesContainSelectedMarbles method by default a red marble is removed from player's temp marble
         //todo: control for marbles don't exceed tempMarbles doesn't work
     }
+
+  /**  @Test
+    void convertTest() {
+        ConvertLeaderCard convertLeaderCard = new ConvertLeaderCard(1, new LeaderCardRequirements(null, null), Resource.COIN);
+        ConvertLeaderCard convertLeaderCard1 = new ConvertLeaderCard(1, new LeaderCardRequirements(null, null), Resource.SERVANT);
+        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard));
+        game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(convertLeaderCard);
+        game.getPlayer(nick1).setTempMarbles(Map.of(MarketMarble.BLUE, 2, MarketMarble.WHITE, 2));
+        selectMarblesAction = new SelectMarblesAction(Map.of(MarketMarble.BLUE, 1));
+    }*/
 
     @AfterEach
     void tearDown() throws InterruptedException {
