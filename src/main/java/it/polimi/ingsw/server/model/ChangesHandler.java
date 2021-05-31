@@ -48,6 +48,7 @@ public class ChangesHandler {
     public void createGameFilesFromBlueprint(List<String> nicknames) throws IOException {
         copyFolder("src/main/resources/default/game", root);
         writeNicknameList(nicknames);
+        flushBufferToDisk();
         for (String nickname : nicknames) {
             copyFolder("src/main/resources/default/player",
                     root + "/players/" + nickname);
