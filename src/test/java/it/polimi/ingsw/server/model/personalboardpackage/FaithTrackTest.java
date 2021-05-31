@@ -33,7 +33,7 @@ class FaithTrackTest {
     }
 
     @AfterEach
-    void tearDown() throws InterruptedException {
+    void tearDown() {
         changesHandler.publishGameOutcome(game);
     }
 
@@ -70,15 +70,23 @@ class FaithTrackTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3})
+    @ValueSource(ints = {0, 1, 2, 3})
     @DisplayName("Test flipPopesFavor")
     void flipPopesFavorTest(int index) {
+        List<FavorStatus> popesFavors = faithTrack.getPopesFavors();
+        assertEquals(FavorStatus.INACTIVE, popesFavors.get(index==0? 1: index-1), "Error: faith track flipped or discarded PopesFavor which shouldn't be discarded");
+
         IntStream.range(0, index*8).forEach(
                 $ -> faithTrack.moveMarker()
         );
-        faithTrack.flipPopesFavor(index);
-        List<FavorStatus> popesFavors = faithTrack.getPopesFavors();
-        assertEquals(FavorStatus.ACTIVE, popesFavors.get(index-1), "Error: the PersonalBoard did not flip the PopesFavor");
+
+        faithTrack.flipPopesFavor(index==0? 1: index);
+        popesFavors = faithTrack.getPopesFavors();
+
+        if(index!=0)
+            assertEquals(FavorStatus.ACTIVE, popesFavors.get(index-1), "Error: faith track did not flip PopesFavor");
+        else
+            assertEquals(FavorStatus.DISCARDED, popesFavors.get(0), "Error: faith track flipped a PopesFavor which shouldn't be flipped");
     }
 
     @ParameterizedTest

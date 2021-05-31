@@ -46,13 +46,12 @@ public class ChangesHandlerTest {
     }
 
     @AfterEach
-    void tearDown() throws InterruptedException {
+    void tearDown() {
         changesHandler.publishGameOutcome(game);
     }
 
     @Test
-    @Disabled
-    void createGameFilesFromBlueprint() throws IOException {
+    void createGameFilesFromBlueprint() {
         //Game already calls createGameFilesFromBlueprint
 
         //LeaderCardsDeck
@@ -95,7 +94,7 @@ public class ChangesHandlerTest {
         File file36 = new File("src/main/resources/games/1/Market.json");
 
         assertAll(
-                () -> assertArrayEquals(Files.readAllBytes(file1.toPath()), Files.readAllBytes(file2.toPath()), "Error: files are not identical"),
+                () -> assertArrayEquals(Files.readAllBytes(file1.toPath()), Files.readAllBytes(file2.toPath()), "Convert leader cards files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file3.toPath()), Files.readAllBytes(file4.toPath()), "Error: files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file5.toPath()), Files.readAllBytes(file6.toPath()), "Error: files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file7.toPath()), Files.readAllBytes(file8.toPath()), "Error: files are not identical"),
@@ -201,9 +200,13 @@ public class ChangesHandlerTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Action token deck write/read test")
-    void actionTokenDeckTest() throws FileNotFoundException {
+    void actionTokenDeckTest() throws IOException {
+        game.end();
+        List<String> nicknames = new ArrayList<>();
+        nicknames.add("Luigi");
+        game = new Game(new Server(), 1, nicknames);
+        changesHandler = new ChangesHandler(1);
         changesHandler.writeActionTokenDeck(game.getActionTokenDeck());
         changesHandler.flushBufferToDisk();
         ActionTokenDeck actualActionTokenDeck = changesHandler.readActionTokenDeck();

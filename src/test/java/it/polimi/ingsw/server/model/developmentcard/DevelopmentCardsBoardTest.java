@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.model.Game;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -233,28 +234,29 @@ public class DevelopmentCardsBoardTest {
             @Test
             @DisplayName("Peeked card not null")
             void notNullTest() {
-                assertNotNull(board.peekCard(Level.LEVEL1, Color.BLUE));
+                assertNotNull(board.peekCard(Level.LEVEL3, Color.BLUE));
             }
 
             @Test
             @DisplayName("Board unchanged by peek method")
             void unchangedOnPeekTest() {
                 List<DevelopmentCardsDeck> initialBoard = boardToDeckList(board);
-                board.peekCard(Level.LEVEL1, Color.BLUE);
+                board.peekCard(Level.LEVEL2, Color.BLUE);
                 List<DevelopmentCardsDeck> finalBoard = boardToDeckList(board);
                 assertEquals(initialBoard, finalBoard);
             }
 
-            @Test
+            @ParameterizedTest
+            @EnumSource(Color.class)
             @DisplayName("Peek returned the correct card")
-            void correctCardPeekedTest() {
+            void correctCardPeekedTest(Color color) {
                 Optional<DevelopmentCard> expectedCard = boardToDeckList(board).stream()
-                        .filter(deck -> deck.peek().getColor() == Color.BLUE &&
+                        .filter(deck -> deck.peek().getColor() == color &&
                                 deck.peek().getLevel() == Level.LEVEL1)
                         .map(DevelopmentCardsDeck::peek)
                         .findFirst();
-                assumeTrue(expectedCard.isPresent(), "Unexpected error: board is missing BLUE LEVEL1 deck");
-                assertEquals(expectedCard.get(), board.peekCard(Level.LEVEL1, Color.BLUE));
+                assumeTrue(expectedCard.isPresent(), "Unexpected error: board is missing" + color + " LEVEL1 deck");
+                assertEquals(expectedCard.get(), board.peekCard(Level.LEVEL1, color));
             }
         }
 
@@ -267,15 +269,15 @@ public class DevelopmentCardsBoardTest {
              * @param lv2DeckSize number of level 2 cards
              * @param lv3DeckSize number of level 3 cards
              */
-            void setStartingBoardArrangement(int lv1DeckSize, int lv2DeckSize, int lv3DeckSize) {
+            void setStartingBoardArrangement(int lv1DeckSize, int lv2DeckSize, int lv3DeckSize, Color chosenColor) {
                 for (int i=0; i<4-lv1DeckSize; i++) {
-                    board.pick(Level.LEVEL1, Color.BLUE);
+                    board.pick(Level.LEVEL1, chosenColor);
                 }
                 for (int i=0; i<4-lv2DeckSize; i++) {
-                    board.pick(Level.LEVEL2, Color.BLUE);
+                    board.pick(Level.LEVEL2, chosenColor);
                 }
                 for (int i=0; i<4-lv3DeckSize; i++) {
-                    board.pick(Level.LEVEL3, Color.BLUE);
+                    board.pick(Level.LEVEL3, chosenColor);
                 }
             }
 
@@ -286,16 +288,11 @@ public class DevelopmentCardsBoardTest {
              * @return ordered list of DevelopmentCards. The last card in the list is
              * the bottom-most card among ones of the same color.
              */
-            List<DevelopmentCard> getLastCards(List<DevelopmentCard> cardsList, int number) {
+            List<DevelopmentCard> getLastCards(List<DevelopmentCard> cardsList, int number, Color chosenColor) {
                 List<DevelopmentCard> allCardsOfColor = cardsList.stream()
-                        .filter(card -> card.getColor() == Color.BLUE)
+                        .filter(card -> card.getColor() == chosenColor)
                         .sorted(
-                                new Comparator<DevelopmentCard>() {
-                                    @Override
-                                    public int compare(DevelopmentCard o1, DevelopmentCard o2) {
-                                        return o1.getLevel().getLevel() - o2.getLevel().getLevel();
-                                    }
-                                }
+                                Comparator.comparingInt(o -> o.getLevel().getLevel())
                         )
                         .collect(toList());
                 return new ArrayList<>(allCardsOfColor.subList(0, allCardsOfColor.size()>=2 ? number : allCardsOfColor.size()));
@@ -305,11 +302,18 @@ public class DevelopmentCardsBoardTest {
             @ParameterizedTest(name = "{0} lv1, {1} lv2, {2} lv3: {3}-card discard expected")
             @CsvFileSource(files = "src/test/resources/discard-two-deck-arrangement.csv")
             void discardTwoCardsTest(int lv1DeckSize, int lv2DeckSize, int lv3DeckSize, int numOfDiscardsExpected) {
-                setStartingBoardArrangement(lv1DeckSize, lv2DeckSize, lv3DeckSize);
+                Color chosenColor;
+                switch (lv1DeckSize){
+                    case 1 -> chosenColor = Color.BLUE;
+                    case 2 -> chosenColor = Color.PURPLE;
+                    case 3 -> chosenColor = Color.YELLOW;
+                    default -> chosenColor = Color.GREEN;
+                }
+                setStartingBoardArrangement(lv1DeckSize, lv2DeckSize, lv3DeckSize, chosenColor);
                 List<DevelopmentCard> expectedDiscardedCards =
-                        getLastCards(boardToCardList(board), numOfDiscardsExpected);
+                        getLastCards(boardToCardList(board), numOfDiscardsExpected, chosenColor);
                 List<DevelopmentCard> initialBoard = boardToCardList(board);
-                board.discardTwo(Color.BLUE);
+                board.discardTwo(chosenColor);
                 List<DevelopmentCard> finalBoard = boardToCardList(board);
                 assertAll(
                         () -> assertTrue(initialBoard.containsAll(expectedDiscardedCards)),

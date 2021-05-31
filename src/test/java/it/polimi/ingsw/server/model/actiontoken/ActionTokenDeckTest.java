@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +35,18 @@ public class ActionTokenDeckTest {
     @AfterEach
     void tearDown() {
         changesHandler.publishGameOutcome(game);
+    }
+
+    @Test
+    void resetTest() {
+        List<ActionToken> oldActionTokens = actionTokenDeck.getCurrentDeck();
+        actionTokenDeck.reset();
+        List<ActionToken> newActionTokens = actionTokenDeck.getCurrentDeck();
+        assertAll(
+                () -> assertNotNull(newActionTokens, "reset method didn't properly reset deck"),
+                () -> assertFalse(Arrays.equals(oldActionTokens.toArray(), newActionTokens.toArray()), "reset method didn't shuffle deck"),
+                () -> assertTrue(newActionTokens.containsAll(actionTokenDeck.getFullDeck()), "reset method created a deck with less elements that expected")
+        );
     }
 
     @Nested
@@ -124,4 +137,6 @@ public class ActionTokenDeckTest {
                     actionTokenDeck.getCurrentDeck());
         }
     }
+
+
 }

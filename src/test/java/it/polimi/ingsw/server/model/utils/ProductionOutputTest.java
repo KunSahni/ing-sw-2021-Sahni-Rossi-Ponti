@@ -39,4 +39,14 @@ public class ProductionOutputTest {
                 () -> assertEquals(testResourcesMap, testProductionOutput.getResources(), "Error: slot returned wrong resources")
         );
     }
+
+    @Test
+    @DisplayName("check if getters return null when resources are not selected")
+    void nullGetterTest() {
+        testProductionOutput = new ProductionOutput(0, null);
+        assertAll(
+                () -> assertNull(testProductionOutput.getResources(), "leader card production map should be null"),
+                () -> assertEquals(0, testProductionOutput.getFaithIncrement(), "default slot output map should be null")
+        );
+    }
 }

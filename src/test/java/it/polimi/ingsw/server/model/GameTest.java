@@ -39,6 +39,19 @@ public class GameTest {
     }
 
     @Test
+    void gameRecreationTest() throws IOException {
+        game = new Game(new Server(), 1 , null);
+        List<String> new_nicknames = game.getPlayerList()
+                .stream()
+                .map(
+                        Player::getNickname
+                )
+                .collect(Collectors.toList());
+        assertEquals(new_nicknames, nicknames, "game recreation didn't work properly");
+
+    }
+
+    @Test
     @DisplayName("size method test")
     void sizeTest() {
         assertEquals(nicknames.size(), game.size(), "Error: game returned a wrong size");
@@ -96,8 +109,8 @@ public class GameTest {
     }
 
     @Test
-    @Disabled
     void endTest() {
+        game.end();
         assertFalse(Files.exists(Paths.get("src/main/resources/games/1")), "Error: game did not properly remove directory");
     }
 
@@ -183,7 +196,7 @@ public class GameTest {
         ActionTokenDeck actionTokenDeck;
 
         @BeforeEach
-        void init() throws IOException, InterruptedException {
+        void init() throws IOException {
             Server server = new Server();
             nicknames = new ArrayList<>();
             nicknames.add("Mario");
