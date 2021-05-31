@@ -7,14 +7,19 @@ import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
+import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.ProductionOutput;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,18 +134,27 @@ class DevelopmentCardSlotTest {
         }
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3})
     @DisplayName("canPlaceCard method test")
-    void canPlaceCardTest() throws FileNotFoundException {
-        developmentCardSlot = changesHandler.readDevelopmentCardSlot("Luigi", 1);
-        developmentCards.remove(2);
+    void canPlaceCardTest(int level) {
+        PersonalBoard personalBoard = game.getPlayer("Luigi").getPersonalBoard();
+        developmentCards.clear();
+        IntStream.range(0, level).forEach(
+                i -> developmentCards.add(
+                        developmentCardsBoard.pick(Level.values()[level-1], Color.BLUE)
+                )
+        );
         //Place the DevelopmentCards inside the DevelopmentCardSlot
         developmentCards.forEach(
-                developmentCard -> developmentCardSlot.placeCard(developmentCard)
+                developmentCard -> personalBoard.placeDevelopmentCard(developmentCard, level)
         );
+        developmentCardSlot = personalBoard.getDevelopmentCardSlots().get(level-1);
+        if(level<3)
+            assertTrue(developmentCardSlot.canPlaceCard(developmentCardsBoard.peekCard(Level.values()[level], Color.PURPLE)), "Error: canPlaceCard returned false even though card can be placed");
         assertAll(
-                ()->assertTrue(developmentCardSlot.canPlaceCard(developmentCardsBoard.pick(Level.LEVEL3, Color.PURPLE)), "Error: canPlaceCard returned false even though card can be placed"),
-                ()->assertFalse(developmentCardSlot.canPlaceCard(developmentCardsBoard.pick(Level.LEVEL1, Color.PURPLE)), "Error: canPlaceCard returned true even though card can't be placed")
+                ()->assertFalse(developmentCardSlot.canPlaceCard(developmentCardsBoard.peekCard(Level.values()[level-1], Color.PURPLE)), "Error: canPlaceCard returned true even though card can't be placed"),
+                ()->assertFalse(developmentCardSlot.canPlaceCard(developmentCardsBoard.peekCard(Level.LEVEL1, Color.PURPLE)), "Error: canPlaceCard returned true even though card can't be placed")
         );
 
     }

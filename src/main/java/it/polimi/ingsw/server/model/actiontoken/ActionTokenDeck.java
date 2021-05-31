@@ -64,6 +64,7 @@ public class ActionTokenDeck {
         changesHandler.writeActionTokenDeck(this);
     }
 
+
     public void shuffle() {
         Collections.shuffle(currentDeck);
     }

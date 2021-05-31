@@ -31,6 +31,18 @@ public class ProductionComboTest {
     }
 
     @Test
+    @DisplayName("check if getters return null when no set method is called")
+    void nullGetterTest() {
+        assertAll(
+                () -> assertNull(productionCombo.getLeaderCardProduction(), "leader card production map should be null"),
+                () -> assertNull(productionCombo.getDefaultSlotOutput(), "default slot output map should be null"),
+                () -> assertNull(productionCombo.getDevelopmentCards(), "development cards production map should be null"),
+                () -> assertNull(productionCombo.getDiscardedResourcesFromDepots(), "discarded resources from depots map should be null"),
+                () -> assertNull(productionCombo.getDiscardedResourcesFromStrongbox(), "discarded resources from strongbox map should be null")
+        );
+    }
+
+    @Test
     @DisplayName("setDevelopmentCards method test")
     void setDevelopmentCardsTest() throws IOException {
         Game game = new Game(new Server(), 1, new ArrayList<>());

@@ -6,16 +6,22 @@ import it.polimi.ingsw.server.model.market.Market;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
+import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class PlayerTest {
     Player player;
@@ -31,7 +37,7 @@ public class PlayerTest {
     }
 
     @AfterEach
-    void tearDown() throws InterruptedException {
+    void tearDown() {
         new ChangesHandler(1).publishGameOutcome(game);
     }
 
@@ -125,6 +131,7 @@ public class PlayerTest {
         }
     }
 
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Nested
     @DisplayName("Actions related methods' testing")
     class ActionTest{
@@ -135,25 +142,56 @@ public class PlayerTest {
             executedActions = new ArrayList<>();
             executedActions.add(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
             executedActions.add(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
-            player.addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
-            player.addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
         }
 
         @Test
         @DisplayName("addAction method test")
         void addActionTest() {
+            player.addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
+            player.addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
             assertEquals(executedActions, player.getPerformedActions(), "Error: player doesn't contain the correct executed actions");
         }
 
-        @Test
-        @DisplayName("isValidNextAction method test")
-        void isValidNextActionTest() {
-            assertAll(
-                    () -> assertFalse(player.isValidNextAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION), "Error: method returned true on an action which is not valid"),
-                    () -> assertFalse(player.isValidNextAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION), "Error: method returned true on an action which is not valid"),
-                    () -> assertTrue(player.isValidNextAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION), "Error: method returned false on an action which is valid"),
-                    () -> assertTrue(player.isValidNextAction(ExecutedActions.TURN_ENDED_ACTION), "Error: method returned false on an action which is valid")
+        @ParameterizedTest
+        @MethodSource("legalActions")
+        @DisplayName("isValidNextAction method test when true")
+        void isValidNextActionTrueTest(ExecutedActions e1, ExecutedActions e2) {
+            player.finishTurn();
+            player.startTurn();
+            player.addAction(e1);
+            assertTrue(player.isValidNextAction(e2), "action should be valid");
+        }
+
+        private Stream<Arguments> legalActions() {
+            return Stream.of(
+                    arguments(ExecutedActions.ACTIVATED_PRODUCTION_ACTION, ExecutedActions.ACTIVATED_LEADER_CARD_ACTION),
+                    arguments(ExecutedActions.ACTIVATED_PRODUCTION_ACTION, ExecutedActions.DISCARDED_LEADER_CARD_ACTION),
+                    arguments(ExecutedActions.ACTIVATED_PRODUCTION_ACTION, ExecutedActions.TURN_ENDED_ACTION),
+                    arguments(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION, ExecutedActions.ACTIVATED_PRODUCTION_ACTION),
+                    arguments(ExecutedActions.DISCARDED_LEADER_CARD_ACTION, ExecutedActions.ACTIVATED_PRODUCTION_ACTION),
+                    arguments(ExecutedActions.STORED_TEMP_MARBLES_ACTION, ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
             );
+        }
+
+        @ParameterizedTest
+        @MethodSource("illegalActions")
+        @DisplayName("isValidNextAction method test when false")
+        void isValidNextActionFalseTest(ExecutedActions e1, ExecutedActions e2) {
+            player.finishTurn();
+            player.startTurn();
+            player.addAction(e1);
+            assertFalse(player.isValidNextAction(e2), "action should not be valid");
+        }
+
+        private Stream<Arguments> illegalActions() {
+            return Stream.of(
+                    arguments(ExecutedActions.ACTIVATED_PRODUCTION_ACTION, ExecutedActions.STORED_TEMP_MARBLES_ACTION),
+                    arguments(ExecutedActions.ACTIVATED_PRODUCTION_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION),
+                    arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.ACTIVATED_PRODUCTION_ACTION),
+                    arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.STORED_TEMP_MARBLES_ACTION),
+                    arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION),
+                    arguments(ExecutedActions.TURN_ENDED_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION)
+                    );
         }
     }
 
@@ -177,7 +215,7 @@ public class PlayerTest {
 
     @Test
     @DisplayName("compareTo method test")
-    void compareToTest() throws IOException {
+    void compareToTest() {
         Player player2 = game.getPlayer("Luigi");
         player.setPosition(0);
         player2.setPosition(1);
