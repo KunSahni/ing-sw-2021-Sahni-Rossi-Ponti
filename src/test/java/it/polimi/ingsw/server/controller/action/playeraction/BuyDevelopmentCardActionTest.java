@@ -61,7 +61,7 @@ public class BuyDevelopmentCardActionTest {
     class runChecksTest {
 
         @Test
-        @DisplayName("All checks are passed") //todo: condition that controls if a card can be placed in a certain slot (in BuyDevelopmentCardAction, line 86) should be denied
+        @DisplayName("All checks are passed")
         void allChecksPassedTest() {
             try {
                 buyDevelopmentCardAction.runChecks();
@@ -153,7 +153,7 @@ public class BuyDevelopmentCardActionTest {
             }
         }
 
-        @Test //todo: canPlaceDevelopmentCard (in developmentCardSlot, line 51) try to peek a card, but if there isn't any card an exception is thrown
+        @Test
         @DisplayName("A player can't place a card if doesn't own a card of inferior level")
         void illegalCardPositionTest() {
             cardCost = game.getDevelopmentCardsBoard().peekCard(Level.LEVEL2, Color.GREEN).getCost();

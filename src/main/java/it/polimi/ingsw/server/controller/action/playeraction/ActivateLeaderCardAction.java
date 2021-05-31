@@ -28,7 +28,7 @@ public class ActivateLeaderCardAction extends PlayerAction {
     @Override
     public void runChecks() throws InvalidActionException{
         super.runChecks();
-        if (player.isValidNextAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION))
+        if (!player.isValidNextAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION))
             throw new InvalidActionException("You cannot activate a LeaderCard at this time");
         if (player.getPersonalBoard()
                 .getLeaderCards()
@@ -39,7 +39,7 @@ public class ActivateLeaderCardAction extends PlayerAction {
                 .getLeaderCards()
                 .stream()
                 .filter(card -> card.equals(leaderCard.convert()))
-                .noneMatch(LeaderCard::isActive))
+                .allMatch(LeaderCard::isActive))
             throw new InvalidActionException("LeaderCard is already active");
         if (!player.getPersonalBoard()
                 .containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements()))
