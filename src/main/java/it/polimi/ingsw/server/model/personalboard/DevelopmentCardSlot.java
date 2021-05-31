@@ -39,7 +39,6 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
     }
 
     /**
-     *
      * @param card gets added at the top of the stack of cards, becoming the
      *             active card that will be used in productions
      */
@@ -49,11 +48,14 @@ public class DevelopmentCardSlot implements VictoryPointsElement {
     }
 
     public boolean canPlaceCard(DevelopmentCard card) {
-        return switch (card.getLevel()) {
-            case LEVEL1 -> cards.size() == 0;
-            case LEVEL2 -> peek().getLevel().equals(Level.LEVEL1);
-            case LEVEL3 -> peek().getLevel().equals(Level.LEVEL2);
-        };
+        Level newCardLevel = card.getLevel();
+        if (Optional.ofNullable(peek()).isPresent()) {
+            return switch (peek().getLevel()) {
+                case LEVEL1 -> newCardLevel.equals(Level.LEVEL2);
+                case LEVEL2 -> newCardLevel.equals(Level.LEVEL3);
+                case LEVEL3 -> false;
+            };
+        } else return newCardLevel.equals(Level.LEVEL1);
     }
 
     /**
