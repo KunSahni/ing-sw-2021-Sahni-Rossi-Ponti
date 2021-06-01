@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
@@ -45,4 +46,11 @@ public abstract class DumbLeaderCard implements Serializable {
     }
 
     public abstract LeaderCard convert();
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    public abstract String formatPrintableStringAt(int x, int y); //todo: make it better by not using hardcoded data
 }
