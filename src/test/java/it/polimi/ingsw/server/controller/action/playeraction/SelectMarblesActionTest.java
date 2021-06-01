@@ -134,18 +134,32 @@ public class SelectMarblesActionTest {
         }
 
         //todo: in tempMarblesContainSelectedMarbles method by default a red marble is removed from player's temp marble
-        //todo: control for marbles don't exceed tempMarbles doesn't work
     }
 
-  /**  @Test
+    @Test
     void convertTest() {
         ConvertLeaderCard convertLeaderCard = new ConvertLeaderCard(1, new LeaderCardRequirements(null, null), Resource.COIN);
         ConvertLeaderCard convertLeaderCard1 = new ConvertLeaderCard(1, new LeaderCardRequirements(null, null), Resource.SERVANT);
-        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard));
+        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard, convertLeaderCard1));
         game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(convertLeaderCard);
         game.getPlayer(nick1).setTempMarbles(Map.of(MarketMarble.BLUE, 2, MarketMarble.WHITE, 2));
-        selectMarblesAction = new SelectMarblesAction(Map.of(MarketMarble.BLUE, 1));
-    }*/
+        SelectMarblesAction selectMarblesAction1 = new SelectMarblesAction(Map.of(MarketMarble.BLUE, 1, MarketMarble.YELLOW, 1, MarketMarble.PURPLE, 1));
+        selectMarblesAction1.setNickname(nick1);
+        selectMarblesAction1.setGame(game);
+
+        try {
+            selectMarblesAction1.runChecks();
+            selectMarblesAction1.execute();
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
+        assertAll(
+                () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.SHIELD, 1))),
+                () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.COIN, 1))),
+                () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.SERVANT, 1)))
+        );
+
+    }
 
     @AfterEach
     void tearDown() throws InterruptedException {

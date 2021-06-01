@@ -75,7 +75,7 @@ public class DiscardLeaderCardActionTest {
                 e.printStackTrace();
                 fail();
             }
-        } //todo: il controllo per vedere se si ha la leader card non va, la leader card viene scartata anche se è attiva
+        }
 
         @Test
         @DisplayName("Player that try to do an action not during his turn is rejected")
