@@ -134,15 +134,6 @@ public class ActivateProductionAction extends PlayerAction {
                 .map(DumbLeaderCard::convert)
                 .forEach(card -> totalDiscardMap.compute(((ProduceLeaderCard) card).getInputResource(),
                         (k, v) -> (v == null) ? -1 : v - 1));
-        // Consider discounts from Leader Cards
-        player.getPersonalBoard().getLeaderCards()
-                .stream()
-                .filter(card -> card.isActive()
-                        && card.getAbility().equals(LeaderCardAbility.DISCOUNT))
-                .forEach(
-                        card -> totalDiscardMap.compute(((DiscountLeaderCard) card).getDiscountedResource(),
-                                (k, v) -> (v == null) ? null : v + 1)
-                );
         // If any field of the discard map went negative while counting dev cards
         // costs it means that the player did not supply enough resources to cover
         // the production
