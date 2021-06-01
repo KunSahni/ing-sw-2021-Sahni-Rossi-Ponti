@@ -90,7 +90,7 @@ class FaithTrackTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {8, 16, 24})
+    @ValueSource(ints = {5, 8, 16, 24})
     @DisplayName("checkVaticanReport method test")
     void checkVaticanReportTest(int position){
         assertTrue(faithTrack.checkVaticanReport(position), "Error: vatican report results true even though no vatican reports were started so far");
