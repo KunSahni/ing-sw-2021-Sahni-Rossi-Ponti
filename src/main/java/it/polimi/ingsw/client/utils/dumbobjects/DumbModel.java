@@ -281,9 +281,9 @@ public class DumbModel {
     }
 
     public class UpdatesHandler implements Subscriber<Renderable>{
-        private ConcurrentLinkedQueue<Renderable> updatesQueue;
+        private final ConcurrentLinkedQueue<Renderable> updatesQueue;
         private Subscription subscription;
-        private SubmissionPublisher<Renderable> publisher;
+        private final SubmissionPublisher<Renderable> publisher;
 
         public UpdatesHandler(UI ui) {
             updatesQueue = new ConcurrentLinkedQueue<>();

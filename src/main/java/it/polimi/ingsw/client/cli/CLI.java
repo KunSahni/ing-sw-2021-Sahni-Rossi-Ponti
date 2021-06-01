@@ -14,8 +14,8 @@ import java.util.concurrent.Flow;
 //WARNING: THIS CLI IS INCOMPLETE AND THEREFORE DOESN'T WORK
 
 public class CLI implements UI {
-    private Scanner in;
-    private PrintWriter out;
+    private final Scanner in;
+    private final PrintWriter out;
     private ClientSocket clientSocket;
     private final int size;
     private final String nickname;
@@ -64,8 +64,8 @@ public class CLI implements UI {
     }
 
     @Override
-    public void renderResourcePregameChoice(int numberOfResources) {
-        System.out.println("You need to choose " + numberOfResources + " resources.");
+    public void renderResourcePregameChoice() {
+        System.out.println("You need to choose resources.");
     }
     @Override
     public void renderNotification(String message) {

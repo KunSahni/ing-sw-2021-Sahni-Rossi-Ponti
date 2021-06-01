@@ -22,7 +22,7 @@ public interface UI extends Subscriber<Renderable> {
     void renderGameOutcome(TreeMap<Integer, String> finalScores);
     void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
     void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles);
-    void renderResourcePregameChoice(int numberOfResources);
+    void renderResourcePregameChoice();
     void renderNotification(String message);
     void renderErrorMessage(String message);
     void renderAuthenticationRequest(String message);

@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
-import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.GameState;
 
@@ -42,6 +41,7 @@ public class GameStateUpdate extends BroadcastRenderable {
      */
     @Override
     public void render(UI ui) {
-        //doesn't need to render anything
+        if(updatedGameState.equals(GameState.ASSIGNED_INKWELL))
+            ui.renderResourcePregameChoice();
     }
 }
