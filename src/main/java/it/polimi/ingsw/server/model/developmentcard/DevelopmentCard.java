@@ -40,12 +40,7 @@ public class DevelopmentCard implements VictoryPointsElement {
     }
 
     public Map<Resource, Integer> getInputResources() {
-        if (Optional.ofNullable(inputResources).isPresent()) {
-            return new HashMap<>(inputResources);
-        }
-        else{
-            return null;
-        }
+        return new HashMap<>(inputResources);
     }
 
     public Map<Resource, Integer> getOutputResources() {
@@ -58,12 +53,7 @@ public class DevelopmentCard implements VictoryPointsElement {
     }
 
     public Map<Resource, Integer> getCost() {
-        if (Optional.ofNullable(cost).isPresent()) {
-            return new HashMap<>(cost);
-        }
-        else{
-            return null;
-        }
+        return new HashMap<>(cost);
     }
 
     public int getFaithIncrement() {

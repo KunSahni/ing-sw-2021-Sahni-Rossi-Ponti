@@ -71,7 +71,7 @@ public class BuyDevelopmentCardAction extends PlayerAction {
     @Override
     public void runChecks() throws InvalidActionException {
         super.runChecks();
-        if (player.isValidNextAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION))
+        if (!player.isValidNextAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION))
             throw new InvalidActionException("You cannot buy a Development Card at this time");
         if (game.getDevelopmentCardsBoard().peekCard(level, color) == null)
             throw new InvalidActionException(color + " " + level + "Development Cards are not " +

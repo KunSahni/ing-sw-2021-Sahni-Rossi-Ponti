@@ -109,9 +109,10 @@ public class GameTest {
     }
 
     @Test
-    void endTest() {
+    void endTest() throws IOException {
         game.end();
         assertFalse(Files.exists(Paths.get("src/main/resources/games/1")), "Error: game did not properly remove directory");
+        setUp();
     }
 
     @Test

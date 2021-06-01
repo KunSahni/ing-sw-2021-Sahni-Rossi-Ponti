@@ -45,7 +45,7 @@ public class DiscardLeaderCardActionTest {
             e.printStackTrace();
         }
         game.getPlayer(nick1).startTurn();
-        game.getPlayer(nick1).addAction(ExecutedActions.TURN_ENDED_ACTION);
+        game.getPlayer(nick1).addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
         convertLeaderCard = new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.COIN, 1)), Resource.COIN);
         discardLeaderCardAction = new DiscardLeaderCardAction(new DumbConvertLeaderCard(convertLeaderCard));
         discardLeaderCardAction.setNickname(nick1);

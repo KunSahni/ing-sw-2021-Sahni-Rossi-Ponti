@@ -210,8 +210,10 @@ public class Player implements Comparable<Player> {
      * logic.
      */
     public boolean isValidNextAction(ExecutedActions action) {
-        if (performedActions.get(performedActions.size() - 1)
-                .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION)) {
+        ExecutedActions mostRecentAction = performedActions.get(performedActions.size() - 1);
+        if (mostRecentAction.equals(ExecutedActions.TURN_ENDED_ACTION)) {
+            return false;
+        } else if (mostRecentAction.equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION)) {
             return action.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
         } else {
             if (action.isCompulsory())

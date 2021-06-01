@@ -37,7 +37,7 @@ public class TakeFromMarketActionTest {
             e.printStackTrace();
         }
         game.getPlayer(nick1).startTurn();
-        game.getPlayer(nick1).addAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION);
+        game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
         takeFromMarketAction = new TakeFromMarketAction(1, true);
         takeFromMarketAction.setNickname(nick1);
         takeFromMarketAction.setGame(game);
