@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Renderable items that are get shown only to one player.
  */
-public abstract class PrivateRenderable implements ServerRenderable, Serializable {
+public abstract class PrivateRenderable implements Serializable, Renderable {
     private final String nickname;
 
     public PrivateRenderable(String nickname) {
