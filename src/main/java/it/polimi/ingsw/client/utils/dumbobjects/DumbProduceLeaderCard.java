@@ -47,14 +47,14 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
         Color color = new TreeMap<>(this.getLeaderCardRequirements().getRequiredDevelopmentCards()).firstEntry().getKey();
 
         return    "\033["+ x +";"+ y +"H╔══════════╗"
-                + "\033["+ (x+1) +";"+ y +"H║ 1x " + color + Constants.LEVEL + Constants.LEVEL + Constants.ANSI_RESET + "    ║"
-                + "\033["+ (x+3) +";"+ y +"H║          ║"
-                + "\033["+ (x+3) +";"+ y +"H║          ║"
-                + "\033["+ (x+4) +";"+ y +"H║          ║"
-                + "\033["+ (x+5) +";"+ y +"H║  " + inputResource.toString() + " -> " + Constants.ANY_RESOURCE + "  ║"
-                + "\033["+ (x+6) +";"+ y +"H║       " + Constants.FAITH_POINT + "  ║"
-                + "\033["+ (x+7) +";"+ y +"H║          ║"
-                + "\033["+ (x+8) +";"+ y +"H║    " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
-                + "\033["+ (x+9) +";"+ y +"H╚══════════╝";
+                + "\033["+ (x+1) +";"+ y +"H║ 1x " + color + Constants.LEVEL + Constants.LEVEL + Constants.ANSI_RESET + "        ║"
+                + "\033["+ (x+3) +";"+ y +"H║              ║"
+                + "\033["+ (x+3) +";"+ y +"H║              ║"
+                + "\033["+ (x+4) +";"+ y +"H║              ║"
+                + "\033["+ (x+5) +";"+ y +"H║    " + inputResource.toString() + " -> " + Constants.ANY_RESOURCE + "    ║"
+                + "\033["+ (x+6) +";"+ y +"H║         " + Constants.FAITH_POINT + "    ║"
+                + "\033["+ (x+7) +";"+ y +"H║              ║"
+                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
+                + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
     }
 }

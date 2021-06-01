@@ -19,6 +19,8 @@ public final class Constants {
     public final static String SERVANT = ANSI_PURPLE + "\u25A0" + ANSI_RESET;
     public final static String SHIELD = ANSI_BLUE + "\u25A0" + ANSI_RESET;
     public final static String FAITH_POINT = ANSI_RED + ANSI_BOLD + "\u271D" + ANSI_RESET;
+    public final static String FAITH_MARKER = FAITH_POINT;
+    public final static String BLACK_CROSS = ANSI_WHITE + ANSI_BOLD + "\u271D" + ANSI_RESET;
     public final static String ANY_RESOURCE = ANSI_BOLD + "?" + ANSI_RESET;
     public final static String COIN_MARBLE = ANSI_YELLOW + "\u25CF" + ANSI_RESET;
     public final static String STONE_MARBLE = ANSI_GREY + "\u25CF" + ANSI_RESET;
@@ -30,4 +32,5 @@ public final class Constants {
     public final static String BLUE_LEVEL = ANSI_BLUE + "\u25C8" + ANSI_RESET;
     public final static String PURPLE_LEVEL = ANSI_PURPLE + "\u25C8" + ANSI_RESET;
     public final static String GREEN_LEVEL = ANSI_GREEN + "\u25C8" + ANSI_RESET;
+    public static final String ANSI_CLEAR = "\033[2J";
 }

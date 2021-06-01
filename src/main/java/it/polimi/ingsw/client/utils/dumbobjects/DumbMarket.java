@@ -48,4 +48,20 @@ public class DumbMarket {
     public MarketMarble getExtraMarble() {
         return extraMarble;
     }
+
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    public String formatPrintableStringAt(int x, int y) {
+        return   "\033[" + x + ";" + y + "H╔═══════════╗"
+               + "\033[" + (x+1) + ";" + y + "H║ ╔═══════╗ ║"
+               + "\033[" + (x+1) + ";" + y + "H║ ║" + market[0][0].toString() + " " + market[0][1].toString() + " " + market[0][2].toString() + " " + market[0][3].toString() + "║" + extraMarble.toString() + "║"
+               + "\033[" + (x+2) + ";" + y + "H║ ║" + market[1][0].toString() + " " + market[1][1].toString() + " " + market[1][2].toString() + " " + market[1][3].toString() + "║ ║"
+               + "\033[" + (x+3) + ";" + y + "H║ ║" + market[2][0].toString() + " " + market[2][1].toString() + " " + market[2][2].toString() + " " + market[2][3].toString() + "║ ║"
+               + "\033[" + (x+4) + ";" + y + "H║ ╚═══════╝ ║"
+               + "\033[" + (x+5) + ";" + y + "H╚═══════════╝";
+    }
 }
