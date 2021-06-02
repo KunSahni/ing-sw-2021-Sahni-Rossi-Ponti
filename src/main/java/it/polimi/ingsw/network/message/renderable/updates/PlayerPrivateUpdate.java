@@ -34,10 +34,35 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
         this.tempMarbles = updatedPlayer.getTempMarbles();
     }
 
+    /**
+     * This method returns an Enum value which represents what type of graphical element is contained in the Renderable
+     * @return OnScreenElement enum value representing the payload in the Renderable
+     */
+    @Override
+    public OnScreenElement getOnScreenElement(DumbModel dumbModel){
+        if((tempMarbles != null && tempMarbles.size()>0) || (tempLeaderCards != null && tempLeaderCards.size()>0))
+            return OnScreenElement.FORCE_DISPLAY;
+        else
+            return OnScreenElement.valueOf(dumbModel.getPersonalBoard(getNickname()).getPosition());
+
+    }
+
+    /**
+     * This method has the goal of updating the dumb model if the renderable is carrying any update regarding the server model
+     * @param dumbModel the dumb model in which the updates will be stored
+     */
+    @Override
+    public void update(DumbModel dumbModel){
+        dumbModel.updatePersonalBoard(getNickname(), position, updatedTurnStatus, updatedConnectionStatus);
+        dumbModel.updateTurnActions(performedActions);
+    }
+
+    /**
+     * This method is used by the UI to display an element part of the model on the user's screen
+     * @param ui the ui which calls the method
+     */
     @Override
     public void render(UI ui) {
-        ui.updatePersonalBoard(getNickname(), position, updatedTurnStatus, updatedConnectionStatus);
-        ui.updateTurnActions(performedActions);
         if(tempMarbles != null && tempMarbles.size()>0)
             ui.renderTempMarblesChoice(tempMarbles);
         else if(tempLeaderCards != null && tempLeaderCards.size()>0)

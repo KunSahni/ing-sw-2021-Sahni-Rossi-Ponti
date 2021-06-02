@@ -1,7 +1,10 @@
 package it.polimi.ingsw.client;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.network.message.SerializedMessage;
+import it.polimi.ingsw.network.message.messages.Message;
 import it.polimi.ingsw.network.message.renderable.Renderable;
+import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 
 import java.io.*;
 import java.net.Socket;
@@ -18,11 +21,11 @@ public class ClientSocket {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
-    public ClientSocket(String serverAddress, int serverPort, Client client) {
+    public ClientSocket(String serverAddress, int serverPort, DumbModel.UpdatesHandler updatesHandler) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.renderablePublisher = new SubmissionPublisher<>();
-        this.renderablePublisher.subscribe(client);
+        this.renderablePublisher.subscribe(updatesHandler);
     }
 
     /**
@@ -64,11 +67,23 @@ public class ClientSocket {
     }
 
     /**
-    * @param message a message which the clients wants to send to the server
-    */
-    public void sendMessage(SerializedMessage message) {
+     * @param message a connection related message which will be sent to the server
+     */
+    public void sendMessage(Message message) {
         try {
-            outputStream.writeObject(message);
+            outputStream.writeObject(new SerializedMessage(message));
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param action an action which the clients wants to execute
+     */
+    public void sendAction(PlayerAction action) {
+        try {
+            outputStream.writeObject(new SerializedMessage(action));
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();

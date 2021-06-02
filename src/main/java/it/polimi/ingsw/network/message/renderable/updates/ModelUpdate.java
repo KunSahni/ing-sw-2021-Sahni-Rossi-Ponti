@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.message.renderable.updates;
 
 import it.polimi.ingsw.client.UI;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
+import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
 import it.polimi.ingsw.server.model.Game;
 
@@ -107,33 +109,55 @@ public class ModelUpdate extends PrivateRenderable {
 
     }
 
+    /**
+     * This method returns an Enum value which represents what type of graphical element is contained in the Renderable
+     * @return OnScreenElement enum value representing the payload in the Renderable
+     */
     @Override
-    public void render(UI ui) {
+    public OnScreenElement getOnScreenElement(DumbModel dumbModel){
+        return OnScreenElement.FORCE_DISPLAY;
+    }
+
+    /**
+     * This method has the goal of updating the dumb model if the renderable is carrying any update regarding the server model
+     * @param dumbModel the dumb model in which the updates will be stored
+     */
+    @Override
+    public void update(DumbModel dumbModel){
         if(isSinglePlayerGame)
-            actionTokenDeckUpdate.render(ui);
-        developmentCardsBoardUpdate.render(ui);
-        marketUpdate.render(ui);
-        leaderCardsPrivateUpdate.render(ui);
-        playerPrivateUpdate.render(ui);
+            actionTokenDeckUpdate.update(dumbModel);
+        developmentCardsBoardUpdate.update(dumbModel);
+        marketUpdate.update(dumbModel);
+        leaderCardsPrivateUpdate.update(dumbModel);
+        playerPrivateUpdate.update(dumbModel);
 
         leaderCardsBroadcastUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.render(ui)
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         developmentCardSlotUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.render(ui)
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         faithTrackUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.render(ui)
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         depotsUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.render(ui)
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         strongboxUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.render(ui)
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         playerBroadcastUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.render(ui)
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
-        gameStateUpdate.render(ui);
+        gameStateUpdate.update(dumbModel);
+    }
+
+    /**
+     * This method is used by the UI to display an element part of the model on the user's screen
+     * @param ui the ui which calls the method
+     */
+    @Override
+    public void render(UI ui) {
+        ui.renderCommons();
     }
 }
