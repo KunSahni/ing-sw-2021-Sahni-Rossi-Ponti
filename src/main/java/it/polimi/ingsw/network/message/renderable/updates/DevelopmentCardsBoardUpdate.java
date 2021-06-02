@@ -2,16 +2,11 @@ package it.polimi.ingsw.network.message.renderable.updates;
 
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCardsBoard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 import it.polimi.ingsw.network.message.renderable.BroadcastRenderable;
 import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsBoard;
-import it.polimi.ingsw.server.model.developmentcard.DevelopmentCardsDeck;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -35,7 +30,7 @@ public class DevelopmentCardsBoardUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
-        return OnScreenElement.COMMON;
+        return OnScreenElement.COMMONS;
     }
 
     /**

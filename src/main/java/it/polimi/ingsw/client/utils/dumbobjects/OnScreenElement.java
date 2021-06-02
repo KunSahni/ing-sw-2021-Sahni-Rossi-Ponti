@@ -5,7 +5,7 @@ public enum OnScreenElement {
     PERSONAL_BOARD2(2),
     PERSONAL_BOARD3(3),
     PERSONAL_BOARD4(4),
-    COMMON(-1),
+    COMMONS(-1),
     FORCE_DISPLAY(-1),
     DONT_RENDER(-1);
 

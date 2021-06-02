@@ -9,7 +9,8 @@ public enum Commands {
     ACTIVATE_LEADER_CARD("activate"),
     DISCARD_LEADER_CARD("discard"),
     HELP("help"),
-    QUIT("quit");
+    QUIT("quit"),
+    PICK("pick");
 
     private final String command;
 
