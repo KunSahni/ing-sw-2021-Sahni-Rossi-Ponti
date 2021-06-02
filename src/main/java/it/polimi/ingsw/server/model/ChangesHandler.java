@@ -38,7 +38,7 @@ public class ChangesHandler {
     private Map<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
-        this.root = "src/main/resources/games/" + gameId;
+        this.root = "src/main/resources/json/games/" + gameId;
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isSinglePlayerGame = false;
         this.isNewGame = false;
@@ -46,11 +46,11 @@ public class ChangesHandler {
     }
 
     public void createGameFilesFromBlueprint(List<String> nicknames) throws IOException {
-        copyFolder("src/main/resources/default/game", root);
+        copyFolder("src/main/resources/json/default/game", root);
         writeNicknameList(nicknames);
         flushBufferToDisk();
         for (String nickname : nicknames) {
-            copyFolder("src/main/resources/default/player",
+            copyFolder("src/main/resources/json/default/player",
                     root + "/players/" + nickname);
         }
         isNewGame = true;
