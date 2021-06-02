@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
+import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.server.model.market.MarketMarble;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.Flow;
+import java.util.stream.IntStream;
 
 //WARNING: THIS CLI IS INCOMPLETE AND THEREFORE DOESN'T WORK
 
@@ -20,6 +22,7 @@ public class CLI implements UI {
     private final int size;
     private final String nickname;
     private Flow.Subscription subscription;
+    private DumbModel dumbModel;
 
     public CLI(String nickname, int size) {
         this.nickname = nickname;
@@ -30,12 +33,15 @@ public class CLI implements UI {
 
     @Override
     public void renderPersonalBoard(String nickname) {
-
+        String printableString = dumbModel.getPersonalBoard(nickname).formatPrintableStringAt(2,2);
+        printToCLI(printableString);
     }
 
     @Override
     public void renderCommons() {
-
+        String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2,2);
+        printableString.concat(dumbModel.getMarket().formatPrintableStringAt(15, 72));
+        printToCLI(printableString);
     }
 
     @Override
@@ -55,7 +61,11 @@ public class CLI implements UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-
+        String printableString = "";
+        IntStream.range(0,leaderCards.size()).forEach(
+                i -> printableString.concat(leaderCards.get(i).formatPrintableStringAt(2, 1+17*i))
+        );
+        printToCLI(printableString);
     }
 
     @Override
@@ -107,5 +117,16 @@ public class CLI implements UI {
     @Override
     public Flow.Subscription getSubscription() {
         return subscription;
+    }
+
+    private void printToCLI(String printableString){
+        out.print(printableString);
+        out.flush();
+        resetCommandPosition();
+    }
+
+    private void resetCommandPosition(){
+        out.print(Constants.CMD_MESSAGE);
+        out.flush();
     }
 }
