@@ -33,4 +33,6 @@ public final class Constants {
     public final static String PURPLE_LEVEL = ANSI_PURPLE + "\u25C8" + ANSI_RESET;
     public final static String GREEN_LEVEL = ANSI_GREEN + "\u25C8" + ANSI_RESET;
     public static final String ANSI_CLEAR = "\033[2J";
+    public static final String CMD_POSITION = "\033[35;1H";
+    public static final String BLUE_BACKGROUND = "\u001b[44;1m";
 }

@@ -26,7 +26,10 @@ public class CLI extends UI {
 
     @Override
     public void renderPersonalBoard(DumbPersonalBoard personalBoard) {
-
+        String printableString = personalBoard.formatPrintableStringAt(2, 1);
+        out.print(printableString);
+        out.flush();
+        resetToCommandPosition();
     }
 
     @Override
@@ -95,5 +98,10 @@ public class CLI extends UI {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public void resetToCommandPosition(){
+        out.print("\033[35;1H\u001b[44;1m>: ");
+        out.flush();
     }
 }
