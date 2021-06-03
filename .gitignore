@@ -5,3 +5,4 @@ src/main/resources/json/games/*
 !src/main/resources/json/games/.keep
 !src/main/resources/json/default/game/players/.keep
 src/main/resources/json/maxId.json
+src/main/resources/json/client/gameID.json
