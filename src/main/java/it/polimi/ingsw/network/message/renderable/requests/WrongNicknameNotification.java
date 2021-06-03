@@ -14,6 +14,6 @@ public class WrongNicknameNotification extends Notification{
 
     @Override
     public void render(UI ui) {
-        super.render(ui);
+        ui.renderWrongNicknameNotification(message);
     }
 }

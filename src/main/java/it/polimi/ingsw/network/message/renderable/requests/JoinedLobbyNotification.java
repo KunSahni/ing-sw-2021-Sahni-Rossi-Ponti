@@ -42,6 +42,6 @@ public class JoinedLobbyNotification extends Notification {
      */
     @Override
     public void render(UI ui) {
-        super.render(ui);
+        ui.renderJoinedLobbyNotification(message);
     }
 }

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.message.renderable.requests;
 
-import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 import it.polimi.ingsw.network.message.renderable.PrivateRenderable;
@@ -32,14 +31,5 @@ public abstract class Notification extends PrivateRenderable {
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel) {
         return OnScreenElement.FORCE_DISPLAY;
-    }
-
-    /**
-     * This method is used by the UI to display an element part of the model on the user's screen
-     * @param ui the ui which calls the method
-     */
-    @Override
-    public void render(UI ui) {
-        ui.renderNotification(message);
     }
 }

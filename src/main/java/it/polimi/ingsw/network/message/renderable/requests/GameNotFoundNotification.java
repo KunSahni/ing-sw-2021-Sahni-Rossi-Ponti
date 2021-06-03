@@ -39,6 +39,6 @@ public class GameNotFoundNotification extends Notification{
      */
     @Override
     public void render(UI ui) {
-        super.render(ui);
+        ui.renderGameNotFoundNotification(message);
     }
 }
