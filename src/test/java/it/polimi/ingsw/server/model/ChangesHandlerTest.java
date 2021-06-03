@@ -55,43 +55,43 @@ public class ChangesHandlerTest {
         //Game already calls createGameFilesFromBlueprint
 
         //LeaderCardsDeck
-        File file1 = new File("src/main/resources/default/game/LeaderCardsDeck/ConvertLeaderCards.json");
-        File file2 = new File("src/main/resources/games/1/LeaderCardsDeck/ConvertLeaderCards.json");
-        File file3 = new File("src/main/resources/default/game/LeaderCardsDeck/DiscountLeaderCards.json");
-        File file4 = new File("src/main/resources/games/1/LeaderCardsDeck/DiscountLeaderCards.json");
-        File file5 = new File("src/main/resources/default/game/LeaderCardsDeck/ProduceLeaderCards.json");
-        File file6 = new File("src/main/resources/games/1/LeaderCardsDeck/ProduceLeaderCards.json");
-        File file7 = new File("src/main/resources/default/game/LeaderCardsDeck/StoreLeaderCards.json");
-        File file8 = new File("src/main/resources/games/1/LeaderCardsDeck/StoreLeaderCards.json");
-        File file9 = new File("src/main/resources/default/game/LeaderCardsDeck/StoreLeaderCards.json");
-        File file10 = new File("src/main/resources/games/1/LeaderCardsDeck/StoreLeaderCards.json");
+        File file1 = new File("src/main/resources/json/default/game/LeaderCardsDeck/ConvertLeaderCards.json");
+        File file2 = new File("src/main/resources/json/games/1/LeaderCardsDeck/ConvertLeaderCards.json");
+        File file3 = new File("src/main/resources/json/default/game/LeaderCardsDeck/DiscountLeaderCards.json");
+        File file4 = new File("src/main/resources/json/games/1/LeaderCardsDeck/DiscountLeaderCards.json");
+        File file5 = new File("src/main/resources/json/default/game/LeaderCardsDeck/ProduceLeaderCards.json");
+        File file6 = new File("src/main/resources/json/games/1/LeaderCardsDeck/ProduceLeaderCards.json");
+        File file7 = new File("src/main/resources/json/default/game/LeaderCardsDeck/StoreLeaderCards.json");
+        File file8 = new File("src/main/resources/json/games/1/LeaderCardsDeck/StoreLeaderCards.json");
+        File file9 = new File("src/main/resources/json/default/game/LeaderCardsDeck/StoreLeaderCards.json");
+        File file10 = new File("src/main/resources/json/games/1/LeaderCardsDeck/StoreLeaderCards.json");
         
         //Player
-        File file11 = new File("src/main/resources/default/player/DevelopmentCardSlot1.json");
-        File file12 = new File("src/main/resources/games/1/players/Mario/DevelopmentCardSlot1.json");
-        File file13 = new File("src/main/resources/default/player/DevelopmentCardSlot2.json");
-        File file14 = new File("src/main/resources/games/1/players/Mario/DevelopmentCardSlot2.json");
-        File file15 = new File("src/main/resources/default/player/DevelopmentCardSlot3.json");
-        File file16 = new File("src/main/resources/games/1/players/Mario/DevelopmentCardSlot3.json");
-        File file17 = new File("src/main/resources/games/1/players/Mario/FaithTrack.json");
-        File file19 = new File("src/main/resources/default/player/LeaderCards.json");
-        File file20 = new File("src/main/resources/games/1/players/Mario/LeaderCards.json");
-        File file21 = new File("src/main/resources/default/player/Player.json");
-        File file22 = new File("src/main/resources/games/1/players/Mario/Player.json");
-        File file23 = new File("src/main/resources/default/player/FaithTrack.json");
-        File file24 = new File("src/main/resources/games/1/players/Mario/FaithTrack.json");
-        File file25 = new File("src/main/resources/default/player/Strongbox.json");
-        File file26 = new File("src/main/resources/games/1/players/Mario/Strongbox.json");
-        File file27 = new File("src/main/resources/default/player/WarehouseDepots.json");
-        File file28 = new File("src/main/resources/games/1/players/Mario/WarehouseDepots.json");
+        File file11 = new File("src/main/resources/json/default/player/DevelopmentCardSlot1.json");
+        File file12 = new File("src/main/resources/json/games/1/players/Mario/DevelopmentCardSlot1.json");
+        File file13 = new File("src/main/resources/json/default/player/DevelopmentCardSlot2.json");
+        File file14 = new File("src/main/resources/json/games/1/players/Mario/DevelopmentCardSlot2.json");
+        File file15 = new File("src/main/resources/json/default/player/DevelopmentCardSlot3.json");
+        File file16 = new File("src/main/resources/json/games/1/players/Mario/DevelopmentCardSlot3.json");
+        File file17 = new File("src/main/resources/json/games/1/players/Mario/FaithTrack.json");
+        File file19 = new File("src/main/resources/json/default/player/LeaderCards.json");
+        File file20 = new File("src/main/resources/json/games/1/players/Mario/LeaderCards.json");
+        File file21 = new File("src/main/resources/json/default/player/Player.json");
+        File file22 = new File("src/main/resources/json/games/1/players/Mario/Player.json");
+        File file23 = new File("src/main/resources/json/default/player/FaithTrack.json");
+        File file24 = new File("src/main/resources/json/games/1/players/Mario/FaithTrack.json");
+        File file25 = new File("src/main/resources/json/default/player/Strongbox.json");
+        File file26 = new File("src/main/resources/json/games/1/players/Mario/Strongbox.json");
+        File file27 = new File("src/main/resources/json/default/player/WarehouseDepots.json");
+        File file28 = new File("src/main/resources/json/games/1/players/Mario/WarehouseDepots.json");
         
         //Generic game files
-        File file31 = new File("src/main/resources/default/game/DevelopmentCardsBoard.json");
-        File file32 = new File("src/main/resources/games/1/DevelopmentCardsBoard.json");
-        File file33 = new File("src/main/resources/default/game/GameState.json");
-        File file34 = new File("src/main/resources/games/1/GameState.json");
-        File file35 = new File("src/main/resources/default/game/Market.json");
-        File file36 = new File("src/main/resources/games/1/Market.json");
+        File file31 = new File("src/main/resources/json/default/game/DevelopmentCardsBoard.json");
+        File file32 = new File("src/main/resources/json/games/1/DevelopmentCardsBoard.json");
+        File file33 = new File("src/main/resources/json/default/game/GameState.json");
+        File file34 = new File("src/main/resources/json/games/1/GameState.json");
+        File file35 = new File("src/main/resources/json/default/game/Market.json");
+        File file36 = new File("src/main/resources/json/games/1/Market.json");
 
         assertAll(
                 () -> assertArrayEquals(Files.readAllBytes(file1.toPath()), Files.readAllBytes(file2.toPath()), "Convert leader cards files are not identical"),
