@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
@@ -9,6 +12,10 @@ import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +48,15 @@ public class DumbModel {
         developmentCardsBoard = DumbDevelopmentCardsBoard.getInstance();
         actionTokenDeck = (size<=1) ? null: DumbActionTokenDeck.getInstance();
         updatesHandler = new UpdatesHandler(ui);
+
+        //Try to read existing saved gameID
+        try {
+        JsonReader reader = new JsonReader(new FileReader("src/main/resources/json/client/gameID.json"));
+        this.gameID = new Gson().fromJson(reader, int.class);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     /**
      * This method creates a new PersonalBoard inside the DumbModel base on the passed parameters
@@ -202,15 +218,6 @@ public class DumbModel {
      */
     public void updateGameState(GameState updatedGameState) {
         this.gameState = updatedGameState;
-        if(updatedGameState.equals(GameState.ASSIGNED_INKWELL))
-            Optional.ofNullable(getPersonalBoard(nickname)).ifPresent(
-                    dumbPersonalBoard -> {
-                        if(dumbPersonalBoard.getDepots().getResourceCount() != dumbPersonalBoard.getPosition()/2)
-                            return;
-                            //todo: come faccio capire alla ui che deve mostrare questa cosa?
-                            //renderResourcePregameChoice(dumbPersonalBoard.getPosition()/2);
-                    }
-            );
     }
 
     /**
@@ -227,6 +234,15 @@ public class DumbModel {
      */
     public void updateGameID(int updatedGameID) {
         this.gameID = updatedGameID;
+        try {
+            Writer writer = new FileWriter("src/main/resources/json/client/gameID.json");
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+            gson.toJson(gameID, writer);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
