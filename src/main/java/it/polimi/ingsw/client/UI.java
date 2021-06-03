@@ -15,8 +15,12 @@ import java.util.concurrent.Flow.Subscription;
 
 public interface UI extends Subscriber<Renderable> {
 
+    /**
+     * All render methods have the goal of displaying on screen the element in the method name
+     */
+
     void renderPersonalBoard(String nickname);
-    void renderCommons();
+    void renderCommons();   //Commons stands for market + development cards board
     void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     void renderGameOutcome(int finalScore);
     void renderGameOutcome(TreeMap<Integer, String> finalScores);
@@ -60,7 +64,7 @@ public interface UI extends Subscriber<Renderable> {
      */
     @Override
     default void onNext(Renderable item) {
-        if(item.getOnScreenElement(getDumbModel()).equals(getOnScreenElement()))
+        if(getOnScreenElement().equals(item.getOnScreenElement(getDumbModel())) || item.getOnScreenElement(getDumbModel()).equals(OnScreenElement.FORCE_DISPLAY))
             item.render(this);
         getSubscription().request(1);
     }

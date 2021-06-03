@@ -2,8 +2,12 @@ package it.polimi.ingsw.client.cli;
 
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
+import it.polimi.ingsw.client.utils.CommandExecutor;
+import it.polimi.ingsw.client.utils.InputVerifier;
+import it.polimi.ingsw.client.utils.constants.Commands;
 import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
+import it.polimi.ingsw.client.utils.exceptions.*;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
 import it.polimi.ingsw.server.controller.action.playeraction.PregameResourceChoiceAction;
@@ -15,7 +19,9 @@ import java.util.*;
 import java.util.concurrent.Flow;
 import java.util.stream.IntStream;
 
-//WARNING: THIS CLI IS INCOMPLETE AND THEREFORE DOESN'T WORK
+/**
+ * This is a cli client for master of rennaissance
+ */
 
 public class CLI implements UI {
     private final Scanner in;
@@ -25,11 +31,83 @@ public class CLI implements UI {
     private Flow.Subscription subscription;
     private DumbModel dumbModel;
     private OnScreenElement onScreenElement;
+    private boolean activeGame;
+    private CommandExecutor commandExecutor;
 
     public CLI() {
         in = new Scanner(System.in);
         out = new PrintWriter(System.out);
+        dumbModel = new DumbModel(this);
+        commandExecutor = new CommandExecutor(dumbModel, clientSocket);
     }
+
+    public static void main(String[] args) {
+        System.out.println(Constants.ANSI_CLEAR);
+        System.out.println(Constants.MASTER_OF_RENAISSANCE);
+        //System.out.println(Constants.AUTHORS);
+        //System.out.println(Constants.RULES + "\n");
+        CLI cli = new CLI();
+        cli.run();
+    }
+
+    /**
+     * This method asks the player which server and port he wants to connect to and creates the network socket
+     */
+    private void connectToServer(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(">Insert the server IP address");
+        System.out.print(">");
+        String ip = scanner.nextLine();
+        System.out.println(">Insert the server port");
+        System.out.print(">");
+        int port = scanner.nextInt();
+        this.clientSocket = new ClientSocket(ip, port, dumbModel.getUpdatesHandler());
+    }
+
+    /**
+     * Start running the cli client
+     */
+    private void run() {
+        connectToServer();
+        printToCLI(Constants.ANSI_CLEAR);
+        clientSocket.connect();
+        setActiveGame(true);
+        onScreenElement = OnScreenElement.COMMONS;
+
+        while(isActiveGame()){
+            String insertedCommand = in.nextLine();
+            in.reset();
+
+            try {
+                commandExecutor.executeCommand(insertedCommand);
+            } catch (PersonalBoardException e) {
+                renderPersonalBoard(e.getNickname());
+            } catch (CommonsException e) {
+                renderCommons();
+            } catch (WrongCommandException | InvalidArgsException e) {
+                renderErrorMessage(e.getMessage());
+            } catch (HelpException e) {
+                renderHelp();
+            } catch (CommandHelpException e) {
+                renderCommandHelpException(e.getCommand());
+            } catch (QuitException e) {
+                setActiveGame(false);
+            }
+
+            resetCommandPosition();
+        }
+        clientSocket.close();
+        in.close();
+        out.close();
+    }
+
+    private void renderCommandHelpException(Commands command) {
+
+    }
+
+    private void renderHelp() {
+    }
+
 
     @Override
     public void renderPersonalBoard(String nickname) {
@@ -121,12 +199,13 @@ public class CLI implements UI {
 
     @Override
     public void renderAuthenticationRequest(String message) {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H";
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H";
         printableString.concat(message);
         printToCLI(printableString);
 
         nickname = in.nextLine();
-        clientSocket.sendMessage(new AuthenticationMessage(this.nickname, -1)); //todo: implement file save of gameID
+        clientSocket.sendMessage(new AuthenticationMessage(this.nickname, dumbModel.getGameID()));
     }
 
     @Override
@@ -163,12 +242,19 @@ public class CLI implements UI {
         return subscription;
     }
 
+    /**
+     * Prints a formatted string to cli
+     * @param printableString a string ready to be printed, formatted ascii escape codes
+     */
     private void printToCLI(String printableString){
         out.print(printableString);
         out.flush();
         resetCommandPosition();
     }
 
+    /**
+     * Reprints the insert command message in a fixed position
+     */
     private void resetCommandPosition(){
         out.print(Constants.CMD_MESSAGE);
         out.flush();
@@ -197,5 +283,13 @@ public class CLI implements UI {
         );
 
         return printableString;
+    }
+
+    public synchronized boolean isActiveGame() {
+        return activeGame;
+    }
+
+    public synchronized void setActiveGame(boolean activeGame) {
+        this.activeGame = activeGame;
     }
 }

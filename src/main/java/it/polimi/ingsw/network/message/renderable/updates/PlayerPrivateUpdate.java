@@ -55,6 +55,8 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
     public void update(DumbModel dumbModel){
         dumbModel.updatePersonalBoard(getNickname(), position, updatedTurnStatus, updatedConnectionStatus);
         dumbModel.updateTurnActions(performedActions);
+        dumbModel.updateTempMarbles(tempMarbles);
+        dumbModel.updateTempLeaderCards(tempLeaderCards);
     }
 
     /**

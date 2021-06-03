@@ -10,7 +10,9 @@ public enum Commands {
     DISCARD_LEADER_CARD("discard"),
     HELP("help"),
     QUIT("quit"),
-    PICK("pick");
+    PICK_RESOURCES("pick resources"),
+    PICK_TEMP_MARBLES("pick marbles"),
+    PICK_LEADER_CARDS("pick leader cards");
 
     private final String command;
 

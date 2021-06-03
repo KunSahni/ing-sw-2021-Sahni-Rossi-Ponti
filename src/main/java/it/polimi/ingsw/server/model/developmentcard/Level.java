@@ -17,4 +17,10 @@ public enum Level {
     public int getLevel() {
         return level;
     }
+
+    public static Level getLevel(int level) {
+        for(Level l : values())
+            if(l.getLevel() == level) return l;
+        throw new IllegalArgumentException();
+    }
 }

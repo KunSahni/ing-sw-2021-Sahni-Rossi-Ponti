@@ -1,16 +1,17 @@
 package it.polimi.ingsw.server.model.utils;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
+import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 /**
  * this enumeration represents all possibles type of resources
  */
 public enum Resource {
-    COIN("Coin", Constants.ANSI_YELLOW),
-    SERVANT("Servant", Constants.ANSI_PURPLE),
-    STONE("Stone", Constants.ANSI_GREY),
-    SHIELD("Shield", Constants.ANSI_BLUE);
+    COIN("coin", Constants.ANSI_YELLOW),
+    SERVANT("servant", Constants.ANSI_PURPLE),
+    STONE("stone", Constants.ANSI_GREY),
+    SHIELD("shield", Constants.ANSI_BLUE);
 
     public final String label;
     public final String color;
@@ -32,5 +33,11 @@ public enum Resource {
     @Override
     public String toString() {
         return color + Constants.RESOURCE + Constants.ANSI_RESET;
+    }
+
+    public static Resource getResource(String resource) {
+        for(Resource r : values())
+            if(r.label == resource) return r;
+        throw new IllegalArgumentException();
     }
 }

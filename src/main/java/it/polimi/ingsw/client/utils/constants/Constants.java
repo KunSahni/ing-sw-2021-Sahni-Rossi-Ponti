@@ -33,5 +33,20 @@ public final class Constants {
     public final static String PURPLE_LEVEL = ANSI_PURPLE + "\u25C8" + ANSI_RESET;
     public final static String GREEN_LEVEL = ANSI_GREEN + "\u25C8" + ANSI_RESET;
     public static final String ANSI_CLEAR = "\033[2J";
-    public static final String CMD_MESSAGE = "\033[35;1H\u001b[44;1mInsert command: ";
+    public static final String CMD_MESSAGE = "\033[35;1H\u001b[44;1mInsert command: " + ANSI_RESET;
+    public static final String MASTER_OF_RENAISSANCE =
+              "\033[1;35H█████████████████████████████████████████████████████████████████████\n"
+            + "\033[2;35H█████████▄─▀█▀─▄██▀▄─██─▄▄▄▄█─▄─▄─█▄─▄▄─█▄─▄▄▀███─▄▄─█▄─▄▄─██████████\n"
+            + "\033[3;35H██████████─█▄█─███─▀─██▄▄▄▄─███─████─▄█▀██─▄─▄███─██─██─▄████████████\n"
+            + "\033[4;35H█████████▄▄▄█▄▄▄█▄▄█▄▄█▄▄▄▄▄██▄▄▄██▄▄▄▄▄█▄▄█▄▄███▄▄▄▄█▄▄▄████████████\n"
+            + "\033[5;35H█████████████████████████████████████████████████████████████████████\n"
+            + "\033[6;35H█▄─▄▄▀█▄─▄▄─█▄─▀█▄─▄██▀▄─██▄─▄█─▄▄▄▄█─▄▄▄▄██▀▄─██▄─▀█▄─▄█─▄▄▄─█▄─▄▄─█\n"
+            + "\033[7;35H██─▄─▄██─▄█▀██─█▄▀─███─▀─███─██▄▄▄▄─█▄▄▄▄─██─▀─███─█▄▀─██─███▀██─▄█▀█\n"
+            + "\033[8;35H█▄▄█▄▄█▄▄▄▄▄█▄▄▄██▄▄█▄▄█▄▄█▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄██▄▄█▄▄▄▄▄█▄▄▄▄▄█\n"
+            + "\033[9;35H█████████████████████████████████████████████████████████████████████";
+
+    public static final String WRONG_COMMAND = "Command doesn't exist, type help for help";
+    public static final String WRONG_COMMAND_ARGS = "Command wrongly used, possible error in argument typing, use -h for help";
+    public static final String INVALID_ARGS = "Command was typed properly, but invalid command arguments, use -h for help";
+
 }

@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
@@ -40,6 +41,8 @@ public class DumbModel {
     private GameState gameState;
     protected String nickname;
     private ArrayList<ExecutedActions> turnActions;
+    private List<DumbLeaderCard> tempLeaderCards;
+    private Map<MarketMarble, Integer> tempMarbles;
     private final UpdatesHandler updatesHandler;
 
     public DumbModel(UI ui) {
@@ -54,9 +57,8 @@ public class DumbModel {
             JsonReader reader = new JsonReader(new FileReader("src/main/resources/json/client/gameID.json"));
             this.gameID = new Gson().fromJson(reader, int.class);
             reader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             this.gameID = -1;
-            e.printStackTrace();
         }
     }
     /**
@@ -257,6 +259,22 @@ public class DumbModel {
     }
 
     /**
+     * This method updates the temp marbles saved in the client's model
+     * @param updatedTempMarbles a map of temp marbles picked by the user
+     */
+    public void updateTempMarbles(Map<MarketMarble, Integer> updatedTempMarbles) {
+        this.tempMarbles = updatedTempMarbles;
+    }
+
+    /**
+     * This method updates the temp marbles saved in the client's model
+     * @param updatedLeaderCards a list of temp leader cards drawn by the user
+     */
+    public void updateTempLeaderCards(List<DumbLeaderCard> updatedLeaderCards) {
+        this.tempLeaderCards = updatedLeaderCards;
+    }
+
+    /**
      * @param nickname a player whose DumbPersonalBoard need to be retrieved
      * @return the DumbPersonalBoard corresponding to the player with the nickname given as a parameter
      */
@@ -271,6 +289,10 @@ public class DumbModel {
 
     public List<DumbPersonalBoard> getPersonalBoards() {
         return personalBoards;
+    }
+
+    public DumbPersonalBoard getOwnPersonalBoard(){
+        return getPersonalBoard(nickname);
     }
 
     public DumbMarket getMarket() {
@@ -299,6 +321,18 @@ public class DumbModel {
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public ArrayList<ExecutedActions> getTurnActions() {
+        return turnActions;
+    }
+
+    public List<DumbLeaderCard> getTempLeaderCards() {
+        return tempLeaderCards;
+    }
+
+    public Map<MarketMarble, Integer> getTempMarbles() {
+        return tempMarbles;
     }
 
     public class UpdatesHandler implements Subscriber<Renderable>{

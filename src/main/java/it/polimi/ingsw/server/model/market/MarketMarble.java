@@ -25,6 +25,10 @@ public enum MarketMarble {
         return marbleColor + Constants.MARBLE + Constants.ANSI_RESET;
     }
 
+    public String getMarbleColor() {
+        return marbleColor;
+    }
+
     public Resource toResource() {
         return switch(this) {
             case GREY -> Resource.STONE;
