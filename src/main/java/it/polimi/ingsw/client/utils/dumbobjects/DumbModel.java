@@ -51,10 +51,11 @@ public class DumbModel {
 
         //Try to read existing saved gameID
         try {
-        JsonReader reader = new JsonReader(new FileReader("src/main/resources/json/client/gameID.json"));
-        this.gameID = new Gson().fromJson(reader, int.class);
+            JsonReader reader = new JsonReader(new FileReader("src/main/resources/json/client/gameID.json"));
+            this.gameID = new Gson().fromJson(reader, int.class);
             reader.close();
         } catch (IOException e) {
+            this.gameID = -1;
             e.printStackTrace();
         }
     }
@@ -234,6 +235,8 @@ public class DumbModel {
      */
     public void updateGameID(int updatedGameID) {
         this.gameID = updatedGameID;
+
+        //write the new gamedID on a json file
         try {
             Writer writer = new FileWriter("src/main/resources/json/client/gameID.json");
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
