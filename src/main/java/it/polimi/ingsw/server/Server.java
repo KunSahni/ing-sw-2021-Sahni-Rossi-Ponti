@@ -79,13 +79,13 @@ public class Server implements Flow.Subscriber<Integer> {
     private void checkDormantGames(){
         int maxId = 0;
         try {
-            maxId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/maxId.json")), Integer.class);
+            maxId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/json/maxId.json")), Integer.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         for (int i=1; i<maxId; i++){
-            if (new File("src/main/resources/" + i).isDirectory()){
+            if (new File("src/main/resources/json/" + i).isDirectory()){
                 dormantGames.add(i);
             }
         }

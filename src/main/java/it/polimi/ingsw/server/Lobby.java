@@ -27,7 +27,7 @@ public class Lobby {
         players = new HashMap<>();
         size = 0;
         try {
-            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/maxId.json")), Integer.class);
+            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/json/maxId.json")), Integer.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
