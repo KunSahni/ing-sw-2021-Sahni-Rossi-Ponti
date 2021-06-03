@@ -35,9 +35,7 @@ public class DumbModel {
     private ArrayList<ExecutedActions> turnActions;
     private final UpdatesHandler updatesHandler;
 
-    public DumbModel(int gameID, int size, UI ui) {
-        this.gameID = gameID;
-        this.size = size;
+    public DumbModel(UI ui) {
         personalBoards = new ArrayList<>();
         market = DumbMarket.getInstance();
         developmentCardsBoard = DumbDevelopmentCardsBoard.getInstance();
@@ -274,6 +272,10 @@ public class DumbModel {
 
     public int getGameID() {
         return gameID;
+    }
+
+    public UpdatesHandler getUpdatesHandler() {
+        return updatesHandler;
     }
 
     public GameState getGameState() {
