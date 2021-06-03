@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import it.polimi.ingsw.client.utils.constants.Constants;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +31,40 @@ public class DumbDevelopmentCardSlot implements Serializable {
 
     public int getSlotIndex() {
         return slotIndex;
+    }
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    public String formatPrintableStringAt(int x, int y) {
+        if(developmentCards.empty())
+            return    "\033[" + x + ";" + y + "H╔══════════════╗"
+                    + "\033[" + (x+1) + ";" + y + "H║              ║"
+                    + "\033[" + (x+2) + ";" + y + "H║              ║"
+                    + "\033[" + (x+3) + ";" + y + "H║              ║"
+                    + "\033[" + (x+4) + ";" + y + "H║              ║"
+                    + "\033[" + (x+5) + ";" + y + "H║              ║"
+                    + "\033[" + (x+6) + ";" + y + "H║              ║"
+                    + "\033[" + (x+7) + ";" + y + "H║              ║"
+                    + "\033[" + (x+8) + ";" + y + "H║              ║"
+                    + "\033[" + (x+9) + ";" + y + "H║              ║"
+                    + "\033[" + (x+10) + ";" + y + "H╚══════════════╝";
+
+        //if not empty, draw the top card and the victoryPoints from the bottom ones
+        String printableString = developmentCards.peek().formatPrintableStringAt(x, y);
+        if(developmentCards.size()>=2)
+            printableString.concat(
+                    "\033[" + (x+11) + ";" + y + "H║    " + Constants.ANSI_YELLOW + developmentCards.get(1).getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
+                    + "\033[" + (x+12) + ";" + y + "H╚══════════════╝"
+            );
+        if(developmentCards.size()==3)
+            printableString.concat(
+                    "\033[" + (x+13) + ";" + y + "H║    " + Constants.ANSI_YELLOW + developmentCards.get(2).getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
+                            + "\033[" + (x+14) + ";" + y + "H╚══════════════╝"
+            );
+
+        return printableString;
     }
 }
