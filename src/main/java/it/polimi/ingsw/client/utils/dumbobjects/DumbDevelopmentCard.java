@@ -119,7 +119,7 @@ public class DumbDevelopmentCard implements Serializable {
         List<String> stringList = new ArrayList<>(map.entrySet())
                 .stream()
                 .map(
-                        entry -> String.valueOf(entry.getValue()).concat("x ").concat(entry.getKey().toString())
+                        entry -> String.valueOf(entry.getValue()).concat("x ").concat(entry.getKey().formatPrintableString())
                 ).collect(Collectors.toList());
         IntStream.range(0, maxSize-stringList.size()).forEach(
                 i -> stringList.add("    ")

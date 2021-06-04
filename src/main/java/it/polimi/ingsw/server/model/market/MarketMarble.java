@@ -21,8 +21,7 @@ public enum MarketMarble {
         this.marbleColor = marbleColor;
     }
 
-    @Override
-    public String toString() {
+    public String formatPrintableString() {
         return marbleColor + Constants.MARBLE + Constants.ANSI_RESET;
     }
 

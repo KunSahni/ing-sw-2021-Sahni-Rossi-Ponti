@@ -6,7 +6,6 @@ import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * This is a dumber version of a regular ProduceLeaderCard,
@@ -51,7 +50,7 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║              ║"
-                + "\033["+ (x+5) +";"+ y +"H║    " + inputResource.toString() + " -> " + Constants.ANY_RESOURCE + "    ║"
+                + "\033["+ (x+5) +";"+ y +"H║    " + inputResource.formatPrintableString() + " -> " + Constants.ANY_RESOURCE + "    ║"
                 + "\033["+ (x+6) +";"+ y +"H║         " + Constants.FAITH_POINT + "    ║"
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
                 + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"

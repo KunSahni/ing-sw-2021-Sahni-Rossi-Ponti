@@ -30,8 +30,7 @@ public enum Resource {
         };
     }
 
-    @Override
-    public String toString() {
+    public String formatPrintableString() {
         return color + Constants.RESOURCE + Constants.ANSI_RESET;
     }
 

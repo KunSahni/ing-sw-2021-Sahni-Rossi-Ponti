@@ -1,8 +1,6 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
-import it.polimi.ingsw.server.model.developmentcard.Color;
-import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
@@ -63,8 +61,8 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
     public String formatPrintableStringAt(int x, int y) {
         //contains the only color requirement
         Resource resource = new TreeMap<>(this.getLeaderCardRequirements().getRequiredResources()).firstKey();
-        String containedResource1 = getResourceCount()>=1 ? storedResource.toString() : " " ;
-        String containedResource2 = getResourceCount()==2 ? storedResource.toString() : " " ;
+        String containedResource1 = getResourceCount()>=1 ? storedResource.formatPrintableString() : " " ;
+        String containedResource2 = getResourceCount()==2 ? storedResource.formatPrintableString() : " " ;
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
                 + "\033["+ (x+1) +";"+ y +"H║ 5x " + resource + "        ║"

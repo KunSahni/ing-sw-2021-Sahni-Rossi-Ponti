@@ -52,9 +52,9 @@ public class DumbResourceManager implements Serializable {
                 .stream()
                 .map(
                         entry -> new ArrayList<String>(){{
-                                add(entry.getValue()>0? entry.getKey().toString() : " ");
-                                add(entry.getValue()>1? entry.getKey().toString() : " ");
-                                add(entry.getValue()>2? entry.getKey().toString() : " ");
+                                add(entry.getValue()>0? entry.getKey().formatPrintableString() : " ");
+                                add(entry.getValue()>1? entry.getKey().formatPrintableString() : " ");
+                                add(entry.getValue()>2? entry.getKey().formatPrintableString() : " ");
                             }}
                 )
                 .collect(Collectors.toList());

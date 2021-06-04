@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.cli;
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.CommandExecutor;
-import it.polimi.ingsw.client.utils.InputVerifier;
 import it.polimi.ingsw.client.utils.constants.Commands;
 import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
@@ -302,7 +301,7 @@ public class CLI implements UI {
         IntStream.range(0, marblesList.size()).forEach(
                 i -> {
                     printableString.concat("\033[" + x + ";" + (y+i*6) + "H╔═══╗ ");
-                    printableString.concat("\033[" + (x+1) + ";" + (y+i*6) + "H║ "+ marblesList.get(i).toString() +" ║ ");
+                    printableString.concat("\033[" + (x+1) + ";" + (y+i*6) + "H║ "+ marblesList.get(i).formatPrintableString() +" ║ ");
                     printableString.concat("\033[" + x + ";" + (y+i*6) + "H╚═══╝ ");
                 }
         );
