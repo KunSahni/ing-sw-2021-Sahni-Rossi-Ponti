@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.market;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.server.model.utils.Resource;
 
@@ -7,16 +8,16 @@ import it.polimi.ingsw.server.model.utils.Resource;
  * this enumeration represents the market marbles colors
  */
 public enum MarketMarble {
-    WHITE(Constants.ANSI_WHITE),
-    RED(Constants.ANSI_RED),
-    GREY(Constants.ANSI_GREY),
-    BLUE(Constants.ANSI_BLUE),
-    YELLOW(Constants.ANSI_YELLOW),
-    PURPLE(Constants.ANSI_PURPLE);
+    @SerializedName("WHITE") WHITE(Constants.ANSI_WHITE),
+    @SerializedName("RED") RED(Constants.ANSI_RED),
+    @SerializedName("GREY") GREY(Constants.ANSI_GREY),
+    @SerializedName("BLUE") BLUE(Constants.ANSI_BLUE),
+    @SerializedName("YELLOW") YELLOW(Constants.ANSI_YELLOW),
+    @SerializedName("PURPLE") PURPLE(Constants.ANSI_PURPLE);
 
     private String marbleColor;
 
-    private MarketMarble (String marbleColor){
+    MarketMarble (String marbleColor){
         this.marbleColor = marbleColor;
     }
 

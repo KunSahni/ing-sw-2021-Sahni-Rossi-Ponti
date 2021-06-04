@@ -1,15 +1,16 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.ingsw.client.utils.constants.Constants;
 
 /**
  * this enumeration represents possible colors of Development Cards
  */
 public enum Color {
-    GREEN("green", Constants.GREEN_LEVEL),
-    BLUE("blue", Constants.BLUE_LEVEL),
-    YELLOW("yellow", Constants.YELLOW_LEVEL),
-    PURPLE("purple", Constants.PURPLE_LEVEL);
+    @SerializedName("GREEN") GREEN("green", Constants.GREEN_LEVEL),
+    @SerializedName("BLUE") BLUE("blue", Constants.BLUE_LEVEL),
+    @SerializedName("YELLOW") YELLOW("yellow", Constants.YELLOW_LEVEL),
+    @SerializedName("PURPLE") PURPLE("purple", Constants.PURPLE_LEVEL);
 
     private final String coloredLevel;
     private final String color;

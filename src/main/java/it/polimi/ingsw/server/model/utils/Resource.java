@@ -1,17 +1,17 @@
 package it.polimi.ingsw.server.model.utils;
 
+import com.google.gson.annotations.SerializedName;
 import it.polimi.ingsw.client.utils.constants.Constants;
-import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 /**
  * this enumeration represents all possibles type of resources
  */
 public enum Resource {
-    COIN("coin", Constants.ANSI_YELLOW),
-    SERVANT("servant", Constants.ANSI_PURPLE),
-    STONE("stone", Constants.ANSI_GREY),
-    SHIELD("shield", Constants.ANSI_BLUE);
+    @SerializedName("COIN") COIN("coin", Constants.ANSI_YELLOW),
+    @SerializedName("SERVANT") SERVANT("servant", Constants.ANSI_PURPLE),
+    @SerializedName("STONE") STONE("stone", Constants.ANSI_GREY),
+    @SerializedName("SHIELD") SHIELD("shield", Constants.ANSI_BLUE);
 
     public final String label;
     public final String color;
