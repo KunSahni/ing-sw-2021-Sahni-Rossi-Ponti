@@ -1,11 +1,14 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import it.polimi.ingsw.client.utils.constants.Constants;
+import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This is a dumber version of a regular StoreLeaderCard,
@@ -49,5 +52,29 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
     @Override
     public StoreLeaderCard convert() {
         return new StoreLeaderCard(getVictoryPoints(), getLeaderCardRequirements(), getStoredType(), getStoredResources());
+    }
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    @Override
+    public String formatPrintableStringAt(int x, int y) {
+        //contains the only color requirement
+        Resource resource = new TreeMap<>(this.getLeaderCardRequirements().getRequiredResources()).firstKey();
+        String containedResource1 = getResourceCount()>=1 ? storedResource.toString() : " " ;
+        String containedResource2 = getResourceCount()==2 ? storedResource.toString() : " " ;
+
+        return    "\033["+ x +";"+ y +"H╔══════════════╗"
+                + "\033["+ (x+1) +";"+ y +"H║ 5x " + resource + "        ║"
+                + "\033["+ (x+3) +";"+ y +"H║              ║"
+                + "\033["+ (x+3) +";"+ y +"H║              ║"
+                + "\033["+ (x+4) +";"+ y +"H║ ╔═══╗  ╔═══╗ ║"
+                + "\033["+ (x+5) +";"+ y +"H║ ║ " + containedResource1 + " ║  ║ " + containedResource2 + " ║ ║"
+                + "\033["+ (x+6) +";"+ y +"H║ ╚═══╝  ╚═══╝ ║"
+                + "\033["+ (x+7) +";"+ y +"H║              ║"
+                + "\033["+ (x+8) +";"+ y +"H║    " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
+                + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
     }
 }

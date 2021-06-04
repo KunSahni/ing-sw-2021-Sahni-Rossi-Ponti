@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.model.market;
 
+import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,17 +20,17 @@ class MarketMarbleTest {
     @MethodSource("marblesColors")
     @DisplayName("getColor method test")
     void getColor(MarketMarble marketMarble, String color) {
-        assertEquals(color, marketMarble.getColor(), "getColor returned different marble than expected");
+        assertEquals(color, marketMarble.getMarbleColor(), "getColor returned different marble than expected");
     }
 
     private static Stream<Arguments> marblesColors() {
         return Stream.of(
-                arguments(MarketMarble.WHITE, "white"),
-                arguments(MarketMarble.RED, "red"),
-                arguments(MarketMarble.BLUE, "blue"),
-                arguments(MarketMarble.GREY, "grey"),
-                arguments(MarketMarble.PURPLE, "purple"),
-                arguments(MarketMarble.YELLOW, "yellow")
+                arguments(MarketMarble.WHITE, Constants.ANSI_WHITE),
+                arguments(MarketMarble.RED, Constants.ANSI_RED),
+                arguments(MarketMarble.BLUE, Constants.ANSI_BLUE),
+                arguments(MarketMarble.GREY, Constants.ANSI_GREY),
+                arguments(MarketMarble.PURPLE, Constants.ANSI_PURPLE),
+                arguments(MarketMarble.YELLOW, Constants.ANSI_YELLOW)
         );
     }
 

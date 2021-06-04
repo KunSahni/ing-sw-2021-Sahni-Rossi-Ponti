@@ -160,7 +160,7 @@ public class ChangesHandlerTest {
                 () -> assertArrayEquals(game.getMarket().getMarblesLayout(),
                         actualMarket.getMarblesLayout(),
                         "Error: change handler did not properly write/read market"),
-                () -> assertEquals(game.getMarket().getExtraMarble().getColor(), actualMarket.getExtraMarble().getColor(), "Error: change handler did not properly write/read market's extra marble")
+                () -> assertEquals(game.getMarket().getExtraMarble().getMarbleColor(), actualMarket.getExtraMarble().getMarbleColor(), "Error: change handler did not properly write/read market's extra marble")
 
 
         );

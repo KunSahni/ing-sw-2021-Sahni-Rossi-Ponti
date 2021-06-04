@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import it.polimi.ingsw.client.utils.constants.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,5 +80,29 @@ public class DumbPersonalBoard {
 
     public boolean getConnectionStatus() {
         return connectionStatus;
+    }
+
+
+    /**
+     * @param x the x position of the cursor in the console
+     * @param y the y position of the cursor in the console
+     * @return a string color of a leader Card with the top left corner in position x,y
+     */
+    public String formatPrintableStringAt(int x, int y) {
+        String printableString = Constants.ANSI_CLEAR;
+        printableString.concat("\033[1;1HNickname:" + nickname + " \033[1;117Hposition:" + position + "");
+        printableString.concat(faithTrack.formatPrintableStringAt(2, 1));
+        printableString.concat(depots.formatPrintableStringAtAsDepots(8, 1));
+        printableString.concat(strongbox.formatPrintableStringAtAsStrongbox(10, 22));
+        if(leaderCards.get(0)!=null)
+            printableString.concat(leaderCards.get(0).formatPrintableStringAt(8, 31));
+        if(leaderCards.get(1)!=null)
+            printableString.concat(leaderCards.get(1).formatPrintableStringAt(8, 48));
+
+        printableString.concat(developmentCardSlots.get(0).formatPrintableStringAt(8, 52));
+        printableString.concat(developmentCardSlots.get(1).formatPrintableStringAt(8, 69));
+        printableString.concat(developmentCardSlots.get(2).formatPrintableStringAt(8, 86));
+
+        return printableString;
     }
 }
