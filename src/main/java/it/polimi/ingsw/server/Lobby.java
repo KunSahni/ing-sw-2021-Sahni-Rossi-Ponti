@@ -2,6 +2,7 @@ package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import it.polimi.ingsw.network.message.renderable.requests.GameStartedNotification;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
@@ -22,6 +23,7 @@ public class Lobby {
     private Map<String, Connection> players;
     private int size;
     private int maxGameId;
+    private Server server;
 
     private Lobby(){
         players = new HashMap<>();
@@ -38,6 +40,10 @@ public class Lobby {
             instance = new Lobby();
         }
         return instance;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
     }
 
     /**
@@ -84,14 +90,13 @@ public class Lobby {
 
         Game game = null;
         try {
-            game = new Game(players.get(0).getServer(), maxGameId, List.copyOf(players.keySet()));
+            game = new Game(server, maxGameId, List.copyOf(players.keySet()));
         } catch (IOException e) {
             e.printStackTrace();
         }
         Controller controller = new Controller(game);
         RemoteView remoteView = new RemoteView(controller);
         controller.setRemoteView(remoteView);
-        game.subscribe(remoteView);
         for (String s: players.keySet()) {
             controller.connectPlayer(s, players.get(s));
         }
@@ -99,7 +104,8 @@ public class Lobby {
         for (Connection c: players.values()) {
             c.setGameId(maxGameId);
             c.addCurrentGame(maxGameId, game);
-            c.getServer().addGameIDRemoteView(maxGameId, controller);
+            server.addGameIDRemoteView(maxGameId, controller);
+            c.send(new GameStartedNotification());
         }
 
         this.maxGameId++;

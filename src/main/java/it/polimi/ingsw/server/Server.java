@@ -31,6 +31,7 @@ public class Server implements Flow.Subscriber<Integer> {
      * server starts to hear on the port to accept, create and run connections
      */
     public void start(){
+        Lobby.getInstance().setServer(this);
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException e) {

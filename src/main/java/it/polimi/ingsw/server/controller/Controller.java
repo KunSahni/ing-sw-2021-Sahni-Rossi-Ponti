@@ -24,6 +24,7 @@ public class Controller implements Subscriber<PlayerAction> {
 
     public void setRemoteView(RemoteView remoteView) {
         this.remoteView = remoteView;
+        game.subscribe(remoteView);
     }
 
     public void connectPlayer(String nickname, Connection connection) {
