@@ -179,10 +179,6 @@ public class Connection implements Runnable {
         sendAuthenticationRequest();
     }
 
-    public void joinedLobby(Integer size) {
-        send(new JoinedLobbyNotification(gameId, size));
-    }
-
     /**
      * Send to the client the passed renderable
      *
