@@ -88,15 +88,6 @@ public class Connection implements Runnable {
     }
 
     /**
-     * Ask to the player which size he wants for the game by sending a CreateLobbyRequest
-     * The state is changed to WaitingForGameSizeState
-     */
-    public void askForSize() {
-        send(new CreateLobbyRequest());
-        readFromInputStream();
-    }
-
-    /**
      * Depending by current state control validity of received messages and invoke corresponding
      * readMessage method
      */
@@ -160,7 +151,6 @@ public class Connection implements Runnable {
      */
     public void invalidSize() {
         send(new ErrorMessage("Game size you selected is invalid"));
-        askForSize();
     }
 
     /**

@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.connection.state;
 
 import it.polimi.ingsw.network.message.SerializedMessage;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
+import it.polimi.ingsw.network.message.renderable.requests.CreateLobbyRequest;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.model.Game;
@@ -53,6 +54,7 @@ public class AuthenticationState extends ConnectionState {
         if (gameID == -1){
             if (Lobby.getInstance().isEmpty()) {
                 connection.setState(new WaitingForGameSizeState(connection));
+                connection.send(new CreateLobbyRequest());
             } else {
                 if (!Lobby.getInstance().nicknameAvailable(nickname)){
                     connection.unavailableNickname();

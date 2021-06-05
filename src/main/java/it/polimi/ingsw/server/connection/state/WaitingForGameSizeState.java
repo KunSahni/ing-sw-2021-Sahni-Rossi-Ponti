@@ -14,11 +14,11 @@ public class WaitingForGameSizeState extends ConnectionState {
     public WaitingForGameSizeState(Connection connection) {
         super(connection);
         this.connection = connection;
-        this.connection.askForSize();
     }
 
     @Override
     public boolean messageAllowed(SerializedMessage serializedMessage) {
+        logger.info("Checking if message is allowed.");
         return serializedMessage.getMessage() instanceof CreateLobbyMessage;
     }
 

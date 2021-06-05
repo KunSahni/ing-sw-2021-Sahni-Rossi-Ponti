@@ -78,7 +78,7 @@ public class ClientSocket {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Sent a message to the server.");
+        logger.info("Sent message instance of: " + message.getClass());
     }
 
     /**
