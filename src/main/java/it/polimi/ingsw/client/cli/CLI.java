@@ -50,11 +50,7 @@ public class CLI implements UI {
         //System.out.println(Constants.AUTHORS);
         //System.out.println(Constants.RULES + "\n");
         CLI cli = new CLI();
-        try {
-            cli.run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        cli.connectToServer();
     }
 
     /**
@@ -70,22 +66,17 @@ public class CLI implements UI {
         in.reset();
         int port = in.nextInt();
         this.clientSocket = new ClientSocket(ip, port, dumbModel.getUpdatesHandler());
+        printToCLI(Constants.ANSI_CLEAR);
+        clientSocket.connect();
+        onScreenElement = OnScreenElement.COMMONS;
     }
 
     /**
      * Start running the cli client
      */
-    private void run() throws InterruptedException {
-        connectToServer();
-        printToCLI(Constants.ANSI_CLEAR);
-        clientSocket.connect();
-        onScreenElement = OnScreenElement.COMMONS;
-
-        while (!isActiveGame());
-
-
+    private void loop() throws InterruptedException {
         while(isActiveGame()){
-            in.reset();
+            resetCommandPosition();
             String insertedCommand = in.nextLine();
 
             try {
@@ -118,6 +109,15 @@ public class CLI implements UI {
     private void renderHelp() {
     }
 
+    @Override
+    public void renderModelUpdate() {
+        renderCommons();
+        try {
+            loop();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void renderPersonalBoard(String nickname) {
@@ -252,6 +252,7 @@ public class CLI implements UI {
         printToCLI(Constants.ANSI_CLEAR);
         String printableString = "\033[2;1H"+ message;
         printToCLI(printableString);
+        setActiveGame(true);
     }
 
     @Override
@@ -366,9 +367,10 @@ public class CLI implements UI {
     @Override
     public void onNext(Renderable item) {
         new Thread(() -> {
-            if(onScreenElement.equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY))
+            if(onScreenElement.equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY)){
                 renderQueue.add(item);
-            elaborateRenderQueue();
+                elaborateRenderQueue();
+            }
         }).start();
         subscription.request(1);
     }
@@ -401,7 +403,7 @@ public class CLI implements UI {
     }
 
     /**
-     * This method call render() on the head of updatesQueue and sends it to the UI
+     * This method call render() on the head of updatesQueue
      */
     private synchronized void elaborateRenderQueue(){
         Renderable usedItem = renderQueue.remove();

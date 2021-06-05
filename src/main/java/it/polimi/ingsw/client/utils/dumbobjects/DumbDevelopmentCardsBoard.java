@@ -1,5 +1,9 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+import it.polimi.ingsw.server.model.developmentcard.Color;
+import it.polimi.ingsw.server.model.developmentcard.DevelopmentCard;
+import it.polimi.ingsw.server.model.developmentcard.Level;
+
 import java.io.Serializable;
 import java.util.stream.IntStream;
 
@@ -37,6 +41,32 @@ public class DumbDevelopmentCardsBoard implements Serializable {
     public DumbDevelopmentCard[][] getBoard() {
         return board;
     }
+
+    /**
+     * @return the first deck development card of color and level specified not picking it
+     */
+    public DumbDevelopmentCard peekCard(Level level, Color color) {
+        int line;
+        int column;
+        line = switch (level) {
+            case LEVEL1 -> 2;
+            case LEVEL2 -> 1;
+            case LEVEL3 -> 0;
+        };
+        column = switch (color) {
+            case GREEN -> 0;
+            case BLUE -> 1;
+            case YELLOW -> 2;
+            case PURPLE -> 3;
+        };
+
+        try {
+            return board[line][column];
+        }catch (NullPointerException e){
+            return null;
+        }
+    }
+
 
     /**
      * @param x the x position of the cursor in the console

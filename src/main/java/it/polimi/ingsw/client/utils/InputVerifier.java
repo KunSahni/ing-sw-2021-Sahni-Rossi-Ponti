@@ -12,6 +12,7 @@ import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class has the goal of checking that the selected action by the user is valid
@@ -32,19 +33,32 @@ public class InputVerifier {
     }
 
     public boolean canBuy(Level chosenLevel, Color chosenColor, int developmentCardSlotIndex, Map<Resource, Integer> depotsResources, Map<Resource, Integer> strongboxResources){
-        return true;
+        return legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), depotsResources)
+                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)
+                && dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor) != null;
+                //&& dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor).getCost()
     }
 
     public boolean canActivate(int index){
-        return true;
+        return dumbModel.getOwnPersonalBoard().getLeaderCards().get(index) != null
+                && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(index).isActive()
+                && canDoAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
     }
 
     public boolean canDiscard(int index){
-        return true;
+        return dumbModel.getOwnPersonalBoard().getLeaderCards().get(index) != null
+                && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(index).isActive()
+                && canDoAction(ExecutedActions.DISCARDED_LEADER_CARD_ACTION);
     }
 
     public boolean canPickResources(Map<Resource, Integer> pickedResources){
-        return true;
+        return pickedResources
+                .values()
+                .stream()
+                .mapToInt(
+                        value -> value
+                )
+                .sum() == dumbModel.getOwnPersonalBoard().getPosition()/2;
     }
 
     public boolean canPickLeaderCards(List<DumbLeaderCard> chosenLeaderCards){
@@ -57,7 +71,8 @@ public class InputVerifier {
         return true;
     }
 
-    private boolean canDoAction(List<ExecutedActions> executedActionsList, ExecutedActions nextAction){
+    private boolean canDoAction(ExecutedActions nextAction){
+        List<ExecutedActions> executedActionsList;
         return true;
     }
 
@@ -65,5 +80,25 @@ public class InputVerifier {
         return index>0 && index<=dumbModel.getSize();
     }
 
+
+    /**
+     * Checks if second map is submap of first
+     * @param possessedResources  the actual possessed resources by user
+     * @param selectedResources the resources selected by user
+     * @return true if second map is contained in first map
+     */
+    private boolean legalResourcesChoice(Map<Resource, Integer> possessedResources, Map<Resource, Integer> selectedResources){
+        Map<Resource, Integer> validResources = selectedResources
+                .entrySet()
+                .stream()
+                .filter(
+                        entry -> possessedResources.get(entry.getKey()) >= entry.getValue()
+                )
+                .collect(
+                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
+                );
+
+        return validResources.equals(selectedResources);
+    }
 
 }
