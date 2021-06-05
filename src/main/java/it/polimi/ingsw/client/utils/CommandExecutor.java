@@ -106,7 +106,7 @@ public class CommandExecutor {
 
         //if action is valid, send it to server
         if(inputVerifier.canSeePersonalBoard(index))
-            throw new PersonalBoardException(dumbModel.getPersonalBoards().get(index-1).getNickname());
+            throw new PersonalBoardException(dumbModel.getPersonalBoards().get(index-1));
         else
             throw new InvalidArgsException();
     }

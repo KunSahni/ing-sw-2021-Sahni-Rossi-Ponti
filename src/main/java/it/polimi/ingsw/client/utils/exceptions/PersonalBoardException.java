@@ -1,20 +1,23 @@
 package it.polimi.ingsw.client.utils.exceptions;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
+
 public class PersonalBoardException extends Exception {
     String nickname;
+    DumbPersonalBoard dumbPersonalBoard;
 
     /**
      * Constructs a new exception with the specified detail message.  The
      * cause is not initialized, and may subsequently be initialized by
      * a call to {@link #initCause}.
      *
-     * @param nickname the nickname of the player
+     * @param dumbPersonalBoard the dumb personal board of the player
      */
-    public PersonalBoardException(String nickname) {
-        super(nickname);
+    public PersonalBoardException(DumbPersonalBoard dumbPersonalBoard) {
+        this.dumbPersonalBoard = dumbPersonalBoard;
     }
 
-    public String getNickname() {
-        return nickname;
+    public DumbPersonalBoard getDumbPersonalBoard() {
+        return dumbPersonalBoard;
     }
 }

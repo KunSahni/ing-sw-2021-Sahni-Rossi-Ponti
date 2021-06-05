@@ -40,7 +40,7 @@ public class PlayerPrivateUpdate extends PrivateRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
-        if((tempMarbles != null && tempMarbles.size()>0) || (tempLeaderCards != null && tempLeaderCards.size()>0))
+        if(tempMarbles != null && tempMarbles.size()>0)
             return OnScreenElement.FORCE_DISPLAY;
         else
             return OnScreenElement.valueOf(dumbModel.getPersonalBoard(getNickname()).getPosition());

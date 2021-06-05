@@ -22,7 +22,7 @@ import java.util.concurrent.Flow;
 import java.util.stream.IntStream;
 
 /**
- * This is a cli client for master of rennaissance
+ * This is a cli client for master of renaissance
  */
 
 public class CLI implements UI {
@@ -85,7 +85,7 @@ public class CLI implements UI {
             try {
                 commandExecutor.executeCommand(insertedCommand);
             } catch (PersonalBoardException e) {
-                renderPersonalBoard(e.getNickname());
+                renderPersonalBoard(e.getDumbPersonalBoard());
             } catch (CommonsException e) {
                 renderCommons();
             } catch (WrongCommandException | InvalidArgsException e) {
@@ -127,6 +127,12 @@ public class CLI implements UI {
     @Override
     public void renderPersonalBoard(String nickname) {
         String printableString = dumbModel.getPersonalBoard(nickname).formatPrintableStringAt(2,2);
+        printToCLI(printableString);
+        setOnScreenElement(OnScreenElement.valueOf(nickname));
+    }
+
+    public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
+        String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
         setOnScreenElement(OnScreenElement.valueOf(nickname));
     }
