@@ -47,6 +47,7 @@ public class ClientSocket {
                             renderablePublisher.submit(message);
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
+                        break;
                     }
                 }
             }).start();

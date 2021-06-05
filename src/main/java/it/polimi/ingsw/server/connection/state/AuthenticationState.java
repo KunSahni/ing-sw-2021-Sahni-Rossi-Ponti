@@ -50,6 +50,7 @@ public class AuthenticationState extends ConnectionState {
         AuthenticationMessage authenticationMessage = (AuthenticationMessage) serializedMessage.getMessage();
         Integer gameID = authenticationMessage.getRequestedGameID();
         String nickname = authenticationMessage.getNickname();
+        connection.setNickname(nickname);
         logger.info("Player " + nickname + " is trying to join game " + gameID);
         if (gameID == -1){
             if (Lobby.getInstance().isEmpty()) {

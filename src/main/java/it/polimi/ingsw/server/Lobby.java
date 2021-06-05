@@ -11,6 +11,7 @@ import it.polimi.ingsw.server.connection.state.PlayingState;
 import it.polimi.ingsw.server.connection.state.WaitingForGameSizeState;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,6 @@ public class Lobby {
      */
     public synchronized void addPlayer(String nickname, Connection connection) {
         logger.log(Level.INFO, "Player " + nickname + " is being added to the lobby.");
-        connection.setNickname(nickname);
         players.put(nickname, connection);
         connection.joinedLobby(size);
         if (isFull()) {
@@ -97,7 +97,7 @@ public class Lobby {
         logger.info("Launching game " + maxGameId);
         Game game = null;
         try {
-            game = new Game(server, maxGameId, List.copyOf(players.keySet()));
+            game = new Game(server, maxGameId, new ArrayList<>(players.keySet()));
         } catch (IOException e) {
             e.printStackTrace();
         }
