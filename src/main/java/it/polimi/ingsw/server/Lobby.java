@@ -61,9 +61,6 @@ public class Lobby {
         connection.setNickname(nickname);
         players.put(nickname, connection);
         connection.joinedLobby(size);
-        if (isEmpty()) {
-            connection.setState(new WaitingForGameSizeState(connection));
-        }
         if (isFull()) {
             startGame();
         } else {

@@ -51,10 +51,14 @@ public class AuthenticationState extends ConnectionState {
         String nickname = authenticationMessage.getNickname();
         logger.info("Player " + nickname + " is trying to join game " + gameID);
         if (gameID == -1){
-            if (!Lobby.getInstance().nicknameAvailable(nickname)){
-                connection.unavailableNickname();
+            if (Lobby.getInstance().isEmpty()) {
+                connection.setState(new WaitingForGameSizeState(connection));
             } else {
-                Lobby.getInstance().addPlayer(nickname, connection);
+                if (!Lobby.getInstance().nicknameAvailable(nickname)){
+                    connection.unavailableNickname();
+                } else {
+                    Lobby.getInstance().addPlayer(nickname, connection);
+                }
             }
         } else {
             if (!connection.getServer().getPlayers().containsValue(gameID) || !connection.getServer().getDormantGames().contains(gameID)){
