@@ -2,11 +2,14 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
+import it.polimi.ingsw.client.gui.guicontrollers.InGameCommonsController;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.gui.guicontrollers.MainMenuController;
+import it.polimi.ingsw.client.utils.InputVerifier;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import javafx.application.Application;
@@ -16,16 +19,22 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.Flow.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GUI extends Application implements UI {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private DumbModel dumbModel;
+    private InputVerifier inputVerifier;
     private ClientSocket clientSocket;
     private Stage stage;
-    private JFXController currentController;
+    private MainMenuController mainMenuController;
+    private InGameCommonsController commonsController;
+    private Map<String, JFXController> playersControllers;
+    private Scene commonsScene;
+    private Map<String, Scene> playersScenes;
     private Subscription subscription;
 
     public static void main(String[] args) {
@@ -36,8 +45,13 @@ public class GUI extends Application implements UI {
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         this.dumbModel = new DumbModel(this);
-        enterMainMenu();
+        this.inputVerifier = new InputVerifier(dumbModel);
+        loadMainMenu();
         this.stage.show();
+    }
+
+    public InputVerifier getInputVerifier() {
+        return inputVerifier;
     }
 
     public void setClientSocket(ClientSocket clientSocket) {
@@ -48,28 +62,66 @@ public class GUI extends Application implements UI {
         return clientSocket;
     }
 
-    public void enterMainMenu() throws IOException {
+    public void loadMainMenu() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLResources.MAIN_MENU.toPathString()));
         stage.setScene(new Scene(loader.load()));
-        currentController = loader.getController();
-        currentController.setGui(this);
+        this.mainMenuController = loader.getController();
+        this.mainMenuController.setGui(this);
     }
 
     private void updateMainMenuFooter(FXMLResources footer) {
-        Platform.runLater(() -> ((MainMenuController) currentController).setFooter(footer));
+        Platform.runLater(() -> mainMenuController.setFooter(footer));
     }
 
     private void updateMainMenuLoadingText(String message) {
-        ((MainMenuController) currentController).setLoadingFooterText(message);
-    }
-
-    public void exitMainMenu() {
+        Platform.runLater(() -> mainMenuController.setLoadingFooterText(message));
 
     }
 
-    public void enterGame() {}
+    public void tearDownMainMenu() {
+        mainMenuController = null;
+    }
 
-    public void exitGame() {}
+    public void loadGame() {
+        String ownNickname = dumbModel.getOwnPersonalBoard().getNickname();
+        this.playersScenes = new HashMap<>();
+        this.playersControllers = new HashMap<>();
+        FXMLLoader commonsLoader =
+                new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_COMMONS.toPathString()));
+        FXMLLoader personalLoader =
+                new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_PERSONAL.toPathString()));
+        // Create a map that links each opponent player to an fxml loader
+        Map<String, FXMLLoader> oppsLoaders = new HashMap<>();
+        dumbModel.getPersonalBoards().stream()
+                .map(DumbPersonalBoard::getNickname)
+                .filter(nickname -> !nickname.equals(ownNickname))
+                .forEach(nickname -> oppsLoaders.put(nickname,
+                        new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_OPP.toPathString()))));
+        // Load all scenes
+        try {
+            commonsScene = commonsLoader.load();
+            playersScenes.put(ownNickname, personalLoader.load());
+            for (String nickname :
+                    oppsLoaders.keySet()) {
+                playersScenes.put(nickname, oppsLoaders.get(nickname).load());
+                // Use this loop to load controllers as well
+                playersControllers.put(nickname, oppsLoaders.get(nickname).getController());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        commonsController = commonsLoader.getController();
+        playersControllers.put(ownNickname, personalLoader.getController());
+        stage.setScene(playersScenes.get(ownNickname));
+        Platform.runLater(this::tearDownMainMenu);
+    }
+
+    public void tearDownGame() {}
+
+    @Override
+    public void renderModelUpdate() {
+        loadGame();
+    }
 
     @Override
     public void renderPersonalBoard(String nickname) {
@@ -118,11 +170,13 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderAuthenticationRequest(String message) {
+        logger.log(Level.INFO, "Rendering AuthenticationRequest");
         updateMainMenuFooter(FXMLResources.NICKNAME_FOOTER);
     }
 
     @Override
     public void renderCreateLobbyRequest(String message) {
+        logger.log(Level.INFO, "Rendering CreateLobbyRequest");
         updateMainMenuFooter(FXMLResources.PLAYER_SELECTION_FOOTER);
     }
 
@@ -143,12 +197,13 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderGameStartedNotification(String message) {
+        logger.log(Level.INFO, "Rendering GameStartedNotification");
         updateMainMenuLoadingText(message);
-        exitMainMenu();
     }
 
     @Override
     public void renderJoinedLobbyNotification(String message) {
+        logger.log(Level.INFO, "Rendering JoinedLobbyNotification");
         updateMainMenuLoadingText(message);
     }
 
@@ -159,6 +214,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderWaitingForPlayersNotification(String message) {
+        logger.log(Level.INFO, "Rendering WaitingForPlayersNotification");
         updateMainMenuLoadingText(message);
     }
 
@@ -169,6 +225,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderNicknameAlreadyInUseNotification(String message) {
+        logger.log(Level.INFO, "Rendering NicknameAlreadyInUseNotification");
         updateMainMenuLoadingText(message);
         updateMainMenuFooter(FXMLResources.NICKNAME_FOOTER);
     }

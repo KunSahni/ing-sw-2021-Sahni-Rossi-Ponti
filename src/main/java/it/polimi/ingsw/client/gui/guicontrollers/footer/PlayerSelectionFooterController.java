@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.gui.guicontrollers.footer;
 
+import it.polimi.ingsw.client.gui.FXMLResources;
 import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -37,6 +38,7 @@ public class PlayerSelectionFooterController extends FooterController {
 
     private void sendCreateLobbyMessage(int size) {
         parentController.getGui().getClientSocket().sendMessage(new CreateLobbyMessage(size));
+        parentController.setFooter(FXMLResources.LOADING_FOOTER);
         if (size == 1) {
             parentController.setLoadingFooterText("Setting up game");
         }

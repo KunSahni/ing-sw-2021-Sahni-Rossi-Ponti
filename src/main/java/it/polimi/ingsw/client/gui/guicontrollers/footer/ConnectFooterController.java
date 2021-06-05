@@ -16,7 +16,7 @@ public class ConnectFooterController extends FooterController {
     private Button connectButton;
 
     @FXML
-    private void connectToServer(ActionEvent actionEvent) {
+    private void connectToServer() {
         GUI gui = parentController.getGui();
         ClientSocket clientSocket = new ClientSocket(ipField.getText(),
                 Integer.parseInt(portField.getText()),

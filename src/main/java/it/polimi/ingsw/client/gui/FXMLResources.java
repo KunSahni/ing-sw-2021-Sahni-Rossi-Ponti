@@ -5,7 +5,11 @@ public enum FXMLResources {
     CONNECT_FOOTER("ConnectFooter"),
     LOADING_FOOTER("LoadingFooter"),
     NICKNAME_FOOTER("NicknameFooter"),
-    PLAYER_SELECTION_FOOTER("PlayerSelectionFooter");
+    PLAYER_SELECTION_FOOTER("PlayerSelectionFooter"),
+    IN_GAME_PERSONAL("InGamePersonal"),
+    IN_GAME_OPP("InGameOpp"),
+    IN_GAME_COMMONS("InGameCommons"),
+    PRE_GAME_LEADER_CARDS("PreGameLeaderCards");
 
     private final String label;
 
