@@ -26,11 +26,12 @@ public class WaitingForGameSizeState extends ConnectionState {
 
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
-        if (((CreateLobbyMessage) serializedMessage.getMessage()).getSize()<=0 || ((CreateLobbyMessage) serializedMessage.getMessage()).getSize()>4){
+        int selectedSize = ((CreateLobbyMessage) serializedMessage.getMessage()).getSize();
+        if (selectedSize <=0 || selectedSize >4){
             connection.invalidSize();
         }
         else{
-            Lobby.getInstance().setSize(((CreateLobbyMessage) serializedMessage.getMessage()).getSize());
+            Lobby.getInstance().setSize(selectedSize);
         }
     }
 }
