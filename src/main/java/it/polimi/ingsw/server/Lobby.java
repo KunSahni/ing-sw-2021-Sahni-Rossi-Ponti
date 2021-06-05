@@ -14,29 +14,33 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is a Singleton that represents the Game Lobby
  */
 public class Lobby {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private static Lobby instance = null;
     private Map<String, Connection> players;
     private int size;
     private int maxGameId;
     private Server server;
 
-    private Lobby(){
+    private Lobby() {
         players = new HashMap<>();
         size = 0;
         try {
-            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/json/maxId.json")), Integer.class);
+            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources" +
+                    "/json/maxId.json")), Integer.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public static Lobby getInstance(){
-        if (instance == null){
+    public static Lobby getInstance() {
+        if (instance == null) {
             instance = new Lobby();
         }
         return instance;
@@ -48,19 +52,31 @@ public class Lobby {
 
     /**
      * add a player to server players map
-     * @param nickname is the nickname of the player
+     *
+     * @param nickname   is the nickname of the player
      * @param connection is the connection of the player
      */
-    public void addPlayer(String nickname, Connection connection){
+    public synchronized void addPlayer(String nickname, Connection connection) {
+        logger.log(Level.INFO, "Player " + nickname + " is being added to the lobby.");
         connection.setNickname(nickname);
         players.put(nickname, connection);
+        connection.joinedLobby(size);
+        if (isEmpty()) {
+            connection.setState(new WaitingForGameSizeState(connection));
+        }
+        if (isFull()) {
+            startGame();
+        } else {
+            connection.waitForPlayers();
+        }
     }
 
     /**
      * control if number of players in Lobby equals Lobby size
+     *
      * @return true if Lobby is full, otherwise false
      */
-    public boolean isFull(){
+    public boolean isFull() {
         return players.size() == size;
     }
 
@@ -73,21 +89,15 @@ public class Lobby {
     }
 
     /**
-     * create a new game with maxGameId as id and all players in Lobby, than create a new controller, a new remote view,
+     * create a new game with maxGameId as id and all players in Lobby, than create a new
+     * controller, a new remote view,
      * connect all players in Lobby to the game, subscribe remote view to all connections.
-     * It also sets maxGameId as gameId to all connections and add to server currentGames map game just created.
+     * It also sets maxGameId as gameId to all connections and add to server currentGames map
+     * game just created.
      * Finally increase maxGameId, overwrite it in memory and call clear method.
      */
-    public void startGame(){
-
-        try {
-            Writer writer = new FileWriter("src/main/resources/maxId.json");
-            new Gson().toJson(maxGameId+1, writer);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void startGame() {
+        logger.info("Launching game " + maxGameId);
         Game game = null;
         try {
             game = new Game(server, maxGameId, List.copyOf(players.keySet()));
@@ -97,26 +107,31 @@ public class Lobby {
         Controller controller = new Controller(game);
         RemoteView remoteView = new RemoteView(controller);
         controller.setRemoteView(remoteView);
-        for (String s: players.keySet()) {
-            controller.connectPlayer(s, players.get(s));
+        server.addGameToCurrentGames(maxGameId, game);
+        server.addGameIdController(maxGameId, controller);
+        players.forEach(
+                (nickname, connection) -> {
+                    controller.connectPlayer(nickname, connection);
+                    connection.setGameId(maxGameId);
+                    connection.setState(new PlayingState(connection));
+                    connection.send(new GameStartedNotification());
+                }
+        );
+        try {
+            Writer writer = new FileWriter("src/main/resources/json/maxId.json");
+            new Gson().toJson(maxGameId + 1, writer);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        for (Connection c: players.values()) {
-            c.setGameId(maxGameId);
-            c.addCurrentGame(maxGameId, game);
-            server.addGameIDRemoteView(maxGameId, controller);
-            c.send(new GameStartedNotification());
-        }
-
         this.maxGameId++;
-
         clear();
     }
 
     /**
      * Set instance null, players to new Map and size to zero
      */
-    private void clear(){
+    private void clear() {
         instance = null;
         players = new HashMap<>();
         size = 0;
@@ -129,38 +144,18 @@ public class Lobby {
     /**
      * @return true only if Lobby' size is zero
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
-    public synchronized boolean checkNicknameAvailability(String nickname, Connection connection){
-        if(players.containsKey(nickname)){
-            return false;
-        }
-        else{
-            addPlayer(nickname, connection);
-            if (isEmpty()){
-                connection.setState(new WaitingForGameSizeState(connection));
-                connection.askForSize();
-            }
-
-            connection.setState(new PlayingState(connection));
-
-            connection.sendJoinLobbyNotification(size);
-
-            if (isFull()) {
-                startGame();
-            } else {
-                connection.waitForPlayers();
-            }
-            return true;
-        }
+    public synchronized boolean nicknameAvailable(String nickname) {
+        return !players.containsKey(nickname);
     }
 
-    public void removePlayer(String nickname){
+    public void removePlayer(String nickname) {
         players.remove(nickname);
-        if (players.size()==0){
-            size=0;
+        if (players.size() == 0) {
+            size = 0;
         }
     }
 }

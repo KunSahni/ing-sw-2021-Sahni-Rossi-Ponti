@@ -11,6 +11,7 @@ public class WaitingForGameSizeState extends ConnectionState {
     public WaitingForGameSizeState(Connection connection) {
         super(connection);
         this.connection = connection;
+        this.connection.askForSize();
     }
 
     @Override
@@ -26,6 +27,7 @@ public class WaitingForGameSizeState extends ConnectionState {
 
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
+        System.out.println("Reading lobby size from lobby leader.");
         int selectedSize = ((CreateLobbyMessage) serializedMessage.getMessage()).getSize();
         if (selectedSize <=0 || selectedSize >4){
             connection.invalidSize();

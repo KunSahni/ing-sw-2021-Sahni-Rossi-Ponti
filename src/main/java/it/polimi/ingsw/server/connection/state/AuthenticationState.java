@@ -7,8 +7,10 @@ import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.model.Game;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class AuthenticationState extends ConnectionState {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private final Connection connection;
 
     public AuthenticationState(Connection connection) {
@@ -44,15 +46,17 @@ public class AuthenticationState extends ConnectionState {
      */
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
-        Integer gameID = ((AuthenticationMessage) serializedMessage.getMessage()).getRequestedGameID();
-        String nickname = ((AuthenticationMessage) serializedMessage.getMessage()).getNickname();
+        AuthenticationMessage authenticationMessage = (AuthenticationMessage) serializedMessage.getMessage();
+        Integer gameID = authenticationMessage.getRequestedGameID();
+        String nickname = authenticationMessage.getNickname();
+        logger.info("Player " + nickname + " is trying to join game " + gameID);
         if (gameID == -1){
-            if (!Lobby.getInstance().checkNicknameAvailability(nickname, connection)){
+            if (!Lobby.getInstance().nicknameAvailable(nickname)){
                 connection.unavailableNickname();
+            } else {
+                Lobby.getInstance().addPlayer(nickname, connection);
             }
-        }
-
-        else {
+        } else {
             if (!connection.getServer().getPlayers().containsValue(gameID) || !connection.getServer().getDormantGames().contains(gameID)){
                 connection.unavailableGame();
             }

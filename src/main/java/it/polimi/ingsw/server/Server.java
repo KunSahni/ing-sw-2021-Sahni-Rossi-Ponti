@@ -105,12 +105,12 @@ public class Server implements Flow.Subscriber<Integer> {
         players.put(nickname, gameId);
     }
 
-    public void addCurrentGames(int gameId, Game game) {
-        currentGames.putIfAbsent(gameId, game);
+    public void addGameToCurrentGames(int gameId, Game game) {
+        currentGames.put(gameId, game);
     }
 
-    public void addGameIDRemoteView(int gameID, Controller controller){
-        gameIDControllerMap.putIfAbsent(gameID, controller);
+    public void addGameIdController(int gameID, Controller controller){
+        gameIDControllerMap.put(gameID, controller);
     }
 
     public Controller getController(Integer gameID){

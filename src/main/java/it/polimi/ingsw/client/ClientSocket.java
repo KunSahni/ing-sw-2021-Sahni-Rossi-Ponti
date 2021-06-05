@@ -9,11 +9,13 @@ import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.logging.Logger;
 
 /**
  * This class contains the client-side socket used to communicate with the server
  */
 public class ClientSocket {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private final String serverAddress;
     private final int serverPort;
     private Socket socket;
@@ -76,6 +78,7 @@ public class ClientSocket {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logger.info("Sent a message to the server.");
     }
 
     /**

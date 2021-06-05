@@ -4,7 +4,6 @@ import it.polimi.ingsw.network.message.SerializedMessage;
 import it.polimi.ingsw.network.message.renderable.ErrorMessage;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.network.message.renderable.requests.*;
-import it.polimi.ingsw.network.message.messages.Message;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
@@ -66,7 +65,6 @@ public class Connection implements Runnable {
     public void run() {
         try {
             sendAuthenticationRequest();
-
             while (isActive) {
                 readFromInputStream();
             }
@@ -77,10 +75,9 @@ public class Connection implements Runnable {
 
     public void closeConnection() {
         try {
-            if (server.getController(gameId)!=null){
+            if (server.getController(gameId) != null) {
                 server.getController(gameId).disconnectPlayer(nickname);
-            }
-            else{
+            } else {
                 Lobby.getInstance().removePlayer(nickname);
             }
             isActive = false;
@@ -95,14 +92,8 @@ public class Connection implements Runnable {
      * The state is changed to WaitingForGameSizeState
      */
     public void askForSize() {
-        try {
-            outputStream.writeObject(new CreateLobbyRequest());
-            outputStream.flush();
-            readFromInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new CreateLobbyRequest());
+        readFromInputStream();
     }
 
     /**
@@ -142,26 +133,14 @@ public class Connection implements Runnable {
      * send an AuthenticationRequest to the client
      */
     public void sendAuthenticationRequest() {
-        try {
-            outputStream.writeObject(new AuthenticationRequest());
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new AuthenticationRequest());
     }
 
     /**
      * Send to the client a message to tell that the message he sent is not valid
      */
     public void invalidMessage() {
-        try {
-            outputStream.writeObject(new ErrorMessage("Your message is not valid"));
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new ErrorMessage("Your message is not valid"));
     }
 
     public Socket getSocket() {
@@ -172,72 +151,44 @@ public class Connection implements Runnable {
      * Send to the client a message to tell him that the nickname he chose is unavailable
      */
     public void unavailableNickname() {
-        try {
-            outputStream.writeObject(new ErrorMessage("Nickname you selected is unavailable"));
-            outputStream.flush();
-            sendAuthenticationRequest();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new NicknameAlreadyInUseNotification());
+        sendAuthenticationRequest();
     }
 
     /**
      * Send to the client a message to tell him that the size he selected is not valid
      */
     public void invalidSize() {
-        try {
-            outputStream.writeObject(new ErrorMessage("Game size you selected is invalid"));
-            outputStream.flush();
-            askForSize();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new ErrorMessage("Game size you selected is invalid"));
+        askForSize();
     }
 
     /**
      * Communicate to the player that he is waiting for other players to start game
      */
     public void waitForPlayers() {
-        try {
-            outputStream.writeObject(new WaitingForPlayersNotification());
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
-        //todo: emmò? che faccio?
+        send(new WaitingForPlayersNotification());
     }
 
     /**
      * Communicate to player that the game he's trying to reconnect is unavailable
      */
     public void unavailableGame() {
-        try {
-            outputStream.writeObject(new GameNotFoundNotification());
-            outputStream.flush();
-            sendAuthenticationRequest();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new GameNotFoundNotification());
+        sendAuthenticationRequest();
     }
-
 
     /**
      * Communicate to the player that the game he's trying to reconnect is available but nickname
      * he selected is wrong
      */
     public void wrongNickname() {
-        try {
-            outputStream.writeObject(new WrongNicknameNotification());
-            outputStream.flush();
-            sendAuthenticationRequest();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
+        send(new WrongNicknameNotification());
+        sendAuthenticationRequest();
+    }
+
+    public void joinedLobby(Integer size) {
+        send(new JoinedLobbyNotification(gameId, size));
     }
 
     /**
@@ -281,25 +232,11 @@ public class Connection implements Runnable {
         server.addNicknameGameId(this.nickname, this.gameId);
     }
 
-    public void addCurrentGame(int gameId, Game game) {
-        server.addCurrentGames(gameId, game);
-    }
-
     public void publish(PlayerAction playerAction) {
         submissionPublisher.submit(playerAction);
     }
 
     public void setState(ConnectionState state) {
         this.state = state;
-    }
-
-    public void sendJoinLobbyNotification(Integer size) {
-        try {
-            outputStream.writeObject(new JoinedLobbyNotification(gameId, size));
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeConnection();
-        }
     }
 }
