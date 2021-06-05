@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.guicontrollers.InGamePersonalController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.guicontrollers.ingame.InGamePersonalController">
    <children>
       <VBox alignment="CENTER" prefHeight="400.0" prefWidth="134.0">
          <children>
@@ -48,26 +48,7 @@
             </HBox>
             <StackPane prefHeight="419.0" prefWidth="474.0">
                <children>
-                  <VBox alignment="CENTER" fillWidth="false" opacity="0.0" prefHeight="267.0" prefWidth="462.0">
-                     <children>
-                        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
-                           <children>
-                              <CheckBox fx:id="checkBox1" mnemonicParsing="false" text="1" />
-                              <CheckBox fx:id="checkBox2" layoutX="30.0" layoutY="30.0" mnemonicParsing="false" text="2" />
-                              <CheckBox fx:id="checkBox3" layoutX="113.0" layoutY="30.0" mnemonicParsing="false" text="3" />
-                              <CheckBox fx:id="checkBox4" layoutX="196.0" layoutY="30.0" mnemonicParsing="false" text="4" />
-                           </children>
-                        </HBox>
-                        <Label text="Select Two Leader Cards" />
-                     </children>
-                  </VBox>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="470.0">
+                  <VBox fx:id="personalBoardLayer" alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="470.0">
                      <children>
                         <GridPane prefHeight="166.0" prefWidth="600.0">
                            <columnConstraints>
@@ -175,18 +156,37 @@
                         </HBox>
                      </children>
                   </VBox>
+                  <VBox fx:id="preGameLeaderCardSelectionLayer" alignment="CENTER" fillWidth="false" prefHeight="267.0" prefWidth="462.0">
+                     <children>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <CheckBox fx:id="leaderCardCheckBox1" mnemonicParsing="false" text="1" />
+                              <CheckBox fx:id="leaderCardCheckBox2" layoutX="30.0" layoutY="30.0" mnemonicParsing="false" text="2" />
+                              <CheckBox fx:id="leaderCardCheckBox3" layoutX="113.0" layoutY="30.0" mnemonicParsing="false" text="3" />
+                              <CheckBox fx:id="leaderCardCheckBox4" layoutX="196.0" layoutY="30.0" mnemonicParsing="false" text="4" />
+                           </children>
+                        </HBox>
+                        <Label text="Select Two Leader Cards" />
+                     </children>
+                  </VBox>
                </children>
             </StackPane>
             <HBox>
                <children>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button alignment="CENTER" mnemonicParsing="false" text="\%Confirm" />
+                        <Button fx:id="confirmButton" alignment="CENTER" mnemonicParsing="false" onAction="#confirm" text="\%Confirm" />
                      </children>
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <TextArea prefHeight="70.0" prefWidth="200.0" />
+                        <TextArea fx:id="outcomeTextArea" prefHeight="70.0" prefWidth="200.0" />
                      </children>
                   </Pane>
                </children>

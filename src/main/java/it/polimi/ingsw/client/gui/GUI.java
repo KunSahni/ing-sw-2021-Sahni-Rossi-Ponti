@@ -2,9 +2,10 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
-import it.polimi.ingsw.client.gui.guicontrollers.InGameCommonsController;
+import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameCommonsController;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
-import it.polimi.ingsw.client.gui.guicontrollers.MainMenuController;
+import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGamePersonalController;
+import it.polimi.ingsw.client.gui.guicontrollers.mainmenu.MainMenuController;
 import it.polimi.ingsw.client.utils.InputVerifier;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
@@ -12,6 +13,7 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.model.market.MarketMarble;
+import it.polimi.ingsw.server.model.utils.GameState;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -31,8 +33,10 @@ public class GUI extends Application implements UI {
     private ClientSocket clientSocket;
     private Stage stage;
     private MainMenuController mainMenuController;
+    private InGamePersonalController personalController;
     private InGameCommonsController commonsController;
-    private Map<String, JFXController> playersControllers;
+    private Map<String, JFXController> oppsControllers;
+    private Scene personalScene;
     private Scene commonsScene;
     private Map<String, Scene> playersScenes;
     private Subscription subscription;
@@ -83,9 +87,8 @@ public class GUI extends Application implements UI {
     }
 
     public void loadGame() {
-        String ownNickname = dumbModel.getOwnPersonalBoard().getNickname();
         this.playersScenes = new HashMap<>();
-        this.playersControllers = new HashMap<>();
+        this.oppsControllers = new HashMap<>();
         FXMLLoader commonsLoader =
                 new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_COMMONS.toPathString()));
         FXMLLoader personalLoader =
@@ -94,26 +97,32 @@ public class GUI extends Application implements UI {
         Map<String, FXMLLoader> oppsLoaders = new HashMap<>();
         dumbModel.getPersonalBoards().stream()
                 .map(DumbPersonalBoard::getNickname)
-                .filter(nickname -> !nickname.equals(ownNickname))
+                .filter(nickname -> !nickname.equals(dumbModel.getNickname()))
                 .forEach(nickname -> oppsLoaders.put(nickname,
                         new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_OPP.toPathString()))));
         // Load all scenes
         try {
-            commonsScene = commonsLoader.load();
-            playersScenes.put(ownNickname, personalLoader.load());
+            commonsScene = new Scene(commonsLoader.load());
+            personalScene = new Scene(personalLoader.load());
             for (String nickname :
                     oppsLoaders.keySet()) {
-                playersScenes.put(nickname, oppsLoaders.get(nickname).load());
+                playersScenes.put(nickname, new Scene(oppsLoaders.get(nickname).load()));
                 // Use this loop to load controllers as well
-                playersControllers.put(nickname, oppsLoaders.get(nickname).getController());
+                JFXController oppController = oppsLoaders.get(nickname).getController();
+                oppController.setGui(this);
+                oppsControllers.put(nickname, oppController);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        personalController = personalLoader.getController();
+        personalController.setGui(this);
         commonsController = commonsLoader.getController();
-        playersControllers.put(ownNickname, personalLoader.getController());
-        stage.setScene(playersScenes.get(ownNickname));
-        Platform.runLater(this::tearDownMainMenu);
+        commonsController.setGui(this);
+        Platform.runLater(() -> {
+            stage.setScene(personalScene);
+            tearDownMainMenu();
+        });
     }
 
     public void tearDownGame() {}
@@ -121,6 +130,8 @@ public class GUI extends Application implements UI {
     @Override
     public void renderModelUpdate() {
         loadGame();
+        if(dumbModel.getGameState() == GameState.DEALT_LEADER_CARDS && dumbModel.getTempLeaderCards().size()>0)
+            renderLeaderCardsChoice(dumbModel.getTempLeaderCards());
     }
 
     @Override
@@ -150,7 +161,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-
+        personalController.initLeaderCardsSelection(leaderCards);
     }
 
     @Override
