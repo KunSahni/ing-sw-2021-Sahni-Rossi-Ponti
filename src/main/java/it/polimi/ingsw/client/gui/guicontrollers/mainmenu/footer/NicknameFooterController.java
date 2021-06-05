@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.gui.guicontrollers.footer;
+package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 
 import it.polimi.ingsw.client.gui.FXMLResources;
 import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
@@ -17,6 +17,7 @@ public class NicknameFooterController extends FooterController {
         int gameId = parentController.getGui().getDumbModel().getGameID();
         parentController.setFooter(FXMLResources.LOADING_FOOTER);
         parentController.setLoadingFooterText(gameId == -1 ? "joining lobby" : "joining game " + gameId);
+        parentController.getGui().getDumbModel().setNickname(nicknameField.getText());
         parentController.getGui().getClientSocket()
                 .sendMessage(new AuthenticationMessage(nicknameField.getText(), gameId));
     }

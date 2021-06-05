@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.gui.guicontrollers.footer;
+package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

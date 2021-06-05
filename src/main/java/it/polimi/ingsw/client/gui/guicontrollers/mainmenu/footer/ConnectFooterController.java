@@ -1,8 +1,7 @@
-package it.polimi.ingsw.client.gui.guicontrollers.footer;
+package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.gui.GUI;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

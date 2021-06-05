@@ -1,6 +1,6 @@
-package it.polimi.ingsw.client.gui.guicontrollers.footer;
+package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 
-import it.polimi.ingsw.client.gui.guicontrollers.MainMenuController;
+import it.polimi.ingsw.client.gui.guicontrollers.mainmenu.MainMenuController;
 
 public abstract class FooterController {
     protected MainMenuController parentController;

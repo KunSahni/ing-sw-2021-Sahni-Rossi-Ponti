@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.gui.guicontrollers.footer;
+package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 
 import it.polimi.ingsw.client.gui.FXMLResources;
 import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
