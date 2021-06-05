@@ -158,6 +158,6 @@ public class ModelUpdate extends PrivateRenderable {
      */
     @Override
     public void render(UI ui) {
-        ui.renderCommons();
+        ui.renderModelUpdate();
     }
 }

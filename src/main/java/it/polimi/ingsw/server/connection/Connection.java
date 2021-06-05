@@ -17,8 +17,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.logging.Logger;
 
 public class Connection implements Runnable {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private final Socket socket;
     private final Server server;
     private ObjectOutputStream outputStream;
@@ -187,6 +189,7 @@ public class Connection implements Runnable {
      * @param renderable is sent to the Client
      */
     public void send(Renderable renderable) {
+        logger.info("Sent " + renderable.getClass() + " to " + nickname);
         try {
             outputStream.writeObject(renderable);
             outputStream.flush();

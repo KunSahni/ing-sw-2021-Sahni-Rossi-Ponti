@@ -43,8 +43,10 @@ public class ClientSocket {
                 while (socket.isConnected()) {
                     try {
                         Renderable message = (Renderable) inputStream.readObject();
-                        if(message != null)
+                        if(message != null) {
+                            logger.info("Received " + message.getClass() + " from server.");
                             renderablePublisher.submit(message);
+                        }
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                         break;
