@@ -78,6 +78,7 @@ public class ClientSocket {
         try {
             outputStream.writeObject(new SerializedMessage(message));
             outputStream.flush();
+            outputStream.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,8 +92,10 @@ public class ClientSocket {
         try {
             outputStream.writeObject(new SerializedMessage(action));
             outputStream.flush();
+            outputStream.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logger.info("Sent action instance of: " + action.getClass());
     }
 }

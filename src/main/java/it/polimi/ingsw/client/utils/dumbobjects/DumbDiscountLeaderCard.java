@@ -39,26 +39,18 @@ public class DumbDiscountLeaderCard extends DumbLeaderCard{
         //contains the color of the first requirement
         Color color1 = this.getLeaderCardRequirements()
                 .getRequiredDevelopmentCards()
-                .entrySet()
+                .keySet()
                 .stream()
-                .sorted()
-                .collect(
-                        Collectors.toList()
-                )
-                .get(0)
-                .getKey();
+                .findFirst()
+                .get();
 
         //contains the color of the second requirement
         Color color2 = this.getLeaderCardRequirements()
                 .getRequiredDevelopmentCards()
-                .entrySet()
+                .keySet()
                 .stream()
-                .sorted()
-                .collect(
-                        Collectors.toList()
-                )
-                .get(1)
-                .getKey();
+                .findFirst()
+                .get();
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
                 + "\033["+ (x+1) +";"+ y +"H║ 1x " + color1 + Constants.LEVEL + Constants.ANSI_RESET + "         ║"

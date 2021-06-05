@@ -189,6 +189,7 @@ public class Connection implements Runnable {
         try {
             outputStream.writeObject(renderable);
             outputStream.flush();
+            outputStream.reset();
         } catch (IOException e) {
             e.printStackTrace();
             closeConnection();

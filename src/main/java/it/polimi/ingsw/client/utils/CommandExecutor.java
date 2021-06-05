@@ -22,7 +22,7 @@ import java.util.*;
 public class CommandExecutor {
     private final DumbModel dumbModel;
     private final InputVerifier inputVerifier;
-    private final ClientSocket clientSocket;
+    private ClientSocket clientSocket;
 
     public CommandExecutor(DumbModel dumbModel, ClientSocket clientSocket) {
         this.dumbModel = dumbModel;
@@ -107,8 +107,8 @@ public class CommandExecutor {
         //if action is valid, send it to server
         if(inputVerifier.canSeePersonalBoard(index))
             throw new PersonalBoardException(dumbModel.getPersonalBoards().get(index-1).getNickname());
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
     /**
@@ -134,8 +134,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new ActivateLeaderCardAction(dumbModel.getOwnPersonalBoard().getLeaderCards().get(index-1))
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
     /**
@@ -161,8 +161,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new DiscardLeaderCardAction(dumbModel.getOwnPersonalBoard().getLeaderCards().get(index-1))
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
 
@@ -215,8 +215,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new BuyDevelopmentCardAction(chosenLevel, chosenColor, developmentCardSlotIndex, depotsResources, strongboxResources)
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
     /**
@@ -250,8 +250,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new TakeFromMarketAction(index, place.equals("row"))
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
 
@@ -369,8 +369,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new ActivateProductionAction(chosenProductionCombo)
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
 
@@ -391,8 +391,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new PregameResourceChoiceAction(pickedResources)
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
     /**
@@ -426,8 +426,8 @@ public class CommandExecutor {
             clientSocket.sendAction(
                     new PregameLeaderCardsChoiceAction(chosenLeaderCards)
             );
-
-        throw new InvalidArgsException();
+        else
+            throw new InvalidArgsException();
     }
 
     /**
@@ -482,4 +482,7 @@ public class CommandExecutor {
         return resources;
     }
 
+    public void setClientSocket(ClientSocket clientSocket) {
+        this.clientSocket = clientSocket;
+    }
 }

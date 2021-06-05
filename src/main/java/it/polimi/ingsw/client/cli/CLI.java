@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
 import it.polimi.ingsw.network.message.renderable.Renderable;
 import it.polimi.ingsw.server.controller.action.playeraction.PregameResourceChoiceAction;
 import it.polimi.ingsw.server.model.market.MarketMarble;
+import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.io.PrintWriter;
@@ -65,10 +66,12 @@ public class CLI implements UI {
         resetCommandPosition();
         in.reset();
         int port = in.nextInt();
+        in.nextLine();
         this.clientSocket = new ClientSocket(ip, port, dumbModel.getUpdatesHandler());
         printToCLI(Constants.ANSI_CLEAR);
         clientSocket.connect();
-        onScreenElement = OnScreenElement.COMMONS;
+        setOnScreenElement(OnScreenElement.COMMONS);
+        commandExecutor.setClientSocket(clientSocket);
     }
 
     /**
@@ -95,7 +98,6 @@ public class CLI implements UI {
                 setActiveGame(false);
             }
 
-            resetCommandPosition();
         }
         clientSocket.close();
         in.close();
@@ -111,7 +113,10 @@ public class CLI implements UI {
 
     @Override
     public void renderModelUpdate() {
-        renderCommons();
+        if(dumbModel.getGameState() == GameState.DEALT_LEADER_CARDS && dumbModel.getTempLeaderCards().size()>0)
+            renderLeaderCardsChoice(dumbModel.getTempLeaderCards());
+        else
+            renderCommons();
         try {
             loop();
         } catch (InterruptedException e) {
@@ -123,7 +128,7 @@ public class CLI implements UI {
     public void renderPersonalBoard(String nickname) {
         String printableString = dumbModel.getPersonalBoard(nickname).formatPrintableStringAt(2,2);
         printToCLI(printableString);
-        onScreenElement = OnScreenElement.valueOf(nickname);
+        setOnScreenElement(OnScreenElement.valueOf(nickname));
     }
 
     @Override
@@ -131,7 +136,7 @@ public class CLI implements UI {
         String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2, 2) +
                 dumbModel.getMarket().formatPrintableStringAt(15, 72);
         printToCLI(printableString);
-        onScreenElement = OnScreenElement.COMMONS;
+        setOnScreenElement(OnScreenElement.COMMONS);
     }
 
     @Override
@@ -208,6 +213,7 @@ public class CLI implements UI {
         resetCommandPosition();
         in.reset();
         nickname = in.next();
+        dumbModel.setNickname(nickname);
         clientSocket.sendMessage(new AuthenticationMessage(this.nickname, dumbModel.getGameID()));
     }
 
@@ -219,6 +225,7 @@ public class CLI implements UI {
 
         resetCommandPosition();
         int size = in.nextInt();
+        in.nextLine();
 
         if(size>0 && size<=4)
             clientSocket.sendMessage(new CreateLobbyMessage(size));
@@ -367,7 +374,7 @@ public class CLI implements UI {
     @Override
     public void onNext(Renderable item) {
         new Thread(() -> {
-            if(onScreenElement.equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY)){
+            if(getOnScreenElement().equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY)){
                 renderQueue.add(item);
                 elaborateRenderQueue();
             }
@@ -408,5 +415,13 @@ public class CLI implements UI {
     private synchronized void elaborateRenderQueue(){
         Renderable usedItem = renderQueue.remove();
         usedItem.render(this);
+    }
+
+    private synchronized OnScreenElement getOnScreenElement() {
+        return onScreenElement;
+    }
+
+    private synchronized void setOnScreenElement(OnScreenElement onScreenElement) {
+        this.onScreenElement = onScreenElement;
     }
 }
