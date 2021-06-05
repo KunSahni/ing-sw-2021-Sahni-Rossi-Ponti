@@ -335,6 +335,10 @@ public class DumbModel {
         return tempMarbles;
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public class UpdatesHandler implements Subscriber<Renderable>{
         private final ConcurrentLinkedQueue<Renderable> updatesQueue;
         private Subscription subscription;
