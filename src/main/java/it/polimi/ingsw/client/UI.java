@@ -12,6 +12,8 @@ import java.util.concurrent.Flow.Subscriber;
 
 public interface UI extends Subscriber<Renderable> {
 
+    void renderModelUpdate();
+
     void renderPersonalBoard(String nickname);
 
     void renderCommons();
