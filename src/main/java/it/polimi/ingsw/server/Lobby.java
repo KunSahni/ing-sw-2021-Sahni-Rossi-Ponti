@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.message.renderable.requests.GameStartedNotification;
+import it.polimi.ingsw.network.message.renderable.requests.JoinedLobbyNotification;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
@@ -60,7 +61,7 @@ public class Lobby {
     public synchronized void addPlayer(String nickname, Connection connection) {
         logger.log(Level.INFO, "Player " + nickname + " is being added to the lobby.");
         players.put(nickname, connection);
-        connection.joinedLobby(size);
+        connection.send(new JoinedLobbyNotification(maxGameId, size));
         if (isFull()) {
             startGame();
         } else {
