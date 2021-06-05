@@ -16,6 +16,7 @@ import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow;
 import java.util.stream.IntStream;
 
@@ -29,16 +30,18 @@ public class CLI implements UI {
     private ClientSocket clientSocket;
     private String nickname;
     private Flow.Subscription subscription;
-    private DumbModel dumbModel;
+    private final DumbModel dumbModel;
     private OnScreenElement onScreenElement;
     private boolean activeGame;
-    private CommandExecutor commandExecutor;
+    private final CommandExecutor commandExecutor;
+    private final ConcurrentLinkedQueue<Renderable> renderQueue;
 
     public CLI() {
         in = new Scanner(System.in);
         out = new PrintWriter(System.out);
         dumbModel = new DumbModel(this);
         commandExecutor = new CommandExecutor(dumbModel, clientSocket);
+        renderQueue = new ConcurrentLinkedQueue<>();
     }
 
     public static void main(String[] args) {
@@ -47,36 +50,43 @@ public class CLI implements UI {
         //System.out.println(Constants.AUTHORS);
         //System.out.println(Constants.RULES + "\n");
         CLI cli = new CLI();
-        cli.run();
+        try {
+            cli.run();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * This method asks the player which server and port he wants to connect to and creates the network socket
      */
     private void connectToServer(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println(">Insert the server IP address");
-        System.out.print(">");
-        String ip = scanner.nextLine();
-        System.out.println(">Insert the server port");
-        System.out.print(">");
-        int port = scanner.nextInt();
+        printToCLI(">Insert the server IP address");
+        resetCommandPosition();
+        in.reset();
+        String ip = in.next();
+        printToCLI(">Insert the server port");
+        resetCommandPosition();
+        in.reset();
+        int port = in.nextInt();
         this.clientSocket = new ClientSocket(ip, port, dumbModel.getUpdatesHandler());
     }
 
     /**
      * Start running the cli client
      */
-    private void run() {
+    private void run() throws InterruptedException {
         connectToServer();
         printToCLI(Constants.ANSI_CLEAR);
         clientSocket.connect();
-        setActiveGame(true);
         onScreenElement = OnScreenElement.COMMONS;
 
+        while (!isActiveGame());
+
+
         while(isActiveGame()){
-            String insertedCommand = in.nextLine();
             in.reset();
+            String insertedCommand = in.nextLine();
 
             try {
                 commandExecutor.executeCommand(insertedCommand);
@@ -118,8 +128,8 @@ public class CLI implements UI {
 
     @Override
     public void renderCommons() {
-        String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2,2);
-        printableString.concat(dumbModel.getMarket().formatPrintableStringAt(15, 72));
+        String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2, 2) +
+                dumbModel.getMarket().formatPrintableStringAt(15, 72);
         printToCLI(printableString);
         onScreenElement = OnScreenElement.COMMONS;
     }
@@ -137,20 +147,21 @@ public class CLI implements UI {
 
     @Override
     public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
-        String printableString = Constants.ANSI_CLEAR + Constants.ANSI_BOLD + "\033[2;1HThe final scores are:";
+        StringBuilder printableString = new StringBuilder(Constants.ANSI_CLEAR + Constants.ANSI_BOLD + "\033[2;1HThe final scores are:");
         finalScores.forEach(
-                (integer, s) -> printableString.concat("\n" + integer + ") " + s)
+                (integer, s) -> printableString.append("\n" + integer + ") " + s)
         );
-        printToCLI(printableString);
+        printToCLI(printableString.toString());
     }
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-        String printableString = "";
+        setActiveGame(true);
+        StringBuilder printableString = new StringBuilder();
         IntStream.range(0,leaderCards.size()).forEach(
-                i -> printableString.concat(leaderCards.get(i).formatPrintableStringAt(2, 1+17*i))
+                i -> printableString.append(leaderCards.get(i).formatPrintableStringAt(2, 1+17*i))
         );
-        printToCLI(printableString);
+        printToCLI(printableString.toString());
     }
 
     @Override
@@ -165,14 +176,13 @@ public class CLI implements UI {
         Map<Resource, Integer> chosenResources = new HashMap<>();
 
         for(int i=0; i<numberOfResources; i++){
-            String printableString = "\033[2;1HPick a resource (type the correspondent number):";
-            printableString.concat("\n1) " + Resource.values()[0].label + " " + Constants.COIN);
-            printableString.concat("\n2) " + Resource.values()[1].label + " " + Constants.SERVANT);
-            printableString.concat("\n3) " + Resource.values()[2].label + " " + Constants.SHIELD);
-            printableString.concat("\n4) " + Resource.values()[3].label + " " + Constants.STONE);
-
+            String printableString = "\033[2;1HPick a resource (type the correspondent number):" + "\n1) " + Resource.values()[0].label + " " + Constants.COIN +
+                    "\n2) " + Resource.values()[1].label + " " + Constants.SERVANT +
+                    "\n3) " + Resource.values()[2].label + " " + Constants.SHIELD +
+                    "\n4) " + Resource.values()[3].label + " " + Constants.STONE;
             printToCLI(printableString);
 
+            in.reset();
             int readIndex = in.nextInt();
             if(readIndex>0 && readIndex<=4)
                 chosenResources.put(Resource.values()[readIndex], 1);
@@ -183,36 +193,31 @@ public class CLI implements UI {
         clientSocket.sendAction(new PregameResourceChoiceAction(chosenResources));
     }
 
-    public void renderNotification(String message) {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H";
-        printableString.concat(message);
-        printToCLI(printableString);
-    }
-
     @Override
     public void renderErrorMessage(String message) {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H";
-        printableString.concat(message);
+        String printableString = Constants.ANSI_CLEAR + "\033[2;1H" + message;
         printToCLI(printableString);
     }
 
     @Override
     public void renderAuthenticationRequest(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H";
-        printableString.concat(message);
+        String printableString = "\033[2;1H"+ message;
         printToCLI(printableString);
 
-        nickname = in.nextLine();
+        resetCommandPosition();
+        in.reset();
+        nickname = in.next();
         clientSocket.sendMessage(new AuthenticationMessage(this.nickname, dumbModel.getGameID()));
     }
 
     @Override
     public void renderCreateLobbyRequest(String message) {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H";
-        printableString.concat(message);
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
         printToCLI(printableString);
 
+        resetCommandPosition();
         int size = in.nextInt();
 
         if(size>0 && size<=4)
@@ -223,47 +228,65 @@ public class CLI implements UI {
 
     @Override
     public void renderConnectionTerminatedNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderGameFoundNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderGameNotFoundNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderGameStartedNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderJoinedLobbyNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderTimeoutWarningNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderWaitingForPlayersNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderWrongNicknameNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     @Override
     public void renderNicknameAlreadyInUseNotification(String message) {
-
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H"+ message;
+        printToCLI(printableString);
     }
 
     /**
@@ -273,7 +296,6 @@ public class CLI implements UI {
     private void printToCLI(String printableString){
         out.print(printableString);
         out.flush();
-        resetCommandPosition();
     }
 
     /**
@@ -291,7 +313,7 @@ public class CLI implements UI {
      * @return a string representing a map of marbles formatted with the top left corner in position x,y
      */
     public String formatPrintableMarblesMapStringAt(Map<MarketMarble, Integer> marbles, int x, int y) {
-        String printableString = "";
+        StringBuilder printableString = new StringBuilder();
 
         List<MarketMarble> marblesList = new ArrayList<>();
         marbles.forEach((key, value) -> IntStream.range(0, value).forEach(
@@ -300,13 +322,13 @@ public class CLI implements UI {
 
         IntStream.range(0, marblesList.size()).forEach(
                 i -> {
-                    printableString.concat("\033[" + x + ";" + (y+i*6) + "H╔═══╗ ");
-                    printableString.concat("\033[" + (x+1) + ";" + (y+i*6) + "H║ "+ marblesList.get(i).formatPrintableString() +" ║ ");
-                    printableString.concat("\033[" + x + ";" + (y+i*6) + "H╚═══╝ ");
+                    printableString.append("\033[" + x + ";" + (y+i*6) + "H╔═══╗ ");
+                    printableString.append("\033[" + (x+1) + ";" + (y+i*6) + "H║ "+ marblesList.get(i).formatPrintableString() +" ║ ");
+                    printableString.append("\033[" + x + ";" + (y+i*6) + "H╚═══╝ ");
                 }
         );
 
-        return printableString;
+        return printableString.toString();
     }
 
     public synchronized boolean isActiveGame() {
@@ -343,8 +365,11 @@ public class CLI implements UI {
      */
     @Override
     public void onNext(Renderable item) {
-        if(onScreenElement.equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY))
-            item.render(this);
+        new Thread(() -> {
+            if(onScreenElement.equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY))
+                renderQueue.add(item);
+            elaborateRenderQueue();
+        }).start();
         subscription.request(1);
     }
 
@@ -373,5 +398,13 @@ public class CLI implements UI {
     @Override
     public void onComplete() {
 
+    }
+
+    /**
+     * This method call render() on the head of updatesQueue and sends it to the UI
+     */
+    private synchronized void elaborateRenderQueue(){
+        Renderable usedItem = renderQueue.remove();
+        usedItem.render(this);
     }
 }

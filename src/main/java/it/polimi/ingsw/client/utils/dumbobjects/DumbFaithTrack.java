@@ -44,30 +44,29 @@ public class DumbFaithTrack implements Serializable {
     public String formatPrintableStringAt(int x, int y){
         final int[] faithTrackVictoryPoints = {0, 0, 0, 0, 1, 0, 0 ,0, 2, 0, 0 ,0, 4, 0, 0 ,0, 6, 0, 0 ,0, 9, 0, 0 ,0, 12, 0, 0 ,0, 16, 0, 0 ,0, 20};
 
-
-        String printableString = "\033[" + x + ";" + y + "H╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗";
-        printableString.concat("║");
+        StringBuilder printableString = new StringBuilder("\033[" + x + ";" + y + "H╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+        printableString.append("║");
         for(int i =0; i<=24; i++)
             if(i%8==0 && i>0)
-                printableString.concat(String.format(" %s%-2d%s ║", popesFavors.get(i/8).getStatusColor(), i, Constants.ANSI_RESET));
+                printableString.append(String.format(" %s%-2d%s ║", popesFavors.get(i/8).getStatusColor(), i, Constants.ANSI_RESET));
             else if(i >= 5 && i < 8 || i >= 12 && i < 16 || i >= 19)
-                printableString.concat(String.format(" %s%-2d%s ║", Constants.ANSI_ORANGE, i, Constants.ANSI_RESET));
+                printableString.append(String.format(" %s%-2d%s ║", Constants.ANSI_ORANGE, i, Constants.ANSI_RESET));
             else
-                printableString.concat(String.format(" %-2d ║", i));
-        printableString.concat("\n║");
+                printableString.append(String.format(" %-2d ║", i));
+        printableString.append("\n║");
         for(int i =1; i<=24; i++)
             if(i == faithMarkerPosition)
-                printableString.concat(String.format( " %s  ║", Constants.FAITH_MARKER));
+                printableString.append(String.format( " %s  ║", Constants.FAITH_MARKER));
             else
-                printableString.concat("    ║");
-        printableString.concat("\n║");
+                printableString.append("    ║");
+        printableString.append("\n║");
         for(int i =0; i<=24; i++)
             if(faithTrackVictoryPoints[i]>0)
-                printableString.concat(String.format(" %s%-2d%s ║", Constants.ANSI_YELLOW, faithTrackVictoryPoints[i], Constants.ANSI_RESET));
+                printableString.append(String.format(" %s%-2d%s ║", Constants.ANSI_YELLOW, faithTrackVictoryPoints[i], Constants.ANSI_RESET));
             else
-                printableString.concat("    ║");
-        printableString.concat("\n╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
+                printableString.append("    ║");
+        printableString.append("\n╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝");
 
-        return printableString;
+        return printableString.toString();
     }
 }

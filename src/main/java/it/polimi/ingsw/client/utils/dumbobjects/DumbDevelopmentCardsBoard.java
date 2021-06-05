@@ -44,16 +44,18 @@ public class DumbDevelopmentCardsBoard implements Serializable {
      * @return a string color of a leader Card with the top left corner in position x,y
      */
     public String formatPrintableStringAt(int x, int y) {
-        String printableString = "";
+        StringBuilder printableString = new StringBuilder();
+
         IntStream.range(0,3).forEach(
                 i -> IntStream.range(0,4).forEach(
                         j -> {
                             if(board[i][j]!=null)
-                                printableString.concat(board[i][j].formatPrintableStringAt(x+i*11, y+j*17));
+                                printableString.append(board[i][j].formatPrintableStringAt(x+i*11, y+j*17));
                         }
                 )
         );
-        return printableString;
+
+        return printableString.toString();
     }
 
 }

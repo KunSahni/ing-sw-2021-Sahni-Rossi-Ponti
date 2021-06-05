@@ -4,11 +4,13 @@ import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 
+import java.io.Serializable;
+
 /**
  * Wrapper class for all model items that are meant to
  * be rendered via GUI / CLI .
  */
-public interface Renderable {
+public interface Renderable extends Serializable {
     /**
      * This method returns an Enum value which represents what type of graphical element is contained in the Renderable
      * @return OnScreenElement enum value representing the payload in the Renderable

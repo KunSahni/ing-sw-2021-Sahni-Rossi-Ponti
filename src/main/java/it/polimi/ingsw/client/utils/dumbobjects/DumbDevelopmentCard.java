@@ -93,7 +93,12 @@ public class DumbDevelopmentCard implements Serializable {
     public String formatPrintableStringAt(int x, int y) {
         List<String> costList = convertMapToPrintableList(this.getCost(), 3);
         List<String> inputList = convertMapToPrintableList(this.getInputResources(), 2);
-        List<String> outputList = convertMapToPrintableList(this.getOutputResources(), 3);
+        List<String> outputList = convertMapToPrintableList(
+                Optional.ofNullable(
+                        this.getOutputResources()
+                ).orElse(new HashMap<>()),
+                3
+        );
         List<String> levelList = convertLevelToPrintableList();
 
         return    "\033[" + x + ";" + y + "H╔══════════════╗"
@@ -124,6 +129,12 @@ public class DumbDevelopmentCard implements Serializable {
         IntStream.range(0, maxSize-stringList.size()).forEach(
                 i -> stringList.add("    ")
         );
+
+        if(stringList.get(0).equals("   ") && faithIncrement>0)
+            stringList.set(0, String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
+        else if(!stringList.get(0).equals("   ") && stringList.get(1).equals("   ") && faithIncrement>0)
+            stringList.set(1, String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
+
         return stringList;
     }
 

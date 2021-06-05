@@ -53,18 +53,18 @@ public class DumbDevelopmentCardSlot implements Serializable {
                     + "\033[" + (x+10) + ";" + y + "H╚══════════════╝";
 
         //if not empty, draw the top card and the victoryPoints from the bottom ones
-        String printableString = developmentCards.peek().formatPrintableStringAt(x, y);
+        StringBuilder printableString = new StringBuilder(developmentCards.peek().formatPrintableStringAt(x, y));
         if(developmentCards.size()>=2)
-            printableString.concat(
+            printableString.append(
                     "\033[" + (x+11) + ";" + y + "H║    " + Constants.ANSI_YELLOW + developmentCards.get(1).getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
                     + "\033[" + (x+12) + ";" + y + "H╚══════════════╝"
             );
         if(developmentCards.size()==3)
-            printableString.concat(
+            printableString.append(
                     "\033[" + (x+13) + ";" + y + "H║    " + Constants.ANSI_YELLOW + developmentCards.get(2).getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
                             + "\033[" + (x+14) + ";" + y + "H╚══════════════╝"
             );
 
-        return printableString;
+        return printableString.toString();
     }
 }
