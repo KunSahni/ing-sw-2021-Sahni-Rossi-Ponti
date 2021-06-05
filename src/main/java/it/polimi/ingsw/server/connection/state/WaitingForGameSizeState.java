@@ -5,7 +5,10 @@ import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.Lobby;
 
+import java.util.logging.Logger;
+
 public class WaitingForGameSizeState extends ConnectionState {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private final Connection connection;
 
     public WaitingForGameSizeState(Connection connection) {
@@ -27,10 +30,12 @@ public class WaitingForGameSizeState extends ConnectionState {
 
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
+        logger.info("Reading lobby size");
         int selectedSize = ((CreateLobbyMessage) serializedMessage.getMessage()).getSize();
         if (selectedSize <= 0 || selectedSize > 4) {
             connection.invalidSize();
         } else {
+            logger.info("Received a valid lobby size.");
             Lobby.getInstance().setSize(selectedSize);
             Lobby.getInstance().addPlayer(connection.getNickname(), connection);
         }
