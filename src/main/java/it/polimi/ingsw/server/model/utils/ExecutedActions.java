@@ -17,8 +17,7 @@ public enum ExecutedActions {
         return switch(this) {
             case ACTIVATED_PRODUCTION_ACTION,
                     BOUGHT_DEVELOPMENT_CARD_ACTION,
-                    STORED_MARKET_RESOURCES_ACTION,
-                    STORED_TEMP_MARBLES_ACTION-> true;
+                    STORED_MARKET_RESOURCES_ACTION -> true;
             default -> false;
         };
     }
