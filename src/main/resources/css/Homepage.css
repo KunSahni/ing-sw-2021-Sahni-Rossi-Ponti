@@ -1,17 +1,24 @@
 .root{
-    -fx-background-image: url('./img/maestri-del-rinascimento-background.png');
+    -fx-background-image: url('./img/leonardo-cuerpo.png');
     -fx-background-size: 100% 100%;
+    -fx-alignment: center;
 }
 .v-box{
     -fx-alignment: center-left;
 }
 
 .text-field{
-    -fx-background-color: #09156c;
+    -fx-background-color: #e8c884;
     -fx-text-fill: #ffffff;
     -fx-alignment: center;
 }
 
 .anchor-pane{
     -fx-alignment: center-left;
+    -fx-image: url('./img/logo_withbackground.PNG');
+}
+.label{
+    -fx-alignment: center;
+    -fx-background-color: #e8c884;
+    -fx-text-fill: #ffffff;
 }
