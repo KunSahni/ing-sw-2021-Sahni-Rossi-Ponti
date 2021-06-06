@@ -56,14 +56,14 @@ public class Controller implements Subscriber<PlayerAction> {
         handleGameAction(initiator);
     }
 
-    private void handleGameAction(GameAction gameAction) {
+    private synchronized void handleGameAction(GameAction gameAction) {
         Action currentAction = gameAction;
         while (currentAction != null) {
             currentAction = currentAction.execute();
         }
     }
 
-    private void handlePlayerAction(PlayerAction playerAction) {
+    private synchronized void handlePlayerAction(PlayerAction playerAction) {
         try {
             playerAction.runChecks();
             Optional<GameAction> consequentAction = Optional.ofNullable(playerAction.execute());
