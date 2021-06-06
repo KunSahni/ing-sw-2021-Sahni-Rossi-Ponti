@@ -6,7 +6,6 @@ import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.Message;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
-import it.polimi.ingsw.network.servertoclient.renderable.requests.ConnectionTerminatedNotification;
 
 import java.io.*;
 import java.net.Socket;
