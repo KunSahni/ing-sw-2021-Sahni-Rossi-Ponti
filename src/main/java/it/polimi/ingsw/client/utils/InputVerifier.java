@@ -34,7 +34,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canProduce(ProductionCombo chosenProductionCombo){
-        System.out.println(chosenProductionCombo);
         return dumbModel
                 .getOwnPersonalBoard()
                 .getDevelopmentCardSlots()
@@ -60,9 +59,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canTake(String place, int index){
-        System.out.println(place);
-        System.out.println(index);
-
         return ((place.equals("row") && index<=3) || (place.equals("column") && index<=4))
                 && canDoAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION)
                 && index>0;
@@ -78,12 +74,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canBuy(Level chosenLevel, Color chosenColor, int developmentCardSlotIndex, Map<Resource, Integer> depotsResources, Map<Resource, Integer> strongboxResources){
-        System.out.println(chosenLevel);
-        System.out.println(chosenColor);
-        System.out.println(developmentCardSlotIndex);
-        System.out.println(depotsResources);
-        System.out.println(strongboxResources);
-
         return chosenColor != null && chosenLevel != null && depotsResources!=null && strongboxResources!=null
                 && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), depotsResources)
                 && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)
@@ -97,9 +87,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canActivate(DumbLeaderCard leaderCard){
-        System.out.println(leaderCard);
-
-
         return leaderCard != null
                 && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(leaderCard)
                 && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(dumbModel.getOwnPersonalBoard().getLeaderCards().indexOf(leaderCard)).isActive()
@@ -112,8 +99,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canDiscard(DumbLeaderCard leaderCard){
-        System.out.println(leaderCard);
-
         return leaderCard != null
                 && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(leaderCard)
                 && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(dumbModel.getOwnPersonalBoard().getLeaderCards().indexOf(leaderCard)).isActive()
@@ -126,7 +111,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canPickResources(Map<Resource, Integer> pickedResources){
-        System.out.println(pickedResources);
         return pickedResources
                 .values()
                 .stream()
@@ -143,7 +127,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canPickLeaderCards(List<DumbLeaderCard> chosenLeaderCards){
-        System.out.println(chosenLeaderCards);
         return chosenLeaderCards.size()==2 &&
                 dumbModel.getTempLeaderCards().containsAll(chosenLeaderCards) &&
                 dumbModel.getGameState().equals(GameState.DEALT_LEADER_CARDS);
@@ -155,8 +138,6 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canPickTempMarbles(Map<MarketMarble, Integer> chosenMarbles){
-        System.out.println(chosenMarbles);
-
         return canDoAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
                 && !tempMarblesContainSelectedMarbles(chosenMarbles);
     }
