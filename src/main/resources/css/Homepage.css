@@ -1,0 +1,17 @@
+.root{
+    -fx-background-image: url('./img/maestri-del-rinascimento-background.png');
+    -fx-background-size: 100% 100%;
+}
+.v-box{
+    -fx-alignment: center-left;
+}
+
+.text-field{
+    -fx-background-color: #09156c;
+    -fx-text-fill: #ffffff;
+    -fx-alignment: center;
+}
+
+.anchor-pane{
+    -fx-alignment: center-left;
+}
