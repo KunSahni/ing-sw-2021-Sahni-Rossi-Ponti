@@ -1,11 +1,19 @@
+.root{
+    -fx-font-size: 20;
+}
 .button{
     -fx-alignment: center;
-    -fx-background-color: #e8c884;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: #5B3A29;
+    -fx-text-fill: #949492;
+    -fx-background-image: none;
+    -fx-border-color: #949492;
+    -fx-text-size: 20px;
 }
 .label{
     -fx-alignment: center;
-    -fx-background-color: #e8c884;
-    -fx-text-fill: #ffffff;
-    -fx-prompt-text-fill: #ffffff;
+    -fx-background-color: #5B3A29;
+    -fx-text-fill: #949492;
+    -fx-prompt-text-fill: #949492;
+    -fx-border-color: #949492;
+    -fx-text-size: 20px;
 }

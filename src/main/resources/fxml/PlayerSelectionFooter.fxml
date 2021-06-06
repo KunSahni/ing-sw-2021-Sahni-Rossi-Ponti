@@ -7,14 +7,26 @@
 
 <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/PlayerSelectionFooter.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer.PlayerSelectionFooterController">
    <children>
-      <Label layoutX="132.0" layoutY="201.0" text="Select number of player:">
+      <Label alignment="CENTER" layoutX="132.0" layoutY="201.0" maxHeight="50.0" minHeight="50.0" text="Select number of player:">
          <font>
-            <Font size="16.0" />
+            <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-      <Button fx:id="singlePlayerButton" mnemonicParsing="false" onAction="#playSingle" text="Single Player" />
-      <Button fx:id="twoPlayersButton" mnemonicParsing="false" onAction="#playTwo" text="Two Players" />
-      <Button fx:id="threePlayersButton" mnemonicParsing="false" onAction="#playThree" text="Three Players" />
-      <Button fx:id="fourPlayersButton" mnemonicParsing="false" onAction="#playFour" text="Four Players" />
+      <Button fx:id="singlePlayerButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="50.0" minHeight="50.0" mnemonicParsing="false" onAction="#playSingle" text="Single Player">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="twoPlayersButton" alignment="CENTER" maxHeight="50.0" minHeight="50.0" mnemonicParsing="false" onAction="#playTwo" text="Two Players">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="threePlayersButton" alignment="CENTER" maxHeight="50.0" minHeight="50.0" mnemonicParsing="false" onAction="#playThree" text="Three Players">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Button fx:id="fourPlayersButton" alignment="CENTER" maxHeight="50.0" minHeight="50.0" mnemonicParsing="false" onAction="#playFour" text="Four Players">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
    </children>
 </HBox>
