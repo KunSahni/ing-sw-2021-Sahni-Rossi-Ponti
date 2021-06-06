@@ -1,0 +1,11 @@
+.button{
+    -fx-alignment: center;
+    -fx-background-color: #e8c884;
+    -fx-text-fill: #ffffff;
+}
+.label{
+    -fx-alignment: center;
+    -fx-background-color: #e8c884;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #ffffff;
+}
