@@ -42,8 +42,26 @@ public enum MarketMarble implements Serializable {
     }
 
     public static MarketMarble getMarble(String marbleColor) {
-        for(MarketMarble m : values())
-            if(m.marbleColor == marbleColor) return m;
-        throw new IllegalArgumentException();
+        switch (marbleColor){
+            case "grey" -> {
+                return MarketMarble.GREY;
+            }
+            case "yellow" -> {
+                return MarketMarble.YELLOW;
+            }
+            case "blue" -> {
+                return MarketMarble.BLUE;
+            }
+            case "purple" -> {
+                return MarketMarble.PURPLE;
+            }
+            case "red" -> {
+                return MarketMarble.RED;
+            }
+            case "white" -> {
+                return MarketMarble.WHITE;
+            }
+            default -> throw new IllegalArgumentException();
+        }
     }
 }

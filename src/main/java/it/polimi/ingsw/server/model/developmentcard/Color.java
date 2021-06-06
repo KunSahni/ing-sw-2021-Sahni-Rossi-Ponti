@@ -14,8 +14,8 @@ public enum Color implements Serializable {
     @SerializedName("YELLOW") YELLOW("yellow", Constants.YELLOW_LEVEL),
     @SerializedName("PURPLE") PURPLE("purple", Constants.PURPLE_LEVEL);
 
-    private final String coloredLevel;
     private final String color;
+    private final String coloredLevel;
 
     Color(String color, String coloredLevel){
         this.color = color;
@@ -32,7 +32,7 @@ public enum Color implements Serializable {
 
     public static Color getColor(String color) {
         for(Color c : values())
-            if(c.getColor() == color) return c;
+            if(c.getColor().equals(color)) return c;
         throw new IllegalArgumentException();
     }
 }
