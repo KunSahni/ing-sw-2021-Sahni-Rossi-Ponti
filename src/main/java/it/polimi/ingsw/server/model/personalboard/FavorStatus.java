@@ -2,7 +2,9 @@ package it.polimi.ingsw.server.model.personalboard;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
 
-public enum FavorStatus {
+import java.io.Serializable;
+
+public enum FavorStatus implements Serializable {
     INACTIVE(Constants.ANSI_RED),
     ACTIVE(Constants.ANSI_GREEN),
     DISCARDED(Constants.ANSI_GREY);
