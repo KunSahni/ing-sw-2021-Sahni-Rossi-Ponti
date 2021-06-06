@@ -54,8 +54,9 @@ public class InputVerifier {
 
     /**
      * Checks if user can take resource from market
-     * @param place
-     * @param index
+     * @param place string value which should either be "row" or "column", indicates the
+     *              place from which user wants to pick a resource from market
+     * @param index the number of the row/column from which user wants to pick a resource from market
      * @return true if request is valid, false otherwise
      */
     public boolean canTake(String place, int index){
@@ -189,6 +190,14 @@ public class InputVerifier {
     }
 
     /**
+     * Checks if user can end his turn or not
+     * @return true if turn can be ended, false otherwise
+     */
+    public boolean canEndTurn() {
+        return canDoAction(ExecutedActions.TURN_ENDED_ACTION);
+    }
+
+    /**
      * Checks if selected index by user is valid
      * @param index selected index by user
      * @return true if the index is valid, false otherwise
@@ -276,5 +285,4 @@ public class InputVerifier {
         });
         return selectedMarblesList.size() == 0;
     }
-
 }

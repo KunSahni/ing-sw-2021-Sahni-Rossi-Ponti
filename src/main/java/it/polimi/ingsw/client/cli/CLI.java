@@ -16,7 +16,6 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.io.PrintWriter;
-import java.net.SocketException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow;

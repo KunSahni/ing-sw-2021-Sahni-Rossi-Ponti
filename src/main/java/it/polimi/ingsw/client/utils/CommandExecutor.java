@@ -44,7 +44,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      * @throws HelpException thrown when user wants to see help menu
-     * @throws CommandHelpException thrown when user wants to see help menu specificly for a command
+     * @throws CommandHelpException thrown when user wants to see help menu specifically for a command
      * @throws QuitException thrown when user wants to quit from the game
      */
     public boolean executeCommand(String insertedCommand) throws
@@ -83,6 +83,7 @@ public class CommandExecutor {
             case PICK_RESOURCES -> managePickResourcesCommand(insertedCommand);
             case PICK_LEADER_CARDS -> managePickLeaderCardCommand(insertedCommand);
             case PICK_TEMP_MARBLES -> managePickTempMarblesCommand(insertedCommand);
+            case END_TURN -> manageEndTurn();
             default -> throw new WrongCommandException();
         }
 
@@ -279,11 +280,12 @@ public class CommandExecutor {
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//produce
 
+        boolean hasSelectedAtLeastOneProduction = false;
         List<DumbDevelopmentCard> developmentCards = new ArrayList<>();
         Map<Resource, Integer> defaultSlotOutput = new HashMap<>();
-        Map<DumbProduceLeaderCard, Resource> leaderCardProduction  = new HashMap<>();
-        Map<Resource, Integer> discardedResourcesFromDepots  = new HashMap<>();
-        Map<Resource, Integer> discardedResourcesFromStrongbox  = new HashMap<>();
+        Map<DumbProduceLeaderCard, Resource> leaderCardProduction = new HashMap<>();
+        Map<Resource, Integer> discardedResourcesFromDepots = new HashMap<>();
+        Map<Resource, Integer> discardedResourcesFromStrongbox = new HashMap<>();
 
         //parse default production arguments from command
         if(commandArgs.peek()==null)
@@ -291,6 +293,8 @@ public class CommandExecutor {
 
         if(commandArgs.peek().equals("-default")){
             commandArgs.remove();
+            hasSelectedAtLeastOneProduction = true;
+
             //read resource type
             Resource defaultResource;
             try {
@@ -305,11 +309,12 @@ public class CommandExecutor {
         //loop twice because there can be a maximum of 2 leader cards
         for(int i=0; i<2; i++) {
             //parse first leader card production arguments from command
-            if (commandArgs.peek() == null)
+            if (commandArgs.peek() == null &&!hasSelectedAtLeastOneProduction)
                 throw new WrongCommandArgsException();
 
             if (commandArgs.peek().equals("-leadercard")) {
                 commandArgs.remove();
+                hasSelectedAtLeastOneProduction = true;
 
                 //parse index of leader card
                 int index;
@@ -345,39 +350,44 @@ public class CommandExecutor {
         }
 
         //parse development cards production arguments from command
-        if(commandArgs.peek()==null)
+        if(commandArgs.peek()==null && !hasSelectedAtLeastOneProduction)
             throw new WrongCommandArgsException();
 
-        if(commandArgs.peek().equals("-developmentcards")){
-            commandArgs.remove();
+        while(commandArgs.peek() != null) {
+            if (commandArgs.peek().equals("-developmentcards")) {
+                commandArgs.remove();
+                hasSelectedAtLeastOneProduction = true;
 
-            //parse index of development card
-            int index;
-            try {
-                index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-                if(index<0 || index>3)
+                //parse index of development card
+                int index;
+                try {
+                    index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
+                    if (index < 0 || index > 3)
+                        throw new WrongCommandArgsException();
+                } catch (NullPointerException | WrongCommandArgsException | NumberFormatException e) {
                     throw new WrongCommandArgsException();
-            } catch (NullPointerException | WrongCommandArgsException | NumberFormatException e) {
-                throw new WrongCommandArgsException();
-            }
+                }
 
-            //retrieve development card
-            DumbDevelopmentCard developmentCard;
-            try {
-                 developmentCard = dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(index-1).getDevelopmentCards().get(0);
-            }catch (IndexOutOfBoundsException e){
-                throw new WrongCommandArgsException();
-            }
+                //retrieve development card
+                DumbDevelopmentCard developmentCard;
+                try {
+                    developmentCard = dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(index - 1).getDevelopmentCards().get(0);
+                } catch (IndexOutOfBoundsException e) {
+                    throw new WrongCommandArgsException();
+                }
 
-            //add development card to the list
-            developmentCards.add(developmentCard);
+                //add development card to the list
+                developmentCards.add(developmentCard);
+            }
         }
-
         //manage discarded resources from depots
         discardedResourcesFromDepots = parseResources(commandArgs, "-depots", "-strongbox");
 
         //manage discarded resources from strongbox
         discardedResourcesFromStrongbox = parseResources(commandArgs, "-strongbox", null);
+
+        if(!hasSelectedAtLeastOneProduction)
+            throw new WrongCommandArgsException();
 
         //Create a production combo based on parameters
         ProductionCombo chosenProductionCombo = new ProductionCombo();
@@ -511,12 +521,26 @@ public class CommandExecutor {
     }
 
     /**
+     * This method has the goal of ending user's only when such action is valid
+     * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
+     */
+    private void manageEndTurn() throws InvalidArgsException {
+        //if action is valid, send it to server
+        if(inputVerifier.canEndTurn())
+            clientSocket.sendAction(
+                    new EndTurnAction()
+            );
+        else
+            throw new InvalidArgsException();
+    }
+
+    /**
      * This method reads arguments from a command between some delimiters and parses them as a map of resources
      * @param commandArgs the arguments written by user on cli
      * @param from the first expected word in the args
      * @param to the first element after the map of resources
-     * @return
-     * @throws WrongCommandArgsException
+     * @return a map of resources based on the parsed command
+     * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      */
     private Map<Resource, Integer> parseResources(Queue<String> commandArgs, String from, String to) throws WrongCommandArgsException {
         Map<Resource, Integer> resources = new HashMap<>();
