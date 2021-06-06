@@ -1,9 +1,15 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
+import it.polimi.ingsw.server.model.leadercard.StoreLeaderCard;
+import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This is a dumber version of a regular PersonalBoard,
@@ -80,6 +86,52 @@ public class DumbPersonalBoard {
 
     public boolean getConnectionStatus() {
         return connectionStatus;
+    }
+
+    /**
+     * Checks if depots + store leader cards can contain the passed map of resources without the need of discarding any resource
+     * @param resources the resources which user wants to store
+     * @return true if resources can be placed, false otherwise
+     */
+    public boolean depotsCanContain(Map<Resource, Integer> resources) {
+        Map<Resource, Integer> resourcesToStore = new HashMap<>(resources);
+        // Verify effects of StoreLeaderCards
+        leaderCards.stream()
+                .filter(card -> card.isActive()
+                        && card.getAbility().equals(LeaderCardAbility.STORE))
+                .map(card -> (DumbStoreLeaderCard) card)
+                .forEach(card -> {
+                    // If there are some resources that can be stored in StoreLeaderCards
+                    if (resourcesToStore.get(card.getStoredType()) != null) {
+                        // Count as if the LeaderCards will store them (remove them
+                        // from ToStore map)
+                        resourcesToStore.put(
+                                card.getStoredType(),
+                                Math.max(
+                                        0,
+                                        resourcesToStore.get(card.getStoredType())
+                                                - (2 - card.getResourceCount())
+                                )
+                        );
+                    }
+                });
+        // Clean the resulting map before merging to current WarehouseDepots
+        Map<Resource, Integer> remainingResources = resourcesToStore.entrySet().stream()
+                .filter(entry -> entry.getValue() != 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        depots.getStoredResources()
+                .forEach((depotsKey, depotsValue) -> remainingResources.compute(
+                        depotsKey,
+                        (k, v) -> (v == null) ? depotsValue : v + depotsValue
+                ));
+        // remainingResources map now contains the stored resources and the WarehouseDepots
+        // resources.
+        return remainingResources.keySet().size() <= 3
+                && remainingResources.values().stream().allMatch(value -> value <= 3)
+                && remainingResources.entrySet().stream()
+                .filter(entry -> entry.getValue() == 3).count() <= 1
+                && remainingResources.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 2).count() <= 2;
     }
 
 

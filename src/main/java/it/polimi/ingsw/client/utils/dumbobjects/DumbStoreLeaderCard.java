@@ -65,7 +65,7 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
         String containedResource2 = getResourceCount()==2 ? storedResource.formatPrintableString() : " " ;
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
-                + "\033["+ (x+1) +";"+ y +"H║ 5x " + resource + "        ║"
+                + "\033["+ (x+1) +";"+ y +"H║ 5x " + resource.formatPrintableString() + "        ║"
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║ ╔═══╗  ╔═══╗ ║"

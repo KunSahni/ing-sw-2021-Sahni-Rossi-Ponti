@@ -40,4 +40,10 @@ public enum MarketMarble implements Serializable {
             case RED, WHITE -> null;
         };
     }
+
+    public static MarketMarble getMarble(String marbleColor) {
+        for(MarketMarble m : values())
+            if(m.marbleColor == marbleColor) return m;
+        throw new IllegalArgumentException();
+    }
 }
