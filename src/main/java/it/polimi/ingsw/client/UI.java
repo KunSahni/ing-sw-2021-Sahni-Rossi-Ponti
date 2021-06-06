@@ -19,6 +19,7 @@ public interface UI extends Subscriber<Renderable> {
     void renderCommons();
 
     void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
+    //todo: decide how should action tokens be used
 
     void renderGameOutcome(int finalScore);
 

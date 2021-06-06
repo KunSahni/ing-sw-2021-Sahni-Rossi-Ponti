@@ -82,7 +82,6 @@ public class DumbPersonalBoard {
         return connectionStatus;
     }
 
-
     /**
      * @param x the x position of the cursor in the console
      * @param y the y position of the cursor in the console

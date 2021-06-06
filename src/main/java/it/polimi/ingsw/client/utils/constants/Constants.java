@@ -22,12 +22,12 @@ public final class Constants {
     public final static String FAITH_MARKER = FAITH_POINT;
     public final static String BLACK_CROSS = ANSI_WHITE + ANSI_BOLD + "\u271D" + ANSI_RESET;
     public final static String ANY_RESOURCE = ANSI_BOLD + "?" + ANSI_RESET;
-    public final static String COIN_MARBLE = ANSI_YELLOW + "\u25CF" + ANSI_RESET;
-    public final static String STONE_MARBLE = ANSI_GREY + "\u25CF" + ANSI_RESET;
-    public final static String SERVANT_MARBLE = ANSI_PURPLE + "\u25CF" + ANSI_RESET;
-    public final static String SHIELD_MARBLE = ANSI_BLUE + "\u25CF" + ANSI_RESET;
+    //public final static String COIN_MARBLE = ANSI_YELLOW + "\u25CF" + ANSI_RESET;
+    //public final static String STONE_MARBLE = ANSI_GREY + "\u25CF" + ANSI_RESET;
+    //public final static String SERVANT_MARBLE = ANSI_PURPLE + "\u25CF" + ANSI_RESET;
+    //public final static String SHIELD_MARBLE = ANSI_BLUE + "\u25CF" + ANSI_RESET;
     public final static String WHITE_MARBLE = ANSI_WHITE + "\u25CF" + ANSI_RESET;
-    public final static String RED_MARBLE = ANSI_RED + "\u25CF" + ANSI_RESET;
+    //public final static String RED_MARBLE = ANSI_RED + "\u25CF" + ANSI_RESET;
     public final static String YELLOW_LEVEL = ANSI_YELLOW + "\u25C8" + ANSI_RESET;
     public final static String BLUE_LEVEL = ANSI_BLUE + "\u25C8" + ANSI_RESET;
     public final static String PURPLE_LEVEL = ANSI_PURPLE + "\u25C8" + ANSI_RESET;
@@ -35,15 +35,16 @@ public final class Constants {
     public static final String ANSI_CLEAR = "\033[2J";
     public static final String CMD_MESSAGE = "\n" + ANSI_BLUE + ">" + ANSI_RESET;
     public static final String MASTER_OF_RENAISSANCE =
-              "\033[1;35H█████████████████████████████████████████████████████████████████████\n"
-            + "\033[2;35H█████████▄─▀█▀─▄██▀▄─██─▄▄▄▄█─▄─▄─█▄─▄▄─█▄─▄▄▀███─▄▄─█▄─▄▄─██████████\n"
-            + "\033[3;35H██████████─█▄█─███─▀─██▄▄▄▄─███─████─▄█▀██─▄─▄███─██─██─▄████████████\n"
-            + "\033[4;35H█████████▄▄▄█▄▄▄█▄▄█▄▄█▄▄▄▄▄██▄▄▄██▄▄▄▄▄█▄▄█▄▄███▄▄▄▄█▄▄▄████████████\n"
-            + "\033[5;35H█████████████████████████████████████████████████████████████████████\n"
-            + "\033[6;35H█▄─▄▄▀█▄─▄▄─█▄─▀█▄─▄██▀▄─██▄─▄█─▄▄▄▄█─▄▄▄▄██▀▄─██▄─▀█▄─▄█─▄▄▄─█▄─▄▄─█\n"
-            + "\033[7;35H██─▄─▄██─▄█▀██─█▄▀─███─▀─███─██▄▄▄▄─█▄▄▄▄─██─▀─███─█▄▀─██─███▀██─▄█▀█\n"
-            + "\033[8;35H█▄▄█▄▄█▄▄▄▄▄█▄▄▄██▄▄█▄▄█▄▄█▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄██▄▄█▄▄▄▄▄█▄▄▄▄▄█\n"
-            + "\033[9;35H█████████████████████████████████████████████████████████████████████";
+            """
+                    \033[1;35H█████████████████████████████████████████████████████████████████████
+                    \033[2;35H█████████▄─▀█▀─▄██▀▄─██─▄▄▄▄█─▄─▄─█▄─▄▄─█▄─▄▄▀███─▄▄─█▄─▄▄─██████████
+                    \033[3;35H██████████─█▄█─███─▀─██▄▄▄▄─███─████─▄█▀██─▄─▄███─██─██─▄████████████
+                    \033[4;35H█████████▄▄▄█▄▄▄█▄▄█▄▄█▄▄▄▄▄██▄▄▄██▄▄▄▄▄█▄▄█▄▄███▄▄▄▄█▄▄▄████████████
+                    \033[5;35H█████████████████████████████████████████████████████████████████████
+                    \033[6;35H█▄─▄▄▀█▄─▄▄─█▄─▀█▄─▄██▀▄─██▄─▄█─▄▄▄▄█─▄▄▄▄██▀▄─██▄─▀█▄─▄█─▄▄▄─█▄─▄▄─█
+                    \033[7;35H██─▄─▄██─▄█▀██─█▄▀─███─▀─███─██▄▄▄▄─█▄▄▄▄─██─▀─███─█▄▀─██─███▀██─▄█▀█
+                    \033[8;35H█▄▄█▄▄█▄▄▄▄▄█▄▄▄██▄▄█▄▄█▄▄█▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄██▄▄█▄▄▄▄▄█▄▄▄▄▄█
+                    \033[9;35H█████████████████████████████████████████████████████████████████████""";
 
     public static final String WRONG_COMMAND = "Command doesn't exist, type help for help";
     public static final String WRONG_COMMAND_ARGS = "Command wrongly used, possible error in argument typing, use -h for help";

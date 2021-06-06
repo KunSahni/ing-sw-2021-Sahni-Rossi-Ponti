@@ -38,7 +38,7 @@ public enum Resource implements Serializable {
 
     public static Resource getResource(String resource) {
         for(Resource r : values())
-            if(r.label == resource) return r;
+            if(r.label.equals(resource)) return r;
         throw new IllegalArgumentException();
     }
 }

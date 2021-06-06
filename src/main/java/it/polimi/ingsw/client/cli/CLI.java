@@ -7,10 +7,10 @@ import it.polimi.ingsw.client.utils.constants.Commands;
 import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.client.utils.exceptions.*;
-import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
-import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
-import it.polimi.ingsw.network.message.renderable.Renderable;
-import it.polimi.ingsw.server.controller.action.playeraction.PregameResourceChoiceAction;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourceChoiceAction;
+import it.polimi.ingsw.network.clienttoserver.messages.AuthenticationMessage;
+import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
+import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -83,7 +83,8 @@ public class CLI implements UI {
             String insertedCommand = in.nextLine();
 
             try {
-                commandExecutor.executeCommand(insertedCommand);
+                if(!insertedCommand.equals("\n") && !insertedCommand.equals(""))
+                    commandExecutor.executeCommand(insertedCommand);
             } catch (PersonalBoardException e) {
                 renderPersonalBoard(e.getDumbPersonalBoard());
             } catch (CommonsException e) {
@@ -99,7 +100,11 @@ public class CLI implements UI {
             }
 
         }
-        clientSocket.close();
+        try {
+            clientSocket.close();
+        }catch (ConnectionTerminatedException e){
+            out.println(e.getMessage());
+        }
         in.close();
         out.close();
     }
@@ -109,6 +114,8 @@ public class CLI implements UI {
     }
 
     private void renderHelp() {
+        String printableString = Constants.ANSI_CLEAR + "HELP";
+        printToCLI(printableString);
     }
 
     @Override
@@ -134,7 +141,7 @@ public class CLI implements UI {
     public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
         String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
-        setOnScreenElement(OnScreenElement.valueOf(nickname));
+        setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
     @Override

@@ -1,17 +1,21 @@
 package it.polimi.ingsw.client.utils;
 
+import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -30,17 +34,34 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canProduce(ProductionCombo chosenProductionCombo){
-        return true;
+        return dumbModel
+                .getOwnPersonalBoard()
+                .getDevelopmentCardSlots()
+                .stream()
+                .map(
+                        developmentCardSlot -> developmentCardSlot.getDevelopmentCards().get(0))
+                .collect(Collectors.toList())
+                .contains(chosenProductionCombo.getDevelopmentCards())
+                && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(chosenProductionCombo.getLeaderCardProduction().keySet())
+                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromDepots())
+                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromStrongbox())
+                && chosenProductionCombo.getDiscardedResourcesFromDepots().values().stream().allMatch( resourceCount -> resourceCount>0)
+                && chosenProductionCombo.getDiscardedResourcesFromStrongbox().values().stream().allMatch( resourceCount -> resourceCount>0)
+                && chosenProductionCombo.getDefaultSlotOutput().values().stream().allMatch( resourceCount -> resourceCount>0)
+                && canDoAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
     }
 
     /**
      * Checks if user can take resource from market
-     * @param place
-     * @param index
+     * @param place string value which should either be "row" or "column", indicates the
+     *              place from which user wants to pick a resource from market
+     * @param index the number of the row/column from which user wants to pick a resource from market
      * @return true if request is valid, false otherwise
      */
     public boolean canTake(String place, int index){
-        return canDoAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
+        return ((place.equals("row") && index<=3) || (place.equals("column") && index<=4))
+                && canDoAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION)
+                && index>0;
     }
 
     /**
@@ -53,31 +74,34 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canBuy(Level chosenLevel, Color chosenColor, int developmentCardSlotIndex, Map<Resource, Integer> depotsResources, Map<Resource, Integer> strongboxResources){
-        return legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), depotsResources)
+        return chosenColor != null && chosenLevel != null && depotsResources!=null && strongboxResources!=null
+                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), depotsResources)
                 && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)
-                && dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor) != null;
-                //&& dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor).getCost()
+                && dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor) != null
+                && canDoAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION);
     }
 
     /**
      * Checks if user can discard selected leader card
-     * @param index the index of the leader card which he wants to discard
+     * @param leaderCard leader card which user wants to activate
      * @return true if request is valid, false otherwise
      */
-    public boolean canActivate(int index){
-        return dumbModel.getOwnPersonalBoard().getLeaderCards().get(index) != null
-                && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(index).isActive()
+    public boolean canActivate(DumbLeaderCard leaderCard){
+        return leaderCard != null
+                && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(leaderCard)
+                && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(dumbModel.getOwnPersonalBoard().getLeaderCards().indexOf(leaderCard)).isActive()
                 && canDoAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
     }
 
     /**
      * Checks if user can discard selected leader card
-     * @param index the index of the leader card which he wants to discard
+     * @param leaderCard leader card which user wants to discard
      * @return true if request is valid, false otherwise
      */
-    public boolean canDiscard(int index){
-        return dumbModel.getOwnPersonalBoard().getLeaderCards().get(index) != null
-                && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(index).isActive()
+    public boolean canDiscard(DumbLeaderCard leaderCard){
+        return leaderCard != null
+                && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(leaderCard)
+                && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(dumbModel.getOwnPersonalBoard().getLeaderCards().indexOf(leaderCard)).isActive()
                 && canDoAction(ExecutedActions.DISCARDED_LEADER_CARD_ACTION);
     }
 
@@ -93,7 +117,8 @@ public class InputVerifier {
                 .mapToInt(
                         value -> value
                 )
-                .sum() == dumbModel.getOwnPersonalBoard().getPosition()/2;
+                .sum() == dumbModel.getOwnPersonalBoard().getPosition()/2
+                && dumbModel.getGameState().equals(GameState.ASSIGNED_INKWELL);
     }
 
     /**
@@ -113,7 +138,8 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canPickTempMarbles(Map<MarketMarble, Integer> chosenMarbles){
-        return true;
+        return canDoAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
+                && !tempMarblesContainSelectedMarbles(chosenMarbles);
     }
 
     /**
@@ -124,18 +150,32 @@ public class InputVerifier {
     private boolean canDoAction(ExecutedActions nextAction){
         if(!dumbModel.getOwnPersonalBoard().getTurnStatus())
             return false;
-        ExecutedActions mostRecentAction = dumbModel.getTurnActions().get(dumbModel.getTurnActions().size() - 1);
-        if (mostRecentAction.equals(ExecutedActions.TURN_ENDED_ACTION)) {
+
+        if(!dumbModel.getGameState().equals(GameState.IN_GAME))
             return false;
-        } else if (mostRecentAction.equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION)) {
-            return nextAction.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
-        } else {
-            if (nextAction.isCompulsory())
-                return dumbModel.getTurnActions().stream().noneMatch(ExecutedActions::isCompulsory);
-            else if (nextAction.equals(ExecutedActions.TURN_ENDED_ACTION))
-                return dumbModel.getTurnActions().stream().anyMatch(ExecutedActions::isCompulsory);
-            else return true;
-        }
+
+        Optional<ExecutedActions> mostRecentAction = dumbModel.getTurnActions().stream().findFirst();
+        // If no action has been executed, any action is allowed except for ending turn
+        // and storing market resources
+        return mostRecentAction.map(recentAction -> switch (nextAction) {
+            case STORED_MARKET_RESOURCES_ACTION -> recentAction
+                    .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
+            case STORED_TEMP_MARBLES_ACTION, BOUGHT_DEVELOPMENT_CARD_ACTION,
+                    ACTIVATED_PRODUCTION_ACTION -> dumbModel.getTurnActions().stream()
+                    .noneMatch(ExecutedActions::isCompulsory);
+            case TURN_ENDED_ACTION -> dumbModel.getTurnActions().stream()
+                    .anyMatch(ExecutedActions::isCompulsory);
+            case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION -> true;
+        }).orElseGet(() -> !nextAction.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
+                && !nextAction.equals(ExecutedActions.TURN_ENDED_ACTION));
+    }
+
+    /**
+     * Checks if user can end his turn or not
+     * @return true if turn can be ended, false otherwise
+     */
+    public boolean canEndTurn() {
+        return canDoAction(ExecutedActions.TURN_ENDED_ACTION);
     }
 
     /**
@@ -149,7 +189,7 @@ public class InputVerifier {
 
 
     /**
-     * Checks if second map is submap of first
+     * Checks if second map is contained in the first map
      * @param possessedResources  the actual possessed resources by user
      * @param selectedResources the resources selected by user
      * @return true if second map is contained in first map
@@ -159,7 +199,7 @@ public class InputVerifier {
                 .entrySet()
                 .stream()
                 .filter(
-                        entry -> possessedResources.get(entry.getKey()) >= entry.getValue()
+                        entry -> possessedResources.containsKey(entry.getKey()) && possessedResources.get(entry.getKey()) >= entry.getValue()
                 )
                 .collect(
                         Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
@@ -168,4 +208,62 @@ public class InputVerifier {
         return validResources.equals(selectedResources);
     }
 
+    /**
+     * Check if the selected marbles are a sub map of the currently stored TempMarbles,
+     * also accounting for active ConvertLeaderCards
+     */
+    private boolean tempMarblesContainSelectedMarbles(Map<MarketMarble, Integer> chosenMarbles) {
+        // Convert tempMarbles map to a list of marbles
+        Map<MarketMarble, Integer> playerTempMarbles = dumbModel.getTempMarbles();
+        playerTempMarbles.remove(MarketMarble.RED);
+        List<MarketMarble> tempMarblesList = new ArrayList<>();
+        playerTempMarbles.forEach((k, v) -> {
+            for (int i = 0; i < v; i++) {
+                tempMarblesList.add(k);
+            }
+        });
+
+        // Convert selectedMarbles map to a list of marbles
+        List<MarketMarble> selectedMarblesList = new ArrayList<>();
+        chosenMarbles.forEach((k, v) -> {
+            for (int i = 0; i < v; i++) {
+                selectedMarblesList.add(k);
+            }
+        });
+
+        // Create a list containing all the active ConvertLeaderCards
+        List<DumbConvertLeaderCard> activeConvertCards = dumbModel.getOwnPersonalBoard()
+                .getLeaderCards()
+                .stream()
+                .filter(card -> card.getAbility().equals(LeaderCardAbility.CONVERT))
+                .map(card -> (DumbConvertLeaderCard) card)
+                .collect(Collectors.toList());
+        // Subtract the tempMarbles from the selectedMarbles one by one.
+        // If the resulting list is empty the selected marbles do not exceed
+        // the tempMarbles.
+        tempMarblesList.forEach(marble -> {
+            if (!marble.equals(MarketMarble.WHITE)) {
+                selectedMarblesList.remove(marble);
+            } else {
+                // Handle WHITE marbles in case there are some active
+                // ConvertLeaderCards
+                if (activeConvertCards.get(0) != null) {
+                    // If the first ConvertLeaderCard does not remove
+                    // any marble from the list, check if there is a
+                    // second one active and use that.
+                    if (!selectedMarblesList
+                            .remove(activeConvertCards.get(0)
+                                    .getConvertedResource()
+                                    .toMarble())
+                            && activeConvertCards.get(1) != null) {
+                        selectedMarblesList
+                                .remove(activeConvertCards.get(1)
+                                        .getConvertedResource()
+                                        .toMarble());
+                    }
+                }
+            }
+        });
+        return selectedMarblesList.size() == 0;
+    }
 }
