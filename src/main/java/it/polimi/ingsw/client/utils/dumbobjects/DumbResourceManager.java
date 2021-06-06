@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.utils.Resource;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This is a dumber version of a regular ResourceManager,
@@ -42,33 +43,46 @@ public class DumbResourceManager implements Serializable {
      * @return a string color of a leader Card with the top left corner in position x,y
      */
     public String formatPrintableStringAtAsDepots(int x, int y) {
-        List<List<String>> resourceList = storedResources
+        List<Map.Entry<Resource, Integer>> entryList = storedResources
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (e1, e2) -> e1, LinkedHashMap::new))
-                .entrySet()
-                .stream()
-                .map(
-                        entry -> new ArrayList<String>(){{
-                                add(entry.getValue()>0? entry.getKey().formatPrintableString() : " ");
-                                add(entry.getValue()>1? entry.getKey().formatPrintableString() : " ");
-                                add(entry.getValue()>2? entry.getKey().formatPrintableString() : " ");
-                            }}
-                )
                 .collect(Collectors.toList());
+
+        List<List<String>> printableResourceList = new ArrayList<>();
+
+        IntStream.range(0, 3).forEach(
+                i -> {
+                    printableResourceList.add(new ArrayList<String>());
+                    if(entryList.size() > i)
+                        IntStream.range(0, entryList.get(i).getValue()).forEach(
+                                $ -> printableResourceList.get(i).add(entryList.get(i).getKey().formatPrintableString())
+                        );
+                    fixLength(printableResourceList.get(i), 3-i);
+                }
+        );
 
 
         return    "\033[" + x + ";" + (y+6) + "H╔═══╗"
-                + "\033[" + (x+1) + ";" + (y+6) + "H║ "+ resourceList.get(2).get(0) +" ║"
+                + "\033[" + (x+1) + ";" + (y+6) + "H║ "+ printableResourceList.get(2).get(0) +" ║"
                 + "\033[" + (x+2) + ";" + (y+6) + "H╚═══╝"
                 + "\033[" + (x+3) + ";" + (y+3) + "H╔═══╗ ╔═══╗"
-                + "\033[" + (x+4) + ";" + (y+3) + "H║ "+ resourceList.get(1).get(0) +" ║ ║ "+ resourceList.get(1).get(1) +" ║"
+                + "\033[" + (x+4) + ";" + (y+3) + "H║ "+ printableResourceList.get(1).get(0) +" ║ ║ "+ printableResourceList.get(1).get(1) +" ║"
                 + "\033[" + (x+5) + ";" + (y+3) + "H╚═══╝ ╚═══╝"
                 + "\033[" + (x+6) + ";" + y + "H╔═══╗ ╔═══╗ ╔═══╗"
-                + "\033[" + (x+7) + ";" + y + "H║ "+ resourceList.get(0).get(0) +" ║ ║ "+ resourceList.get(0).get(1) +" ║ ║ "+ resourceList.get(0).get(2) +" ║"
+                + "\033[" + (x+7) + ";" + y + "H║ "+ printableResourceList.get(0).get(0) +" ║ ║ "+ printableResourceList.get(0).get(1) +" ║ ║ "+ printableResourceList.get(0).get(2) +" ║"
                 + "\033[" + (x+8) + ";" + y + "H╚═══╝ ╚═══╝ ╚═══╝";
+    }
+
+    /**
+     * this method increases the size of a list up to a wanted size
+     * @param resourceList the list whose size needs to be increased
+     * @param wantedSize the wanted size for the list
+     */
+    private void fixLength(List<String> resourceList, int wantedSize) {
+        IntStream.range(0, wantedSize-resourceList.size()).forEach(
+                $ -> resourceList.add(" ")
+        );
     }
 
 
