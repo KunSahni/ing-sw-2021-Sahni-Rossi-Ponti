@@ -211,19 +211,25 @@ public class Player implements Comparable<Player> {
      */
     public boolean isValidNextAction(ExecutedActions action) {
         Optional<ExecutedActions> mostRecentAction = performedActions.stream().findFirst();
-        // If no action has been executed, any action is allowed except for ending turn
-        // and storing market resources
-        return mostRecentAction.map(recentAction -> switch (action) {
-            case STORED_MARKET_RESOURCES_ACTION -> recentAction
-                    .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
-            case STORED_TEMP_MARBLES_ACTION, BOUGHT_DEVELOPMENT_CARD_ACTION,
-                    ACTIVATED_PRODUCTION_ACTION -> performedActions.stream()
-                    .noneMatch(ExecutedActions::isCompulsory);
-            case TURN_ENDED_ACTION -> performedActions.stream()
-                    .anyMatch(ExecutedActions::isCompulsory);
-            case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION -> true;
-        }).orElseGet(() -> !action.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
-                && !action.equals(ExecutedActions.TURN_ENDED_ACTION));
+        if (mostRecentAction.isPresent()) {
+            if (mostRecentAction.get().equals(ExecutedActions.TURN_ENDED_ACTION))
+                return false;
+            else return switch (action) {
+                case STORED_MARKET_RESOURCES_ACTION -> mostRecentAction.get()
+                        .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
+                case STORED_TEMP_MARBLES_ACTION, BOUGHT_DEVELOPMENT_CARD_ACTION,
+                        ACTIVATED_PRODUCTION_ACTION -> performedActions.stream()
+                        .noneMatch(ExecutedActions::isCompulsory);
+                case TURN_ENDED_ACTION -> performedActions.stream()
+                        .anyMatch(ExecutedActions::isCompulsory);
+                case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION -> true;
+            };
+        } else {
+            // If no action has been executed, any action is allowed except for ending turn
+            // and storing market resources
+            return !action.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
+                    && !action.equals(ExecutedActions.TURN_ENDED_ACTION);
+        }
     }
 
 //    /**
