@@ -1,9 +1,11 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
+import java.io.Serializable;
+
 /**
  * this enumeration represents leader cards level
  */
-public enum Level {
+public enum Level implements Serializable {
     LEVEL1(1),
     LEVEL2(2),
     LEVEL3(3);

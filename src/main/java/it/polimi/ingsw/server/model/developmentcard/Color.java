@@ -3,10 +3,12 @@ package it.polimi.ingsw.server.model.developmentcard;
 import com.google.gson.annotations.SerializedName;
 import it.polimi.ingsw.client.utils.constants.Constants;
 
+import java.io.Serializable;
+
 /**
  * this enumeration represents possible colors of Development Cards
  */
-public enum Color {
+public enum Color implements Serializable {
     @SerializedName("GREEN") GREEN("green", Constants.GREEN_LEVEL),
     @SerializedName("BLUE") BLUE("blue", Constants.BLUE_LEVEL),
     @SerializedName("YELLOW") YELLOW("yellow", Constants.YELLOW_LEVEL),

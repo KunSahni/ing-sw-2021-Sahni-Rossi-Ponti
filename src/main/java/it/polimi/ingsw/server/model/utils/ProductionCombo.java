@@ -4,10 +4,11 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class ProductionCombo {
+public class ProductionCombo implements Serializable {
     private List<DumbDevelopmentCard> developmentCards;
     private Map<Resource, Integer> defaultSlotOutput;
     private Map<DumbProduceLeaderCard, Resource> leaderCardProduction;

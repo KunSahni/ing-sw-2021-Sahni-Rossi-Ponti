@@ -4,10 +4,12 @@ import com.google.gson.annotations.SerializedName;
 import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.io.Serializable;
+
 /**
  * this enumeration represents the market marbles colors
  */
-public enum MarketMarble {
+public enum MarketMarble implements Serializable {
     @SerializedName("WHITE") WHITE(Constants.ANSI_WHITE),
     @SerializedName("RED") RED(Constants.ANSI_RED),
     @SerializedName("GREY") GREY(Constants.ANSI_GREY),
