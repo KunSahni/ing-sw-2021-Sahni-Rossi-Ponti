@@ -28,7 +28,7 @@ public class PlayingState extends ConnectionState{
 
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
-        logger.info("Reading action");
+        logger.info("Reading action from " + connection.getNickname() + ", of type: " + serializedMessage.getAction().getClass());
         if (serializedMessage.getAction()!=null){
             PlayerAction playerAction = serializedMessage.getAction();
             playerAction.setNickname(connection.getNickname());
