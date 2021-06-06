@@ -15,6 +15,7 @@ public class AssignInkwellAction extends GameAction{
 
     @Override
     public GameAction execute() {
+        GameAction consequentAction = null;
         List<Player> playerList = game.getPlayerList();
         Collections.shuffle(playerList);
         IntStream.range(1, playerList.size() + 1)
@@ -24,7 +25,12 @@ public class AssignInkwellAction extends GameAction{
                 .filter(player -> player.getPosition() > 2)
                 .forEach(player -> player.getPersonalBoard().getFaithTrack().moveMarker());
         game.sortPlayers();
-        game.setState(GameState.ASSIGNED_INKWELL);
-        return null;
+        if (game.size() == 1) {
+            consequentAction = new StartGameAction(game);
+            game.setState(GameState.PICKED_RESOURCES);
+        } else {
+            game.setState(GameState.ASSIGNED_INKWELL);
+        }
+        return consequentAction;
     }
 }
