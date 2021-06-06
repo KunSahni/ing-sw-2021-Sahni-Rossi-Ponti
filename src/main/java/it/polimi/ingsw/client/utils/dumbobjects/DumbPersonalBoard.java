@@ -90,8 +90,10 @@ public class DumbPersonalBoard {
      */
     public String formatPrintableStringAt(int x, int y) {
         StringBuilder printableString = new StringBuilder(Constants.ANSI_CLEAR);
-        
-        printableString.append("\033[1;1HNickname:" + nickname + " \033[1;117Hposition:" + position + "");
+        if(turnStatus)
+            printableString.append("\033[1;1H" + Constants.ANSI_ORANGE + "Nickname:" + nickname + "(in turn)" + Constants.ANSI_RESET + " \033[1;117Hposition:" + position + "");
+        else
+            printableString.append("\033[1;1HNickname:" + nickname + " \033[1;117Hposition:" + position + "");
         printableString.append(faithTrack.formatPrintableStringAt(2, 1));
         printableString.append(depots.formatPrintableStringAtAsDepots(8, 1));
         printableString.append(strongbox.formatPrintableStringAtAsStrongbox(10, 22));

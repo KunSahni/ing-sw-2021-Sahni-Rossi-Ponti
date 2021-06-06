@@ -201,8 +201,7 @@ public class PlayerTest {
                     arguments(ExecutedActions.ACTIVATED_PRODUCTION_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION),
                     arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.ACTIVATED_PRODUCTION_ACTION),
                     arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.STORED_TEMP_MARBLES_ACTION),
-                    arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION),
-                    arguments(ExecutedActions.TURN_ENDED_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION)
+                    arguments(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION, ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION)
                     );
         }
     }
