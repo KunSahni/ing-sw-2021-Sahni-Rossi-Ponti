@@ -7,7 +7,7 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbProduceLeaderCard;
 import it.polimi.ingsw.client.utils.exceptions.*;
-import it.polimi.ingsw.server.controller.action.playeraction.*;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.*;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.utils.ProductionCombo;

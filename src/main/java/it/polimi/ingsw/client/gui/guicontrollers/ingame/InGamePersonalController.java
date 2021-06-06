@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
-import it.polimi.ingsw.server.controller.action.playeraction.PregameLeaderCardsChoiceAction;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameLeaderCardsChoiceAction;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;

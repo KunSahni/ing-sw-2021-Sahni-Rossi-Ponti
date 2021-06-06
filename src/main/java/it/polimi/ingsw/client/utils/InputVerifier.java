@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.utils;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
-import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.market.MarketMarble;
@@ -11,7 +10,6 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

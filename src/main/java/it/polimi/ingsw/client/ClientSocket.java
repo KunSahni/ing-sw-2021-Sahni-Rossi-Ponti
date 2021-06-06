@@ -1,10 +1,10 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
-import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.network.message.messages.Message;
-import it.polimi.ingsw.network.message.renderable.Renderable;
-import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
+import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
+import it.polimi.ingsw.network.clienttoserver.messages.Message;
+import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
 
 import java.io.*;
 import java.net.Socket;

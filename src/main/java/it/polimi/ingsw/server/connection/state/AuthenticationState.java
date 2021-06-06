@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.connection.state;
 
-import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.network.message.messages.AuthenticationMessage;
-import it.polimi.ingsw.network.message.renderable.requests.CreateLobbyRequest;
+import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
+import it.polimi.ingsw.network.clienttoserver.messages.AuthenticationMessage;
+import it.polimi.ingsw.network.servertoclient.renderable.requests.CreateLobbyRequest;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.model.Game;

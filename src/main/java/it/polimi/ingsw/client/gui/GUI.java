@@ -11,7 +11,7 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
-import it.polimi.ingsw.network.message.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
 import javafx.application.Application;

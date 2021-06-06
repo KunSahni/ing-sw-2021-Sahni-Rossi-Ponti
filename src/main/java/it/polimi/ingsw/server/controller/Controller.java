@@ -1,10 +1,10 @@
 package it.polimi.ingsw.server.controller;
 
 import it.polimi.ingsw.server.connection.Connection;
-import it.polimi.ingsw.server.controller.action.Action;
-import it.polimi.ingsw.server.controller.action.gameaction.*;
-import it.polimi.ingsw.server.controller.action.playeraction.InvalidActionException;
-import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
+import it.polimi.ingsw.network.clienttoserver.action.Action;
+import it.polimi.ingsw.network.clienttoserver.action.gameaction.*;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.InvalidActionException;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.remoteview.RemoteView;

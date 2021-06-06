@@ -1,0 +1,16 @@
+package it.polimi.ingsw.network.servertoclient.renderable;
+
+/**
+ * Renderable items that are get shown only to one player.
+ */
+public abstract class PrivateRenderable implements Renderable {
+    private final String nickname;
+
+    public PrivateRenderable(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+}

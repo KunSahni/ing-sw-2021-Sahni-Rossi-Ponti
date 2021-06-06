@@ -1,13 +1,12 @@
 package it.polimi.ingsw.server.connection;
 
-import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.network.message.renderable.ErrorMessage;
-import it.polimi.ingsw.network.message.renderable.Renderable;
-import it.polimi.ingsw.network.message.renderable.requests.*;
+import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
+import it.polimi.ingsw.network.servertoclient.renderable.ErrorMessage;
+import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.requests.*;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
-import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
-import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 import it.polimi.ingsw.server.connection.state.AuthenticationState;
 import it.polimi.ingsw.server.connection.state.ConnectionState;
@@ -96,6 +95,7 @@ public class Connection implements Runnable {
     public void readFromInputStream() {
         SerializedMessage serializedMessage = null;
         try {
+            logger.info("Waiting to read next client message. Current state: " + state.getClass());
             serializedMessage = (SerializedMessage) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

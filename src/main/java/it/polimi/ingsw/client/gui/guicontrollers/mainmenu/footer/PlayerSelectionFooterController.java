@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 
 import it.polimi.ingsw.client.gui.FXMLResources;
-import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
+import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 

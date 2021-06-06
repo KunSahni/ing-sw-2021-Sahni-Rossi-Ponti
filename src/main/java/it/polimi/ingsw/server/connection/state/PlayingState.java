@@ -1,8 +1,8 @@
 package it.polimi.ingsw.server.connection.state;
 
-import it.polimi.ingsw.network.message.SerializedMessage;
+import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
 import it.polimi.ingsw.server.connection.Connection;
-import it.polimi.ingsw.server.controller.action.playeraction.PlayerAction;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
 
 import java.util.logging.Logger;
 

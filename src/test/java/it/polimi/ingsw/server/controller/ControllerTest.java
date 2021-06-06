@@ -3,7 +3,7 @@ package it.polimi.ingsw.server.controller;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.connection.Connection;
-import it.polimi.ingsw.server.controller.action.playeraction.ActivateLeaderCardAction;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.ActivateLeaderCardAction;
 import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.developmentcard.Color;

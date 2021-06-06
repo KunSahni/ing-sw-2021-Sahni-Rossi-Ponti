@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.connection.state;
 
-import it.polimi.ingsw.network.message.SerializedMessage;
-import it.polimi.ingsw.network.message.messages.CreateLobbyMessage;
+import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
+import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.Lobby;
 

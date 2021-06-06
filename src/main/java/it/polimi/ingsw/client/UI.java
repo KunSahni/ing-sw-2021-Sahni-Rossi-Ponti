@@ -2,7 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
-import it.polimi.ingsw.network.message.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.util.List;
