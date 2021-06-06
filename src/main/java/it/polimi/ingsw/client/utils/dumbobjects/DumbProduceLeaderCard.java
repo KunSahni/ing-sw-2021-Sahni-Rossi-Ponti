@@ -56,4 +56,9 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
                 + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
     }
+
+    @Override
+    public String toImgPath() {
+        return "leader_card_produce_" + inputResource;
+    }
 }

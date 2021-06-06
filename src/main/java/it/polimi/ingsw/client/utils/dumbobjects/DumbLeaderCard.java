@@ -53,4 +53,6 @@ public abstract class DumbLeaderCard implements Serializable {
      * @return a string color of a leader Card with the top left corner in position x,y
      */
     public abstract String formatPrintableStringAt(int x, int y); //todo: make it better by not using hardcoded data
+
+    public abstract String toImgPath();
 }
