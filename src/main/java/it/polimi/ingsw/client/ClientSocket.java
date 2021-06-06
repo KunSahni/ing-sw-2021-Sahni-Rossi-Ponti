@@ -1,10 +1,12 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
+import it.polimi.ingsw.client.utils.exceptions.ConnectionTerminatedException;
 import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.Message;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
+import it.polimi.ingsw.network.servertoclient.renderable.requests.ConnectionTerminatedNotification;
 
 import java.io.*;
 import java.net.Socket;
@@ -61,13 +63,13 @@ public class ClientSocket {
     /**
      * This method closes the connection established through the socket and its input/output streams
      */
-    public void close(){
+    public void close() throws ConnectionTerminatedException {
         try {
             inputStream.close();
             outputStream.close();
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ConnectionTerminatedException();
         }
     }
 

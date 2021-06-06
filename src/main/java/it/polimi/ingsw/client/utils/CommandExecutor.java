@@ -10,10 +10,13 @@ import it.polimi.ingsw.client.utils.exceptions.*;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.*;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
+import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
+import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class has the goal of executing all the commands which are considered valid
@@ -56,11 +59,13 @@ public class CommandExecutor {
 
         insertedCommand = insertedCommand.toLowerCase();
 
-        String[] commandArgs = insertedCommand.split(" ");
-        String finalInsertedCommand = insertedCommand;
+        String finalInsertedCommand = insertedCommand.toLowerCase();
+
         Commands correspondentCommand = Arrays.stream(Commands.values()).filter(
                 command -> finalInsertedCommand.contains(command.getCommand())
-        ).findFirst().orElseGet(null);
+        ).findFirst().orElse(Commands.HELP);
+
+        String[] commandArgs = finalInsertedCommand.split(" ");
 
         if(commandArgs[commandArgs.length-1].equals("-h"))
             throw new CommandHelpException(correspondentCommand);
@@ -96,7 +101,7 @@ public class CommandExecutor {
         commandArgs.remove();//personal
         commandArgs.remove();//board
         
-        //parse index of leader card from command
+        //parse index of personal board from command
         int index;
         try {
             index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
@@ -125,12 +130,16 @@ public class CommandExecutor {
         int index;
         try {
             index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-        }catch (NullPointerException e){
+            if(index<0 || index>dumbModel.getOwnPersonalBoard().getLeaderCards().size())
+                throw new WrongCommandArgsException();
+        }catch (NullPointerException | NumberFormatException | WrongCommandArgsException e){
             throw new WrongCommandArgsException();
         }
 
+        DumbLeaderCard chosenLeaderCard = dumbModel.getOwnPersonalBoard().getLeaderCards().get(index-1);
+
         //if action is valid, send it to server
-        if(inputVerifier.canActivate(index))
+        if(inputVerifier.canActivate(chosenLeaderCard))
             clientSocket.sendAction(
                     new ActivateLeaderCardAction(dumbModel.getOwnPersonalBoard().getLeaderCards().get(index-1))
             );
@@ -152,12 +161,16 @@ public class CommandExecutor {
         int index;
         try {
             index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-        }catch (NullPointerException e){
+            if(index<0 || index>dumbModel.getOwnPersonalBoard().getLeaderCards().size())
+                throw new WrongCommandArgsException();
+        }catch (NullPointerException | NumberFormatException | WrongCommandArgsException e){
             throw new WrongCommandArgsException();
         }
 
+        DumbLeaderCard chosenLeaderCard = dumbModel.getOwnPersonalBoard().getLeaderCards().get(index-1);
+
         //if action is valid, send it to server
-        if(inputVerifier.canDiscard(index))
+        if(inputVerifier.canDiscard(chosenLeaderCard))
             clientSocket.sendAction(
                     new DiscardLeaderCardAction(dumbModel.getOwnPersonalBoard().getLeaderCards().get(index-1))
             );
@@ -184,7 +197,7 @@ public class CommandExecutor {
                             Objects.requireNonNull(commandArgs.poll())
                     )
             );
-        }catch (NullPointerException e){
+        }catch (NullPointerException | IllegalArgumentException e){
             throw new WrongCommandArgsException();
         }
 
@@ -192,7 +205,7 @@ public class CommandExecutor {
         Color chosenColor;
         try {
             chosenColor = Color.getColor(Objects.requireNonNull(commandArgs.poll()));
-        }catch (NullPointerException e){
+        }catch (NullPointerException | IllegalArgumentException e){
             throw new WrongCommandArgsException();
         }
 
@@ -200,7 +213,7 @@ public class CommandExecutor {
         int developmentCardSlotIndex;
         try {
             developmentCardSlotIndex = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-        }catch (NullPointerException e){
+        }catch (NullPointerException | NumberFormatException e){
             throw new WrongCommandArgsException();
         }
 
@@ -237,11 +250,11 @@ public class CommandExecutor {
             throw new WrongCommandArgsException();
         }
 
-        //parse index of leader card from command
+        //parse index of row or column from command
         int index;
         try {
             index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-        }catch (NullPointerException e){
+        }catch (NullPointerException | NumberFormatException e){
             throw new WrongCommandArgsException();
         }
 
@@ -255,6 +268,7 @@ public class CommandExecutor {
     }
 
 
+    //todo: add loop for DC and flag to make sure >1 productions
     /**
      * This method has the goal of properly parsing a take from produce command
      * @param command the command typed by the user on the cli
@@ -281,7 +295,7 @@ public class CommandExecutor {
             Resource defaultResource;
             try {
                 defaultResource = Resource.getResource(Objects.requireNonNull(commandArgs.poll()));
-            }catch (NullPointerException e){
+            }catch (NullPointerException | IllegalArgumentException e){
                 throw new WrongCommandArgsException();
             }
             //add resource to the map
@@ -301,7 +315,9 @@ public class CommandExecutor {
                 int index;
                 try {
                     index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-                } catch (NullPointerException e) {
+                    if(index<0 || index>dumbModel.getOwnPersonalBoard().getLeaderCards().size())
+                        throw new WrongCommandArgsException();
+                }catch (NullPointerException | NumberFormatException | WrongCommandArgsException e){
                     throw new WrongCommandArgsException();
                 }
 
@@ -309,15 +325,17 @@ public class CommandExecutor {
                 Resource leaderCardResource;
                 try {
                     leaderCardResource = Resource.getResource(Objects.requireNonNull(commandArgs.poll()));
-                } catch (NullPointerException e) {
+                } catch (NullPointerException | IllegalArgumentException e) {
                     throw new WrongCommandArgsException();
                 }
 
                 //Retrieve the chosen leader card and make sure it is a production leader card
                 DumbProduceLeaderCard leaderCard;
                 try {
+                    if(dumbModel.getOwnPersonalBoard().getLeaderCards().get(index - 1).getAbility() != LeaderCardAbility.PRODUCE)
+                        throw new WrongCommandArgsException();
                     leaderCard = (DumbProduceLeaderCard) dumbModel.getOwnPersonalBoard().getLeaderCards().get(index - 1);
-                } catch (ClassCastException e) {
+                } catch (ClassCastException | WrongCommandArgsException e) {
                     throw new InvalidArgsException();
                 }
 
@@ -326,7 +344,7 @@ public class CommandExecutor {
             }
         }
 
-        //parse default production arguments from command
+        //parse development cards production arguments from command
         if(commandArgs.peek()==null)
             throw new WrongCommandArgsException();
 
@@ -337,11 +355,19 @@ public class CommandExecutor {
             int index;
             try {
                 index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-            } catch (NullPointerException e) {
+                if(index<0 || index>3)
+                    throw new WrongCommandArgsException();
+            } catch (NullPointerException | WrongCommandArgsException | NumberFormatException e) {
                 throw new WrongCommandArgsException();
             }
 
-            DumbDevelopmentCard developmentCard = dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(index-1).getDevelopmentCards().get(0);
+            //retrieve development card
+            DumbDevelopmentCard developmentCard;
+            try {
+                 developmentCard = dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(index-1).getDevelopmentCards().get(0);
+            }catch (IndexOutOfBoundsException e){
+                throw new WrongCommandArgsException();
+            }
 
             //add development card to the list
             developmentCards.add(developmentCard);
@@ -414,9 +440,13 @@ public class CommandExecutor {
             int index;
             try {
                 index = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-            } catch (NullPointerException e) {
+                if(index< 0 || index>4 || chosenLeaderCards.contains(dumbModel.getTempLeaderCards().get(index-1)))
+                    throw new WrongCommandArgsException();
+            } catch (NullPointerException | WrongCommandArgsException | NumberFormatException e) {
                 throw new WrongCommandArgsException();
             }
+
+            //retrieve correct development card
             DumbLeaderCard chosenLeaderCard = dumbModel.getTempLeaderCards().get(index-1);
             chosenLeaderCards.add(chosenLeaderCard);
         }
@@ -436,8 +466,48 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void managePickTempMarblesCommand(String command){
-        //come capisco quante marbles eliminare?
+    private void managePickTempMarblesCommand(String command)throws WrongCommandArgsException, InvalidArgsException {
+        Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
+        commandArgs.remove();//pick
+        commandArgs.remove();//marbles
+
+        List<MarketMarble> chosenMarbles = new ArrayList<>();
+
+        //loop as long as there's data in the list
+        while ((commandArgs.peek()!= null)){
+            //parse color of market mable
+            String color;
+            try {
+                color = Objects.requireNonNull(commandArgs.poll());
+            } catch (NullPointerException e) {
+                throw new WrongCommandArgsException();
+            }
+
+            //Check if color selection is valid
+            MarketMarble chosenMarble;
+            try {
+                chosenMarble = MarketMarble.getMarble(color);
+            }catch (IllegalArgumentException e){
+                throw new WrongCommandArgsException();
+            }
+            chosenMarbles.add(chosenMarble);
+        }
+
+        Map<MarketMarble, Integer> chosenMarblesMap = chosenMarbles.stream().sorted().collect(
+                Collectors.toMap(
+                        marketMarble -> marketMarble,
+                        marketMarble -> 1,
+                        Integer::sum
+                )
+        );
+
+        //if action is valid, send it to server
+        if(inputVerifier.canPickTempMarbles(chosenMarblesMap))
+            clientSocket.sendAction(
+                    new SelectMarblesAction(chosenMarblesMap)
+            );
+        else
+            throw new InvalidArgsException();
     }
 
     /**
@@ -463,7 +533,7 @@ public class CommandExecutor {
                 int count;
                 try {
                     count = Integer.parseInt(Objects.requireNonNull(commandArgs.poll()));
-                }catch (NullPointerException e){
+                }catch (NullPointerException | NumberFormatException e){
                     throw new WrongCommandArgsException();
                 }
 
@@ -471,7 +541,7 @@ public class CommandExecutor {
                 Resource resource;
                 try {
                     resource = Resource.getResource(Objects.requireNonNull(commandArgs.poll()));
-                }catch (NullPointerException e){
+                }catch (NullPointerException | IllegalArgumentException e){
                     throw new WrongCommandArgsException();
                 }
 
