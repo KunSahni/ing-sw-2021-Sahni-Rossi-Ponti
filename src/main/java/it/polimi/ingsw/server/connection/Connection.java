@@ -92,7 +92,7 @@ public class Connection implements Runnable {
      * Depending by current state control validity of received messages and invoke corresponding
      * readMessage method
      */
-    public void readFromInputStream() {
+    public synchronized void readFromInputStream() {
         SerializedMessage serializedMessage = null;
         try {
             logger.info("Waiting to read next client message. Current state: " + state.getClass());
