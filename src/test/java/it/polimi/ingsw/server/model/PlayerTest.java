@@ -10,6 +10,7 @@ import it.polimi.ingsw.server.model.utils.Resource;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.FileNotFoundException;
@@ -150,6 +151,17 @@ public class PlayerTest {
             player.addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
             player.addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
             assertEquals(executedActions, player.getPerformedActions(), "Error: player doesn't contain the correct executed actions");
+        }
+
+        @ParameterizedTest
+        @EnumSource(ExecutedActions.class)
+        void isValidNextActionSingleActionTest(ExecutedActions e) {
+            player.finishTurn();
+            player.startTurn();
+            if(e.equals(ExecutedActions.TURN_ENDED_ACTION) || e.equals(ExecutedActions.STORED_MARKET_RESOURCES_ACTION))
+                assertFalse(player.isValidNextAction(e), "action should not be valid");
+            else
+                assertTrue(player.isValidNextAction(e), "action should be valid");
         }
 
         @ParameterizedTest

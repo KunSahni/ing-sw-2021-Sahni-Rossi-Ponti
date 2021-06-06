@@ -23,6 +23,8 @@ public class GameStateUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
+        if(updatedGameState.equals(GameState.ASSIGNED_INKWELL))
+            return OnScreenElement.FORCE_DISPLAY;
         return OnScreenElement.DONT_RENDER;
     }
 
