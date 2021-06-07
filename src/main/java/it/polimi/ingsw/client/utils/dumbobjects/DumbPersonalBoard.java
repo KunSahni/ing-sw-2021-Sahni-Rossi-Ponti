@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DumbPersonalBoard {
     private final String nickname;
-    private final int position;
+    private int position;
     private final DumbFaithTrack faithTrack;
     private final DumbResourceManager depots;
     private final DumbResourceManager strongbox;
@@ -21,10 +21,9 @@ public class DumbPersonalBoard {
     private boolean turnStatus;
     private boolean connectionStatus;
 
-    public DumbPersonalBoard(String nickname, int position, boolean isSinglePlayerGame) {
+    public DumbPersonalBoard(String nickname, boolean isSinglePlayerGame) {
         super();
         this.nickname = nickname;
-        this.position = position;
         this.faithTrack = isSinglePlayerGame? new DumbSinglePlayerFaithTrack() : new DumbFaithTrack();
         this.depots = new DumbResourceManager();
         this.strongbox = new DumbResourceManager();
@@ -44,6 +43,10 @@ public class DumbPersonalBoard {
 
     public void updateConnectionStatus(boolean connected) {
         connectionStatus = connected;
+    }
+
+    public void updatePosition(int updatedPosition){
+        this.position = updatedPosition;
     }
 
     public String getNickname() {

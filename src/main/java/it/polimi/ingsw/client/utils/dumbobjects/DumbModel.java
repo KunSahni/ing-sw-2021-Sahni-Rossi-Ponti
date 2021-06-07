@@ -63,10 +63,9 @@ public class DumbModel {
     /**
      * This method creates a new PersonalBoard inside the DumbModel base on the passed parameters
      * @param nickname the nickname of the player that needs to be added
-     * @param position the position of the player on the "table"
      */
-    public void addPersonalBoard(String nickname, int position){
-        personalBoards.add(new DumbPersonalBoard(nickname, position, size==1));
+    public void addPersonalBoard(String nickname){
+        personalBoards.add(new DumbPersonalBoard(nickname, size==1));
     }
 
     /**
@@ -81,9 +80,10 @@ public class DumbModel {
                 dumbPersonalBoard -> {
                     dumbPersonalBoard.updateConnectionStatus(updatedConnectionStatus);
                     dumbPersonalBoard.updateTurnStatus(updatedTurnStatus);
+                    dumbPersonalBoard.updatePosition(position);
                 },
                 ()->{
-                    addPersonalBoard(nickname, position);
+                    addPersonalBoard(nickname);
                     updatePersonalBoard(nickname, position, updatedTurnStatus, updatedConnectionStatus);
                 }
         );
