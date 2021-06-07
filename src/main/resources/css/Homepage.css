@@ -30,4 +30,9 @@
     -fx-background-image: url('./img/play_button_transparent1.png');
     -fx-background-size: 100% 100%;
     -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.button:hover{
+    -fx-opacity: 0.8;
 }
