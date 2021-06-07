@@ -27,7 +27,7 @@ public class PregameResourceChoiceAction extends PlayerAction {
                 .getPersonalBoard()
                 .storeInDepots(resources);
         if (game.getPlayerList().stream()
-                .filter(player -> player.getPosition() != 0)
+                .filter(player -> player.getPosition() != 1)
                 .allMatch(player -> player.getPersonalBoard().getResourceCount() > 0)) {
             consequentAction = new StartGameAction(game);
             game.setState(GameState.PICKED_RESOURCES);
