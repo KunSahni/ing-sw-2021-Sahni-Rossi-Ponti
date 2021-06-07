@@ -89,6 +89,11 @@ public class InGamePersonalController extends JFXController {
         initLeaderCardStorageImages(leaderCard2ResourcesHBox);
         leaderCardImages.add(leaderCard1);
         leaderCardImages.add(leaderCard2);
+        // Initialize Resource-choosing buttons
+        resourceChoiceCoin.setOnAction(e -> addResourceToChoiceMap(Resource.COIN));
+        resourceChoiceServant.setOnAction(e -> addResourceToChoiceMap(Resource.SERVANT));
+        resourceChoiceShield.setOnAction(e -> addResourceToChoiceMap(Resource.SHIELD));
+        resourceChoiceStone.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
     }
 
     @Override
@@ -218,18 +223,15 @@ public class InGamePersonalController extends JFXController {
 
     public void initResourceChoice() {
         int ownPosition = gui.getDumbModel().getOwnPersonalBoard().getPosition();
+        logger.info(String.valueOf(ownPosition));
         if (ownPosition > 1) {
-            resourceChoiceCoin.setOnAction(e -> addResourceToChoiceMap(Resource.COIN));
-            resourceChoiceServant.setOnAction(e -> addResourceToChoiceMap(Resource.SERVANT));
-            resourceChoiceShield.setOnAction(e -> addResourceToChoiceMap(Resource.SHIELD));
-            resourceChoiceStone.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
             ConfirmResetButtonsStrategy.PRE_GAME_RESOURCES_CHOICE.applyTo(confirmButton,
                     resetButton);
             switch (ownPosition) {
-                case 2, 3 -> populateInfoLabel("Pick one resource.");
-                case 4 -> populateInfoLabel("Pick two resources");
+                case 2, 3 -> populateInfoLabel("Pick a resource!");
+                case 4 -> populateInfoLabel("Pick two resources!");
             }
-            resourceChoiceLayer.toFront();
+            Platform.runLater(() -> resourceChoiceLayer.toFront());
         }
     }
 

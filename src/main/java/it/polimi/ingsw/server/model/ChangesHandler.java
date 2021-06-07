@@ -145,8 +145,8 @@ public class ChangesHandler {
     }
 
     public void publishPlayer(Player player) {
-        submissionPublisher.submit(new PlayerBroadcastUpdate(player));
         submissionPublisher.submit(new PlayerPrivateUpdate(player));
+        submissionPublisher.submit(new PlayerBroadcastUpdate(player));
     }
 
     public void writePlayer(Player player) {

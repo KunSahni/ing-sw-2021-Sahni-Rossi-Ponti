@@ -26,12 +26,7 @@
             <StackPane layoutX="10.0" layoutY="348.0" prefHeight="150.0" prefWidth="200.0">
                <children>
                   <ImageView fx:id="leaderCard2" fitHeight="110.0" fitWidth="83.0" pickOnBounds="true" preserveRatio="true" />
-                  <HBox fx:id="leaderCard2ResourcesHBox" alignment="CENTER" spacing="5.0">
-                     <children>
-                        <ImageView fitHeight="33.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fitHeight="33.0" fitWidth="33.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </HBox>
+                  <HBox fx:id="leaderCard2ResourcesHBox" alignment="CENTER" spacing="5.0" />
                </children>
             </StackPane>
             <Pane prefHeight="200.0" prefWidth="200.0">

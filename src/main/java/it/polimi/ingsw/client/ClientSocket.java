@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * This class contains the client-side socket used to communicate with the server
  */
 public class ClientSocket {
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final String serverAddress;
     private final int serverPort;
     private Socket socket;

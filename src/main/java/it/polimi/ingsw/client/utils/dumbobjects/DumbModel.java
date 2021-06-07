@@ -161,9 +161,11 @@ public class DumbModel {
      * @param updatedLeaderCards the updated list of leaderCards held by the player
      */
     public void updateLeaderCards(String nickname, List<DumbLeaderCard> updatedLeaderCards){
-        Optional.ofNullable(getPersonalBoard(nickname)).ifPresent(
-                dumbPersonalBoard -> dumbPersonalBoard.updateLeaderCards(updatedLeaderCards)
-        );
+        if (!nickname.equals(this.nickname)) {
+            Optional.ofNullable(getPersonalBoard(nickname)).ifPresent(
+                    dumbPersonalBoard -> dumbPersonalBoard.updateLeaderCards(updatedLeaderCards)
+            );
+        }
     }
 
     /**

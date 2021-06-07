@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GUI extends Application implements UI {
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private DumbModel dumbModel;
     private String personalNickname;
     private InputVerifier inputVerifier;
