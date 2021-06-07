@@ -49,6 +49,7 @@ public class GUI extends Application implements UI {
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
+        this.stage.setResizable(false);
         this.dumbModel = new DumbModel(this);
         this.inputVerifier = new InputVerifier(dumbModel);
         loadMainMenu();

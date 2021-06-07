@@ -1,30 +1,35 @@
 package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbFaithTrack;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameLeaderCardsChoiceAction;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourceChoiceAction;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
+import it.polimi.ingsw.server.model.personalboard.FavorStatus;
 import it.polimi.ingsw.server.model.utils.Resource;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -80,6 +85,25 @@ public class InGamePersonalController extends JFXController {
     @FXML
     private Button resourceChoiceStone;
     private final Map<Resource, Integer> chosenResourcesMap = new HashMap<>();
+    @FXML
+    private VBox depotsVBox;
+    private final List<List<ImageView>> warehouseDepotsResourceImages = new ArrayList<>();
+    @FXML
+    private GridPane faithTrackGrid;
+    private ImageView faithMarker;
+    private List<GridCoordinates> faithTrackCoordsReference;
+    @FXML
+    private ImageView firstPopesFavor;
+    @FXML
+    private ImageView secondPopesFavor;
+    @FXML
+    private ImageView thirdPopesFavor;
+
+    @Override
+    public void setGui(GUI gui) {
+        super.setGui(gui);
+        nicknameLabel.setText(gui.getPersonalNickname());
+    }
 
     @FXML
     private void initialize() {
@@ -94,12 +118,14 @@ public class InGamePersonalController extends JFXController {
         resourceChoiceServant.setOnAction(e -> addResourceToChoiceMap(Resource.SERVANT));
         resourceChoiceShield.setOnAction(e -> addResourceToChoiceMap(Resource.SHIELD));
         resourceChoiceStone.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
-    }
-
-    @Override
-    public void setGui(GUI gui) {
-        super.setGui(gui);
-        nicknameLabel.setText(gui.getPersonalNickname());
+        // Initialize WarehouseDepots Images
+        IntStream.range(1, 4).forEach(this::initWarehouseDepotsResourceImages);
+        // Initialize a list that will be used to position the marker in the correct
+        // position on the faith track.
+        initFaithTrackCoordsReferenceList();
+        faithMarker = new ImageView(getImageFromPath("/img/faithtrack/faith_marker.png"));
+        faithMarker.setFitHeight(30);
+        faithMarker.setPreserveRatio(true);
     }
 
     private void initLeaderCardStorageImages(HBox leaderCardResourceHBox) {
@@ -117,6 +143,35 @@ public class InGamePersonalController extends JFXController {
         hBoxElements.add(resource1);
         hBoxElements.add(resource2);
         leaderCardResourcesImages.add(hBoxElements);
+    }
+
+    private void initWarehouseDepotsResourceImages(int numberOfImageViews) {
+        List<ImageView> resourceRowImages = new ArrayList<>();
+        HBox resourcesRow = new HBox();
+        resourcesRow.setAlignment(Pos.CENTER);
+        IntStream.range(0, numberOfImageViews).forEach(i -> {
+            ImageView resource = new ImageView();
+            resource.setFitWidth(40);
+            resource.setPreserveRatio(true);
+            resourcesRow.getChildren().add(resource);
+            resourceRowImages.add(resource);
+        });
+        depotsVBox.getChildren().add(resourcesRow);
+        warehouseDepotsResourceImages.add(resourceRowImages);
+    }
+
+    private void initFaithTrackCoordsReferenceList() {
+        try {
+            JsonReader reader = new JsonReader(new FileReader(
+                    "src/main/resources/json/client/faithTrackGridCoordinates.json"));
+            GridCoordinates[] array =
+                    new GsonBuilder().setPrettyPrinting().serializeNulls().create()
+                            .fromJson(reader, GridCoordinates[].class);
+            faithTrackCoordsReference = Arrays.asList(array);
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -145,10 +200,9 @@ public class InGamePersonalController extends JFXController {
         DumbPersonalBoard dumbPersonalBoard = gui.getDumbModel().getOwnPersonalBoard();
         renderPlayerInformation(dumbPersonalBoard);
         renderLeaderCards(dumbPersonalBoard);
-        /*renderFaithTrack(dumbPersonalBoard);
         renderWarehouseDepots(dumbPersonalBoard);
-        renderStrongbox(dumbPersonalBoard);
         renderFaithTrack(dumbPersonalBoard);
+        /*renderStrongbox(dumbPersonalBoard);
         renderDevelopmentCardSlots(dumbPersonalBoard);*/
     }
 
@@ -169,11 +223,55 @@ public class InGamePersonalController extends JFXController {
                     IntStream.range(0, 2).forEach(j ->
                             leaderCardResourcesImages.get(i).get(j)
                                     .setImage(storeLeaderCard.getResourceCount() > j
-                                            ? getImageFromPath(storeLeaderCard.getStoredType().toImgPath())
+                                            ? getImageFromPath(storeLeaderCard.getStoredType()
+                                            .toImgPath())
                                             : null));
                 }
             } else leaderCardImages.get(i).setImage(null);
         });
+    }
+
+    private void renderWarehouseDepots(DumbPersonalBoard dumbPersonalBoard) {
+        LinkedHashMap<Resource, Integer> depotsResources =
+                new LinkedHashMap<>(dumbPersonalBoard.getDepots().getStoredResources());
+        // Clear all rendered images of the depots
+        IntStream.range(0, 3).forEach(i -> warehouseDepotsResourceImages.get(i)
+                .forEach(imageView -> imageView.setImage(null)));
+        // Magic
+        IntStream.range(3 - depotsResources.size(), 3).forEach(i -> {
+            int depotsIndex = i + depotsResources.size() - 3;
+            Resource resourceAtIndex = new ArrayList<>(depotsResources.keySet()).get(depotsIndex);
+            List<ImageView> resourceSlots = warehouseDepotsResourceImages.get(i);
+            IntStream.range(0, resourceSlots.size()).forEach(j -> resourceSlots.get(j).setImage(
+                    j < depotsResources.get(resourceAtIndex)
+                            ? getImageFromPath(resourceAtIndex.toImgPath())
+                            : null
+            ));
+        });
+    }
+
+    private void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
+        DumbFaithTrack faithTrack = dumbPersonalBoard.getFaithTrack();
+        GridCoordinates coordinates =
+                faithTrackCoordsReference.get(faithTrack.getFaithMarkerPosition());
+        Platform.runLater(() -> {
+            faithTrackGrid.getChildren().clear();
+            faithTrackGrid.add(faithMarker, coordinates.getColumn(), coordinates.getRow());
+            renderPopesFavor(firstPopesFavor, faithTrack.getPopesFavors().get(0), 1);
+            renderPopesFavor(secondPopesFavor, faithTrack.getPopesFavors().get(1), 2);
+            renderPopesFavor(thirdPopesFavor, faithTrack.getPopesFavors().get(2), 3);
+        });
+    }
+
+    private void renderPopesFavor(ImageView popesFavorImageView, FavorStatus favorStatus,
+                                  int index) {
+        popesFavorImageView.setImage(
+                switch (favorStatus) {
+                    case ACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index + "_front.png");
+                    case INACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index + "_back.png");
+                    case DISCARDED -> null;
+                }
+        );
     }
 
     public void initLeaderCardsSelection(List<DumbLeaderCard> leaderCards) {
