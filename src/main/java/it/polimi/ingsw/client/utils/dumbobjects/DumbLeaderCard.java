@@ -54,5 +54,7 @@ public abstract class DumbLeaderCard implements Serializable {
      */
     public abstract String formatPrintableStringAt(int x, int y); //todo: make it better by not using hardcoded data
 
-    public abstract String toImgPath();
+    public String toImgPath() {
+        return "/img/cards/";
+    }
 }

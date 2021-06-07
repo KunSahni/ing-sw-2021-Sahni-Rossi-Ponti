@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 public class GUI extends Application implements UI {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private DumbModel dumbModel;
+    private String personalNickname;
     private InputVerifier inputVerifier;
     private ClientSocket clientSocket;
     private Stage stage;
@@ -64,6 +65,15 @@ public class GUI extends Application implements UI {
 
     public ClientSocket getClientSocket() {
         return clientSocket;
+    }
+
+    public void setPersonalNickname(String personalNickname) {
+        this.personalNickname = personalNickname;
+        this.dumbModel.setNickname(personalNickname);
+    }
+
+    public String getPersonalNickname() {
+        return personalNickname;
     }
 
     public void loadMainMenu() throws IOException {
@@ -136,7 +146,9 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderPersonalBoard(String nickname) {
-
+        if (nickname.equals(personalNickname)) {
+            personalController.renderPersonalBoard();
+        }
     }
 
     @Override
@@ -171,7 +183,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderResourcePregameChoice() {
-
+        personalController.initResourceChoice();
     }
 
     @Override

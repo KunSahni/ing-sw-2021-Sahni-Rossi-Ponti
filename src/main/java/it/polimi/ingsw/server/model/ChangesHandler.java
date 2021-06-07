@@ -110,7 +110,12 @@ public class ChangesHandler {
         );
     }
 
+    public void publishGameState(GameState gameState) {
+        submissionPublisher.submit(new GameStateUpdate(gameState));
+    }
+
     public void writeGameState(GameState gameState) {
+        publishGameState(gameState);
         changesBuffer.put(gameState, root + "/GameState.json");
     }
 

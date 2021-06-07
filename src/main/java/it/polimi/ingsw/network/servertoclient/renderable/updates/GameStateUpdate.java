@@ -13,8 +13,8 @@ import it.polimi.ingsw.server.model.utils.GameState;
 public class GameStateUpdate extends BroadcastRenderable {
     private final GameState updatedGameState;
 
-    public GameStateUpdate(Game game) {
-        this.updatedGameState = game.getCurrentState();
+    public GameStateUpdate(GameState gameState) {
+        this.updatedGameState = gameState;
     }
 
     /**

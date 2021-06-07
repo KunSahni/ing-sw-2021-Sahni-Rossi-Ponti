@@ -29,7 +29,6 @@ public class Connection implements Runnable {
     private boolean isActive;
     private ConnectionState state;
     private final SubmissionPublisher<PlayerAction> submissionPublisher;
-    private final Thread pingThread;
 
     /**
      * Create a connection with the given socket and server,set isActive true and set state to
@@ -42,8 +41,6 @@ public class Connection implements Runnable {
         this.socket = socket;
         this.server = server;
         this.isActive = true;
-        pingThread = new Thread(this::startPing);
-        pingThread.start();
         this.submissionPublisher = new SubmissionPublisher<>();
         state = new AuthenticationState(this);
         try {
@@ -95,7 +92,7 @@ public class Connection implements Runnable {
     public synchronized void readFromInputStream() {
         SerializedMessage serializedMessage = null;
         try {
-            logger.info("Waiting to read next client message. Current state: " + state.getClass());
+            logger.info("Waiting to read next client message. Current state: " + state.getClass().getSimpleName());
             serializedMessage = (SerializedMessage) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -185,7 +182,7 @@ public class Connection implements Runnable {
      * @param renderable is sent to the Client
      */
     public void send(Renderable renderable) {
-        logger.info("Sent " + renderable.getClass() + " to " + nickname);
+        logger.info("Sent " + renderable.getClass().getSimpleName() + " to " + nickname);
         try {
             outputStream.writeObject(renderable);
             outputStream.flush();
@@ -198,19 +195,6 @@ public class Connection implements Runnable {
 
     public void subscribe(RemoteView.NetworkMessageForwarder networkMessageForwarder) {
         this.submissionPublisher.subscribe(networkMessageForwarder);
-    }
-
-    public void startPing() {
-        while (true) {
-            try {
-                Thread.sleep(10000);
-                if (inputStream.read() == -1) {
-                    closeConnection();
-                }
-            } catch (InterruptedException | IOException e) {
-                closeConnection();
-            }
-        }
     }
 
     public void setNickname(String nickname) {

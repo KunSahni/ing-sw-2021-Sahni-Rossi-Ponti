@@ -38,7 +38,7 @@ public class ModelUpdate extends PrivateRenderable {
         //todo: add getSize() and getActionTokenDeck() to game
         //isSinglePlayerGame = game.getSize()==1;
         //actionTokenDeckUpdate = isSinglePlayerGame ? game.getActionTokenDeck() : null;
-        gameStateUpdate = new GameStateUpdate(game);
+        gameStateUpdate = new GameStateUpdate(game.getCurrentState());
         developmentCardsBoardUpdate = new DevelopmentCardsBoardUpdate(game.getDevelopmentCardsBoard());
         marketUpdate = new MarketUpdate(game.getMarket());
         leaderCardsPrivateUpdate = new LeaderCardsPrivateUpdate(nickname, game.getPlayer(nickname).getPersonalBoard().getLeaderCards());
