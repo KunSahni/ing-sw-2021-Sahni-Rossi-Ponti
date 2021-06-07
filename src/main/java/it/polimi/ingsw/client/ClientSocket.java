@@ -45,7 +45,7 @@ public class ClientSocket {
                     try {
                         Renderable message = (Renderable) inputStream.readObject();
                         if(message != null) {
-                            logger.info("Received " + message.getClass() + " from server.");
+                            logger.info("Received " + message.getClass().getSimpleName() + " from server.");
                             renderablePublisher.submit(message);
                         }
                     } catch (IOException | ClassNotFoundException e) {
@@ -83,7 +83,7 @@ public class ClientSocket {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Sent message instance of: " + message.getClass());
+        logger.info("Sent message instance of: " + message.getClass().getSimpleName());
     }
 
     /**
@@ -97,6 +97,6 @@ public class ClientSocket {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Sent action instance of: " + action.getClass());
+        logger.info("Sent action instance of: " + action.getClass().getSimpleName());
     }
 }
