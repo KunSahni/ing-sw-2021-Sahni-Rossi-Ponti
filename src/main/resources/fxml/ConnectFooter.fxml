@@ -25,6 +25,6 @@
          <VBox.margin>
             <Insets bottom="5.0" />
          </VBox.margin></TextField>
-      <Button fx:id="connectButton" maxHeight="90.0" maxWidth="130.0" minHeight="90.0" minWidth="130.0" mnemonicParsing="false" onAction="#connectToServer" stylesheets="@../css/PlayButton.css" />
+      <Button fx:id="connectButton" maxHeight="90.0" maxWidth="140.0" minHeight="90.0" minWidth="140.0" mnemonicParsing="false" onAction="#connectToServer" prefHeight="90.0" prefWidth="140.0" stylesheets="@../css/PlayButton.css" />
    </children>
 </VBox>
