@@ -78,6 +78,6 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
 
     @Override
     public String toImgPath() {
-        return "leader_card_store_" + storedResource;
+        return super.toImgPath() + "leader_card_store_" + storedResource + ".png";
     }
 }

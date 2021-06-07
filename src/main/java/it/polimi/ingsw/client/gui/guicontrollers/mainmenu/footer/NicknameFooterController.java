@@ -15,10 +15,11 @@ public class NicknameFooterController extends FooterController {
     @FXML
     private void sendAuthReply() {
         int gameId = parentController.getGui().getDumbModel().getGameID();
+        String nickname = nicknameField.getText();
         parentController.setFooter(FXMLResources.LOADING_FOOTER);
         parentController.setLoadingFooterText(gameId == -1 ? "joining lobby" : "joining game " + gameId);
-        parentController.getGui().getDumbModel().setNickname(nicknameField.getText());
+        parentController.getGui().setPersonalNickname(nickname);
         parentController.getGui().getClientSocket()
-                .sendMessage(new AuthenticationMessage(nicknameField.getText(), gameId));
+                .sendMessage(new AuthenticationMessage(nickname, gameId));
     }
 }

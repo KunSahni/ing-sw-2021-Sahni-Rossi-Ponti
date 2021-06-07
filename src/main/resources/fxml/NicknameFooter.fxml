@@ -8,12 +8,15 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer.NicknameFooterController">
    <children>
-      <Label text="Insert a nickname">
+      <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="300.0" minWidth="300.0" text="Pick your nickname">
          <font>
-            <Font size="16.0" />
+            <Font name="Bernard MT Condensed" size="29.0" />
          </font>
       </Label>
-      <TextField fx:id="nicknameField" alignment="CENTER" promptText="Nickname" />
-      <Button fx:id="joinButton" mnemonicParsing="false" onAction="#sendAuthReply" text="Join" />
+      <TextField fx:id="nicknameField" alignment="CENTER" maxHeight="50.0" maxWidth="300.0" minHeight="50.0" minWidth="300.0" promptText="Nickname">
+         <font>
+            <Font name="Bernard MT Condensed" size="20.0" />
+         </font></TextField>
+      <Button fx:id="joinButton" maxHeight="100.0" maxWidth="150.0" minHeight="80.0" minWidth="130.0" mnemonicParsing="false" onAction="#sendAuthReply" stylesheets="@../css/PlayButton.css" />
    </children>
 </VBox>

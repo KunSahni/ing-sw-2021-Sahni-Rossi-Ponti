@@ -3,18 +3,8 @@ package it.polimi.ingsw.client.gui.guicontrollers.mainmenu.footer;
 import it.polimi.ingsw.client.gui.FXMLResources;
 import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 
 public class PlayerSelectionFooterController extends FooterController {
-    @FXML
-    private Button singlePlayerButton;
-    @FXML
-    private Button twoPlayersButton;
-    @FXML
-    private Button threePlayersButton;
-    @FXML
-    private Button fourPlayersButton;
-
     @FXML
     private void playSingle() {
         sendCreateLobbyMessage(1);

@@ -58,7 +58,7 @@ public class Lobby {
      * @param connection is the connection of the player
      */
     public synchronized void addPlayer(String nickname, Connection connection) {
-        logger.log(Level.INFO, "Player " + nickname + " is being added to the lobby.");
+        logger.info("Player " + nickname + " is being added to the lobby.");
         players.put(nickname, connection);
         connection.send(new JoinedLobbyNotification(maxGameId, size));
         if (isFull()) {
@@ -129,7 +129,6 @@ public class Lobby {
      * Set instance null, players to new Map and size to zero
      */
     private void clear() {
-        instance = null;
         players = new HashMap<>();
         size = 0;
     }
