@@ -59,6 +59,6 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
 
     @Override
     public String toImgPath() {
-        return "leader_card_produce_" + inputResource;
+        return super.toImgPath() + "leader_card_produce_" + inputResource + ".png";
     }
 }

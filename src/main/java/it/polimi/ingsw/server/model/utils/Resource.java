@@ -41,4 +41,8 @@ public enum Resource implements Serializable {
             if(r.label.equals(resource)) return r;
         throw new IllegalArgumentException();
     }
+
+    public String toImgPath() {
+        return "/img/resources/" + label + ".png";
+    }
 }

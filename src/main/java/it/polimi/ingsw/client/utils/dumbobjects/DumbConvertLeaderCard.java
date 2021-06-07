@@ -65,6 +65,6 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
 
     @Override
     public String toImgPath() {
-        return "leader_card_convert_" + convertedResource;
+        return super.toImgPath() + "leader_card_convert_" + convertedResource + ".png";
     }
 }
