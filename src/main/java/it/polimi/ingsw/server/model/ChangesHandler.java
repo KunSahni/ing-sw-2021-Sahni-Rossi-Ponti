@@ -255,8 +255,8 @@ public class ChangesHandler {
     }
 
     public void publishPlayerLeaderCards(String nickname, List<LeaderCard> cards) {
-        submissionPublisher.submit(new LeaderCardsBroadcastUpdate(nickname, cards));
         submissionPublisher.submit(new LeaderCardsPrivateUpdate(nickname, cards));
+        submissionPublisher.submit(new LeaderCardsBroadcastUpdate(nickname, cards));
     }
 
     public void writePlayerLeaderCards(String nickname, List<LeaderCard> cards) {
