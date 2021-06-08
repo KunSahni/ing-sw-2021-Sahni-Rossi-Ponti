@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -37,15 +38,13 @@ import java.util.stream.IntStream;
 public class InGamePersonalController extends JFXController {
     private final Logger logger = Logger.getLogger(getClass().getName());
     @FXML
-    private ImageView leaderCard1;
+    private ToggleButton leaderCard1;
     @FXML
     private HBox leaderCard1ResourcesHBox;
     @FXML
-    private ImageView leaderCard2;
+    private ToggleButton leaderCard2;
     @FXML
     private HBox leaderCard2ResourcesHBox;
-    private final List<List<ImageView>> leaderCardResourcesImages = new ArrayList<>();
-    private final List<ImageView> leaderCardImages = new ArrayList<>();
     @FXML
     private Label nicknameLabel;
     @FXML
@@ -107,12 +106,9 @@ public class InGamePersonalController extends JFXController {
 
     @FXML
     private void initialize() {
-        // Initialize Leader Card 1 Resource Images
-        initLeaderCardStorageImages(leaderCard1ResourcesHBox);
-        // Initialize Leader Card 2 Resource Images
-        initLeaderCardStorageImages(leaderCard2ResourcesHBox);
-        leaderCardImages.add(leaderCard1);
-        leaderCardImages.add(leaderCard2);
+        // Initialize Leader Card buttons
+        leaderCard1.setVisible(false);
+        leaderCard2.setVisible(false);
         // Initialize Resource-choosing buttons
         resourceChoiceCoin.setOnAction(e -> addResourceToChoiceMap(Resource.COIN));
         resourceChoiceServant.setOnAction(e -> addResourceToChoiceMap(Resource.SERVANT));
@@ -124,25 +120,8 @@ public class InGamePersonalController extends JFXController {
         // position on the faith track.
         initFaithTrackCoordsReferenceList();
         faithMarker = new ImageView(getImageFromPath("/img/faithtrack/faith_marker.png"));
-        faithMarker.setFitHeight(30);
+        faithMarker.setFitHeight(60);
         faithMarker.setPreserveRatio(true);
-    }
-
-    private void initLeaderCardStorageImages(HBox leaderCardResourceHBox) {
-        ImageView resource1 = new ImageView();
-        resource1.setFitWidth(33);
-        resource1.setPreserveRatio(true);
-        ImageView resource2 = new ImageView();
-        resource2.setFitWidth(33);
-        resource2.setPreserveRatio(true);
-        resource2.setLayoutX(10);
-        resource2.setLayoutY(10);
-        leaderCardResourceHBox.getChildren()
-                .addAll(resource1, resource2);
-        List<ImageView> hBoxElements = new ArrayList<>();
-        hBoxElements.add(resource1);
-        hBoxElements.add(resource2);
-        leaderCardResourcesImages.add(hBoxElements);
     }
 
     private void initWarehouseDepotsResourceImages(int numberOfImageViews) {
@@ -151,7 +130,7 @@ public class InGamePersonalController extends JFXController {
         resourcesRow.setAlignment(Pos.CENTER);
         IntStream.range(0, numberOfImageViews).forEach(i -> {
             ImageView resource = new ImageView();
-            resource.setFitWidth(40);
+            resource.setFitWidth(45);
             resource.setPreserveRatio(true);
             resourcesRow.getChildren().add(resource);
             resourceRowImages.add(resource);
@@ -196,6 +175,43 @@ public class InGamePersonalController extends JFXController {
         Platform.runLater(() -> alertsLabel.setText(outcome));
     }
 
+    public void initLeaderCardsDisplay() {
+        // Only called once, after the server has confirmed the player's initial
+        // leader cards choice
+        List<DumbLeaderCard> cards = gui.getDumbModel().getOwnPersonalBoard().getLeaderCards();
+        DumbLeaderCard firstCard = cards.get(0);
+        initLeaderCardToggleButton(firstCard, leaderCard1);
+        if (firstCard.getAbility().equals(LeaderCardAbility.STORE))
+            initStoreLeaderCardImages(leaderCard1ResourcesHBox,
+                    ((DumbStoreLeaderCard) firstCard).getStoredType());
+        DumbLeaderCard secondCard = cards.get(1);
+        initLeaderCardToggleButton(secondCard, leaderCard2);
+        if (secondCard.getAbility().equals(LeaderCardAbility.STORE))
+            initStoreLeaderCardImages(leaderCard2ResourcesHBox,
+                    ((DumbStoreLeaderCard) secondCard).getStoredType());
+    }
+
+    private void initLeaderCardToggleButton(DumbLeaderCard card, ToggleButton button) {
+        button.setUserData(card);
+        String image = getClass().getResource(card.toImgPath()).toExternalForm();
+        button.setStyle("-fx-background-image: url('"+ image +"')");
+        button.setVisible(true);
+    }
+
+    private void initStoreLeaderCardImages(HBox leaderCardResourceHBox, Resource storedResource) {
+        leaderCardResourceHBox.getChildren()
+                .addAll(create45x45ResourceInvisibleImageView(storedResource),
+                        create45x45ResourceInvisibleImageView(storedResource));
+    }
+
+    private ImageView create45x45ResourceInvisibleImageView(Resource resource) {
+        ImageView image = new ImageView(getImageFromPath(resource.toImgPath()));
+        image.setFitWidth(45);
+        image.setPreserveRatio(true);
+        image.setVisible(false);
+        return image;
+    }
+
     public void renderPersonalBoard() {
         DumbPersonalBoard dumbPersonalBoard = gui.getDumbModel().getOwnPersonalBoard();
         renderPlayerInformation(dumbPersonalBoard);
@@ -213,22 +229,35 @@ public class InGamePersonalController extends JFXController {
     }
 
     private void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
-        List<DumbLeaderCard> leaderCards = dumbPersonalBoard.getLeaderCards();
+        /*List<DumbLeaderCard> leaderCards = dumbPersonalBoard.getLeaderCards();
         IntStream.range(0, 2).forEach(i -> {
             if (leaderCards.size() > i) {
                 DumbLeaderCard card = leaderCards.get(i);
-                leaderCardImages.get(i).setImage(getImageFromPath(card.toImgPath()));
-                if (card.isActive() && card.getAbility().equals(LeaderCardAbility.STORE)) {
-                    DumbStoreLeaderCard storeLeaderCard = (DumbStoreLeaderCard) card;
-                    IntStream.range(0, 2).forEach(j ->
-                            leaderCardResourcesImages.get(i).get(j)
-                                    .setImage(storeLeaderCard.getResourceCount() > j
-                                            ? getImageFromPath(storeLeaderCard.getStoredType()
-                                            .toImgPath())
-                                            : null));
+                ToggleButton cardButton = leaderCardToggleButtons.get(i);
+                if (cardButton.isVisible()) {
+                    if (card.isActive()) {
+                        if (cardButton.getStyleClass().contains("inactive-leader-card")) {
+                            cardButton.getStyleClass().clear();
+                            cardButton.getStyleClass().add("active-leader-card");
+                        }
+                        if (card.getAbility().equals(LeaderCardAbility.STORE) {
+                            DumbStoreLeaderCard storeLeaderCard = (DumbStoreLeaderCard) card;
+                            IntStream.range(0, 2).forEach(j ->
+                                    leaderCardResourcesImages.get(i).get(j)
+                                            .setImage(storeLeaderCard.getResourceCount() > j
+                                                    ?
+                                                    getImageFromPath(storeLeaderCard.getStoredType()
+                                                    .toImgPath())
+                                                    : null));
+                        }
+                    }
+                } else {
+                    cardButton.getStyleClass().add("inactive-leader-card");
+                    cardButton.setStyle("-fx-background-image: " + getImageFromPath(card.toImgPath()));
+                    cardButton.setVisible(true);
                 }
-            } else leaderCardImages.get(i).setImage(null);
-        });
+            } else leaderCardToggleButtons.get(i).setVisible(false);
+        });*/
     }
 
     private void renderWarehouseDepots(DumbPersonalBoard dumbPersonalBoard) {
@@ -250,7 +279,7 @@ public class InGamePersonalController extends JFXController {
         });
     }
 
-    private void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
+    public void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
         DumbFaithTrack faithTrack = dumbPersonalBoard.getFaithTrack();
         GridCoordinates coordinates =
                 faithTrackCoordsReference.get(faithTrack.getFaithMarkerPosition());
@@ -267,8 +296,10 @@ public class InGamePersonalController extends JFXController {
                                   int index) {
         popesFavorImageView.setImage(
                 switch (favorStatus) {
-                    case ACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index + "_front.png");
-                    case INACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index + "_back.png");
+                    case ACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index +
+                            "_front.png");
+                    case INACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index +
+                            "_back.png");
                     case DISCARDED -> null;
                 }
         );
@@ -279,7 +310,7 @@ public class InGamePersonalController extends JFXController {
         initLeaderCardCheckBox(leaderCardCheckBox2, leaderCards.get(1));
         initLeaderCardCheckBox(leaderCardCheckBox3, leaderCards.get(2));
         initLeaderCardCheckBox(leaderCardCheckBox4, leaderCards.get(3));
-        preGameLeaderCardSelectionLayer.toFront();
+        // preGameLeaderCardSelectionLayer.toFront();
         ConfirmResetButtonsStrategy.PRE_GAME_LEADER_CARDS_CHOICE.applyTo(confirmButton,
                 resetButton);
     }

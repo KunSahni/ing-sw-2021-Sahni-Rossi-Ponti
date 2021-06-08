@@ -128,6 +128,7 @@ public class GUI extends Application implements UI {
         }
         personalController = personalLoader.getController();
         personalController.setGui(this);
+        personalController.renderFaithTrack(dumbModel.getOwnPersonalBoard());
         commonsController = commonsLoader.getController();
         commonsController.setGui(this);
         Platform.runLater(() -> {
@@ -184,6 +185,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderResourcePregameChoice() {
+        personalController.initLeaderCardsDisplay();
         personalController.initResourceChoice();
     }
 
