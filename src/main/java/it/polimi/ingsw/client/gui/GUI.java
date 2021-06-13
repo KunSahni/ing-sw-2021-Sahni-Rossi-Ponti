@@ -4,7 +4,9 @@ import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameCommonsController;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
+import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameOppController;
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGamePersonalController;
+import it.polimi.ingsw.client.gui.guicontrollers.ingame.PlayerBoardController;
 import it.polimi.ingsw.client.gui.guicontrollers.mainmenu.MainMenuController;
 import it.polimi.ingsw.client.utils.InputVerifier;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
@@ -36,7 +38,7 @@ public class GUI extends Application implements UI {
     private MainMenuController mainMenuController;
     private InGamePersonalController personalController;
     private InGameCommonsController commonsController;
-    private Map<String, JFXController> oppsControllers;
+    private Map<String, PlayerBoardController> oppsControllers;
     private Scene personalScene;
     private Scene commonsScene;
     private Map<String, Scene> oppsScenes;
@@ -118,21 +120,20 @@ public class GUI extends Application implements UI {
             for (String nickname :
                     oppsLoaders.keySet()) {
                 oppsScenes.put(nickname, new Scene(oppsLoaders.get(nickname).load()));
-                // Use this loop to load controllers as well
-                JFXController oppController = oppsLoaders.get(nickname).getController();
-                oppController.setGui(this);
-                oppsControllers.put(nickname, oppController);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // Initialize Personal Controller
         personalController = personalLoader.getController();
-        personalController.setGui(this);
-        personalController.renderFaithTrack(dumbModel.getOwnPersonalBoard());
-        personalController.initVisitMenu(dumbModel.getPersonalBoards().stream()
-                .map(DumbPersonalBoard::getNickname)
-                .filter(nick -> !nick.equals(personalNickname))
-                .collect(Collectors.toList()));
+        personalController.initialize(this);
+        // Initialize Opponents Controllers
+        oppsLoaders.forEach((nickname, loader) -> {
+            InGameOppController controller = loader.getController();
+            oppsControllers.put(nickname, controller);
+            controller.initialize(this, nickname);
+        });
+        // Initialize Commons Controller
         commonsController = commonsLoader.getController();
         commonsController.setGui(this);
         goToPersonalView();
@@ -167,7 +168,9 @@ public class GUI extends Application implements UI {
     @Override
     public void renderPersonalBoard(String nickname) {
         if (nickname.equals(personalNickname)) {
-            personalController.renderPersonalBoard();
+            personalController.renderPersonalBoard(getDumbModel().getOwnPersonalBoard());
+        } else {
+            oppsControllers.get(nickname).renderPersonalBoard(dumbModel.getPersonalBoard(nickname));
         }
     }
 

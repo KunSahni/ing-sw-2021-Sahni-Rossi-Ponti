@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.personalboard.FavorStatus;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
 
@@ -15,10 +16,6 @@ import it.polimi.ingsw.client.utils.constants.Constants;
 public class DumbFaithTrack implements Serializable {
     private int faithMarkerPosition;
     private List<FavorStatus> popesFavors;
-
-    public DumbFaithTrack() {
-        super();
-    }
 
     public void updateFaithMarkerPosition(int faithMarkerPosition) {
         this.faithMarkerPosition = faithMarkerPosition;

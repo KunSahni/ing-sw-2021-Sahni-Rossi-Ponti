@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.gui.guicontrollers;
 
 import it.polimi.ingsw.client.gui.GUI;
+import javafx.scene.image.Image;
 
 public abstract class JFXController {
     protected GUI gui;
@@ -11,5 +12,9 @@ public abstract class JFXController {
 
     public GUI getGui() {
         return gui;
+    }
+
+    protected Image getImageFromPath(String path) {
+        return new Image(getClass().getResourceAsStream(path));
     }
 }

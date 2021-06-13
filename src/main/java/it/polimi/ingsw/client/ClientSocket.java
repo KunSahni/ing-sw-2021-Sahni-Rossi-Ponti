@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * This class contains the client-side socket used to communicate with the server
  */
 public class ClientSocket {
-    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private final Logger logger;
     private final String serverAddress;
     private final int serverPort;
     private Socket socket;
@@ -29,6 +29,7 @@ public class ClientSocket {
         this.serverPort = serverPort;
         this.renderablePublisher = new SubmissionPublisher<>();
         this.renderablePublisher.subscribe(updatesHandler);
+        this.logger = Logger.getLogger(getClass().getSimpleName());
     }
 
     /**
@@ -45,7 +46,7 @@ public class ClientSocket {
                     try {
                         Renderable message = (Renderable) inputStream.readObject();
                         if(message != null) {
-                            logger.info("Received " + message.getClass().getSimpleName() + " from server.");
+                            // logger.info("Received " + message.getClass().getSimpleName() + " from server.");
                             renderablePublisher.submit(message);
                         }
                     } catch (IOException | ClassNotFoundException e) {

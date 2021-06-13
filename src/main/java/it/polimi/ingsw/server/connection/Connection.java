@@ -19,7 +19,7 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.logging.Logger;
 
 public class Connection implements Runnable {
-    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private final Logger logger;
     private final Socket socket;
     private final Server server;
     private ObjectOutputStream outputStream;
@@ -38,6 +38,7 @@ public class Connection implements Runnable {
      * @param server is the server from which this method is called
      */
     public Connection(Socket socket, Server server) {
+        this.logger = Logger.getLogger(getClass().getSimpleName());
         this.socket = socket;
         this.server = server;
         this.isActive = true;

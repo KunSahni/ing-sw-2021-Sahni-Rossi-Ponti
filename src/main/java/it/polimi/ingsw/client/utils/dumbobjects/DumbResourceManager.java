@@ -14,11 +14,6 @@ import java.util.stream.IntStream;
 public class DumbResourceManager implements Serializable {
     private Map<Resource, Integer> storedResources;
 
-
-    public DumbResourceManager() {
-        super();
-    }
-
     /**
      * @param updatedStoredResources an updated map of the stored resources
      */

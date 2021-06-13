@@ -131,6 +131,9 @@ public class ModelUpdate extends PrivateRenderable {
         leaderCardsPrivateUpdate.update(dumbModel);
         playerPrivateUpdate.update(dumbModel);
 
+        playerBroadcastUpdates.forEach(
+                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
+        );
         leaderCardsBroadcastUpdates.forEach(
                 leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
@@ -144,9 +147,6 @@ public class ModelUpdate extends PrivateRenderable {
                 leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         strongboxUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
-        );
-        playerBroadcastUpdates.forEach(
                 leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         gameStateUpdate.update(dumbModel);
