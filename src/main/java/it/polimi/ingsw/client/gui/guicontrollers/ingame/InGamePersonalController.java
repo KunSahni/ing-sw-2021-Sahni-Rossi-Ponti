@@ -4,10 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbFaithTrack;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameLeaderCardsChoiceAction;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourceChoiceAction;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
@@ -19,6 +16,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -91,7 +89,13 @@ public class InGamePersonalController extends JFXController {
     private Label strongboxShieldQuantity;
     @FXML
     private Label strongboxStoneQuantity;
-
+    @FXML
+    private StackPane devCardSlot1;
+    @FXML
+    private StackPane devCardSlot2;
+    @FXML
+    private StackPane devCardSlot3;
+    private final List<StackPane> devCardSlotsStackPanes = new ArrayList<>();
     @Override
     public void setGui(GUI gui) {
         super.setGui(gui);
@@ -113,6 +117,10 @@ public class InGamePersonalController extends JFXController {
         faithMarker = new ImageView(getImageFromPath("/img/faithtrack/faith_marker.png"));
         faithMarker.setFitHeight(60);
         faithMarker.setPreserveRatio(true);
+        // Initialize Development Card Slots array
+        devCardSlotsStackPanes.add(devCardSlot1);
+        devCardSlotsStackPanes.add(devCardSlot2);
+        devCardSlotsStackPanes.add(devCardSlot3);
     }
 
     private void initWarehouseDepotsResourceImages(int numberOfImageViews) {
@@ -225,7 +233,7 @@ public class InGamePersonalController extends JFXController {
         renderWarehouseDepots(dumbPersonalBoard);
         renderFaithTrack(dumbPersonalBoard);
         renderStrongbox(dumbPersonalBoard);
-        /*renderDevelopmentCardSlots(dumbPersonalBoard);*/
+        renderDevelopmentCardSlots(dumbPersonalBoard);
     }
 
     private void renderPlayerInformation(DumbPersonalBoard dumbPersonalBoard) {
@@ -321,6 +329,38 @@ public class InGamePersonalController extends JFXController {
     private String resourceAmountInStrongbox(Map<Resource, Integer> strongboxResourcesMap, Resource resource) {
         return "x" + (strongboxResourcesMap.get(resource) == null ? "0" :
                 strongboxResourcesMap.get(resource));
+    }
+
+    private void renderDevelopmentCardSlots(DumbPersonalBoard dumbPersonalBoard) {
+        IntStream.range(0, 3).forEach(i -> {
+            StackPane slotPane = devCardSlotsStackPanes.get(0);
+            DumbDevelopmentCard peekedCard = dumbPersonalBoard.getDevelopmentCardSlots().get(i).peek();
+            synchronized (slotPane) {
+                Optional<DumbDevelopmentCard> paneCard =
+                        Optional.ofNullable((DumbDevelopmentCard) slotPane.getUserData());
+                paneCard.ifPresentOrElse(cardInUserData -> {
+                    if (!cardInUserData.toImgPath().equals(peekedCard.toImgPath())) {
+                        addDevelopmentCardToStackPane(peekedCard, slotPane);
+                    }
+                }, () -> {
+                    if (peekedCard != null) {
+                        addDevelopmentCardToStackPane(peekedCard, slotPane);
+                    }
+                });
+            }
+        });
+    }
+
+    private void addDevelopmentCardToStackPane(DumbDevelopmentCard dumbDevelopmentCard,
+                                               StackPane stackPane) {
+        stackPane.setUserData(dumbDevelopmentCard);
+        ToggleButton toggleButton = new ToggleButton();
+        ImageView imageView = new ImageView(getImageFromPath(dumbDevelopmentCard.toImgPath()));
+        imageView.setFitHeight(210);
+        imageView.setPreserveRatio(true);
+        toggleButton.setGraphic(imageView);
+        toggleButton.setTranslateY(stackPane.getChildren().size() * (-50));
+        stackPane.getChildren().add(toggleButton);
     }
 
     public void initLeaderCardsSelection(List<DumbLeaderCard> leaderCards) {

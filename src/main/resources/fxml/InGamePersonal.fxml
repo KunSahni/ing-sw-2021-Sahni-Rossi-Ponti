@@ -255,20 +255,19 @@
                               </AnchorPane>
                               <HBox prefHeight="496.0" prefWidth="629.0">
                                  <children>
-                                    <StackPane prefHeight="150.0" prefWidth="200.0">
+                                    <StackPane fx:id="devCardSlot1" alignment="BOTTOM_CENTER" prefHeight="150.0" prefWidth="200.0">
                                        <children>
-                                          <ToggleButton mnemonicParsing="false" styleClass="dev-card" translateY="50.0">
-                                             <graphic>
-                                                <ImageView fitHeight="200.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../img/cards/development_card_blue_2coin.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic></ToggleButton>
+                                          <ToggleButton mnemonicParsing="false" styleClass="dev-card" />
                                        </children>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                       <padding>
+                                          <Insets bottom="100.0" />
+                                       </padding>
                                     </StackPane>
-                                    <StackPane layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
-                                    <StackPane layoutX="204.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
+                                    <StackPane fx:id="devCardSlot2" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
+                                    <StackPane fx:id="devCardSlot3" layoutX="204.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
                                  </children>
                                  <padding>
                                     <Insets right="30.0" />
@@ -350,7 +349,6 @@
                   </HBox>
                </children>
             </VBox>
-            <HBox fx:id="leaderCardsHBox" layoutY="189.0" spacing="7.0" />
             <StackPane layoutX="32.0" layoutY="393.0" prefHeight="150.0" prefWidth="200.0">
                <children>
                   <StackPane maxHeight="300.0" maxWidth="200.0" minHeight="300.0" minWidth="200.0" prefHeight="300.0" prefWidth="200.0">
@@ -380,6 +378,7 @@
                   </VBox>
                </children>
             </StackPane>
+            <HBox fx:id="leaderCardsHBox" layoutY="189.0" spacing="7.0" />
          </children>
       </AnchorPane>
    </children>
