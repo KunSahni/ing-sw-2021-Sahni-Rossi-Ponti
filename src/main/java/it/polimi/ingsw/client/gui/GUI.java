@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Flow.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class GUI extends Application implements UI {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -38,7 +39,7 @@ public class GUI extends Application implements UI {
     private Map<String, JFXController> oppsControllers;
     private Scene personalScene;
     private Scene commonsScene;
-    private Map<String, Scene> playersScenes;
+    private Map<String, Scene> oppsScenes;
     private Subscription subscription;
 
     public static void main(String[] args) {
@@ -78,7 +79,7 @@ public class GUI extends Application implements UI {
 
     public void loadMainMenu() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLResources.MAIN_MENU.toPathString()));
-        stage.setScene(new Scene(loader.load()));
+        changeScene(new Scene(loader.load()));
         this.mainMenuController = loader.getController();
         this.mainMenuController.setGui(this);
     }
@@ -97,7 +98,7 @@ public class GUI extends Application implements UI {
     }
 
     public void loadGame() {
-        this.playersScenes = new HashMap<>();
+        this.oppsScenes = new HashMap<>();
         this.oppsControllers = new HashMap<>();
         FXMLLoader commonsLoader =
                 new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_COMMONS.toPathString()));
@@ -116,7 +117,7 @@ public class GUI extends Application implements UI {
             personalScene = new Scene(personalLoader.load());
             for (String nickname :
                     oppsLoaders.keySet()) {
-                playersScenes.put(nickname, new Scene(oppsLoaders.get(nickname).load()));
+                oppsScenes.put(nickname, new Scene(oppsLoaders.get(nickname).load()));
                 // Use this loop to load controllers as well
                 JFXController oppController = oppsLoaders.get(nickname).getController();
                 oppController.setGui(this);
@@ -128,15 +129,33 @@ public class GUI extends Application implements UI {
         personalController = personalLoader.getController();
         personalController.setGui(this);
         personalController.renderFaithTrack(dumbModel.getOwnPersonalBoard());
+        personalController.initVisitMenu(dumbModel.getPersonalBoards().stream()
+                .map(DumbPersonalBoard::getNickname)
+                .filter(nick -> !nick.equals(personalNickname))
+                .collect(Collectors.toList()));
         commonsController = commonsLoader.getController();
         commonsController.setGui(this);
-        Platform.runLater(() -> {
-            stage.setScene(personalScene);
-            tearDownMainMenu();
-        });
+        goToPersonalView();
+        tearDownMainMenu();
     }
 
     public void tearDownGame() {}
+
+    public void goToCommonsView() {
+        changeScene(commonsScene);
+    }
+
+    public void goToOppView(String nickname) {
+        changeScene(oppsScenes.get(nickname));
+    }
+
+    public void goToPersonalView() {
+        changeScene(personalScene);
+    }
+
+    private void changeScene(Scene scene) {
+        Platform.runLater(() -> stage.setScene(scene));
+    }
 
     @Override
     public void renderModelUpdate() {

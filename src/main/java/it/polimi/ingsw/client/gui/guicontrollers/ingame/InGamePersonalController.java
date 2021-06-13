@@ -16,7 +16,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -57,6 +56,8 @@ public class InGamePersonalController extends JFXController {
     private VBox preGameLeaderCardSelectionLayer;
     @FXML
     private VBox resourceChoiceLayer;
+    @FXML
+    private TilePane visitLayer;
     private final ObservableSet<ToggleButton> selectedPreGameLeaderCardToggleButtons =
             FXCollections.observableSet();
     @FXML
@@ -96,6 +97,7 @@ public class InGamePersonalController extends JFXController {
     @FXML
     private StackPane devCardSlot3;
     private final List<StackPane> devCardSlotsStackPanes = new ArrayList<>();
+
     @Override
     public void setGui(GUI gui) {
         super.setGui(gui);
@@ -121,6 +123,7 @@ public class InGamePersonalController extends JFXController {
         devCardSlotsStackPanes.add(devCardSlot1);
         devCardSlotsStackPanes.add(devCardSlot2);
         devCardSlotsStackPanes.add(devCardSlot3);
+        // Initialize Visit Menu
     }
 
     private void initWarehouseDepotsResourceImages(int numberOfImageViews) {
@@ -152,6 +155,17 @@ public class InGamePersonalController extends JFXController {
         }
     }
 
+    public void initVisitMenu(List<String> oppsNicknames) {
+        Button commonsButton = new Button("Commons");
+        commonsButton.setOnAction(e -> gui.goToCommonsView());
+        visitLayer.getChildren().add(commonsButton);
+        oppsNicknames.forEach(oppNickname -> {
+            Button oppButton = new Button(oppNickname);
+            oppButton.setOnAction(e -> gui.goToOppView(oppNickname));
+            visitLayer.getChildren().add(oppButton);
+        });
+    }
+
     @FXML
     private void confirm() {
         switch ((ConfirmResetButtonsStrategy) confirmButton.getUserData()) {
@@ -167,7 +181,14 @@ public class InGamePersonalController extends JFXController {
                 chosenResourcesMap.clear();
                 populateInfoLabel("Resource choice cleared.");
             }
+            case VISIT -> bringToFront(actionsLayer, personalBoardLayer);
         }
+    }
+
+    @FXML
+    private void openVisitMenu() {
+        ConfirmResetButtonsStrategy.VISIT.applyTo(confirmButton, resetButton);
+        bringToFront(confirmResetLayer, visitLayer);
     }
 
     private void populateInfoLabel(String outcome) {
@@ -246,29 +267,28 @@ public class InGamePersonalController extends JFXController {
                 areLeaderCardsInitialized = true;
                 initLeaderCardsDisplay(dumbPersonalBoard);
             }
+            leaderCardsHBox.getChildren().stream().map(child -> (ToggleButton) child)
+                    .filter(ToggleButton::isVisible)
+                    .forEach(leaderCardButton -> {
+                        DumbLeaderCard cardInButton = (DumbLeaderCard) leaderCardButton.getUserData();
+                        Optional<DumbLeaderCard> cardInBoardOptional = dumbPersonalBoard
+                                .getLeaderCards()
+                                .stream()
+                                .filter(card -> card.toImgPath().equals(cardInButton.toImgPath()))
+                                .findAny();
+                        cardInBoardOptional.ifPresentOrElse(cardInBoard -> {
+                                    if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
+                                        IntStream.range(0, 2).forEach(i -> {
+                                            HBox resourcesHBox =
+                                                    (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
+                                            resourcesHBox.getChildren().get(i)
+                                                    .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
+                                        });
+                                    }
+                                },
+                                () -> leaderCardButton.setVisible(false));
+                    });
         }
-        leaderCardsHBox.getChildren().stream().map(child -> (ToggleButton) child)
-                .filter(ToggleButton::isVisible)
-                .forEach(leaderCardButton -> {
-                    DumbLeaderCard cardInButton = (DumbLeaderCard) leaderCardButton.getUserData();
-                    Optional<DumbLeaderCard> cardInBoardOptional = dumbPersonalBoard
-                            .getLeaderCards()
-                            .stream()
-                            .filter(card -> card.toImgPath().equals(cardInButton.toImgPath()))
-                            .findAny();
-                    cardInBoardOptional.ifPresentOrElse(cardInBoard -> {
-                                if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
-                                    IntStream.range(0, 2).forEach(i -> {
-                                        HBox resourcesHBox =
-                                                (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
-                                        resourcesHBox.getChildren().get(i)
-                                                .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
-                                    });
-                                }
-                            },
-                            () -> leaderCardButton.setVisible(false));
-                });
-
     }
 
     private void renderWarehouseDepots(DumbPersonalBoard dumbPersonalBoard) {
@@ -317,16 +337,22 @@ public class InGamePersonalController extends JFXController {
     }
 
     private void renderStrongbox(DumbPersonalBoard dumbPersonalBoard) {
-        Map<Resource, Integer> strongboxResourcesMap = dumbPersonalBoard.getStrongbox().getStoredResources();
+        Map<Resource, Integer> strongboxResourcesMap =
+                dumbPersonalBoard.getStrongbox().getStoredResources();
         Platform.runLater(() -> {
-            strongboxCoinQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.COIN));
-            strongboxServantQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.SERVANT));
-            strongboxShieldQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.SHIELD));
-            strongboxStoneQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.STONE));
+            strongboxCoinQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap,
+                    Resource.COIN));
+            strongboxServantQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap,
+                    Resource.SERVANT));
+            strongboxShieldQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap,
+                    Resource.SHIELD));
+            strongboxStoneQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap,
+                    Resource.STONE));
         });
     }
 
-    private String resourceAmountInStrongbox(Map<Resource, Integer> strongboxResourcesMap, Resource resource) {
+    private String resourceAmountInStrongbox(Map<Resource, Integer> strongboxResourcesMap,
+                                             Resource resource) {
         return "x" + (strongboxResourcesMap.get(resource) == null ? "0" :
                 strongboxResourcesMap.get(resource));
     }
@@ -334,7 +360,8 @@ public class InGamePersonalController extends JFXController {
     private void renderDevelopmentCardSlots(DumbPersonalBoard dumbPersonalBoard) {
         IntStream.range(0, 3).forEach(i -> {
             StackPane slotPane = devCardSlotsStackPanes.get(0);
-            DumbDevelopmentCard peekedCard = dumbPersonalBoard.getDevelopmentCardSlots().get(i).peek();
+            DumbDevelopmentCard peekedCard =
+                    dumbPersonalBoard.getDevelopmentCardSlots().get(i).peek();
             synchronized (slotPane) {
                 Optional<DumbDevelopmentCard> paneCard =
                         Optional.ofNullable((DumbDevelopmentCard) slotPane.getUserData());
@@ -448,7 +475,7 @@ public class InGamePersonalController extends JFXController {
 
     private void endPreGameResourceChoice() {
         ConfirmResetButtonsStrategy.NONE.applyTo(confirmButton, resetButton);
-        personalBoardLayer.toFront();
+        bringToFront(actionsLayer, personalBoardLayer);
     }
 
     private Image getImageFromPath(String path) {

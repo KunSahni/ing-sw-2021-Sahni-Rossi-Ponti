@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
@@ -20,7 +21,6 @@
    <children>
       <StackPane alignment="TOP_RIGHT" maxHeight="720.0" maxWidth="1008.0" minHeight="720.0" minWidth="1008.0" prefHeight="720.0" prefWidth="1008.0" StackPane.alignment="BOTTOM_RIGHT">
          <children>
-            <VBox fx:id="preGameLeaderCardSelectionLayer" alignment="CENTER" fillWidth="false" prefHeight="267.0" prefWidth="462.0" styleClass="covering-pane" />
             <VBox fx:id="resourceChoiceLayer" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" styleClass="covering-pane">
                <children>
                   <GridPane alignment="CENTER" maxHeight="450.0" maxWidth="450.0" minHeight="450.0" minWidth="450.0" prefHeight="450.0" prefWidth="450.0">
@@ -88,6 +88,7 @@
                   </GridPane>
                </children>
             </VBox>
+            <VBox fx:id="preGameLeaderCardSelectionLayer" alignment="CENTER" fillWidth="false" prefHeight="267.0" prefWidth="462.0" styleClass="covering-pane" />
             <VBox id="player-board" fx:id="personalBoardLayer" fillWidth="false" maxHeight="720.0" maxWidth="1008.0" minHeight="720.0" minWidth="1008.0" prefHeight="720.0" prefWidth="1008.0">
                <children>
                   <StackPane alignment="TOP_RIGHT" maxHeight="224.0" maxWidth="1008.0" minHeight="224.0" minWidth="1008.0" prefHeight="224.0" prefWidth="1008.0">
@@ -256,9 +257,6 @@
                               <HBox prefHeight="496.0" prefWidth="629.0">
                                  <children>
                                     <StackPane fx:id="devCardSlot1" alignment="BOTTOM_CENTER" prefHeight="150.0" prefWidth="200.0">
-                                       <children>
-                                          <ToggleButton mnemonicParsing="false" styleClass="dev-card" />
-                                       </children>
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
@@ -279,6 +277,7 @@
                   </HBox>
                </children>
             </VBox>
+            <TilePane fx:id="visitLayer" alignment="CENTER" prefColumns="2" prefHeight="200.0" prefWidth="200.0" styleClass="covering-pane" />
          </children>
       </StackPane>
       <AnchorPane id="left-curtain" maxHeight="720.0" maxWidth="300.0" minHeight="720.0" minWidth="300.0" prefHeight="720.0" prefWidth="300.0" StackPane.alignment="TOP_LEFT">
@@ -353,20 +352,18 @@
                <children>
                   <StackPane maxHeight="300.0" maxWidth="200.0" minHeight="300.0" minWidth="200.0" prefHeight="300.0" prefWidth="200.0">
                      <children>
-                        <VBox fx:id="actionsLayer" alignment="CENTER" maxHeight="300.0" maxWidth="200.0" minHeight="300.0" minWidth="200.0" prefHeight="300.0" prefWidth="200.0" spacing="17.0" styleClass="left-pane">
-                           <children>
-                              <Button mnemonicParsing="false" text="Activate Leader Card" />
-                              <Button layoutX="84.0" layoutY="148.0" mnemonicParsing="false" text="Discard Leader Card" />
-                              <Button layoutX="84.0" layoutY="169.0" mnemonicParsing="false" text="Pick from Market" />
-                              <Button layoutX="84.0" layoutY="190.0" mnemonicParsing="false" text="Buy Development Card" />
-                              <Button layoutX="84.0" layoutY="211.0" mnemonicParsing="false" text="Activate Production" />
-                              <Button layoutX="84.0" layoutY="232.0" mnemonicParsing="false" text="Visit" />
-                           </children>
-                        </VBox>
                         <VBox fx:id="confirmResetLayer" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="100.0" styleClass="left-pane">
                            <children>
                               <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirm" text="Confirm" />
                               <Button fx:id="resetButton" mnemonicParsing="false" onAction="#reset" text="Reset" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="actionsLayer" alignment="CENTER" maxHeight="300.0" maxWidth="200.0" minHeight="300.0" minWidth="200.0" prefHeight="300.0" prefWidth="200.0" spacing="17.0" styleClass="left-pane">
+                           <children>
+                              <Button mnemonicParsing="false" text="Activate Leader Card" />
+                              <Button layoutX="84.0" layoutY="148.0" mnemonicParsing="false" text="Discard Leader Card" />
+                              <Button layoutX="84.0" layoutY="211.0" mnemonicParsing="false" text="Activate Production" />
+                              <Button layoutX="84.0" layoutY="232.0" mnemonicParsing="false" onAction="#openVisitMenu" text="Visit" />
                            </children>
                         </VBox>
                      </children>
