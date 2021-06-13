@@ -8,6 +8,15 @@
     -fx-border-color: #d18080;
 }
 
+.covering-pane {
+    /*-fx-background-color: radial-gradient(radius 150%, red, darkgray, black);*/
+    -fx-background-color: rgba(3, 9, 26, 0.91);
+}
+
+.alert {
+    -fx-background-color: rgba(252, 186, 3, 0.95);
+}
+
 .strongbox-quantity {
     -fx-background-color: #f2e0bf;
     -fx-border-color: #2b2b2a;

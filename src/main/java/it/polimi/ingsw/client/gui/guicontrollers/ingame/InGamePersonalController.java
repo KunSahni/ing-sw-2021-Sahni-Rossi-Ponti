@@ -13,20 +13,21 @@ import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourc
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
 import it.polimi.ingsw.server.model.utils.Resource;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -38,51 +39,36 @@ import java.util.stream.IntStream;
 public class InGamePersonalController extends JFXController {
     private final Logger logger = Logger.getLogger(getClass().getName());
     @FXML
-    private ToggleButton leaderCard1;
-    @FXML
-    private HBox leaderCard1ResourcesHBox;
-    @FXML
-    private ToggleButton leaderCard2;
-    @FXML
-    private HBox leaderCard2ResourcesHBox;
+    private HBox leaderCardsHBox;
+    private boolean areLeaderCardsInitialized = false;
     @FXML
     private Label nicknameLabel;
-    @FXML
-    private ImageView positionIcon;
-    @FXML
-    private ImageView turnIcon;
-    @FXML
-    private ImageView connectionIcon;
     @FXML
     private Button confirmButton;
     @FXML
     private Button resetButton;
     @FXML
-    private Label alertsLabel;
+    private VBox confirmResetLayer;
+    @FXML
+    private VBox actionsLayer;
+    @FXML
+    private VBox alertsVBox;
     @FXML
     private VBox personalBoardLayer;
     @FXML
     private VBox preGameLeaderCardSelectionLayer;
     @FXML
     private VBox resourceChoiceLayer;
-    @FXML
-    private CheckBox leaderCardCheckBox1;
-    @FXML
-    private CheckBox leaderCardCheckBox2;
-    @FXML
-    private CheckBox leaderCardCheckBox3;
-    @FXML
-    private CheckBox leaderCardCheckBox4;
-    private final ObservableSet<CheckBox> selectedPreGameLeaderCardCheckBoxes =
+    private final ObservableSet<ToggleButton> selectedPreGameLeaderCardToggleButtons =
             FXCollections.observableSet();
     @FXML
-    private Button resourceChoiceCoin;
+    private Button coinButton;
     @FXML
-    private Button resourceChoiceServant;
+    private Button stoneButton;
     @FXML
-    private Button resourceChoiceShield;
+    private Button shieldButton;
     @FXML
-    private Button resourceChoiceStone;
+    private Button servantButton;
     private final Map<Resource, Integer> chosenResourcesMap = new HashMap<>();
     @FXML
     private VBox depotsVBox;
@@ -97,6 +83,14 @@ public class InGamePersonalController extends JFXController {
     private ImageView secondPopesFavor;
     @FXML
     private ImageView thirdPopesFavor;
+    @FXML
+    private Label strongboxCoinQuantity;
+    @FXML
+    private Label strongboxServantQuantity;
+    @FXML
+    private Label strongboxShieldQuantity;
+    @FXML
+    private Label strongboxStoneQuantity;
 
     @Override
     public void setGui(GUI gui) {
@@ -106,14 +100,11 @@ public class InGamePersonalController extends JFXController {
 
     @FXML
     private void initialize() {
-        // Initialize Leader Card buttons
-        leaderCard1.setVisible(false);
-        leaderCard2.setVisible(false);
         // Initialize Resource-choosing buttons
-        resourceChoiceCoin.setOnAction(e -> addResourceToChoiceMap(Resource.COIN));
-        resourceChoiceServant.setOnAction(e -> addResourceToChoiceMap(Resource.SERVANT));
-        resourceChoiceShield.setOnAction(e -> addResourceToChoiceMap(Resource.SHIELD));
-        resourceChoiceStone.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
+        coinButton.setOnAction(e -> addResourceToChoiceMap(Resource.COIN));
+        servantButton.setOnAction(e -> addResourceToChoiceMap(Resource.SERVANT));
+        shieldButton.setOnAction(e -> addResourceToChoiceMap(Resource.SHIELD));
+        stoneButton.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
         // Initialize WarehouseDepots Images
         IntStream.range(1, 4).forEach(this::initWarehouseDepotsResourceImages);
         // Initialize a list that will be used to position the marker in the correct
@@ -172,44 +163,59 @@ public class InGamePersonalController extends JFXController {
     }
 
     private void populateInfoLabel(String outcome) {
-        Platform.runLater(() -> alertsLabel.setText(outcome));
+        BorderPane alertPane = new BorderPane();
+        alertPane.setPrefWidth(200);
+        alertPane.getStyleClass().add("alert");
+        Label outcomeLabel = new Label(outcome);
+        Button closeAlertButton = new Button("x");
+        alertPane.setTop(closeAlertButton);
+        alertPane.setCenter(outcomeLabel);
+        closeAlertButton.setOnAction(e -> {
+            alertsVBox.getChildren().remove(alertPane);
+            logger.info("Clicked close alert");
+        });
+        Timeline animation = new Timeline(new KeyFrame(Duration.seconds(0),
+                e -> alertsVBox.getChildren().add(alertPane)));
+        animation.getKeyFrames().add(new KeyFrame(Duration.seconds(3),
+                e -> alertsVBox.getChildren().remove(alertPane)));
+        animation.play();
     }
 
-    public void initLeaderCardsDisplay() {
+    public void initLeaderCardsDisplay(DumbPersonalBoard dumbPersonalBoard) {
+        endLeaderCardsSelection();
         // Only called once, after the server has confirmed the player's initial
         // leader cards choice
-        List<DumbLeaderCard> cards = gui.getDumbModel().getOwnPersonalBoard().getLeaderCards();
-        DumbLeaderCard firstCard = cards.get(0);
-        initLeaderCardToggleButton(firstCard, leaderCard1);
-        if (firstCard.getAbility().equals(LeaderCardAbility.STORE))
-            initStoreLeaderCardImages(leaderCard1ResourcesHBox,
-                    ((DumbStoreLeaderCard) firstCard).getStoredType());
-        DumbLeaderCard secondCard = cards.get(1);
-        initLeaderCardToggleButton(secondCard, leaderCard2);
-        if (secondCard.getAbility().equals(LeaderCardAbility.STORE))
-            initStoreLeaderCardImages(leaderCard2ResourcesHBox,
-                    ((DumbStoreLeaderCard) secondCard).getStoredType());
+        List<DumbLeaderCard> cards = dumbPersonalBoard.getLeaderCards();
+        cards.forEach(card -> Platform.runLater(() -> leaderCardsHBox.getChildren().add(createLeaderCardNode(card))));
     }
 
-    private void initLeaderCardToggleButton(DumbLeaderCard card, ToggleButton button) {
+    private ToggleButton createLeaderCardNode(DumbLeaderCard card) {
+        ToggleButton button = new ToggleButton();
         button.setUserData(card);
-        String image = getClass().getResource(card.toImgPath()).toExternalForm();
-        button.setStyle("-fx-background-image: url('"+ image +"')");
-        button.setVisible(true);
-    }
-
-    private void initStoreLeaderCardImages(HBox leaderCardResourceHBox, Resource storedResource) {
-        leaderCardResourceHBox.getChildren()
-                .addAll(create45x45ResourceInvisibleImageView(storedResource),
-                        create45x45ResourceInvisibleImageView(storedResource));
-    }
-
-    private ImageView create45x45ResourceInvisibleImageView(Resource resource) {
-        ImageView image = new ImageView(getImageFromPath(resource.toImgPath()));
-        image.setFitWidth(45);
+        ImageView image = new ImageView(getImageFromPath(card.toImgPath()));
+        image.setFitWidth(135);
         image.setPreserveRatio(true);
-        image.setVisible(false);
-        return image;
+        if (card.getAbility().equals(LeaderCardAbility.STORE)) {
+            DumbStoreLeaderCard storeLeaderCard = (DumbStoreLeaderCard) card;
+            StackPane stackPane = new StackPane();
+            stackPane.getChildren().add(image);
+            HBox resourcesHBox = new HBox();
+            resourcesHBox.setSpacing(7);
+            resourcesHBox.setAlignment(Pos.BOTTOM_CENTER);
+            IntStream.range(0, 2).forEach(i -> {
+                ImageView resourceImage =
+                        new ImageView(getImageFromPath(storeLeaderCard.getStoredType().toImgPath()));
+                resourceImage.setFitWidth(35);
+                resourceImage.setPreserveRatio(true);
+                // resourceImage.setVisible(false);
+                resourcesHBox.getChildren().add(resourceImage);
+            });
+            stackPane.getChildren().add(resourcesHBox);
+            button.setGraphic(stackPane);
+        } else {
+            button.setGraphic(image);
+        }
+        return button;
     }
 
     public void renderPersonalBoard() {
@@ -218,46 +224,43 @@ public class InGamePersonalController extends JFXController {
         renderLeaderCards(dumbPersonalBoard);
         renderWarehouseDepots(dumbPersonalBoard);
         renderFaithTrack(dumbPersonalBoard);
-        /*renderStrongbox(dumbPersonalBoard);
-        renderDevelopmentCardSlots(dumbPersonalBoard);*/
+        renderStrongbox(dumbPersonalBoard);
+        /*renderDevelopmentCardSlots(dumbPersonalBoard);*/
     }
 
     private void renderPlayerInformation(DumbPersonalBoard dumbPersonalBoard) {
-        positionIcon.setImage(getImageFromPath("/img/playericons/position_" + dumbPersonalBoard.getPosition() + ".PNG"));
-        turnIcon.setImage(getImageFromPath("/img/playericons/turn_" + dumbPersonalBoard.getTurnStatus() + ".PNG"));
-        connectionIcon.setImage(getImageFromPath("/img/playericons/" + (dumbPersonalBoard.getConnectionStatus() ? "connected" : "disconnected") + ".PNG"));
+
     }
 
-    private void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
-        /*List<DumbLeaderCard> leaderCards = dumbPersonalBoard.getLeaderCards();
-        IntStream.range(0, 2).forEach(i -> {
-            if (leaderCards.size() > i) {
-                DumbLeaderCard card = leaderCards.get(i);
-                ToggleButton cardButton = leaderCardToggleButtons.get(i);
-                if (cardButton.isVisible()) {
-                    if (card.isActive()) {
-                        if (cardButton.getStyleClass().contains("inactive-leader-card")) {
-                            cardButton.getStyleClass().clear();
-                            cardButton.getStyleClass().add("active-leader-card");
-                        }
-                        if (card.getAbility().equals(LeaderCardAbility.STORE) {
-                            DumbStoreLeaderCard storeLeaderCard = (DumbStoreLeaderCard) card;
-                            IntStream.range(0, 2).forEach(j ->
-                                    leaderCardResourcesImages.get(i).get(j)
-                                            .setImage(storeLeaderCard.getResourceCount() > j
-                                                    ?
-                                                    getImageFromPath(storeLeaderCard.getStoredType()
-                                                    .toImgPath())
-                                                    : null));
-                        }
-                    }
-                } else {
-                    cardButton.getStyleClass().add("inactive-leader-card");
-                    cardButton.setStyle("-fx-background-image: " + getImageFromPath(card.toImgPath()));
-                    cardButton.setVisible(true);
-                }
-            } else leaderCardToggleButtons.get(i).setVisible(false);
-        });*/
+    private synchronized void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
+        synchronized (leaderCardsHBox) {
+            if (!areLeaderCardsInitialized) {
+                areLeaderCardsInitialized = true;
+                initLeaderCardsDisplay(dumbPersonalBoard);
+            }
+        }
+        leaderCardsHBox.getChildren().stream().map(child -> (ToggleButton) child)
+                .filter(ToggleButton::isVisible)
+                .forEach(leaderCardButton -> {
+                    DumbLeaderCard cardInButton = (DumbLeaderCard) leaderCardButton.getUserData();
+                    Optional<DumbLeaderCard> cardInBoardOptional = dumbPersonalBoard
+                            .getLeaderCards()
+                            .stream()
+                            .filter(card -> card.toImgPath().equals(cardInButton.toImgPath()))
+                            .findAny();
+                    cardInBoardOptional.ifPresentOrElse(cardInBoard -> {
+                                if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
+                                    IntStream.range(0, 2).forEach(i -> {
+                                        HBox resourcesHBox =
+                                                (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
+                                        resourcesHBox.getChildren().get(i)
+                                                .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
+                                    });
+                                }
+                            },
+                            () -> leaderCardButton.setVisible(false));
+                });
+
     }
 
     private void renderWarehouseDepots(DumbPersonalBoard dumbPersonalBoard) {
@@ -305,40 +308,59 @@ public class InGamePersonalController extends JFXController {
         );
     }
 
+    private void renderStrongbox(DumbPersonalBoard dumbPersonalBoard) {
+        Map<Resource, Integer> strongboxResourcesMap = dumbPersonalBoard.getStrongbox().getStoredResources();
+        Platform.runLater(() -> {
+            strongboxCoinQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.COIN));
+            strongboxServantQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.SERVANT));
+            strongboxShieldQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.SHIELD));
+            strongboxStoneQuantity.setText(resourceAmountInStrongbox(strongboxResourcesMap, Resource.STONE));
+        });
+    }
+
+    private String resourceAmountInStrongbox(Map<Resource, Integer> strongboxResourcesMap, Resource resource) {
+        return "x" + (strongboxResourcesMap.get(resource) == null ? "0" :
+                strongboxResourcesMap.get(resource));
+    }
+
     public void initLeaderCardsSelection(List<DumbLeaderCard> leaderCards) {
-        initLeaderCardCheckBox(leaderCardCheckBox1, leaderCards.get(0));
-        initLeaderCardCheckBox(leaderCardCheckBox2, leaderCards.get(1));
-        initLeaderCardCheckBox(leaderCardCheckBox3, leaderCards.get(2));
-        initLeaderCardCheckBox(leaderCardCheckBox4, leaderCards.get(3));
-        // preGameLeaderCardSelectionLayer.toFront();
+        HBox hBox = new HBox();
+        hBox.setSpacing(10);
+        leaderCards.forEach(card -> hBox.getChildren().add(createPreGameLeaderCardToggleButton(card)));
+        preGameLeaderCardSelectionLayer.getChildren().add(hBox);
+        bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
         ConfirmResetButtonsStrategy.PRE_GAME_LEADER_CARDS_CHOICE.applyTo(confirmButton,
                 resetButton);
     }
 
-    private void initLeaderCardCheckBox(CheckBox checkBox, DumbLeaderCard card) {
-        checkBox.setUserData(card);
-        checkBox.setText(card.toImgPath());
-        checkBox.selectedProperty().addListener((observable, oldValue, selectedNow) -> {
+    private ToggleButton createPreGameLeaderCardToggleButton(DumbLeaderCard card) {
+        ToggleButton button = new ToggleButton();
+        button.setUserData(card);
+        ImageView imageView = new ImageView(getImageFromPath(card.toImgPath()));
+        imageView.setFitWidth(170);
+        imageView.setPreserveRatio(true);
+        button.setGraphic(imageView);
+        button.selectedProperty().addListener((observable, oldValue, selectedNow) -> {
             if (selectedNow) {
-                selectedPreGameLeaderCardCheckBoxes.add(checkBox);
+                selectedPreGameLeaderCardToggleButtons.add(button);
             } else {
-                selectedPreGameLeaderCardCheckBoxes.remove(checkBox);
+                selectedPreGameLeaderCardToggleButtons.remove(button);
             }
         });
+        return button;
     }
 
     private void pickLeaderCards() {
-        if (selectedPreGameLeaderCardCheckBoxes.size() != 2) {
+        if (selectedPreGameLeaderCardToggleButtons.size() != 2) {
             populateInfoLabel("Select two cards.");
         } else {
-            List<DumbLeaderCard> chosenCards = selectedPreGameLeaderCardCheckBoxes.stream()
-                    .map(CheckBox::getUserData)
+            List<DumbLeaderCard> chosenCards = selectedPreGameLeaderCardToggleButtons.stream()
+                    .map(ToggleButton::getUserData)
                     .map(object -> (DumbLeaderCard) object)
                     .collect(Collectors.toList());
             if (gui.getInputVerifier().canPickLeaderCards(chosenCards)) {
                 gui.getClientSocket().sendAction(new PregameLeaderCardsChoiceAction(chosenCards));
                 populateInfoLabel("Confirmed.");
-                endLeaderCardsSelection();
             } else {
                 populateInfoLabel("Invalid Selection");
             }
@@ -347,7 +369,7 @@ public class InGamePersonalController extends JFXController {
 
     private void endLeaderCardsSelection() {
         ConfirmResetButtonsStrategy.NONE.applyTo(confirmButton, resetButton);
-        personalBoardLayer.toFront();
+        bringToFront(actionsLayer, personalBoardLayer);
     }
 
     public void initResourceChoice() {
@@ -360,7 +382,7 @@ public class InGamePersonalController extends JFXController {
                 case 2, 3 -> populateInfoLabel("Pick a resource!");
                 case 4 -> populateInfoLabel("Pick two resources!");
             }
-            Platform.runLater(() -> resourceChoiceLayer.toFront());
+            bringToFront(confirmResetLayer, resourceChoiceLayer);
         }
     }
 
@@ -391,5 +413,12 @@ public class InGamePersonalController extends JFXController {
 
     private Image getImageFromPath(String path) {
         return new Image(getClass().getResourceAsStream(path));
+    }
+
+    private void bringToFront(Node left, Node right) {
+        Platform.runLater(() -> {
+            left.toFront();
+            right.toFront();
+        });
     }
 }

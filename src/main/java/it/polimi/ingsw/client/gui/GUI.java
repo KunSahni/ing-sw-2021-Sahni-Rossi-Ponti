@@ -23,7 +23,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Flow.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GUI extends Application implements UI {
@@ -185,7 +184,6 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderResourcePregameChoice() {
-        personalController.initLeaderCardsDisplay();
         personalController.initResourceChoice();
     }
 
@@ -196,13 +194,11 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderAuthenticationRequest(String message) {
-        logger.log(Level.INFO, "Rendering AuthenticationRequest");
         updateMainMenuFooter(FXMLResources.NICKNAME_FOOTER);
     }
 
     @Override
     public void renderCreateLobbyRequest(String message) {
-        logger.log(Level.INFO, "Rendering CreateLobbyRequest");
         updateMainMenuFooter(FXMLResources.PLAYER_SELECTION_FOOTER);
     }
 
@@ -223,13 +219,11 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderGameStartedNotification(String message) {
-        logger.log(Level.INFO, "Rendering GameStartedNotification");
         updateMainMenuLoadingText(message);
     }
 
     @Override
     public void renderJoinedLobbyNotification(String message) {
-        logger.log(Level.INFO, "Rendering JoinedLobbyNotification");
         updateMainMenuLoadingText(message);
     }
 
@@ -240,7 +234,6 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderWaitingForPlayersNotification(String message) {
-        logger.log(Level.INFO, "Rendering WaitingForPlayersNotification");
         updateMainMenuLoadingText(message);
     }
 
@@ -251,7 +244,6 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderNicknameAlreadyInUseNotification(String message) {
-        logger.log(Level.INFO, "Rendering NicknameAlreadyInUseNotification");
         updateMainMenuLoadingText(message);
         updateMainMenuFooter(FXMLResources.NICKNAME_FOOTER);
     }
