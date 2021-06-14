@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
-import it.polimi.ingsw.network.clienttoserver.action.playeraction.SelectMarblesAction;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.TakeFromMarketAction;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import javafx.application.Platform;
@@ -10,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
@@ -205,8 +203,8 @@ public class InGameCommonsController extends JFXController {
     }
 
     private void addMarketButtons(){
-        List<ToggleButton> rowButtons = new ArrayList<>();
-        List<ToggleButton> columnButtons = new ArrayList<>();
+        marketButtons.add(0, new ArrayList<>());
+        marketButtons.add(1, new ArrayList<>());
 
         for (int i=0; i<3; i++){
             ToggleButton toggleButton = new ToggleButton();
@@ -214,7 +212,8 @@ public class InGameCommonsController extends JFXController {
             toggleButton.setMinSize(50.0, 38.0);
             toggleButton.setUserData(new Couple(i, "row"));
             toggleButton.setToggleGroup(toggleMarketGroup);
-            rowButtons.add(toggleButton);
+            VBoxMarket.getChildren().add(i, toggleButton);
+            marketButtons.get(0).add(i, toggleButton);
         }
 
         for (int i=0; i<4; i++){
@@ -223,13 +222,9 @@ public class InGameCommonsController extends JFXController {
             toggleButton.setMinSize(50.0, 38.0);
             toggleButton.setUserData(new Couple(i, "column"));
             toggleButton.setToggleGroup(toggleMarketGroup);
-            columnButtons.add(toggleButton);
+            HBoxMarket.getChildren().add(i, toggleButton);
+            marketButtons.get(1).add(i, toggleButton);
         }
-
-        marketButtons.add(rowButtons);
-        marketButtons.add(columnButtons);
-        HBoxMarket.getChildren().addAll(marketButtons.get(1));
-        VBoxMarket.getChildren().addAll(marketButtons.get(0));
     }
 
     @FXML

@@ -59,9 +59,9 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canTake(String place, int index){
-        return ((place.equals("row") && index<=3) || (place.equals("column") && index<=4))
+        return ((place.equals("row") && index<=2) || (place.equals("column") && index<=3))
                 && canDoAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION)
-                && index>0;
+                && index>=0;
     }
 
     /**
