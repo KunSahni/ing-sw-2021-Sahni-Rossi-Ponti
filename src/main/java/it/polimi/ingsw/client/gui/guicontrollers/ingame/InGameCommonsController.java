@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.SelectMarblesAction;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.TakeFromMarketAction;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -169,6 +170,9 @@ public class InGameCommonsController extends JFXController {
     @FXML
     private GridPane gridMarket;
 
+    @FXML
+    private Pane invisibleDevelopmentPane;
+
     private ToggleGroup toggleGroup;
 
     private List<List<ToggleButton>> marketButtons;
@@ -297,8 +301,10 @@ public class InGameCommonsController extends JFXController {
         choose = couple.getChoose();
 
         if (gui.getInputVerifier().canTake(choose, index)){
-             gui.getClientSocket().sendAction(new SelectMarblesAction(getMarbles(choose, index)));
+             gui.getClientSocket().sendAction(new TakeFromMarketAction(index, isRow(choose)));
              populateInfoLabel("Confirmed.");
+             resetCommon();
+             gui.goToPersonalView();
         }
         else {
             populateInfoLabel("Select one action");
@@ -346,6 +352,8 @@ public class InGameCommonsController extends JFXController {
                         marbles.put(marble, 1);
                     }
                 }
+
+                return marbles;
             }
 
             default: return null;
@@ -403,5 +411,21 @@ public class InGameCommonsController extends JFXController {
         }
 
         return result;
+    }
+
+    private boolean isRow(String choose){
+        if (choose.equals("row")){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private void resetCommon(){
+        actionBox.toFront();
+        invisibleVerticalMarketPane.toFront();
+        invisibleHorizontalMarketPane.toFront();
+        invisibleDevelopmentPane.toFront();
     }
 }
