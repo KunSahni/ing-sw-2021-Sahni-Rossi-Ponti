@@ -158,7 +158,7 @@ public class DumbDevelopmentCard implements Serializable {
     public String toImgPath() {
         StringBuilder path =
                 new StringBuilder("/img/cards/development_card_")
-                        .append(color).append(level).append(victoryPoints).append(".png");
+                        .append(color).append("_").append(level).append("_").append(victoryPoints).append(".png");
         return path.toString();
     }
 }
