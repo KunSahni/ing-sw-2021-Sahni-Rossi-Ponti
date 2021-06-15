@@ -11,6 +11,7 @@ import it.polimi.ingsw.server.remoteview.RemoteView;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.logging.Logger;
 
 public class Game {
     private final int gameId;
@@ -22,6 +23,7 @@ public class Game {
     private final ActionTokenDeck actionTokenDeck;
     private final ChangesHandler changesHandler;
     private final SubmissionPublisher<Integer> gameEndedPublisher;
+    private final Logger logger;
 
     /**
      * Creates a game instance.
@@ -52,6 +54,7 @@ public class Game {
                 : null;
         this.gameEndedPublisher = new SubmissionPublisher<>();
         this.gameEndedPublisher.subscribe(server);
+        this.logger = Logger.getLogger(getClass().getSimpleName());
     }
 
     /**
@@ -148,6 +151,7 @@ public class Game {
      * @param gameState specified GameState.
      */
     public void setState(GameState gameState) {
+        logger.info("Updated game state: " + gameState);
         currentState = gameState;
         changesHandler.writeGameState(currentState);
         changesHandler.flushBufferToDisk();

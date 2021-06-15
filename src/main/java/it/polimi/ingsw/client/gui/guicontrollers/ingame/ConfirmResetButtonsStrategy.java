@@ -6,12 +6,13 @@ public enum ConfirmResetButtonsStrategy {
     NONE,
     PRE_GAME_LEADER_CARDS_CHOICE,
     PRE_GAME_RESOURCES_CHOICE,
-    VISIT;
+    VISIT,
+    SELECT_MARBLES;
 
     public void applyTo(Button confirmButton, Button resetButton) {
         switch (this) {
             case NONE -> setStrategy(confirmButton, resetButton, null, false, false);
-            case PRE_GAME_LEADER_CARDS_CHOICE -> setStrategy(confirmButton, resetButton, this, true, false);
+            case PRE_GAME_LEADER_CARDS_CHOICE, SELECT_MARBLES -> setStrategy(confirmButton, resetButton, this, true, false);
             case PRE_GAME_RESOURCES_CHOICE -> setStrategy(confirmButton, resetButton, this, true, true);
             case VISIT -> setStrategy(confirmButton, resetButton, this, false, true);
         }

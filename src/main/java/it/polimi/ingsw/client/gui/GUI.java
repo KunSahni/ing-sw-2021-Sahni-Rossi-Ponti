@@ -3,7 +3,6 @@ package it.polimi.ingsw.client.gui;
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameCommonsController;
-import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameOppController;
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGamePersonalController;
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.PlayerBoardController;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Flow.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class GUI extends Application implements UI {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -196,12 +194,12 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-        personalController.initLeaderCardsSelection(leaderCards);
+        personalController.initLeaderCardsChoice(leaderCards);
     }
 
     @Override
     public void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles) {
-
+        personalController.initTempMarblesChoice(updateMarbles);
     }
 
     @Override
@@ -211,7 +209,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderErrorMessage(String message) {
-
+        personalController.populateInfoLabel(message);
     }
 
     @Override

@@ -64,4 +64,15 @@ public enum MarketMarble implements Serializable {
             default -> throw new IllegalArgumentException();
         }
     }
+
+    public String toImagePath() {
+        return "/img/marbles/"  + switch (this) {
+            case RED -> "red";
+            case YELLOW -> "gold";
+            case BLUE -> "blue";
+            case PURPLE -> "purple";
+            case GREY -> "grey";
+            case WHITE -> "white";
+        } + ".png";
+    }
 }
