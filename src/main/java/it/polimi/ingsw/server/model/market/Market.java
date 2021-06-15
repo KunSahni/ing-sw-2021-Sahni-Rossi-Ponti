@@ -28,7 +28,7 @@ public class Market {
         extraMarble = rawMarbles.remove(0);
         for (int line = 0; line < 3; line++) {
             for (int column = 0; column < 4; column++) {
-                this.market[line][column] = rawMarbles.get(line + column);
+                this.market[line][column] = rawMarbles.remove(0);
             }
         }
     }
