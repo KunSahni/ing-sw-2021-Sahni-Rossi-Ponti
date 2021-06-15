@@ -68,7 +68,7 @@ public enum MarketMarble implements Serializable {
     public String toImagePath() {
         return "/img/marbles/"  + switch (this) {
             case RED -> "red";
-            case YELLOW -> "gold";
+            case YELLOW -> "yellow";
             case BLUE -> "blue";
             case PURPLE -> "purple";
             case GREY -> "grey";

@@ -30,7 +30,7 @@ public class DumbDevelopmentCard implements Serializable {
         this.level = developmentCard.getLevel();
         this.victoryPoints = developmentCard.getVictoryPoints();
         this.inputResources = new HashMap<>(developmentCard.getInputResources());
-        if(developmentCard.getOutputResources() !=null)
+        if (developmentCard.getOutputResources() != null)
             this.outputResources = new HashMap<>(developmentCard.getOutputResources());
         else
             this.outputResources = null;
@@ -49,8 +49,7 @@ public class DumbDevelopmentCard implements Serializable {
     public Map<Resource, Integer> getInputResources() {
         if (Optional.ofNullable(inputResources).isPresent()) {
             return new HashMap<>(inputResources);
-        }
-        else{
+        } else {
             return null;
         }
     }
@@ -58,8 +57,7 @@ public class DumbDevelopmentCard implements Serializable {
     public Map<Resource, Integer> getOutputResources() {
         if (Optional.ofNullable(outputResources).isPresent()) {
             return new HashMap<>(outputResources);
-        }
-        else{
+        } else {
             return null;
         }
     }
@@ -67,8 +65,7 @@ public class DumbDevelopmentCard implements Serializable {
     public Map<Resource, Integer> getCost() {
         if (Optional.ofNullable(cost).isPresent()) {
             return new HashMap<>(cost);
-        }
-        else{
+        } else {
             return null;
         }
     }
@@ -81,8 +78,9 @@ public class DumbDevelopmentCard implements Serializable {
         return victoryPoints;
     }
 
-    public DevelopmentCard convert(){
-        return new DevelopmentCard(color, level, victoryPoints, inputResources, outputResources, cost, faithIncrement);
+    public DevelopmentCard convert() {
+        return new DevelopmentCard(color, level, victoryPoints, inputResources, outputResources,
+                cost, faithIncrement);
     }
 
     /**
@@ -101,61 +99,66 @@ public class DumbDevelopmentCard implements Serializable {
         );
         List<String> levelList = convertLevelToPrintableList();
 
-        return    "\033[" + x + ";" + y + "H╔══════════════╗"
-                + "\033[" + (x+1) + ";" + y + "H║ " + costList.get(0) + "       " + levelList.get(0) + " ║"
-                + "\033[" + (x+2) + ";" + y + "H║ " + costList.get(1) + "       " + levelList.get(1) + " ║"
-                + "\033[" + (x+3) + ";" + y + "H║ " + costList.get(2) + "       " + levelList.get(2) + " ║"
-                + "\033[" + (x+4) + ";" + y + "H║              ║"
-                + "\033[" + (x+5) + ";" + y + "H║ " + inputList.get(0) + " -> " + outputList.get(0) + " ║"
-                + "\033[" + (x+6) + ";" + y + "H║ " + inputList.get(1) + "    " + outputList.get(1) + " ║"
-                + "\033[" + (x+7) + ";" + y + "H║         " + outputList.get(2) + " ║"
-                + "\033[" + (x+8) + ";" + y + "H║              ║"
-                + "\033[" + (x+9) + ";" + y + "H║    " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     ║"
-                + "\033[" + (x+10) + ";" + y + "H╚══════════════╝";
+        return "\033[" + x + ";" + y + "H╔══════════════╗"
+                + "\033[" + (x + 1) + ";" + y + "H║ " + costList.get(0) + "       " + levelList.get(0) + " ║"
+                + "\033[" + (x + 2) + ";" + y + "H║ " + costList.get(1) + "       " + levelList.get(1) + " ║"
+                + "\033[" + (x + 3) + ";" + y + "H║ " + costList.get(2) + "       " + levelList.get(2) + " ║"
+                + "\033[" + (x + 4) + ";" + y + "H║              ║"
+                + "\033[" + (x + 5) + ";" + y + "H║ " + inputList.get(0) + " -> " + outputList.get(0) + " ║"
+                + "\033[" + (x + 6) + ";" + y + "H║ " + inputList.get(1) + "    " + outputList.get(1) + " ║"
+                + "\033[" + (x + 7) + ";" + y + "H║         " + outputList.get(2) + " ║"
+                + "\033[" + (x + 8) + ";" + y + "H║              ║"
+                + "\033[" + (x + 9) + ";" + y + "H║    " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET + "     ║"
+                + "\033[" + (x + 10) + ";" + y + "H╚══════════════╝";
     }
 
     /**
      * Creates a list of printable elements from a map of resources
-     * @param map the map from which the list should be created off from
+     *
+     * @param map     the map from which the list should be created off from
      * @param maxSize the maximum size expected of the map
      * @return a list of printable strings with some ascii escape sequences
      */
-    private List<String> convertMapToPrintableList(Map<Resource, Integer> map, int maxSize){
+    private List<String> convertMapToPrintableList(Map<Resource, Integer> map, int maxSize) {
         List<String> stringList = new ArrayList<>(map.entrySet())
                 .stream()
                 .map(
                         entry -> String.valueOf(entry.getValue()).concat("x ").concat(entry.getKey().formatPrintableString())
                 ).collect(Collectors.toList());
-        IntStream.range(0, maxSize-stringList.size()).forEach(
+        IntStream.range(0, maxSize - stringList.size()).forEach(
                 i -> stringList.add("    ")
         );
 
-        if(stringList.get(0).equals("   ") && faithIncrement>0)
-            stringList.set(0, String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
-        else if(!stringList.get(0).equals("   ") && stringList.get(1).equals("   ") && faithIncrement>0)
-            stringList.set(1, String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
+        if (stringList.get(0).equals("   ") && faithIncrement > 0)
+            stringList.set(0,
+                    String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
+        else if (!stringList.get(0).equals("   ") && stringList.get(1).equals("   ") && faithIncrement > 0)
+            stringList.set(1,
+                    String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
 
         return stringList;
     }
 
     /**
      * Creates a printable list based on the card's level and color
+     *
      * @return a list of printable strings with some ascii escape sequences
      */
-    private List<String> convertLevelToPrintableList(){
+    private List<String> convertLevelToPrintableList() {
         List<String> stringList = new ArrayList<>();
         IntStream.range(0, level.getLevel()).forEach(
                 i -> stringList.add(color.getColoredLevel())
         );
-        IntStream.range(0, 3-stringList.size()).forEach(
+        IntStream.range(0, 3 - stringList.size()).forEach(
                 i -> stringList.add(" ")
         );
         return stringList;
     }
 
     public String toImgPath() {
-        StringBuilder path = new StringBuilder("/img/cards/development_card_").append(color);
-        cost.forEach((resource, quantity) -> path.append("_").append(quantity).append(resource));
+        StringBuilder path =
+                new StringBuilder("/img/cards/development_card_")
+                        .append(color).append(level).append(victoryPoints).append(".png");
         return path.toString();
     }
 }

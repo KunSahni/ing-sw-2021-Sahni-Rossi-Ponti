@@ -133,7 +133,7 @@ public class GUI extends Application implements UI {
         });
         // Initialize Commons Controller
         commonsController = commonsLoader.getController();
-        commonsController.setGui(this);
+        commonsController.initialize(this);
         goToPersonalView();
         tearDownMainMenu();
     }
