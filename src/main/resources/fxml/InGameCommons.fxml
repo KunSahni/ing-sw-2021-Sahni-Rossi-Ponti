@@ -103,8 +103,8 @@
          <center>
             <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Pane fx:id="invisibleDevelopmentPane" prefHeight="200.0" prefWidth="200.0" />
-                  <GridPane fx:id="gridDevelopmentCard" maxHeight="698.0" maxWidth="462.0" minHeight="698.0" minWidth="616.0">
+                  <Pane fx:id="invisibleDevelopmentPane" maxHeight="698.0" maxWidth="616.0" minHeight="698.0" minWidth="616.0" prefHeight="200.0" prefWidth="200.0" />
+                  <GridPane fx:id="gridDevelopmentCard" maxHeight="698.0" maxWidth="616.0" minHeight="698.0" minWidth="616.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

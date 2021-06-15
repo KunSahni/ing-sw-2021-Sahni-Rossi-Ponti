@@ -7,7 +7,9 @@ public enum ConfirmResetButtonsStrategy {
     PRE_GAME_LEADER_CARDS_CHOICE,
     PRE_GAME_RESOURCES_CHOICE,
     VISIT,
-    SELECT_MARBLES;
+    SELECT_MARBLES,
+    PICK_MARBLES,
+    BUY_DEVELOPMENT_CARD;
 
     public void applyTo(Button confirmButton, Button resetButton) {
         switch (this) {
@@ -15,6 +17,8 @@ public enum ConfirmResetButtonsStrategy {
             case PRE_GAME_LEADER_CARDS_CHOICE, SELECT_MARBLES -> setStrategy(confirmButton, resetButton, this, true, false);
             case PRE_GAME_RESOURCES_CHOICE -> setStrategy(confirmButton, resetButton, this, true, true);
             case VISIT -> setStrategy(confirmButton, resetButton, this, false, true);
+            case PICK_MARBLES -> setStrategy(confirmButton, resetButton, this, true, true);
+            case BUY_DEVELOPMENT_CARD -> setStrategy(confirmButton, resetButton, this, true, true);
         }
     }
 

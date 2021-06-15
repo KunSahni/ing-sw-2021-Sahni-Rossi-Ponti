@@ -15,6 +15,7 @@ import javafx.scene.layout.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class InGameCommonsController extends JFXController {
     @FXML
@@ -190,6 +191,8 @@ public class InGameCommonsController extends JFXController {
 
         marketButtons = new ArrayList<>();
 
+        invisibleDevelopmentPane.toFront();
+
         addMarketButtons();
 
         initializeGridPaneArray();
@@ -231,13 +234,17 @@ public class InGameCommonsController extends JFXController {
 
     private String getDevelopmentcardImage(int row, int column){
         String path;
-        path = gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT)+".png";
+        path = gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT);
         return path;
     }
 
     @FXML
     private void confirm() {
-        pickMarbles((ToggleButton) toggleMarketGroup.getSelectedToggle());
+        switch ((ConfirmResetButtonsStrategy) confirmButton.getUserData()) {
+            case PICK_MARBLES -> pickMarbles((ToggleButton) toggleMarketGroup.getSelectedToggle());
+            case BUY_DEVELOPMENT_CARD -> pickDevelopmentCards((ToggleButton) toggleDevelopmentGroup.getSelectedToggle());
+        }
+
     }
 
     private String getMarbleImage(int row, int column){
@@ -286,7 +293,6 @@ public class InGameCommonsController extends JFXController {
 
     private void pickDevelopmentCards(ToggleButton toggleButton) {
         DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
-
         //todo: chiamare metodo della gui con cui passare la carta al InGamePersonal
     }
 
@@ -313,6 +319,7 @@ public class InGameCommonsController extends JFXController {
         VBoxMarket.toFront();
         HBoxMarket.toFront();
         confirmResetBox.toFront();
+        ConfirmResetButtonsStrategy.PICK_MARBLES.applyTo(confirmButton, resetButton);
     }
 
     private void setMarketGraphic(){
@@ -375,12 +382,15 @@ public class InGameCommonsController extends JFXController {
         invisibleVerticalMarketPane.toFront();
         invisibleHorizontalMarketPane.toFront();
         invisibleDevelopmentPane.toFront();
+        Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
+        Optional.ofNullable(toggleMarketGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 
     @FXML
     private void buyDevelopmentCard(){
         gridDevelopmentCard.toFront();
         confirmResetBox.toFront();
+        ConfirmResetButtonsStrategy.BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
     }
 
     private void addDevelopmentCards(){
@@ -392,7 +402,10 @@ public class InGameCommonsController extends JFXController {
                 toggleButton.setMinWidth(154);
                 toggleButton.setMaxWidth(154);
                 toggleButton.setUserData(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column]);
-                toggleButton.setGraphic(new ImageView(getDevelopmentcardImage(row, column)));
+                ImageView imageView = new ImageView(getDevelopmentcardImage(row, column));
+                imageView.setFitWidth(154);
+                imageView.setPreserveRatio(true);
+                toggleButton.setGraphic(imageView);
                 gridDevelopmentCard.add(toggleButton, column, row);
                 toggleButton.setToggleGroup(toggleDevelopmentGroup);
             }
