@@ -23,9 +23,11 @@ import javafx.scene.shape.Circle;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 public abstract class PlayerBoardController extends JFXController {
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     @FXML
     protected Label nicknameLabel;
     @FXML
@@ -44,6 +46,7 @@ public abstract class PlayerBoardController extends JFXController {
     @FXML
     private VBox depotsVBox;
     private final List<List<ImageView>> warehouseDepotsResourceImages = new ArrayList<>();
+    private Map<Resource, Integer> currentWarehouseDepotsDisplay = new HashMap<>();
     @FXML
     private GridPane faithTrackGrid;
     private ImageView faithMarker;
@@ -97,6 +100,7 @@ public abstract class PlayerBoardController extends JFXController {
     private void initWarehouseDepotsResourceImages(int numberOfImageViews) {
         List<ImageView> resourceRowImages = new ArrayList<>();
         HBox resourcesRow = new HBox();
+        resourcesRow.setMinHeight(63);
         resourcesRow.setAlignment(Pos.CENTER);
         IntStream.range(0, numberOfImageViews).forEach(i -> {
             ImageView resource = new ImageView();
@@ -170,20 +174,24 @@ public abstract class PlayerBoardController extends JFXController {
     private void renderWarehouseDepots(DumbPersonalBoard dumbPersonalBoard) {
         LinkedHashMap<Resource, Integer> depotsResources =
                 new LinkedHashMap<>(dumbPersonalBoard.getDepots().getStoredResources());
-        // Clear all rendered images of the depots
-        IntStream.range(0, 3).forEach(i -> warehouseDepotsResourceImages.get(i)
-                .forEach(imageView -> imageView.setImage(null)));
-        // Magic
-        IntStream.range(3 - depotsResources.size(), 3).forEach(i -> {
-            int depotsIndex = i + depotsResources.size() - 3;
-            Resource resourceAtIndex = new ArrayList<>(depotsResources.keySet()).get(depotsIndex);
-            List<ImageView> resourceSlots = warehouseDepotsResourceImages.get(i);
-            IntStream.range(0, resourceSlots.size()).forEach(j -> resourceSlots.get(j).setImage(
-                    j < depotsResources.get(resourceAtIndex)
-                            ? getImageFromPath(resourceAtIndex.toImgPath())
-                            : null
-            ));
-        });
+        if (!depotsResources.equals(currentWarehouseDepotsDisplay)) {
+            currentWarehouseDepotsDisplay = depotsResources;
+            // Clear all rendered images of the depots
+            IntStream.range(0, 3).forEach(i -> warehouseDepotsResourceImages.get(i)
+                    .forEach(imageView -> imageView.setImage(null)));
+            // Magic
+            IntStream.range(3 - depotsResources.size(), 3).forEach(i -> {
+                int depotsIndex = i + depotsResources.size() - 3;
+                Resource resourceAtIndex =
+                        new ArrayList<>(depotsResources.keySet()).get(depotsIndex);
+                List<ImageView> resourceSlots = warehouseDepotsResourceImages.get(i);
+                IntStream.range(0, resourceSlots.size()).forEach(j -> resourceSlots.get(j).setImage(
+                        j < depotsResources.get(resourceAtIndex)
+                                ? getImageFromPath(resourceAtIndex.toImgPath())
+                                : null
+                ));
+            });
+        }
     }
 
     private void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {

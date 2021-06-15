@@ -22,6 +22,10 @@ public class LeaderCardsBroadcastUpdate extends BroadcastRenderable {
                 .collect(Collectors.toList());
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
     /**
      * This method returns an Enum value which represents what type of graphical element is contained in the Renderable
      * @return OnScreenElement enum value representing the payload in the Renderable

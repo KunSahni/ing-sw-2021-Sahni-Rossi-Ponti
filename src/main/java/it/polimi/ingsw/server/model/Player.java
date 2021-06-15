@@ -31,8 +31,9 @@ public class Player implements Comparable<Player> {
     /**
      * Completes Player Object initialization by injecting all elements that
      * are not read from disk.
+     *
      * @param changesHandler ChangesHandler Object of the game which the Player is part of.
-     * @param nickname player identifier.
+     * @param nickname       player identifier.
      * @throws FileNotFoundException thrown when PersonalBoard cannot be read properly from disk.
      */
     public void init(ChangesHandler changesHandler, String nickname)
@@ -50,6 +51,7 @@ public class Player implements Comparable<Player> {
     /**
      * Returns the positional index (1-4) of the player. If the Inkwell has
      * not been assigned yet, the returned value is 0.
+     *
      * @return position index integer.
      */
     public int getPosition() {
@@ -73,6 +75,7 @@ public class Player implements Comparable<Player> {
      * a {@link TakeFromMarketAction}. This map can contain any type of MarketMarble except
      * RED ones, which are used to move the Faith Marker on the {@link FaithTrack}, therefore
      * not getting stored.
+     *
      * @return a map of MarketMarbles.
      */
     public Map<MarketMarble, Integer> getTempMarbles() {
@@ -101,6 +104,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * Assigns a List of LeaderCards which the Player can pick from.
+     *
      * @param leaderCards With the current game rules, a list of 4 LeaderCards should be passed.
      */
     public void setTempLeaderCards(List<LeaderCard> leaderCards) {
@@ -111,6 +115,7 @@ public class Player implements Comparable<Player> {
     /**
      * Sets the List of Leader Cards passed as parameter as the final cards that
      * the Player will use for the entire game.
+     *
      * @param chosenCards With the current game rules, a list of 2 LeaderCards, matching
      *                    the ones temporarily stored, should be passed.
      */
@@ -122,6 +127,7 @@ public class Player implements Comparable<Player> {
 
     /**
      * This method sets the Player's position in the game
+     *
      * @param position an integer between 1 and 4
      */
     public void setPosition(int position) {
@@ -141,10 +147,17 @@ public class Player implements Comparable<Player> {
 
     /**
      * Creates a map of temporarily stored MarketMarbles
+     *
      * @param tempMarbles map of MarketMarbles taken from the Market.
      */
     public void setTempMarbles(Map<MarketMarble, Integer> tempMarbles) {
         this.tempMarbles = new HashMap<>(tempMarbles);
+        changesHandler.writePlayer(this);
+    }
+
+    public void clearTempMarbles() {
+        tempMarbles.clear();
+        addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
         changesHandler.writePlayer(this);
     }
 
@@ -181,7 +194,8 @@ public class Player implements Comparable<Player> {
 //            return availableNextStates;
 //        }
 //
-//        //Checks if the Turn is in a state where the user has performed one of the compulsory action
+//        //Checks if the Turn is in a state where the user has performed one of the compulsory
+//        action
 //        if (hasPerformedCompulsoryAction()) {
 //            //The player can always end the turn since he has already done one of the compulsory
 //            // action
@@ -210,20 +224,22 @@ public class Player implements Comparable<Player> {
      * logic.
      */
     public boolean isValidNextAction(ExecutedActions action) {
-        Optional<ExecutedActions> mostRecentAction = performedActions.stream().findFirst();
-        if (mostRecentAction.isPresent()) {
-            if (mostRecentAction.get().equals(ExecutedActions.TURN_ENDED_ACTION))
+        ExecutedActions mostRecentAction = null;
+        if (performedActions.size() > 0)
+            mostRecentAction = performedActions.get(performedActions.size() - 1);
+        if (mostRecentAction != null) {
+            if (mostRecentAction.equals(ExecutedActions.TURN_ENDED_ACTION)) {
                 return false;
-            else return switch (action) {
-                case STORED_MARKET_RESOURCES_ACTION -> mostRecentAction.get()
-                        .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
-                case STORED_TEMP_MARBLES_ACTION, BOUGHT_DEVELOPMENT_CARD_ACTION,
-                        ACTIVATED_PRODUCTION_ACTION -> performedActions.stream()
-                        .noneMatch(ExecutedActions::isCompulsory);
-                case TURN_ENDED_ACTION -> performedActions.stream()
-                        .anyMatch(ExecutedActions::isCompulsory);
-                case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION -> true;
-            };
+            } else {
+                return switch (action) {
+                    case STORED_MARKET_RESOURCES_ACTION -> mostRecentAction
+                            .equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
+                    case STORED_TEMP_MARBLES_ACTION, BOUGHT_DEVELOPMENT_CARD_ACTION,
+                            ACTIVATED_PRODUCTION_ACTION -> !hasPerformedCompulsoryAction();
+                    case TURN_ENDED_ACTION -> hasPerformedCompulsoryAction();
+                    case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION -> true;
+                };
+            }
         } else {
             // If no action has been executed, any action is allowed except for ending turn
             // and storing market resources
@@ -241,7 +257,8 @@ public class Player implements Comparable<Player> {
 //    private boolean canAffordDevelopmentCard() {
 //        return Arrays.stream(game.getDevelopmentCardsBoard().peekBoard()).anyMatch(
 //                developmentCards -> Arrays.stream(developmentCards).anyMatch(
-//                        developmentCard -> personalBoard.containsResources(developmentCard.peek().getCost())
+//                        developmentCard -> personalBoard.containsResources(developmentCard.peek
+//                        ().getCost())
 //                )
 //        );
 //    }
@@ -261,10 +278,12 @@ public class Player implements Comparable<Player> {
 //        boolean canProduceFromDefaultSlot = personalBoard.getResourceCount() >= 2;
 //
 //        boolean canProduceFromLeaderCards = personalBoard.getLeaderCards().stream().anyMatch(
-//                leaderCard -> leaderCard.isActive() && leaderCard.getAbility().equals(LeaderCardAbility.PRODUCE)
+//                leaderCard -> leaderCard.isActive() && leaderCard.getAbility().equals
+//                (LeaderCardAbility.PRODUCE)
 //        ) && personalBoard.getResourceCount() >= 1;
 //
-//        return canProduceFromDevelopmentCards || canProduceFromDefaultSlot || canProduceFromLeaderCards;
+//        return canProduceFromDevelopmentCards || canProduceFromDefaultSlot ||
+//        canProduceFromLeaderCards;
 //    }
 //
 //    /**
@@ -276,7 +295,8 @@ public class Player implements Comparable<Player> {
 //    private boolean canActivateLeaderCard() {
 //        List<LeaderCard> leaderCards = personalBoard.getLeaderCards();
 //        Optional<LeaderCard> card = leaderCards.stream().filter(
-//                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements())
+//                leaderCard -> personalBoard.containsLeaderCardRequirements(leaderCard
+//                .getLeaderCardRequirements())
 //        ).findAny();
 //
 //        return card.isPresent();
@@ -301,7 +321,8 @@ public class Player implements Comparable<Player> {
 //     */
 //    private boolean hasOnlyPerformedLeaderCardActions() {
 //        return performedActions.stream().filter(
-//                performedAction -> performedAction instanceof ActivateLeaderCardAction || performedAction instanceof DiscardLeaderCardAction
+//                performedAction -> performedAction instanceof ActivateLeaderCardAction ||
+//                performedAction instanceof DiscardLeaderCardAction
 //        ).collect(Collectors.toList()).containsAll(performedActions);
 //    }
 
@@ -311,6 +332,7 @@ public class Player implements Comparable<Player> {
      * {@link TakeFromMarketAction},
      * {@link BuyDevelopmentCardAction},
      * {@link ActivateProductionAction}
+     *
      * @return true if the Player has performed one of these, false otherwise
      */
     private boolean hasPerformedCompulsoryAction() {
@@ -329,7 +351,6 @@ public class Player implements Comparable<Player> {
     public void finishTurn() {
         isTurn = false;
         performedActions.clear();
-        tempMarbles.clear();
         changesHandler.writePlayer(this);
     }
 

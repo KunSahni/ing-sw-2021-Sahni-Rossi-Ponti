@@ -24,10 +24,13 @@ public class SelectMarblesAction extends PlayerAction {
     @Override
     public GameAction execute() {
         player.getPersonalBoard().storeInDepots(ResourceBank.getResourcesFromMarbles(selectedMarbles));
-        int othersIncrement = player.getTempMarbles().values().stream().reduce(0, Integer::sum)
+        int othersIncrement = player.getTempMarbles().entrySet().stream()
+                .filter(entry -> entry.getKey()!=MarketMarble.WHITE)
+                .map(Map.Entry::getValue)
+                .reduce(0, Integer::sum)
                 - selectedMarbles.values().stream().reduce(0, Integer::sum);
         moveOtherMarkers(othersIncrement);
-        player.addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
+        player.clearTempMarbles();
         return null;
     }
 
@@ -52,8 +55,6 @@ public class SelectMarblesAction extends PlayerAction {
     private boolean tempMarblesContainSelectedMarbles() {
         // Convert tempMarbles map to a list of marbles
         Map<MarketMarble, Integer> playerTempMarbles = player.getTempMarbles();
-        // todo: why are RED marbles getting removed? they should not be stored there in the first place
-        playerTempMarbles.remove(MarketMarble.RED);
         List<MarketMarble> tempMarblesList = new ArrayList<>();
         playerTempMarbles.forEach((k, v) -> {
             for (int i = 0; i < v; i++) {
@@ -83,7 +84,7 @@ public class SelectMarblesAction extends PlayerAction {
             } else {
                 // Handle WHITE marbles in case there are some active
                 // ConvertLeaderCards
-                if (activeConvertCards.get(0) != null) {
+                if (activeConvertCards.size() > 0) {
                     // If the first ConvertLeaderCard does not remove
                     // any marble from the list, check if there is a
                     // second one active and use that.
@@ -91,7 +92,7 @@ public class SelectMarblesAction extends PlayerAction {
                             .remove(activeConvertCards.get(0)
                                     .getConvertedResource()
                                     .toMarble())
-                            && activeConvertCards.get(1) != null) {
+                            && activeConvertCards.size() > 1) {
                         selectedMarblesList
                                 .remove(activeConvertCards.get(1)
                                         .getConvertedResource()
@@ -121,9 +122,9 @@ public class SelectMarblesAction extends PlayerAction {
         otherPlayersList.forEach(
                 npc -> {
                     int faithPos = npc.getPersonalBoard().getFaithTrack().getFaithMarkerPosition();
-                    if (npc.getPersonalBoard().getFaithTrack().checkVaticanReport(faithPos / 8 * 8))
+                    if (npc.getPersonalBoard().getFaithTrack().checkVaticanReport(faithPos))
                         game.getPlayerList().forEach(
-                                pl -> pl.getPersonalBoard().getFaithTrack().flipPopesFavor(faithPos / 8 * 8)
+                                pl -> pl.getPersonalBoard().getFaithTrack().flipPopesFavor(faithPos / 8)
                         );
                 }
         );
