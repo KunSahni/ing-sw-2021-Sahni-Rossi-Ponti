@@ -28,7 +28,7 @@ public class EndTurnAction extends PlayerAction {
     @Override
     public void runChecks() throws InvalidActionException {
         super.runChecks();
-        if (player.isValidNextAction(ExecutedActions.TURN_ENDED_ACTION))
+        if (!player.isValidNextAction(ExecutedActions.TURN_ENDED_ACTION))
             throw new InvalidActionException("You cannot end your turn at this time");
     }
 }
