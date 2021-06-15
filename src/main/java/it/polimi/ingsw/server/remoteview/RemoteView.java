@@ -3,13 +3,13 @@ package it.polimi.ingsw.server.remoteview;
 import it.polimi.ingsw.network.servertoclient.renderable.ErrorMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.PrivateRenderable;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.LeaderCardsBroadcastUpdate;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.PlayerBroadcastUpdate;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Flow.*;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -110,8 +110,16 @@ public class RemoteView implements Subscriber<Renderable> {
             Optional<Connection> connection = Optional.ofNullable(connectedPlayers.get(((PrivateRenderable) item).getNickname()));
             connection.ifPresent(c -> c.send(item));
         } else {
-            for (Connection connection : connectedPlayers.values()) {
-                connection.send(item);
+            List<String> connectedPlayersNicknames = new ArrayList<>(connectedPlayers.keySet());
+            if (item instanceof PlayerBroadcastUpdate) {
+                PlayerBroadcastUpdate playerBroadcastUpdate = (PlayerBroadcastUpdate) item;
+                connectedPlayersNicknames.remove(playerBroadcastUpdate.getNickname());
+            } else if (item instanceof LeaderCardsBroadcastUpdate) {
+                LeaderCardsBroadcastUpdate leaderCardsBroadcastUpdate = (LeaderCardsBroadcastUpdate) item;
+                connectedPlayersNicknames.remove(leaderCardsBroadcastUpdate.getNickname());
+            }
+            for (String nickname : connectedPlayersNicknames) {
+                connectedPlayers.get(nickname).send(item);
             }
         }
         subscription.request(1);
