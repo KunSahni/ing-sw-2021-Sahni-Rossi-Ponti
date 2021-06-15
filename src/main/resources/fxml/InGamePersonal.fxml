@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -22,7 +23,7 @@
    <children>
       <StackPane alignment="TOP_RIGHT" maxHeight="720.0" maxWidth="1008.0" minHeight="720.0" minWidth="1008.0" prefHeight="720.0" prefWidth="1008.0" StackPane.alignment="BOTTOM_RIGHT">
          <children>
-            <VBox fx:id="resourceChoiceLayer" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" styleClass="covering-pane">
+            <VBox fx:id="pregameResourceChoiceLayer" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" styleClass="covering-pane">
                <children>
                   <GridPane alignment="CENTER" maxHeight="450.0" maxWidth="450.0" minHeight="450.0" minWidth="450.0" prefHeight="450.0" prefWidth="450.0">
                      <columnConstraints>
@@ -246,9 +247,33 @@
                                        <padding>
                                           <Insets bottom="100.0" />
                                        </padding>
+                                       <children>
+                                          <ToggleButton mnemonicParsing="false" text="Select" translateX="-8.0" StackPane.alignment="TOP_CENTER">
+                                             <StackPane.margin>
+                                                <Insets top="60.0" />
+                                             </StackPane.margin>
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="selectDevCardSlotToggleGroup" />
+                                             </toggleGroup>
+                                          </ToggleButton>
+                                       </children>
                                     </StackPane>
-                                    <StackPane fx:id="devCardSlot2" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
-                                    <StackPane fx:id="devCardSlot3" layoutX="204.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
+                                    <StackPane fx:id="devCardSlot2" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0">
+                                       <children>
+                                          <ToggleButton mnemonicParsing="false" text="Select" toggleGroup="$selectDevCardSlotToggleGroup" translateX="-11.0" StackPane.alignment="TOP_CENTER">
+                                             <StackPane.margin>
+                                                <Insets top="60.0" />
+                                             </StackPane.margin>
+                                          </ToggleButton>
+                                       </children></StackPane>
+                                    <StackPane fx:id="devCardSlot3" layoutX="204.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0">
+                                       <children>
+                                          <ToggleButton mnemonicParsing="false" text="Select" toggleGroup="$selectDevCardSlotToggleGroup" translateX="-7.0" StackPane.alignment="TOP_CENTER">
+                                             <StackPane.margin>
+                                                <Insets top="60.0" />
+                                             </StackPane.margin>
+                                          </ToggleButton>
+                                       </children></StackPane>
                                  </children>
                                  <padding>
                                     <Insets right="30.0" />

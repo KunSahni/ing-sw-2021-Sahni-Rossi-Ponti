@@ -28,6 +28,7 @@ import java.util.stream.IntStream;
 
 public abstract class PlayerBoardController extends JFXController {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
+    protected boolean areLeaderCardsInitialized = false;
     @FXML
     protected Label nicknameLabel;
     @FXML

@@ -77,6 +77,10 @@ public class GUI extends Application implements UI {
         return personalNickname;
     }
 
+    public InGamePersonalController getPersonalController() {
+        return personalController;
+    }
+
     public void loadMainMenu() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLResources.MAIN_MENU.toPathString()));
         changeScene(new Scene(loader.load()));
@@ -194,17 +198,17 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
-        personalController.initLeaderCardsChoice(leaderCards);
+        personalController.startLeaderCardsChoice(leaderCards);
     }
 
     @Override
     public void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles) {
-        personalController.initTempMarblesChoice(updateMarbles);
+        personalController.startTempMarblesChoice(updateMarbles);
     }
 
     @Override
     public void renderResourcePregameChoice() {
-        personalController.initResourceChoice();
+        personalController.startPreGameResourceChoice();
     }
 
     @Override
