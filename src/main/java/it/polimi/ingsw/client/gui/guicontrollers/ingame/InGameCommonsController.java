@@ -1,21 +1,20 @@
 package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
+import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.TakeFromMarketAction;
-import it.polimi.ingsw.server.model.market.MarketMarble;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 public class InGameCommonsController extends JFXController {
     @FXML
@@ -169,13 +168,21 @@ public class InGameCommonsController extends JFXController {
     private GridPane gridMarket;
 
     @FXML
+    private VBox marketVBox;
+
+    @FXML
     private Pane invisibleDevelopmentPane;
 
-    private ToggleGroup toggleGroup;
+    @FXML
+    private GridPane gridDevelopmentCard;
+
+    private ToggleGroup toggleDevelopmentGroup;
 
     private List<List<ToggleButton>> marketButtons;
 
     private ToggleGroup toggleMarketGroup;
+
+    private Node[][] gridPaneMarketArray = null;
 
     @FXML
     private void initialize(){
@@ -185,21 +192,9 @@ public class InGameCommonsController extends JFXController {
 
         addMarketButtons();
 
-        setMarketGraphic();
-        toggleGroup = new ToggleGroup();
-        toggleButton00.setToggleGroup(toggleGroup);
-        toggleButton01.setToggleGroup(toggleGroup);
-        toggleButton02.setToggleGroup(toggleGroup);
-        toggleButton03.setToggleGroup(toggleGroup);
-        toggleButton10.setToggleGroup(toggleGroup);
-        toggleButton11.setToggleGroup(toggleGroup);
-        toggleButton12.setToggleGroup(toggleGroup);
-        toggleButton13.setToggleGroup(toggleGroup);
-        toggleButton20.setToggleGroup(toggleGroup);
-        toggleButton21.setToggleGroup(toggleGroup);
-        toggleButton22.setToggleGroup(toggleGroup);
-        toggleButton23.setToggleGroup(toggleGroup);
+        initializeGridPaneArray();
 
+        toggleDevelopmentGroup = new ToggleGroup();
     }
 
     private void addMarketButtons(){
@@ -208,8 +203,10 @@ public class InGameCommonsController extends JFXController {
 
         for (int i=0; i<3; i++){
             ToggleButton toggleButton = new ToggleButton();
-            toggleButton.setMaxSize(50.0, 38.0);
-            toggleButton.setMinSize(50.0, 38.0);
+            toggleButton.setMaxWidth(35.0);
+            toggleButton.setMinWidth(35.0);
+            toggleButton.setMaxHeight(56.5);
+            toggleButton.setMinHeight(56.5);
             toggleButton.setUserData(new Couple(i, "row"));
             toggleButton.setToggleGroup(toggleMarketGroup);
             VBoxMarket.getChildren().add(i, toggleButton);
@@ -218,8 +215,10 @@ public class InGameCommonsController extends JFXController {
 
         for (int i=0; i<4; i++){
             ToggleButton toggleButton = new ToggleButton();
-            toggleButton.setMaxSize(50.0, 38.0);
-            toggleButton.setMinSize(50.0, 38.0);
+            toggleButton.setMaxWidth(51.25);
+            toggleButton.setMinWidth(51.25);
+            toggleButton.setMaxHeight(40.0);
+            toggleButton.setMinHeight(40.0);
             toggleButton.setUserData(new Couple(i, "column"));
             toggleButton.setToggleGroup(toggleMarketGroup);
             HBoxMarket.getChildren().add(i, toggleButton);
@@ -231,38 +230,9 @@ public class InGameCommonsController extends JFXController {
     private Label alertsLabel;
 
     private String getDevelopmentcardImage(int row, int column){
-        return gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath();
-    }
-
-    private DumbDevelopmentCard getDevelopmentcard(int row, int column){
-        return gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column];
-    }
-
-    public void renderCommon(){
-        this.imageView00 = new ImageView(getDevelopmentcardImage(0, 0));
-        this.imageView01 = new ImageView(getDevelopmentcardImage(0, 1));
-        this.imageView02 = new ImageView(getDevelopmentcardImage(0, 2));
-        this.imageView03 = new ImageView(getDevelopmentcardImage(0, 3));
-        this.imageView10 = new ImageView(getDevelopmentcardImage(1, 0));
-        this.imageView11 = new ImageView(getDevelopmentcardImage(1, 1));
-        this.imageView12 = new ImageView(getDevelopmentcardImage(1, 2));
-        this.imageView13 = new ImageView(getDevelopmentcardImage(1, 3));
-        this.imageView20 = new ImageView(getDevelopmentcardImage(2, 0));
-        this.imageView21 = new ImageView(getDevelopmentcardImage(2, 1));
-        this.imageView22 = new ImageView(getDevelopmentcardImage(2, 2));
-        this.imageView23 = new ImageView(getDevelopmentcardImage(2, 3));
-        toggleButton00.setUserData(getDevelopmentcard(0, 0));
-        toggleButton00.setUserData(getDevelopmentcard(0, 1));
-        toggleButton00.setUserData(getDevelopmentcard(0, 2));
-        toggleButton00.setUserData(getDevelopmentcard(0, 3));
-        toggleButton00.setUserData(getDevelopmentcard(1, 0));
-        toggleButton00.setUserData(getDevelopmentcard(1, 1));
-        toggleButton00.setUserData(getDevelopmentcard(1, 2));
-        toggleButton00.setUserData(getDevelopmentcard(1, 3));
-        toggleButton00.setUserData(getDevelopmentcard(2, 0));
-        toggleButton00.setUserData(getDevelopmentcard(2, 1));
-        toggleButton00.setUserData(getDevelopmentcard(2, 2));
-        toggleButton00.setUserData(getDevelopmentcard(2, 3));
+        String path;
+        path = gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT)+".png";
+        return path;
     }
 
     @FXML
@@ -271,13 +241,20 @@ public class InGameCommonsController extends JFXController {
     }
 
     private String getMarbleImage(int row, int column){
-        return switch (gui.getDumbModel().getMarket().getMarket()[row][column].getMarbleColor()) {
-            case "WHITE" -> "src/main/resources/img/marbles/whiteMarble.png";
-            case "RED" -> "src/main/resources/img/marbles/redMarble.png";
-            case "GREY" -> "src/main/resources/img/marbles/greyMarble.png";
-            case "BLUE" -> "src/main/resources/img/marbles/blueMarble.png";
-            case "YELLOW" -> "src/main/resources/img/marbles/yellowMarble.png";
-            case "PURPLE" -> "src/main/resources/img/marbles/purpleMarble.png";
+        String name;
+        if (row==-1){
+            name = gui.getDumbModel().getMarket().getExtraMarble().name();
+        }
+        else {
+            name = gui.getDumbModel().getMarket().getMarket()[row][column].name();
+        }
+        return switch (name) {
+            case "WHITE" -> "img/marbles/white.png";
+            case "RED" -> "img/marbles/red.png";
+            case "GREY" -> "img/marbles/grey.png";
+            case "BLUE" -> "img/marbles/blue.png";
+            case "YELLOW" -> "img/marbles/yellow.png";
+            case "PURPLE" -> "img/marbles/purple.png";
             default -> null;
         };
     }
@@ -313,53 +290,7 @@ public class InGameCommonsController extends JFXController {
         //todo: chiamare metodo della gui con cui passare la carta al InGamePersonal
     }
 
-    /**
-     * @param choose is "column" or "row" depending on the user choose
-     * @param index is the index of row or column chosen by the user
-     * @return marbles in the column or row chosen
-     */
-    private Map<MarketMarble, Integer> getMarbles(String choose, Integer index){
-        switch (choose){
-            case "row": {
-                Map<MarketMarble, Integer> marbles = new HashMap<>();
-                for (MarketMarble marble: gui.getDumbModel().getMarket().getMarket()[index]) {
-                    if (marbles.containsKey(marble)){
-                        int quantity = marbles.remove(marble);
-                        marbles.put(marble, quantity+1);
-                    }
-                    else {
-                        marbles.put(marble, 1);
-                    }
-                }
-
-                return marbles;
-            }
-
-            case "column": {
-                Map<MarketMarble, Integer> marbles = new HashMap<>();
-                for (int i = 0; i < 3; i++){
-                    MarketMarble marble = gui.getDumbModel().getMarket().getMarket()[i][index];
-                    if (marbles.containsKey(marble)){
-                        int quantity = marbles.remove(marble);
-                        marbles.put(marble, quantity+1);
-                    }
-                    else {
-                        marbles.put(marble, 1);
-                    }
-                }
-
-                return marbles;
-            }
-
-            default: return null;
-        }
-    }
-
-    private boolean marketChoose(ToggleButton toggleButton) {
-        return false;
-    }
-
-    private class Couple {
+    private static class Couple {
         Integer index;
         String choose;
 
@@ -386,35 +317,20 @@ public class InGameCommonsController extends JFXController {
 
     private void setMarketGraphic(){
 
-//        for (int i = 0; i < 3; i++){
-//            for (int j = 0; j<4; j++){
-//                ImageView imageView = (ImageView) getNodeByRowColumnIndex(i, j);
-//                imageView.setImage(new Image(getMarbleImage(0, 0)));
-//            }
-//        }
-    }
+        imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
 
-    public Node getNodeByRowColumnIndex (final int row, final int column) {
-        Node result = null;
-        ObservableList<Node> childrens = gridMarket.getChildren();
-
-        for (Node node : childrens) {
-            if(gridMarket.getRowIndex(node) == row && gridMarket.getColumnIndex(node) == column) {
-                result = node;
-                break;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j<4; j++){
+                ImageView imageView = new ImageView(getMarbleImage(i, j));
+                imageView.setFitWidth(51.25);
+                imageView.setFitHeight(56.67);
+                gridMarket.add(imageView, j, i);
             }
         }
-
-        return result;
     }
 
     private boolean isRow(String choose){
-        if (choose.equals("row")){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return choose.equals("row");
     }
 
     private void resetCommon(){
@@ -422,5 +338,64 @@ public class InGameCommonsController extends JFXController {
         invisibleVerticalMarketPane.toFront();
         invisibleHorizontalMarketPane.toFront();
         invisibleDevelopmentPane.toFront();
+        populateInfoLabel("");
+    }
+
+    private void initializeGridPaneArray()
+    {
+        for (int i = 0; i<3; i++){
+            for (int j = 0; j<4; j++){
+                gridMarket.add(new ImageView(), j, i);
+            }
+        }
+
+        this.gridPaneMarketArray = new Node[3][4];
+        for(Node node : this.gridMarket.getChildren())
+        {
+            if (node.hasProperties()) {
+                this.gridPaneMarketArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)] = node;
+            }
+        }
+    }
+
+    public void initialize(GUI gui) {
+        super.setGui(gui);
+        setMarketGraphic();
+        addDevelopmentCards();
+    }
+
+    @FXML
+    private void backToPersonal(){
+        gui.goToPersonalView();
+    }
+
+    @FXML
+    private void reset(){
+        actionBox.toFront();
+        invisibleVerticalMarketPane.toFront();
+        invisibleHorizontalMarketPane.toFront();
+        invisibleDevelopmentPane.toFront();
+    }
+
+    @FXML
+    private void buyDevelopmentCard(){
+        gridDevelopmentCard.toFront();
+        confirmResetBox.toFront();
+    }
+
+    private void addDevelopmentCards(){
+        for (int row = 0; row < 3; row++){
+            for (int column = 0; column <4; column++){
+                ToggleButton toggleButton = new ToggleButton();
+                toggleButton.setMinHeight(232.67);
+                toggleButton.setMaxHeight(232.67);
+                toggleButton.setMinWidth(154);
+                toggleButton.setMaxWidth(154);
+                toggleButton.setUserData(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column]);
+                toggleButton.setGraphic(new ImageView(getDevelopmentcardImage(row, column)));
+                gridDevelopmentCard.add(toggleButton, column, row);
+                toggleButton.setToggleGroup(toggleDevelopmentGroup);
+            }
+        }
     }
 }

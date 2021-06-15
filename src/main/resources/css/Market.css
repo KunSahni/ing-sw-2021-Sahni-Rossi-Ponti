@@ -1,0 +1,5 @@
+#marketVBox{
+    -fx-background-image: url('../img/plancia_portabiglie1.png');
+    -fx-background-size: 100% 100%;
+    -fx-alignment: center;
+}
