@@ -178,7 +178,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderCommons() {
-
+        commonsController.renderCommonsBoard();
     }
 
     @Override
