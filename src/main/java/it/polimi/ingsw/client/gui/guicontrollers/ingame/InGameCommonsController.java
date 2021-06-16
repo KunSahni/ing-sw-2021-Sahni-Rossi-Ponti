@@ -61,7 +61,7 @@ public class InGameCommonsController extends JFXController {
 
     private ToggleGroup toggleMarketGroup;
 
-    private Node[][] gridPaneDevelopmetCardArray = null;
+    private Node[][] gridPaneDevelopmentCardArray = null;
 
     @FXML
     private void initialize(){
@@ -119,11 +119,11 @@ public class InGameCommonsController extends JFXController {
 
     private void initializeGridPaneDevelopmentCardArray()
     {
-        this.gridPaneDevelopmetCardArray = new Node[3][4];
+        this.gridPaneDevelopmentCardArray = new Node[3][4];
         for(Node node : this.gridDevelopmentCard.getChildren())
         {
             if (node.hasProperties()) {
-                this.gridPaneDevelopmetCardArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)] = node;
+                this.gridPaneDevelopmentCardArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)] = node;
             }
         }
     }
@@ -145,7 +145,7 @@ public class InGameCommonsController extends JFXController {
     @FXML
     private Label alertsLabel;
 
-    private String getDevelopmentcardImage(int row, int column){
+    private String getDevelopmentCardImage(int row, int column){
         String path;
         path = gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT);
         return path;
@@ -286,10 +286,10 @@ public class InGameCommonsController extends JFXController {
     private void setDevelopmentCardsGraphic(){
         for (int row = 0; row < 3; row++){
             for (int column = 0; column <4; column++){
-                ImageView imageView = new ImageView(getDevelopmentcardImage(row, column));
+                ImageView imageView = new ImageView(getDevelopmentCardImage(row, column));
                 imageView.setFitWidth(154);
                 imageView.setPreserveRatio(true);
-                ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmetCardArray[row][column];
+                ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmentCardArray[row][column];
                 toggleButton.setGraphic(imageView);
             }
         }
