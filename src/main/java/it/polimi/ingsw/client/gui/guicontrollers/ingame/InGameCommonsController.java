@@ -18,119 +18,12 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class InGameCommonsController extends JFXController {
-    @FXML
-    private ImageView imageView00;
-
-    @FXML
-    private ImageView imageView01;
-
-    @FXML
-    private ImageView imageView02;
-
-    @FXML
-    private ImageView imageView03;
-
-    @FXML
-    private ImageView imageView10;
-
-    @FXML
-    private ImageView imageView11;
-
-    @FXML
-    private ImageView imageView12;
-
-    @FXML
-    private ImageView imageView13;
-
-    @FXML
-    private ImageView imageView20;
-
-    @FXML
-    private ImageView imageView21;
-
-    @FXML
-    private ImageView imageView22;
-
-    @FXML
-    private ImageView imageView23;
 
     @FXML
     private Button confirmButton;
 
     @FXML
-    private ImageView imageViewMarble00;
-
-    @FXML
-    private ImageView imageViewMarble01;
-
-    @FXML
-    private ImageView imageViewMarble02;
-
-    @FXML
-    private ImageView imageViewMarble03;
-
-    @FXML
-    private ImageView imageViewMarble10;
-
-    @FXML
-    private ImageView imageViewMarble11;
-
-    @FXML
-    private ImageView imageViewMarble12;
-
-    @FXML
-    private ImageView imageViewMarble13;
-
-    @FXML
-    private ImageView imageViewMarble20;
-
-    @FXML
-    private ImageView imageViewMarble21;
-
-    @FXML
-    private ImageView imageViewMarble22;
-
-    @FXML
-    private ImageView imageViewMarble23;
-
-    @FXML
     private ImageView imageViewExtraMarble;
-
-    @FXML
-    private ToggleButton toggleButton00;
-
-    @FXML
-    private ToggleButton toggleButton01;
-
-    @FXML
-    private ToggleButton toggleButton02;
-
-    @FXML
-    private ToggleButton toggleButton03;
-
-    @FXML
-    private ToggleButton toggleButton10;
-
-    @FXML
-    private ToggleButton toggleButton11;
-
-    @FXML
-    private ToggleButton toggleButton12;
-
-    @FXML
-    private ToggleButton toggleButton13;
-
-    @FXML
-    private ToggleButton toggleButton20;
-
-    @FXML
-    private ToggleButton toggleButton21;
-
-    @FXML
-    private ToggleButton toggleButton22;
-
-    @FXML
-    private ToggleButton toggleButton23;
 
     @FXML
     private VBox VBoxMarket;
@@ -148,18 +41,6 @@ public class InGameCommonsController extends JFXController {
     private Button resetButton;
 
     @FXML
-    private Button pickFromMarketButton;
-
-    @FXML
-    private Button buyDevelopmentCardButton;
-
-    @FXML
-    private  Button backToPersonalBoardButton;
-
-    @FXML
-    private StackPane actionStackPane;
-
-    @FXML
     private VBox actionBox;
 
     @FXML
@@ -167,9 +48,6 @@ public class InGameCommonsController extends JFXController {
 
     @FXML
     private GridPane gridMarket;
-
-    @FXML
-    private VBox marketVBox;
 
     @FXML
     private Pane invisibleDevelopmentPane;
@@ -183,7 +61,7 @@ public class InGameCommonsController extends JFXController {
 
     private ToggleGroup toggleMarketGroup;
 
-    private Node[][] gridPaneMarketArray = null;
+    private Node[][] gridPaneDevelopmetCardArray = null;
 
     @FXML
     private void initialize(){
@@ -194,8 +72,6 @@ public class InGameCommonsController extends JFXController {
         invisibleDevelopmentPane.toFront();
 
         addMarketButtons();
-
-        initializeGridPaneArray();
 
         toggleDevelopmentGroup = new ToggleGroup();
     }
@@ -226,6 +102,43 @@ public class InGameCommonsController extends JFXController {
             toggleButton.setToggleGroup(toggleMarketGroup);
             HBoxMarket.getChildren().add(i, toggleButton);
             marketButtons.get(1).add(i, toggleButton);
+        }
+    }
+
+    public void initialize(GUI gui) {
+        super.setGui(gui);
+
+        setMarketGraphic();
+
+        addDevelopmentCards();
+
+        initializeGridPaneDevelopmentCardArray();
+
+        setDevelopmentCardsGraphic();
+    }
+
+    private void initializeGridPaneDevelopmentCardArray()
+    {
+        this.gridPaneDevelopmetCardArray = new Node[3][4];
+        for(Node node : this.gridDevelopmentCard.getChildren())
+        {
+            if (node.hasProperties()) {
+                this.gridPaneDevelopmetCardArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)] = node;
+            }
+        }
+    }
+
+    private void setMarketGraphic(){
+
+        imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
+
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j<4; j++){
+                ImageView imageView = new ImageView(getMarbleImage(i, j));
+                imageView.setFitWidth(51.25);
+                imageView.setFitHeight(56.67);
+                gridMarket.add(imageView, j, i);
+            }
         }
     }
 
@@ -271,8 +184,8 @@ public class InGameCommonsController extends JFXController {
     }
 
     private void pickMarbles(ToggleButton toggleButton){
-        String choose = null;
-        int index = 0;
+        String choose;
+        int index;
 
         Couple couple = (Couple) toggleButton.getUserData();
 
@@ -294,7 +207,6 @@ public class InGameCommonsController extends JFXController {
     private void pickDevelopmentCards(ToggleButton toggleButton) {
         DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
         gui.getPersonalController().startDevelopmentSlotSelection(chosenCard);
-        //todo: chiamare metodo della gui con cui passare la carta al InGamePersonal
     }
 
     private static class Couple {
@@ -323,20 +235,6 @@ public class InGameCommonsController extends JFXController {
         ConfirmResetButtonsStrategy.PICK_MARBLES.applyTo(confirmButton, resetButton);
     }
 
-    private void setMarketGraphic(){
-
-        imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
-
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j<4; j++){
-                ImageView imageView = new ImageView(getMarbleImage(i, j));
-                imageView.setFitWidth(51.25);
-                imageView.setFitHeight(56.67);
-                gridMarket.add(imageView, j, i);
-            }
-        }
-    }
-
     private boolean isRow(String choose){
         return choose.equals("row");
     }
@@ -347,29 +245,6 @@ public class InGameCommonsController extends JFXController {
         invisibleHorizontalMarketPane.toFront();
         invisibleDevelopmentPane.toFront();
         populateInfoLabel("");
-    }
-
-    private void initializeGridPaneArray()
-    {
-        for (int i = 0; i<3; i++){
-            for (int j = 0; j<4; j++){
-                gridMarket.add(new ImageView(), j, i);
-            }
-        }
-
-        this.gridPaneMarketArray = new Node[3][4];
-        for(Node node : this.gridMarket.getChildren())
-        {
-            if (node.hasProperties()) {
-                this.gridPaneMarketArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)] = node;
-            }
-        }
-    }
-
-    public void initialize(GUI gui) {
-        super.setGui(gui);
-        setMarketGraphic();
-        addDevelopmentCards();
     }
 
     @FXML
@@ -383,7 +258,6 @@ public class InGameCommonsController extends JFXController {
         invisibleVerticalMarketPane.toFront();
         invisibleHorizontalMarketPane.toFront();
         invisibleDevelopmentPane.toFront();
-        Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
         Optional.ofNullable(toggleMarketGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 
@@ -403,13 +277,28 @@ public class InGameCommonsController extends JFXController {
                 toggleButton.setMinWidth(154);
                 toggleButton.setMaxWidth(154);
                 toggleButton.setUserData(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column]);
-                ImageView imageView = new ImageView(getDevelopmentcardImage(row, column));
-                imageView.setFitWidth(154);
-                imageView.setPreserveRatio(true);
-                toggleButton.setGraphic(imageView);
                 gridDevelopmentCard.add(toggleButton, column, row);
                 toggleButton.setToggleGroup(toggleDevelopmentGroup);
             }
         }
+    }
+
+    private void setDevelopmentCardsGraphic(){
+        for (int row = 0; row < 3; row++){
+            for (int column = 0; column <4; column++){
+                ImageView imageView = new ImageView(getDevelopmentcardImage(row, column));
+                imageView.setFitWidth(154);
+                imageView.setPreserveRatio(true);
+                ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmetCardArray[row][column];
+                toggleButton.setGraphic(imageView);
+            }
+        }
+    }
+
+    public void renderCommonsBoard(){
+        setDevelopmentCardsGraphic();
+        setMarketGraphic();
+        Optional.ofNullable(toggleMarketGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
+        Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 }
