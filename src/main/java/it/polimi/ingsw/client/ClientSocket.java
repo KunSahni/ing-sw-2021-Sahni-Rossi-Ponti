@@ -84,7 +84,7 @@ public class ClientSocket {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Sent message instance of: " + message.getClass().getSimpleName());
+        // logger.info("Sent message instance of: " + message.getClass().getSimpleName());
     }
 
     /**
@@ -98,6 +98,6 @@ public class ClientSocket {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Sent action instance of: " + action.getClass().getSimpleName());
+        // logger.info("Sent action instance of: " + action.getClass().getSimpleName());
     }
 }

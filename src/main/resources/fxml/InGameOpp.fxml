@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="720.0" maxWidth="1280.0" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/PlayerBoard.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameOppController">
+<StackPane maxHeight="720.0" maxWidth="1280.0" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../css/PlayerBoard.css" xmlns="http://javafx.com/javafx/15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameOppController">
    <children>
       <VBox id="player-board" fx:id="personalBoardLayer" fillWidth="false" maxHeight="720.0" maxWidth="1008.0" minHeight="720.0" minWidth="1008.0" prefHeight="720.0" prefWidth="1008.0" StackPane.alignment="TOP_RIGHT">
          <children>

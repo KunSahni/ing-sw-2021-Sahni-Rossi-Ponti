@@ -11,13 +11,16 @@ public enum ConfirmResetButtonsStrategy {
     PICK_MARBLES,
     BUY_DEVELOPMENT_CARD,
     SELECT_DEVELOPMENT_SLOT,
-    SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD;
+    SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD,
+    DISCARD_LEADER_CARD;
 
     public void applyTo(Button confirmButton, Button resetButton) {
         switch (this) {
             case NONE -> setStrategy(confirmButton, resetButton, null, false, false);
-            case PRE_GAME_LEADER_CARDS_CHOICE, SELECT_MARBLES -> setStrategy(confirmButton, resetButton, this, true, false);
-            case PRE_GAME_RESOURCES_CHOICE, SELECT_DEVELOPMENT_SLOT, SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> setStrategy(confirmButton, resetButton, this, true, true);
+            case PRE_GAME_LEADER_CARDS_CHOICE, SELECT_MARBLES -> setStrategy(confirmButton,
+                    resetButton, this, true, false);
+            case PRE_GAME_RESOURCES_CHOICE, SELECT_DEVELOPMENT_SLOT,
+                    SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD, DISCARD_LEADER_CARD -> setStrategy(confirmButton, resetButton, this, true, true);
             case VISIT -> setStrategy(confirmButton, resetButton, this, false, true);
             case PICK_MARBLES -> setStrategy(confirmButton, resetButton, this, true, true);
             case BUY_DEVELOPMENT_CARD -> setStrategy(confirmButton, resetButton, this, true, true);
@@ -25,8 +28,8 @@ public enum ConfirmResetButtonsStrategy {
     }
 
     private void setStrategy(Button confirmButton, Button resetButton,
-                            ConfirmResetButtonsStrategy strategy, boolean confirmVisibility,
-                            boolean resetVisibility) {
+                             ConfirmResetButtonsStrategy strategy, boolean confirmVisibility,
+                             boolean resetVisibility) {
         confirmButton.setUserData(strategy);
         resetButton.setUserData(strategy);
         confirmButton.setVisible(confirmVisibility);

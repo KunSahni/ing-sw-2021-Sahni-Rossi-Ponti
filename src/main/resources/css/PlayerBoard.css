@@ -23,6 +23,14 @@
     -fx-fill: #ff1f1f;
 }
 
+.active-leader-card {
+    -fx-effect: innershadow(three-pass-box, #147001, 8, 0.3, 0, 0);
+}
+
+.inactive-leader-card {
+    -fx-effect: innershadow(three-pass-box, #730a02, 35, 0.4, 0, 0);
+}
+
 #player-board {
     -fx-background-image: url("../img/board.png");
     -fx-background-size: contain;

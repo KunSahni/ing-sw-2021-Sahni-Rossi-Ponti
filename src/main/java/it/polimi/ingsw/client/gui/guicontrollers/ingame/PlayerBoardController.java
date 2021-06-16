@@ -246,7 +246,7 @@ public abstract class PlayerBoardController extends JFXController {
 
     private void renderDevelopmentCardSlots(DumbPersonalBoard dumbPersonalBoard) {
         IntStream.range(0, 3).forEach(i -> {
-            StackPane slotPane = devCardSlotsStackPanes.get(0);
+            StackPane slotPane = devCardSlotsStackPanes.get(i);
             DumbDevelopmentCard peekedCard =
                     dumbPersonalBoard.getDevelopmentCardSlots().get(i).peek();
             synchronized (slotPane) {
@@ -274,6 +274,6 @@ public abstract class PlayerBoardController extends JFXController {
         imageView.setPreserveRatio(true);
         toggleButton.setGraphic(imageView);
         toggleButton.setTranslateY(stackPane.getChildren().size() * (-50));
-        stackPane.getChildren().add(toggleButton);
+        Platform.runLater(() -> stackPane.getChildren().add(toggleButton));
     }
 }

@@ -93,7 +93,7 @@ public class Connection implements Runnable {
     public synchronized void readFromInputStream() {
         SerializedMessage serializedMessage = null;
         try {
-            logger.info("Waiting to read next client message. Current state: " + state.getClass().getSimpleName());
+            // logger.info("Waiting to read next client message. Current state: " + state.getClass().getSimpleName());
             serializedMessage = (SerializedMessage) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -183,7 +183,7 @@ public class Connection implements Runnable {
      * @param renderable is sent to the Client
      */
     public void send(Renderable renderable) {
-        logger.info("Sent " + renderable.getClass().getSimpleName() + " to " + nickname);
+        // logger.info("Sent " + renderable.getClass().getSimpleName() + " to " + nickname);
         try {
             outputStream.writeObject(renderable);
             outputStream.flush();

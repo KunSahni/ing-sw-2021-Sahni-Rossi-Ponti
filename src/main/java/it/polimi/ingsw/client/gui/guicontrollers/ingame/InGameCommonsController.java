@@ -129,17 +129,18 @@ public class InGameCommonsController extends JFXController {
     }
 
     private void setMarketGraphic(){
+        Platform.runLater(() -> {
+            imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
 
-        imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
-
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j<4; j++){
-                ImageView imageView = new ImageView(getMarbleImage(i, j));
-                imageView.setFitWidth(51.25);
-                imageView.setFitHeight(56.67);
-                gridMarket.add(imageView, j, i);
+            for (int i = 0; i < 3; i++){
+                for (int j = 0; j<4; j++){
+                    ImageView imageView = new ImageView(getMarbleImage(i, j));
+                    imageView.setFitWidth(51.25);
+                    imageView.setFitHeight(56.67);
+                    gridMarket.add(imageView, j, i);
+                }
             }
-        }
+        });
     }
 
     @FXML
@@ -284,15 +285,18 @@ public class InGameCommonsController extends JFXController {
     }
 
     private void setDevelopmentCardsGraphic(){
-        for (int row = 0; row < 3; row++){
-            for (int column = 0; column <4; column++){
-                ImageView imageView = new ImageView(getDevelopmentCardImage(row, column));
-                imageView.setFitWidth(154);
-                imageView.setPreserveRatio(true);
-                ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmentCardArray[row][column];
-                toggleButton.setGraphic(imageView);
+        Platform.runLater(() -> {
+            for (int row = 0; row < 3; row++){
+                for (int column = 0; column <4; column++){
+                    ImageView imageView = new ImageView(getDevelopmentCardImage(row, column));
+                    imageView.setFitWidth(154);
+                    imageView.setPreserveRatio(true);
+                    ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmentCardArray[row][column];
+                    toggleButton.setGraphic(imageView);
+                }
             }
-        }
+        });
+
     }
 
     public void renderCommonsBoard(){

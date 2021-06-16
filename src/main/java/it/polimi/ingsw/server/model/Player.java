@@ -122,7 +122,6 @@ public class Player implements Comparable<Player> {
     public void chooseTwoLeaderCards(List<LeaderCard> chosenCards) {
         personalBoard.setLeaderCards(chosenCards);
         this.tempLeaderCards.clear();
-        changesHandler.writePlayer(this);
     }
 
     /**

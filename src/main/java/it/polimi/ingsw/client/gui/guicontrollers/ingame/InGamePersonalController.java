@@ -2,10 +2,7 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
-import it.polimi.ingsw.network.clienttoserver.action.playeraction.EndTurnAction;
-import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameLeaderCardsChoiceAction;
-import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourceChoiceAction;
-import it.polimi.ingsw.network.clienttoserver.action.playeraction.SelectMarblesAction;
+import it.polimi.ingsw.network.clienttoserver.action.playeraction.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -28,6 +25,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static javafx.scene.paint.Color.WHITE;
 
 public class InGamePersonalController extends PlayerBoardController {
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -75,6 +74,7 @@ public class InGamePersonalController extends PlayerBoardController {
     private final Map<Resource, Integer> chosenResourcesMap = new HashMap<>();
     @FXML
     private ToggleGroup selectDevCardSlotToggleGroup;
+    private final ToggleGroup leaderCardDiscardToggleGroup = new ToggleGroup();
 
     @FXML
     @Override
@@ -86,11 +86,7 @@ public class InGamePersonalController extends PlayerBoardController {
         shieldButton.setOnAction(e -> addResourceToChoiceMap(Resource.SHIELD));
         stoneButton.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
         // Initialize Dev Card slot selection buttons
-        IntStream.range(0, 3).forEach(i -> {
-            ToggleButton button = (ToggleButton) selectDevCardSlotToggleGroup.getToggles().get(i);
-            button.setVisible(false);
-            button.setUserData(i);
-        });
+        IntStream.range(0, 3).forEach(i -> ((ToggleButton) selectDevCardSlotToggleGroup.getToggles().get(i)).setVisible(false));
     }
 
     public void initialize(GUI gui) {
@@ -126,6 +122,8 @@ public class InGamePersonalController extends PlayerBoardController {
             case PRE_GAME_RESOURCES_CHOICE -> confirmPreGameResourceChoice();
             case SELECT_MARBLES -> confirmMarbleSelection();
             case SELECT_DEVELOPMENT_SLOT -> confirmDevelopmentSlotSelection();
+            case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> confirmDevelopmentCardPurchase();
+            case DISCARD_LEADER_CARD -> confirmDiscardLeaderCard();
         }
     }
 
@@ -136,7 +134,9 @@ public class InGamePersonalController extends PlayerBoardController {
                 chosenResourcesMap.clear();
                 populateInfoLabel("Resource choice cleared.");
             }
-            case VISIT -> bringToFront(actionsLayer, personalBoardLayer);
+            case VISIT, SELECT_DEVELOPMENT_SLOT -> bringToFront(actionsLayer, personalBoardLayer);
+            case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> cancelResourceChoice();
+            case DISCARD_LEADER_CARD -> cancelDiscardLeaderCard();
         }
     }
 
@@ -179,11 +179,13 @@ public class InGamePersonalController extends PlayerBoardController {
         // leader cards choice
         List<DumbLeaderCard> cards = dumbPersonalBoard.getLeaderCards();
         cards.forEach(card -> Platform.runLater(() -> leaderCardsHBox.getChildren().add(createLeaderCardNode(card))));
+        Platform.runLater(() -> preGameLeaderCardSelectionLayer.getChildren().clear());
     }
 
     private ToggleButton createLeaderCardNode(DumbLeaderCard card) {
         ToggleButton button = new ToggleButton();
         button.setUserData(card);
+        button.getStyleClass().add("inactive-leader-card");
         ImageView image = new ImageView(getImageFromPath(card.toImgPath()));
         image.setFitWidth(135);
         image.setPreserveRatio(true);
@@ -199,6 +201,7 @@ public class InGamePersonalController extends PlayerBoardController {
                         new ImageView(getImageFromPath(storeLeaderCard.getStoredType().toImgPath()));
                 resourceImage.setFitWidth(35);
                 resourceImage.setPreserveRatio(true);
+                resourceImage.setVisible(false);
                 // resourceImage.setVisible(false);
                 resourcesHBox.getChildren().add(resourceImage);
             });
@@ -233,13 +236,20 @@ public class InGamePersonalController extends PlayerBoardController {
                             .filter(card -> card.toImgPath().equals(cardInButton.toImgPath()))
                             .findAny();
                     cardInBoardOptional.ifPresentOrElse(cardInBoard -> {
-                                if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
-                                    IntStream.range(0, 2).forEach(i -> {
-                                        HBox resourcesHBox =
-                                                (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
-                                        resourcesHBox.getChildren().get(i)
-                                                .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
-                                    });
+                                if (cardInBoard.isActive()) {
+                                    if (!cardInButton.isActive()) {
+                                        leaderCardButton.getStyleClass().add("active-leader-card");
+                                        leaderCardButton.getStyleClass().remove("inactive-leader-card");
+                                        leaderCardButton.setUserData(cardInBoard);
+                                    }
+                                    if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
+                                        IntStream.range(0, 2).forEach(i -> {
+                                            HBox resourcesHBox =
+                                                    (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
+                                            resourcesHBox.getChildren().get(i)
+                                                    .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
+                                        });
+                                    }
                                 }
                             },
                             () -> leaderCardButton.setVisible(false));
@@ -251,9 +261,9 @@ public class InGamePersonalController extends PlayerBoardController {
         hBox.setSpacing(10);
         leaderCards.forEach(card -> hBox.getChildren().add(createPreGameLeaderCardToggleButton(card)));
         Platform.runLater(() -> preGameLeaderCardSelectionLayer.getChildren().add(hBox));
-        bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
         ConfirmResetButtonsStrategy.PRE_GAME_LEADER_CARDS_CHOICE.applyTo(confirmButton,
                 resetButton);
+        bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
     }
 
     private ToggleButton createPreGameLeaderCardToggleButton(DumbLeaderCard card) {
@@ -321,6 +331,29 @@ public class InGamePersonalController extends PlayerBoardController {
             reset();
             populateInfoLabel("Illegal resource choice, please retry.");
         }
+    }
+
+    @FXML
+    private void startDiscardLeaderCard() {
+        leaderCardsHBox.getChildren().stream().map(node -> (ToggleButton) node).forEach(button -> button.setToggleGroup(leaderCardDiscardToggleGroup));
+        ConfirmResetButtonsStrategy.DISCARD_LEADER_CARD.applyTo(confirmButton, resetButton);
+        bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
+    }
+
+    private void confirmDiscardLeaderCard() {
+        DumbLeaderCard toDiscardLeaderCard =
+                (DumbLeaderCard) leaderCardDiscardToggleGroup.getSelectedToggle().getUserData();
+        if (gui.getInputVerifier().canDiscard(toDiscardLeaderCard)) {
+            gui.getClientSocket().sendAction(new DiscardLeaderCardAction(toDiscardLeaderCard));
+            cancelDiscardLeaderCard();
+        } else {
+            populateInfoLabel("Invalid Leader Card discard!");
+        }
+    }
+
+    private void cancelDiscardLeaderCard() {
+        leaderCardDiscardToggleGroup.getToggles().clear();
+        bringToFront(actionsLayer, personalBoardLayer);
     }
 
     public synchronized void startTempMarblesChoice(Map<MarketMarble, Integer> tempMarbles) {
@@ -416,11 +449,32 @@ public class InGamePersonalController extends PlayerBoardController {
 
     private void confirmDevelopmentSlotSelection() {
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
-        ((ToggleButton) selectDevCardSlotToggleGroup.getSelectedToggle()).setUserData(confirmButton.getUserData());
-        startResourceChoice();
+        startResourceChoice(((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost());
     }
 
-    private void startResourceChoice() {
+    private void confirmDevelopmentCardPurchase() {
+        ToggleButton selectedDevelopmentSlotToggleButton =
+                (ToggleButton) selectDevCardSlotToggleGroup.getSelectedToggle();
+        DumbDevelopmentCard selectedCard =
+                (DumbDevelopmentCard) selectedDevelopmentSlotToggleButton.getUserData();
+        Map<Resource, Integer> depotsMap = createDepotsMapFromSliders();
+        Map<Resource, Integer> strongboxMap = createStrongboxMapFromSliders();
+        int developmentCardSlotIndex =
+                selectDevCardSlotToggleGroup.getToggles().indexOf(selectedDevelopmentSlotToggleButton) + 1;
+        if (gui.getInputVerifier().canBuy(selectedCard.getLevel(), selectedCard.getColor(),
+                developmentCardSlotIndex, depotsMap, strongboxMap)) {
+            gui.getClientSocket().sendAction(new BuyDevelopmentCardAction(selectedCard.getLevel(),
+                    selectedCard.getColor(), developmentCardSlotIndex, depotsMap, strongboxMap));
+        } else {
+            populateInfoLabel("Invalid Development Card purchase!");
+            reset();
+        }
+    }
+
+    private void startResourceChoice(Map<Resource, Integer> requiredResources) {
+        StringBuilder requiredResourcesMessage = new StringBuilder("The selected action requires the following resources:");
+        requiredResources.forEach((resource, quantity) -> requiredResourcesMessage.append("\n").append(resource).append(": x").append(quantity));
+        resourceSelectionText.setText(requiredResourcesMessage.toString());
         Map<String, Map<Resource, Integer>> resourceContainersMap = new HashMap<>();
         DumbPersonalBoard personalBoard = gui.getDumbModel().getOwnPersonalBoard();
         if (personalBoard.getDepots().getResourceCount() > 0)
@@ -433,8 +487,10 @@ public class InGamePersonalController extends PlayerBoardController {
                 .filter(card -> card.isActive() && card.getAbility().equals(LeaderCardAbility.STORE))
                 .map(card -> (DumbStoreLeaderCard) card)
                 .filter(card -> card.getResourceCount() > 0)
-                .forEach(card -> resourceContainersMap.put(card.getStoredType() + " Store Leader Card", card.getStoredResources()));
-        resourceContainersMap.forEach((containerName, resourcesMap) -> resourceSelectionSlidersTilePane.getChildren().add(createResourceSlidersBorderPane(containerName, resourcesMap)));
+                .forEach(card -> resourceContainersMap.put(card.getStoredType() + " Store Leader " +
+                        "Card", card.getStoredResources()));
+        resourceContainersMap.forEach((containerName, resourcesMap) ->
+                resourceSelectionSlidersTilePane.getChildren().add(createResourceSlidersBorderPane(containerName, resourcesMap)));
         ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, resourceSelectionLayer);
     }
@@ -442,26 +498,88 @@ public class InGamePersonalController extends PlayerBoardController {
     private BorderPane createResourceSlidersBorderPane(String labelText,
                                                        Map<Resource, Integer> chosenResourcesMap) {
         BorderPane pane = new BorderPane();
+        pane.setId(labelText);
         pane.getStyleClass().add("left-pane");
-        pane.setTop(new Label(labelText));
+        Label sliderTileLabel = new Label(labelText);
+        sliderTileLabel.setTextFill(WHITE);
+        pane.setTop(sliderTileLabel);
+        sliderTileLabel.setAlignment(Pos.CENTER);
         VBox slidersVBox = new VBox();
         chosenResourcesMap.forEach((resource, quantity) -> {
             HBox imageSliderHBox = new HBox();
             imageSliderHBox.setAlignment(Pos.CENTER);
+            imageSliderHBox.setSpacing(12);
+            imageSliderHBox.setPadding(new Insets(15));
             ImageView resourceImage = new ImageView(getImageFromPath(resource.toImgPath()));
-            resourceImage.setFitWidth(45);
-            resourceImage.setFitHeight(45);
+            resourceImage.setFitWidth(35);
+            resourceImage.setPreserveRatio(true);
             imageSliderHBox.getChildren().add(resourceImage);
             Slider quantitySelectionSlider = new Slider(0, quantity, 0);
             quantitySelectionSlider.setShowTickLabels(true);
             quantitySelectionSlider.setShowTickMarks(true);
             quantitySelectionSlider.setSnapToTicks(true);
+            quantitySelectionSlider.setMajorTickUnit(1);
+            quantitySelectionSlider.setMinorTickCount(0);
             quantitySelectionSlider.setUserData(resource);
             imageSliderHBox.getChildren().add(quantitySelectionSlider);
             slidersVBox.getChildren().add(imageSliderHBox);
         });
         pane.setCenter(slidersVBox);
         return pane;
+    }
+
+    private Map<Resource, Integer> createDepotsMapFromSliders() {
+        List<Map<Resource, Integer>> depotsAndLeaderCardsStorages = new ArrayList<>();
+        depotsAndLeaderCardsStorages.add(getResourceMapFromSliders("Warehouse Depots"));
+        gui.getDumbModel().getOwnPersonalBoard().getLeaderCards().stream()
+                .filter(card -> card.isActive() && card.getAbility().equals(LeaderCardAbility.STORE))
+                .map(card -> (DumbStoreLeaderCard) card)
+                .filter(storeLeaderCard -> storeLeaderCard.getResourceCount() > 0)
+                .forEach(dumbStoreLeaderCard ->
+                        depotsAndLeaderCardsStorages.add(getResourceMapFromSliders(dumbStoreLeaderCard.getStoredType() + " Store Leader Card")));
+        Map<Resource, Integer> depotsMap = new HashMap<>();
+        Map<Resource, Integer> finalDepotsMap = depotsMap;
+        depotsAndLeaderCardsStorages.forEach(storage -> storage.forEach((resource, quantity) ->
+                finalDepotsMap.compute(resource, (k, v) -> (v == null) ? quantity : v + quantity)));
+        if (finalDepotsMap.values().stream().reduce(0, Integer::sum) == 0) depotsMap = null;
+        else depotsMap = finalDepotsMap;
+        return depotsMap;
+    }
+
+    private Map<Resource, Integer> createStrongboxMapFromSliders() {
+        Map<Resource, Integer> strongboxMap = getResourceMapFromSliders("Strongbox");
+        if (strongboxMap.values().stream().reduce(0, Integer::sum) == 0) strongboxMap = null;
+        return strongboxMap;
+    }
+
+    /**
+     * Returns a Map, even with no entries, parsed from the sliders. Each value is > 0
+     *
+     * @param id
+     * @return
+     */
+    public Map<Resource, Integer> getResourceMapFromSliders(String id) {
+        Map<Resource, Integer> resourcesMap = new HashMap<>();
+        Optional<BorderPane> containerBorderPane =
+                resourceSelectionSlidersTilePane.getChildren().stream()
+                        .filter(node -> node.getId().equals(id))
+                        .map(node -> (BorderPane) node)
+                        .findAny();
+        containerBorderPane.ifPresent(borderPane -> {
+            VBox slidersParent = (VBox) borderPane.getCenter();
+            slidersParent.getChildren().forEach(node -> {
+                Slider resourceSlider = (Slider) ((HBox) node).getChildren().get(1);
+                int quantity = (int) resourceSlider.getValue();
+                if (quantity > 0)
+                    resourcesMap.put((Resource) resourceSlider.getUserData(), quantity);
+            });
+        });
+        return resourcesMap;
+    }
+
+    private void cancelResourceChoice() {
+        bringToFront(actionsLayer, personalBoardLayer);
+        Platform.runLater(() -> resourceSelectionSlidersTilePane.getChildren().clear());
     }
 
     private void bringToFront(Node left, Node right) {

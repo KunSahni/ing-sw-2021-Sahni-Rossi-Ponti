@@ -249,15 +249,16 @@ public class PersonalBoard implements VictoryPointsElement {
                 .filter(leaderCard -> (leaderCard instanceof StoreLeaderCard) && leaderCard.isActive())
                 .map(leaderCard -> (StoreLeaderCard) leaderCard)
                 .filter(storeLeaderCard -> storeInLeaderCards.containsKey(storeLeaderCard.getStoredType()))
-                .forEach(storeLeaderCard -> storeLeaderCard.storeResources(
-                        new HashMap<>() {{
-                            put(storeLeaderCard.getStoredType(),
-                                    storeInLeaderCards.get(storeLeaderCard.getStoredType()));
-                        }}
-                ));
+                .forEach(storeLeaderCard -> {
+                    Integer quantity = storeInLeaderCards.get(storeLeaderCard.getStoredType());
+                    if (quantity != null) storeLeaderCard.storeResources(new HashMap<>() {{
+                        put(storeLeaderCard.getStoredType(),
+                                storeInLeaderCards.get(storeLeaderCard.getStoredType()));
+                    }});
+                    changesHandler.writePlayerLeaderCards(nickname, leaderCards);
+                });
         storeInLeaderCards.forEach((k, v) -> resources.put(k, resources.get(k) - v));
         warehouseDepots.storeResources(resources);
-        changesHandler.writePlayerLeaderCards(nickname, leaderCards);
         changesHandler.writeWarehouseDepots(nickname, warehouseDepots);
     }
 

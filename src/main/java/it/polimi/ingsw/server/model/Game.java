@@ -151,7 +151,7 @@ public class Game {
      * @param gameState specified GameState.
      */
     public void setState(GameState gameState) {
-        logger.info("Updated game state: " + gameState);
+        // logger.info("Updated game state: " + gameState);
         currentState = gameState;
         changesHandler.writeGameState(currentState);
         changesHandler.flushBufferToDisk();

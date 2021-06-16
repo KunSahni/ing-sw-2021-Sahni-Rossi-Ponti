@@ -58,7 +58,7 @@ public class Lobby {
      * @param connection is the connection of the player
      */
     public synchronized void addPlayer(String nickname, Connection connection) {
-        logger.info("Player " + nickname + " is being added to the lobby.");
+        // logger.info("Player " + nickname + " is being added to the lobby.");
         players.put(nickname, connection);
         connection.send(new JoinedLobbyNotification(maxGameId, size));
         if (isFull()) {
@@ -94,7 +94,7 @@ public class Lobby {
      * Finally increase maxGameId, overwrite it in memory and call clear method.
      */
     public void startGame() {
-        logger.info("Launching game " + maxGameId);
+        // logger.info("Launching game " + maxGameId);
         players.values().forEach(connection -> connection.send(new GameStartedNotification()));
         Game game = null;
         try {
