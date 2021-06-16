@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
@@ -113,5 +114,10 @@ public class BuyDevelopmentCardAction extends PlayerAction {
         discardedResourcesFromStrongbox.forEach((key, value) ->
                 passedResources.merge(key, value, Integer::sum));
         return cost.equals(passedResources);
+    }
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.BUY_DEVELOPMENT_CARD;
     }
 }

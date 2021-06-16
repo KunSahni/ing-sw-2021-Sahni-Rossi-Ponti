@@ -18,6 +18,25 @@ public interface UI extends Subscriber<Renderable> {
 
     void renderCommons();
 
+    //Management of confirmation messages
+    void renderActivateLeaderCardConfirmation();
+
+    void renderActivateProductionConfirmation();
+
+    void renderBuyDevelopmentCardConfirmation();
+
+    void renderDiscardLeaderCardConfirmation();
+
+    void renderEndTurnConfirmation();
+
+    void renderPregameLeaderCardsChoiceConfirmation();
+
+    void renderPregameResourceChoiceConfirmation();
+
+    void renderSelectMarblesConfirmation();
+
+    void renderTakeFromMarketConfirmation();
+
     void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
     //todo: decide how should action tokens be used
 

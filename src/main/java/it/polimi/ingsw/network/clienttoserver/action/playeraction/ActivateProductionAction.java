@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.personalboard.DefaultSlot;
@@ -146,5 +147,10 @@ public class ActivateProductionAction extends PlayerAction {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.ACTIVATE_PRODUCTION;
     }
 }

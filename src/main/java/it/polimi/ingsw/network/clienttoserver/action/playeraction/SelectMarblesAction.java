@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
@@ -128,5 +129,10 @@ public class SelectMarblesAction extends PlayerAction {
                         );
                 }
         );
+    }
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.SELECT_MARBLES;
     }
 }

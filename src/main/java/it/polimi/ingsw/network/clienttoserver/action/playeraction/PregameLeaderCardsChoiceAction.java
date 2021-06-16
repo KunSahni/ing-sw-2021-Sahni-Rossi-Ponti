@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.AssignInkwellAction;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.utils.GameState;
 
 import java.util.List;
@@ -46,5 +47,11 @@ public class PregameLeaderCardsChoiceAction extends PlayerAction {
         if (!game.getPlayer(nickname).getTempLeaderCards().containsAll(
                 leaderCards.stream().map(DumbLeaderCard::convert).collect(Collectors.toList())))
             throw new InvalidActionException("Selected cards are invalid");
+    }
+
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.PREGAME_LEADER_CARDS_CHOICE;
     }
 }

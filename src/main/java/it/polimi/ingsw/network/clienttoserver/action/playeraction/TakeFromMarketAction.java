@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
@@ -42,5 +43,10 @@ public class TakeFromMarketAction extends PlayerAction {
         super.runChecks();
         if (!player.isValidNextAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION))
             throw new InvalidActionException("You cannot take from market at this time");
+    }
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.TAKE_FROM_MARKET;
     }
 }

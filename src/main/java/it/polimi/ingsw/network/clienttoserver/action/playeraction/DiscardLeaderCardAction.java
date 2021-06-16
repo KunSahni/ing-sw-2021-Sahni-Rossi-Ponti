@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
@@ -37,5 +38,10 @@ public class DiscardLeaderCardAction extends PlayerAction {
                 .filter(card -> card.equals(leaderCard.convert()))
                 .anyMatch(LeaderCard::isActive))
             throw new InvalidActionException("Cannot discard an active LeaderCard");
+    }
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.DISCARD_LEADER_CARD;
     }
 }

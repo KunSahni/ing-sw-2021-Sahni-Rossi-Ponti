@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.network.clienttoserver.action.Action;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.personalboard.FaithTrack;
@@ -69,4 +70,6 @@ public abstract class PlayerAction implements Action, Serializable {
             }
         }
     }
+
+    public abstract ConfirmationMessageType getConfirmationMessage();
 }

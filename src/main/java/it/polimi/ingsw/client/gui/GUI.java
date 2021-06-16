@@ -182,6 +182,51 @@ public class GUI extends Application implements UI {
     }
 
     @Override
+    public void renderActivateLeaderCardConfirmation() {
+
+    }
+
+    @Override
+    public void renderActivateProductionConfirmation() {
+
+    }
+
+    @Override
+    public void renderBuyDevelopmentCardConfirmation() {
+
+    }
+
+    @Override
+    public void renderDiscardLeaderCardConfirmation() {
+
+    }
+
+    @Override
+    public void renderEndTurnConfirmation() {
+
+    }
+
+    @Override
+    public void renderPregameLeaderCardsChoiceConfirmation() {
+
+    }
+
+    @Override
+    public void renderPregameResourceChoiceConfirmation() {
+
+    }
+
+    @Override
+    public void renderSelectMarblesConfirmation() {
+
+    }
+
+    @Override
+    public void renderTakeFromMarketConfirmation() {
+
+    }
+
+    @Override
     public void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck) {
 
     }

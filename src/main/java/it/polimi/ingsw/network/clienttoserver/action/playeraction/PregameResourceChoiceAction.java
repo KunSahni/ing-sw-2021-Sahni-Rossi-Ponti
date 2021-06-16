@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.StartGameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
@@ -52,5 +53,11 @@ public class PregameResourceChoiceAction extends PlayerAction {
         };
         if (!correctCountFlag)
             throw new InvalidActionException("Invalid number of resources supplied");
+    }
+
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.PREGAME_RESOURCE_CHOICE;
     }
 }

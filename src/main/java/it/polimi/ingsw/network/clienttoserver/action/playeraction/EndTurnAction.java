@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.LorenzoAction;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.StartNextTurnAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 
@@ -30,5 +31,11 @@ public class EndTurnAction extends PlayerAction {
         super.runChecks();
         if (!player.isValidNextAction(ExecutedActions.TURN_ENDED_ACTION))
             throw new InvalidActionException("You cannot end your turn at this time");
+    }
+
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.END_TURN;
     }
 }

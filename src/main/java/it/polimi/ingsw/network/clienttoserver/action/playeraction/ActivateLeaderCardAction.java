@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.clienttoserver.action.playeraction;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 
@@ -44,5 +45,10 @@ public class ActivateLeaderCardAction extends PlayerAction {
         if (!player.getPersonalBoard()
                 .containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements()))
             throw new InvalidActionException("You cannot afford to activate this LeaderCard");
+    }
+
+    @Override
+    public ConfirmationMessageType getConfirmationMessage() {
+        return ConfirmationMessageType.ACTIVATE_LEADER_CARD;
     }
 }
