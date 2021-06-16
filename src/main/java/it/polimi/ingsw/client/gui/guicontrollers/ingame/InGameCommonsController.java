@@ -293,6 +293,7 @@ public class InGameCommonsController extends JFXController {
 
     private void pickDevelopmentCards(ToggleButton toggleButton) {
         DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
+        gui.getPersonalController().startDevelopmentSlotSelection(chosenCard);
         //todo: chiamare metodo della gui con cui passare la carta al InGamePersonal
     }
 
