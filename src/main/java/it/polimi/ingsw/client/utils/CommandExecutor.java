@@ -282,8 +282,8 @@ public class CommandExecutor {
         List<DumbDevelopmentCard> developmentCards = new ArrayList<>();
         Map<Resource, Integer> defaultSlotOutput = new HashMap<>();
         Map<DumbProduceLeaderCard, Resource> leaderCardProduction = new HashMap<>();
-        Map<Resource, Integer> discardedResourcesFromDepots = new HashMap<>();
-        Map<Resource, Integer> discardedResourcesFromStrongbox = new HashMap<>();
+        Map<Resource, Integer> discardedResourcesFromDepots;
+        Map<Resource, Integer> discardedResourcesFromStrongbox;
 
         //parse default production arguments from command
         if(commandArgs.peek()==null)
@@ -307,7 +307,7 @@ public class CommandExecutor {
         //loop twice because there can be a maximum of 2 leader cards
         for(int i=0; i<2; i++) {
             //parse first leader card production arguments from command
-            if (commandArgs.peek() == null &&!hasSelectedAtLeastOneProduction)
+            if (commandArgs.peek() == null && !hasSelectedAtLeastOneProduction)
                 throw new WrongCommandArgsException();
 
             if (commandArgs.peek().equals("-leadercard")) {
@@ -571,6 +571,9 @@ public class CommandExecutor {
                 resources.put(resource, count);
             }
         }
+
+        if(resources.size()==0)
+            return null;
         return resources;
     }
 
