@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.utils;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
@@ -74,10 +75,34 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canBuy(Level chosenLevel, Color chosenColor, int developmentCardSlotIndex, Map<Resource, Integer> depotsResources, Map<Resource, Integer> strongboxResources){
-        return chosenColor != null && chosenLevel != null && depotsResources!=null && strongboxResources!=null
-                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), depotsResources)
-                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)
+
+        //Create a map of resources based on store leader cards
+        Map<Resource, Integer> totalDepotsResources = dumbModel.getOwnPersonalBoard()
+                .getLeaderCards()
+                .stream()
+                .filter(
+                        leaderCard -> leaderCard.getAbility().equals(LeaderCardAbility.STORE)
+                )
+                .map(
+                        leaderCard -> ((DumbStoreLeaderCard) leaderCard).getStoredResources()
+                )
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum));
+
+        //Merge the created map with actual depots resources
+        dumbModel.getOwnPersonalBoard()
+                .getDepots()
+                .getStoredResources()
+                .forEach(
+                        (key, value) -> totalDepotsResources.merge(key, value, Integer::sum)
+        );
+
+
+        return chosenColor != null && chosenLevel != null
+                && ((depotsResources !=null && legalResourcesChoice(totalDepotsResources, depotsResources))
+                || (strongboxResources!= null && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)))
                 && dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor) != null
+                && dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(developmentCardSlotIndex-1).getDevelopmentCards().size() < chosenLevel.getLevel()
                 && canDoAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION);
     }
 
