@@ -260,9 +260,9 @@ public class CommandExecutor {
         }
 
         //if action is valid, send it to server
-        if(inputVerifier.canTake(place, index))
+        if(inputVerifier.canTake(place, index-1))
             clientSocket.sendAction(
-                    new TakeFromMarketAction(index, place.equals("row"))
+                    new TakeFromMarketAction(index-1, place.equals("row"))
             );
         else
             throw new InvalidArgsException();
