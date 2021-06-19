@@ -183,7 +183,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderActivateLeaderCardConfirmation() {
-
+        personalController.endActivateLeaderCard();
     }
 
     @Override
@@ -193,12 +193,12 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderBuyDevelopmentCardConfirmation() {
-
+        personalController.endDevelopmentCardPurchase();
     }
 
     @Override
     public void renderDiscardLeaderCardConfirmation() {
-
+        personalController.endDiscardLeaderCard();
     }
 
     @Override
@@ -208,17 +208,17 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderPregameLeaderCardsChoiceConfirmation() {
-
+        personalController.endLeaderCardsChoice();
     }
 
     @Override
     public void renderPregameResourceChoiceConfirmation() {
-
+        personalController.endPreGameResourceChoice();
     }
 
     @Override
     public void renderSelectMarblesConfirmation() {
-
+        personalController.endTempMarblesChoice();
     }
 
     @Override

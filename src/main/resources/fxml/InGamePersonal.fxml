@@ -378,7 +378,7 @@
                         </VBox>
                         <VBox fx:id="actionsLayer" alignment="CENTER" maxHeight="300.0" maxWidth="200.0" minHeight="300.0" minWidth="200.0" prefHeight="300.0" prefWidth="200.0" spacing="17.0" styleClass="left-pane">
                            <children>
-                              <Button mnemonicParsing="false" text="Activate Leader Card" />
+                              <Button mnemonicParsing="false" onAction="#startActivateLeaderCard" text="Activate Leader Card" />
                               <Button layoutX="84.0" layoutY="148.0" mnemonicParsing="false" onAction="#startDiscardLeaderCard" text="Discard Leader Card" />
                               <Button layoutX="84.0" layoutY="211.0" mnemonicParsing="false" text="Activate Production" />
                               <Button layoutX="84.0" layoutY="232.0" mnemonicParsing="false" onAction="#openVisitMenu" text="Visit" />
