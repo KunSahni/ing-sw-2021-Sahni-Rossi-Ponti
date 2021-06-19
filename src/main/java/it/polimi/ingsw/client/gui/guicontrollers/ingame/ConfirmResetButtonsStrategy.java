@@ -12,7 +12,8 @@ public enum ConfirmResetButtonsStrategy {
     BUY_DEVELOPMENT_CARD,
     SELECT_DEVELOPMENT_SLOT,
     SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD,
-    DISCARD_LEADER_CARD;
+    DISCARD_LEADER_CARD,
+    ACTIVATE_LEADER_CARD;
 
     public void applyTo(Button confirmButton, Button resetButton) {
         switch (this) {
@@ -20,7 +21,8 @@ public enum ConfirmResetButtonsStrategy {
             case PRE_GAME_LEADER_CARDS_CHOICE, SELECT_MARBLES -> setStrategy(confirmButton,
                     resetButton, this, true, false);
             case PRE_GAME_RESOURCES_CHOICE, SELECT_DEVELOPMENT_SLOT,
-                    SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD, DISCARD_LEADER_CARD -> setStrategy(confirmButton, resetButton, this, true, true);
+                    SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD, DISCARD_LEADER_CARD,
+                    ACTIVATE_LEADER_CARD -> setStrategy(confirmButton, resetButton, this, true, true);
             case VISIT -> setStrategy(confirmButton, resetButton, this, false, true);
             case PICK_MARBLES -> setStrategy(confirmButton, resetButton, this, true, true);
             case BUY_DEVELOPMENT_CARD -> setStrategy(confirmButton, resetButton, this, true, true);

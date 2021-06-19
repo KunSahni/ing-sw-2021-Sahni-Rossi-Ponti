@@ -74,7 +74,8 @@ public class InGamePersonalController extends PlayerBoardController {
     private final Map<Resource, Integer> chosenResourcesMap = new HashMap<>();
     @FXML
     private ToggleGroup selectDevCardSlotToggleGroup;
-    private final ToggleGroup leaderCardDiscardToggleGroup = new ToggleGroup();
+    private final ToggleGroup leaderCardActionToggleGroup = new ToggleGroup();
+    private ObservableSet<ToggleButton> selectedProductionToggleButtons;
 
     @FXML
     @Override
@@ -124,6 +125,7 @@ public class InGamePersonalController extends PlayerBoardController {
             case SELECT_DEVELOPMENT_SLOT -> confirmDevelopmentSlotSelection();
             case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> confirmDevelopmentCardPurchase();
             case DISCARD_LEADER_CARD -> confirmDiscardLeaderCard();
+            case ACTIVATE_LEADER_CARD -> confirmActivateLeaderCard();
         }
     }
 
@@ -136,7 +138,7 @@ public class InGamePersonalController extends PlayerBoardController {
             }
             case VISIT, SELECT_DEVELOPMENT_SLOT -> bringToFront(actionsLayer, personalBoardLayer);
             case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> cancelResourceChoice();
-            case DISCARD_LEADER_CARD -> cancelDiscardLeaderCard();
+            case DISCARD_LEADER_CARD, ACTIVATE_LEADER_CARD -> cancelLeaderCardAction();
         }
     }
 
@@ -159,10 +161,10 @@ public class InGamePersonalController extends PlayerBoardController {
         BorderPane alertPane = new BorderPane();
         alertPane.setPrefWidth(200);
         alertPane.getStyleClass().add("alert");
-        Label outcomeLabel = new Label(outcome);
+        Text outcomeText = new Text(outcome);
         Button closeAlertButton = new Button("x");
         alertPane.setTop(closeAlertButton);
-        alertPane.setCenter(outcomeLabel);
+        alertPane.setCenter(outcomeText);
         closeAlertButton.setOnAction(e -> {
             alertsVBox.getChildren().remove(alertPane);
             logger.info("Clicked close alert");
@@ -214,12 +216,6 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     @Override
-    public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
-        bringToFront(actionsLayer, personalBoardLayer);
-        super.renderPersonalBoard(dumbPersonalBoard);
-    }
-
-    @Override
     protected synchronized void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
         if (!areLeaderCardsInitialized) {
             areLeaderCardsInitialized = true;
@@ -243,6 +239,8 @@ public class InGamePersonalController extends PlayerBoardController {
                                         leaderCardButton.setUserData(cardInBoard);
                                     }
                                     if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
+                                        // Update Storage card every time to keep track of resource changes
+                                        leaderCardButton.setUserData(cardInBoard);
                                         IntStream.range(0, 2).forEach(i -> {
                                             HBox resourcesHBox =
                                                     (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
@@ -293,11 +291,15 @@ public class InGamePersonalController extends PlayerBoardController {
                     .collect(Collectors.toList());
             if (gui.getInputVerifier().canPickLeaderCards(chosenCards)) {
                 gui.getClientSocket().sendAction(new PregameLeaderCardsChoiceAction(chosenCards));
-                populateInfoLabel("Confirmed.");
+                populateInfoLabel("Submitted Leader Card selection!");
             } else {
                 populateInfoLabel("Invalid Selection");
             }
         }
+    }
+
+    public void endLeaderCardsChoice() {
+        bringToFront(actionsLayer, personalBoardLayer);
     }
 
     public void startPreGameResourceChoice() {
@@ -314,15 +316,6 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
-    private void addResourceToChoiceMap(Resource resource) {
-        chosenResourcesMap.compute(resource, (k, v) -> (v == null) ? 1 : v + 1);
-        StringBuilder resourceMap = new StringBuilder("You have selected: ");
-        for (Resource res : chosenResourcesMap.keySet()) {
-            resourceMap.append("\n").append(chosenResourcesMap.get(res)).append(" ").append(res);
-        }
-        populateInfoLabel(resourceMap.toString());
-    }
-
     private void confirmPreGameResourceChoice() {
         if (gui.getInputVerifier().canPickResources(chosenResourcesMap)) {
             gui.getClientSocket().sendAction(new PregameResourceChoiceAction(chosenResourcesMap));
@@ -333,41 +326,79 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    public void endPreGameResourceChoice() {
+        bringToFront(actionsLayer, personalBoardLayer);
+    }
+
+    private void addResourceToChoiceMap(Resource resource) {
+        chosenResourcesMap.compute(resource, (k, v) -> (v == null) ? 1 : v + 1);
+        StringBuilder resourceMap = new StringBuilder("You have selected: ");
+        for (Resource res : chosenResourcesMap.keySet()) {
+            resourceMap.append("\n").append(chosenResourcesMap.get(res)).append(" ").append(res);
+        }
+        populateInfoLabel(resourceMap.toString());
+    }
+
     @FXML
     private void startDiscardLeaderCard() {
-        leaderCardsHBox.getChildren().stream().map(node -> (ToggleButton) node).forEach(button -> button.setToggleGroup(leaderCardDiscardToggleGroup));
+        leaderCardsHBox.getChildren().stream().map(node ->
+                (ToggleButton) node).forEach(button -> button.setToggleGroup(leaderCardActionToggleGroup));
         ConfirmResetButtonsStrategy.DISCARD_LEADER_CARD.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
     }
 
     private void confirmDiscardLeaderCard() {
         DumbLeaderCard toDiscardLeaderCard =
-                (DumbLeaderCard) leaderCardDiscardToggleGroup.getSelectedToggle().getUserData();
+                (DumbLeaderCard) leaderCardActionToggleGroup.getSelectedToggle().getUserData();
         if (gui.getInputVerifier().canDiscard(toDiscardLeaderCard)) {
             gui.getClientSocket().sendAction(new DiscardLeaderCardAction(toDiscardLeaderCard));
-            cancelDiscardLeaderCard();
         } else {
             populateInfoLabel("Invalid Leader Card discard!");
         }
     }
 
-    private void cancelDiscardLeaderCard() {
-        leaderCardDiscardToggleGroup.getToggles().clear();
+    private void cancelLeaderCardAction() {
+        leaderCardActionToggleGroup.getToggles().clear();
         bringToFront(actionsLayer, personalBoardLayer);
+    }
+
+    public void endDiscardLeaderCard() {
+        populateInfoLabel("You have successfully discarded your leader card!");
+        cancelLeaderCardAction();
+    }
+
+    @FXML
+    private void startActivateLeaderCard() {
+        leaderCardsHBox.getChildren().stream().map(node ->
+                (ToggleButton) node).forEach(button -> button.setToggleGroup(leaderCardActionToggleGroup));
+        ConfirmResetButtonsStrategy.ACTIVATE_LEADER_CARD.applyTo(confirmButton, resetButton);
+        bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
+    }
+
+    private void confirmActivateLeaderCard() {
+        DumbLeaderCard toActivateLeaderCard =
+                (DumbLeaderCard) leaderCardActionToggleGroup.getSelectedToggle().getUserData();
+        if (gui.getInputVerifier().canActivate(toActivateLeaderCard)) {
+            gui.getClientSocket().sendAction(new ActivateLeaderCardAction(toActivateLeaderCard));
+        } else {
+            populateInfoLabel("Invalid Leader Card activation!");
+        }
+    }
+
+    public void endActivateLeaderCard() {
+        populateInfoLabel("You have successfully activated your leader card!");
+        cancelLeaderCardAction();
     }
 
     public synchronized void startTempMarblesChoice(Map<MarketMarble, Integer> tempMarbles) {
         if (!isTempMarblesChoiceInitialized) {
             isTempMarblesChoiceInitialized = true;
-            selectedTempMarblesToggleButtons.clear();
-            Platform.runLater(() -> selectMarblesLayer.getChildren().clear());
             tempMarbles.forEach((marble, quantity) ->
                     IntStream.range(0, quantity).forEach(i ->
                             createMarbleChoiceNode(marble).ifPresent(node ->
                                     Platform.runLater(() -> selectMarblesLayer.getChildren().add(node)))));
             ConfirmResetButtonsStrategy.SELECT_MARBLES.applyTo(confirmButton, resetButton);
             bringToFront(confirmResetLayer, selectMarblesLayer);
-            logger.info("Brought to front select marbles layer");
         }
     }
 
@@ -433,8 +464,13 @@ public class InGamePersonalController extends PlayerBoardController {
                         ((MarketMarble) button.getUserData()),
                         (k, v) -> (v == null) ? 1 : v + 1));
         gui.getClientSocket().sendAction(new SelectMarblesAction(confirmedMarblesChoice));
-        populateInfoLabel("Submitted Marbles selection!");
+    }
+
+    public void endTempMarblesChoice() {
+        selectedTempMarblesToggleButtons.clear();
+        Platform.runLater(() -> selectMarblesLayer.getChildren().clear());
         isTempMarblesChoiceInitialized = false;
+        bringToFront(actionsLayer, personalBoardLayer);
     }
 
     public void startDevelopmentSlotSelection(DumbDevelopmentCard dumbDevelopmentCard) {
@@ -467,8 +503,12 @@ public class InGamePersonalController extends PlayerBoardController {
                     selectedCard.getColor(), developmentCardSlotIndex, depotsMap, strongboxMap));
         } else {
             populateInfoLabel("Invalid Development Card purchase!");
-            reset();
         }
+    }
+
+    public void endDevelopmentCardPurchase() {
+        populateInfoLabel("The purchased Development Card has been added to your Development Slot!");
+        cancelResourceChoice();
     }
 
     private void startResourceChoice(Map<Resource, Integer> requiredResources) {
@@ -493,6 +533,11 @@ public class InGamePersonalController extends PlayerBoardController {
                 resourceSelectionSlidersTilePane.getChildren().add(createResourceSlidersBorderPane(containerName, resourcesMap)));
         ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, resourceSelectionLayer);
+    }
+
+    private void cancelResourceChoice() {
+        bringToFront(actionsLayer, personalBoardLayer);
+        Platform.runLater(() -> resourceSelectionSlidersTilePane.getChildren().clear());
     }
 
     private BorderPane createResourceSlidersBorderPane(String labelText,
@@ -555,8 +600,8 @@ public class InGamePersonalController extends PlayerBoardController {
     /**
      * Returns a Map, even with no entries, parsed from the sliders. Each value is > 0
      *
-     * @param id
-     * @return
+     * @param id identifier to distinguish depots/strongbox/leader cards.
+     * @return resource map of the DumbResourceManager associated to the given id.
      */
     public Map<Resource, Integer> getResourceMapFromSliders(String id) {
         Map<Resource, Integer> resourcesMap = new HashMap<>();
@@ -577,11 +622,10 @@ public class InGamePersonalController extends PlayerBoardController {
         return resourcesMap;
     }
 
-    private void cancelResourceChoice() {
-        bringToFront(actionsLayer, personalBoardLayer);
-        Platform.runLater(() -> resourceSelectionSlidersTilePane.getChildren().clear());
+    @FXML
+    private void startProduction() {
+        selectedProductionToggleButtons = FXCollections.observableSet();
     }
-
     private void bringToFront(Node left, Node right) {
         Platform.runLater(() -> {
             left.toFront();

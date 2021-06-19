@@ -236,7 +236,8 @@ public class Player implements Comparable<Player> {
                     case STORED_TEMP_MARBLES_ACTION, BOUGHT_DEVELOPMENT_CARD_ACTION,
                             ACTIVATED_PRODUCTION_ACTION -> !hasPerformedCompulsoryAction();
                     case TURN_ENDED_ACTION -> hasPerformedCompulsoryAction();
-                    case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION -> true;
+                    case ACTIVATED_LEADER_CARD_ACTION, DISCARDED_LEADER_CARD_ACTION ->
+                            !mostRecentAction.equals(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
                 };
             }
         } else {
