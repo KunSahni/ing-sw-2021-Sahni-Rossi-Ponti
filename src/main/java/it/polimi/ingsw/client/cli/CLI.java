@@ -58,15 +58,30 @@ public class CLI implements UI {
      * This method asks the player which server and port he wants to connect to and creates the network socket
      */
     private void connectToServer(){
+        //Ask for server IP
         printToCLI(">Insert the server IP address");
         resetCommandPosition();
         in.reset();
         String ip = in.next();
+
+        //Ask for server port
         printToCLI(">Insert the server port");
         resetCommandPosition();
         in.reset();
         int port = in.nextInt();
         in.nextLine();
+
+        //Ask for reconnection to existing game
+        if(dumbModel.getGameID()!=-1) {
+            printToCLI(">Unfinished game found, do you want to reconnect? (y or n)");
+            resetCommandPosition();
+            in.reset();
+            String answer = in.next();
+            if (answer.equals("n"))
+                dumbModel.updateGameID(-1);
+        }
+
+        //Connect socket
         this.clientSocket = new ClientSocket(ip, port, dumbModel.getUpdatesHandler());
         printToCLI(Constants.ANSI_CLEAR);
         clientSocket.connect();
