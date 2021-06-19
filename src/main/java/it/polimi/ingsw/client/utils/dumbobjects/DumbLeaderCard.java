@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardRequirements;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 /**
@@ -53,6 +54,14 @@ public abstract class DumbLeaderCard implements Serializable {
      * @return a string color of a leader Card with the top left corner in position x,y
      */
     public abstract String formatPrintableStringAt(int x, int y); //todo: make it better by not using hardcoded data
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DumbLeaderCard)) return false;
+        DumbLeaderCard that = (DumbLeaderCard) o;
+        return victoryPoints == that.victoryPoints && active == that.active && ability == that.ability && Objects.equals(leaderCardRequirements, that.leaderCardRequirements);
+    }
 
     public String toImgPath() {
         return "/img/cards/";

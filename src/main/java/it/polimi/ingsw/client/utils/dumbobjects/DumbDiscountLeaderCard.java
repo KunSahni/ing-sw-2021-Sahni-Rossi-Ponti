@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +63,15 @@ public class DumbDiscountLeaderCard extends DumbLeaderCard{
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
                 + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DumbDiscountLeaderCard)) return false;
+        if (!super.equals(o)) return false;
+        DumbDiscountLeaderCard that = (DumbDiscountLeaderCard) o;
+        return discountedResource == that.discountedResource;
     }
 
     @Override

@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +62,15 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
                 + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DumbConvertLeaderCard)) return false;
+        if (!super.equals(o)) return false;
+        DumbConvertLeaderCard that = (DumbConvertLeaderCard) o;
+        return convertedResource == that.convertedResource;
     }
 
     @Override

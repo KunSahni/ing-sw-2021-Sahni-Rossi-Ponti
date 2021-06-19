@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.leadercard.ProduceLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.util.Objects;
 import java.util.TreeMap;
 
 /**
@@ -55,6 +56,15 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
                 + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DumbProduceLeaderCard)) return false;
+        if (!super.equals(o)) return false;
+        DumbProduceLeaderCard that = (DumbProduceLeaderCard) o;
+        return faithIncrement == that.faithIncrement && inputResource == that.inputResource;
     }
 
     @Override
