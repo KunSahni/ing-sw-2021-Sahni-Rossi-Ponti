@@ -9,9 +9,9 @@ import it.polimi.ingsw.network.servertoclient.renderable.PrivateRenderable;
 public class ConfirmationMessage extends PrivateRenderable {
     private final ConfirmationMessageType confirmationMessage;
 
-    public ConfirmationMessage(ConfirmationMessageType confirmationMessage, String nickname) {
-        super(nickname);
-        this.confirmationMessage = confirmationMessage;
+    public ConfirmationMessage(ConfirmationMessageType confirmationMessageType) {
+        super(null);
+        this.confirmationMessage = confirmationMessageType;
     }
 
 

@@ -1,8 +1,10 @@
 package it.polimi.ingsw.server.remoteview;
 
+import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.network.servertoclient.renderable.ErrorMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.PrivateRenderable;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.requests.ConfirmationMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.updates.LeaderCardsBroadcastUpdate;
 import it.polimi.ingsw.network.servertoclient.renderable.updates.PlayerBroadcastUpdate;
 import it.polimi.ingsw.server.connection.Connection;
@@ -90,6 +92,15 @@ public class RemoteView implements Subscriber<Renderable> {
      */
     public void raiseError(String nickname, String errorText) {
         connectedPlayers.get(nickname).send(new ErrorMessage(errorText));
+    }
+
+    /**
+     * Sends a confirmation to the player who executed a legal action.
+     * @param nickname identifier for the player that will get the ACK.
+     * @param confirmationMessageType identifier of the action type which was allowed.
+     */
+    public void sendConfirmation(String nickname, ConfirmationMessageType confirmationMessageType) {
+        connectedPlayers.get(nickname).send(new ConfirmationMessage(confirmationMessageType));
     }
 
 

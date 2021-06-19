@@ -11,11 +11,6 @@ import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 public class ErrorMessage extends PrivateRenderable{
     private final String message;
 
-    public ErrorMessage(String nickname, String message){
-        super(nickname);
-        this.message = message;
-    }
-
     public ErrorMessage(String message){
         super(null);
         this.message = message;

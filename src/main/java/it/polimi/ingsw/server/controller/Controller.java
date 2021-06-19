@@ -66,6 +66,7 @@ public class Controller implements Subscriber<PlayerAction> {
     private synchronized void handlePlayerAction(PlayerAction playerAction) {
         try {
             playerAction.runChecks();
+            remoteView.sendConfirmation(playerAction.getNickname(), playerAction.getConfirmationMessage());
             Optional<GameAction> consequentAction = Optional.ofNullable(playerAction.execute());
             consequentAction.ifPresent(this::handleGameAction);
         } catch (InvalidActionException e) {
