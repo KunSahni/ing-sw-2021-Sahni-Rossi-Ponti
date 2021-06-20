@@ -24,6 +24,7 @@ public abstract class DumbLeaderCard implements Serializable {
         this.ability = leaderCard.getAbility();
         this.victoryPoints = leaderCard.getVictoryPoints();
         this.leaderCardRequirements = leaderCard.getLeaderCardRequirements();
+        this.active = leaderCard.isActive();
     }
 
     public void activate(){
