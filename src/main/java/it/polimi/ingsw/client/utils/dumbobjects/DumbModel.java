@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.logging.Logger;
 
 /**
  * This class contains a copy of some elements of the Model contained on the Server,
@@ -31,6 +32,7 @@ import java.util.concurrent.SubmissionPublisher;
  * and each element is rendered graphically either on CLI or GUI
  */
 public class DumbModel {
+    private final Logger logger;
     private final List<DumbPersonalBoard> personalBoards;
     private final DumbMarket market;
     private final DumbDevelopmentCardsBoard developmentCardsBoard;
@@ -45,6 +47,7 @@ public class DumbModel {
     private final UpdatesHandler updatesHandler;
 
     public DumbModel(UI ui) {
+        this.logger = Logger.getLogger(getClass().getSimpleName());
         personalBoards = new ArrayList<>();
         market = DumbMarket.getInstance();
         developmentCardsBoard = DumbDevelopmentCardsBoard.getInstance();
@@ -357,6 +360,7 @@ public class DumbModel {
         private synchronized void elaborateUpdatesQueue(){
             Renderable usedItem = updatesQueue.remove();
             usedItem.update(DumbModel.this);
+            logger.info("Elaborated: " + usedItem.getClass().getSimpleName());
             publisher.submit(usedItem);
         }
 

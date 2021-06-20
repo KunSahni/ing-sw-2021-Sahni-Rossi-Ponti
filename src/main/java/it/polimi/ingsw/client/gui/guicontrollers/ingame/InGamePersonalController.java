@@ -76,6 +76,8 @@ public class InGamePersonalController extends PlayerBoardController {
     private ToggleGroup selectDevCardSlotToggleGroup;
     private final ToggleGroup leaderCardActionToggleGroup = new ToggleGroup();
     private ObservableSet<ToggleButton> selectedProductionToggleButtons;
+    @FXML
+    private ToggleButton defaultProductionToggleButton;
 
     @FXML
     @Override
@@ -126,6 +128,7 @@ public class InGamePersonalController extends PlayerBoardController {
             case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> confirmDevelopmentCardPurchase();
             case DISCARD_LEADER_CARD -> confirmDiscardLeaderCard();
             case ACTIVATE_LEADER_CARD -> confirmActivateLeaderCard();
+            case SELECT_PRODUCTION_BUTTONS -> confirmProductionButtonsSelection();
         }
     }
 
@@ -235,11 +238,13 @@ public class InGamePersonalController extends PlayerBoardController {
                                 if (cardInBoard.isActive()) {
                                     if (!cardInButton.isActive()) {
                                         leaderCardButton.getStyleClass().add("active-leader-card");
-                                        leaderCardButton.getStyleClass().remove("inactive-leader-card");
+                                        leaderCardButton.getStyleClass().remove("inactive-leader" +
+                                                "-card");
                                         leaderCardButton.setUserData(cardInBoard);
                                     }
                                     if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
-                                        // Update Storage card every time to keep track of resource changes
+                                        // Update Storage card every time to keep track of
+                                        // resource changes
                                         leaderCardButton.setUserData(cardInBoard);
                                         IntStream.range(0, 2).forEach(i -> {
                                             HBox resourcesHBox =
@@ -485,7 +490,7 @@ public class InGamePersonalController extends PlayerBoardController {
 
     private void confirmDevelopmentSlotSelection() {
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
-        startResourceChoice(((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost());
+        startResourceChoice(((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost(), null);
     }
 
     private void confirmDevelopmentCardPurchase() {
@@ -507,13 +512,16 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     public void endDevelopmentCardPurchase() {
-        populateInfoLabel("The purchased Development Card has been added to your Development Slot!");
+        populateInfoLabel("The purchased Development Card has been added to your Development " +
+                "Slot!");
         cancelResourceChoice();
     }
 
-    private void startResourceChoice(Map<Resource, Integer> requiredResources) {
-        StringBuilder requiredResourcesMessage = new StringBuilder("The selected action requires the following resources:");
-        requiredResources.forEach((resource, quantity) -> requiredResourcesMessage.append("\n").append(resource).append(": x").append(quantity));
+    private void startResourceChoice(Map<Resource, Integer> requiredResources, String extraMessage) {
+        StringBuilder requiredResourcesMessage = new StringBuilder("The selected action requires " +
+                "the following resources:\n");
+        requiredResources.forEach((resource, quantity) -> requiredResourcesMessage.append(resource).append(": x").append(quantity).append("\n"));
+        if (extraMessage != null) requiredResourcesMessage.append(extraMessage);
         resourceSelectionText.setText(requiredResourcesMessage.toString());
         Map<String, Map<Resource, Integer>> resourceContainersMap = new HashMap<>();
         DumbPersonalBoard personalBoard = gui.getDumbModel().getOwnPersonalBoard();
@@ -623,9 +631,40 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     @FXML
-    private void startProduction() {
+    private void startProductionToggleButtonsSelection() {
         selectedProductionToggleButtons = FXCollections.observableSet();
+        leaderCardsHBox.getChildren().stream()
+                .filter(node -> ((DumbLeaderCard) node.getUserData()).isActive()
+                        && ((DumbLeaderCard) node.getUserData()).getAbility().equals(LeaderCardAbility.STORE))
+                .map(node -> (ToggleButton) node)
+                .forEach(this::addButtonToProductionGroup);
+        addButtonToProductionGroup(defaultProductionToggleButton);
+        IntStream.range(0, 3).forEach(i -> {
+            StackPane slotPane = devCardSlotsStackPanes.get(i);
+            Optional<DumbDevelopmentCard> paneCard =
+                    Optional.ofNullable((DumbDevelopmentCard) slotPane.getUserData());
+            if (paneCard.isPresent()) {
+                addButtonToProductionGroup(
+                        (ToggleButton) slotPane.getChildren().get(slotPane.getChildren().size() - 1));
+            }
+        });
+        ConfirmResetButtonsStrategy.SELECT_PRODUCTION_BUTTONS.applyTo(confirmButton, resetButton);
     }
+
+    private void confirmProductionButtonsSelection() {
+
+    }
+
+    private void addButtonToProductionGroup(ToggleButton button) {
+        button.selectedProperty().addListener((observable, oldValue, selectedNow) -> {
+            if (selectedNow) {
+                selectedProductionToggleButtons.add(button);
+            } else {
+                selectedProductionToggleButtons.remove(button);
+            }
+        });
+    }
+
     private void bringToFront(Node left, Node right) {
         Platform.runLater(() -> {
             left.toFront();

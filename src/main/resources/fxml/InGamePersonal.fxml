@@ -246,7 +246,7 @@
                            <children>
                               <AnchorPane prefHeight="200.0" prefWidth="160.0">
                                  <children>
-                                    <ToggleButton layoutX="20.0" layoutY="262.0" mnemonicParsing="false" opacity="0.0" prefHeight="120.0" prefWidth="123.0" text="Default Production" />
+                                    <ToggleButton fx:id="defaultProductionToggleButton" layoutX="20.0" layoutY="262.0" mnemonicParsing="false" opacity="0.82" prefHeight="120.0" prefWidth="123.0" text="Default Production" />
                                  </children>
                               </AnchorPane>
                               <HBox prefHeight="496.0" prefWidth="629.0">

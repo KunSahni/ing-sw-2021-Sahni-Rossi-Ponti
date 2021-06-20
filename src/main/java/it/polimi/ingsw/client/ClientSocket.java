@@ -46,7 +46,7 @@ public class ClientSocket {
                     try {
                         Renderable message = (Renderable) inputStream.readObject();
                         if(message != null) {
-                            // logger.info("Received " + message.getClass().getSimpleName() + " from server.");
+                            logger.info("Received " + message.getClass().getSimpleName() + " from server.");
                             renderablePublisher.submit(message);
                         }
                     } catch (IOException | ClassNotFoundException e) {

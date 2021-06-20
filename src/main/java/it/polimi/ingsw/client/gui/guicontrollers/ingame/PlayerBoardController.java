@@ -72,7 +72,7 @@ public abstract class PlayerBoardController extends JFXController {
     private StackPane devCardSlot2;
     @FXML
     private StackPane devCardSlot3;
-    private final List<StackPane> devCardSlotsStackPanes = new ArrayList<>();
+    protected final List<StackPane> devCardSlotsStackPanes = new ArrayList<>();
 
     @FXML
     public void initialize() {

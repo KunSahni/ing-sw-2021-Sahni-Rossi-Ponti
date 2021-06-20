@@ -330,7 +330,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void onNext(Renderable item) {
-        // logger.info(item.getClass().getSimpleName() + "'s render method is getting called");
+        logger.info(item.getClass().getSimpleName());
         item.render(this);
         subscription.request(1);
     }

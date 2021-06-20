@@ -183,7 +183,7 @@ public class Connection implements Runnable {
      * @param renderable is sent to the Client
      */
     public void send(Renderable renderable) {
-        // logger.info("Sent " + renderable.getClass().getSimpleName() + " to " + nickname);
+        logger.info("Sent " + renderable.getClass().getSimpleName() + " to " + nickname);
         try {
             outputStream.writeObject(renderable);
             outputStream.flush();
