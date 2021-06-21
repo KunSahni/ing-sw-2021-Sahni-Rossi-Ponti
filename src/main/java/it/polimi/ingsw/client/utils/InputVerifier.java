@@ -35,21 +35,56 @@ public class InputVerifier {
      * @return true if request is valid, false otherwise
      */
     public boolean canProduce(ProductionCombo chosenProductionCombo){
-        return dumbModel
-                .getOwnPersonalBoard()
-                .getDevelopmentCardSlots()
-                .stream()
-                .map(
-                        developmentCardSlot -> developmentCardSlot.getDevelopmentCards().get(0))
-                .collect(Collectors.toList())
-                .contains(chosenProductionCombo.getDevelopmentCards())
-                && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(chosenProductionCombo.getLeaderCardProduction().keySet())
+        //Check if at least one production item was chosen
+        if(chosenProductionCombo.getDevelopmentCards() == null ||
+                chosenProductionCombo.getLeaderCardProduction() == null ||
+                chosenProductionCombo.getDefaultSlotOutput() == null)
+            return false;
+
+        //Check if resources to discard were chosen
+        if(chosenProductionCombo.getDiscardedResourcesFromStrongbox() == null ||
+                chosenProductionCombo.getDiscardedResourcesFromDepots() == null)
+            return false;
+
+        //Check correctness of default slot output resources choice in case it was made
+        if(chosenProductionCombo.getDefaultSlotOutput() != null
+                && chosenProductionCombo.getDefaultSlotOutput().values().stream().allMatch( resourceCount -> resourceCount>0))
+            return false;
+
+        //Check correctness of development cards choice in case it was made
+        if(chosenProductionCombo.getDevelopmentCards() != null &&
+                !dumbModel
+                        .getOwnPersonalBoard()
+                        .getDevelopmentCardSlots()
+                        .stream()
+                        .map(
+                                developmentCardSlot -> developmentCardSlot.getDevelopmentCards().get(0))
+                        .collect(Collectors.toList())
+                        .contains(chosenProductionCombo.getDevelopmentCards()))
+            return false;
+
+        //Check correctness of leader cards choice in case it was made
+        if(chosenProductionCombo.getLeaderCardProduction() != null &&
+                !dumbModel
+                        .getOwnPersonalBoard()
+                        .getLeaderCards()
+                        .contains(chosenProductionCombo.getLeaderCardProduction().keySet()))
+            return false;
+
+        //Check correctness of depots resources choice in case it was made
+        if(chosenProductionCombo.getDiscardedResourcesFromDepots()!= null
                 && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromDepots())
-                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromStrongbox())
-                && chosenProductionCombo.getDiscardedResourcesFromDepots().values().stream().allMatch( resourceCount -> resourceCount>0)
-                && chosenProductionCombo.getDiscardedResourcesFromStrongbox().values().stream().allMatch( resourceCount -> resourceCount>0)
-                && chosenProductionCombo.getDefaultSlotOutput().values().stream().allMatch( resourceCount -> resourceCount>0)
-                && canDoAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
+                && chosenProductionCombo.getDiscardedResourcesFromDepots().values().stream().allMatch( resourceCount -> resourceCount>0))
+            return false;
+
+
+        //Check correctness of strongbox resources choice in case it was made
+        if(chosenProductionCombo.getDiscardedResourcesFromStrongbox()!= null &&
+                legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromStrongbox())
+                && chosenProductionCombo.getDiscardedResourcesFromStrongbox().values().stream().allMatch( resourceCount -> resourceCount>0))
+            return false;
+
+        return canDoAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
     }
 
     /**
