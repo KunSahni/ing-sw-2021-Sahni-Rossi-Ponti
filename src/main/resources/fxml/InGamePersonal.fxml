@@ -9,6 +9,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -24,6 +25,235 @@
    <children>
       <StackPane alignment="TOP_RIGHT" maxHeight="720.0" maxWidth="1008.0" minHeight="720.0" minWidth="1008.0" prefHeight="720.0" prefWidth="1008.0" StackPane.alignment="BOTTOM_RIGHT">
          <children>
+            <VBox fx:id="preGameLeaderCardSelectionLayer" alignment="CENTER" fillWidth="false" prefHeight="267.0" prefWidth="462.0" styleClass="covering-pane" />
+            <TilePane fx:id="visitLayer" alignment="CENTER" prefColumns="2" prefHeight="200.0" prefWidth="200.0" styleClass="covering-pane" />
+            <HBox fx:id="selectMarblesLayer" alignment="CENTER" maxHeight="250.0" maxWidth="1008.0" minHeight="250.0" minWidth="1008.0" prefHeight="250.0" prefWidth="1008.0" spacing="10.0" styleClass="covering-pane" StackPane.alignment="TOP_CENTER">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+            <VBox fx:id="resourceSelectionLayer" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="covering-pane">
+               <children>
+                  <TilePane fx:id="resourceSelectionSlidersTilePane" alignment="CENTER" prefHeight="550.0" prefWidth="200.0" />
+                  <Text fx:id="resourceSelectionText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="The selected action requires the following resources:">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Text>
+               </children>
+            </VBox>
+            <VBox fx:id="outputResourcesSelectionLayer" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" styleClass="covering-pane">
+               <children>
+                  <TilePane fx:id="outputResourcesTilePane" alignment="CENTER" hgap="20.0" prefHeight="550.0" prefWidth="200.0">
+                     <children>
+                        <BorderPane fx:id="defaultSlotOutputTile" prefHeight="280.0" prefWidth="280.0" styleClass="left-pane">
+                           <center>
+                              <GridPane hgap="6.0" vgap="6.0" BorderPane.alignment="CENTER">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <ToggleButton fx:id="defaultSlotCoinButton" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/coin.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="defaultSlotOutputToggleGroup" />
+                                       </toggleGroup></ToggleButton>
+                                    <ToggleButton fx:id="defaultSlotServantButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$defaultSlotOutputToggleGroup" GridPane.columnIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/servant.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></ToggleButton>
+                                    <ToggleButton fx:id="defaultSlotShieldButton" layoutX="109.0" layoutY="10.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$defaultSlotOutputToggleGroup" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/shield.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></ToggleButton>
+                                    <ToggleButton fx:id="defaultSlotStoneButton" layoutX="10.0" layoutY="101.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$defaultSlotOutputToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/stone.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></ToggleButton>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </GridPane>
+                           </center>
+                           <top>
+                              <Text fill="#ebe7e7" strokeType="OUTSIDE" strokeWidth="0.0" text="Default Slot" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                                 <BorderPane.margin>
+                                    <Insets top="14.0" />
+                                 </BorderPane.margin></Text>
+                           </top>
+                        </BorderPane>
+                        <BorderPane fx:id="leaderCard1OutputTile" layoutX="374.0" layoutY="145.0" prefHeight="280.0" prefWidth="280.0" styleClass="left-pane">
+                           <center>
+                              <GridPane hgap="6.0" vgap="6.0" BorderPane.alignment="CENTER">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ToggleButton fx:id="leaderCard1CoinButton" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/coin.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="leaderCard1OutputToggleGroup" />
+                                       </toggleGroup>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="leaderCard1ServantButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$leaderCard1OutputToggleGroup" GridPane.columnIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/servant.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="leaderCard1ShieldButton" layoutX="109.0" layoutY="10.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$leaderCard1OutputToggleGroup" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/shield.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="leaderCard1StoneButton" layoutX="10.0" layoutY="101.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$leaderCard1OutputToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/stone.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </ToggleButton>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </GridPane>
+                           </center>
+                           <top>
+                              <Text fill="#ebe7e7" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader Card 1" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                                 <BorderPane.margin>
+                                    <Insets top="14.0" />
+                                 </BorderPane.margin>
+                              </Text>
+                           </top>
+                        </BorderPane>
+                        <BorderPane fx:id="leaderCard2OutputTile" layoutX="514.0" layoutY="145.0" prefHeight="280.0" prefWidth="280.0" styleClass="left-pane">
+                           <center>
+                              <GridPane hgap="6.0" vgap="6.0" BorderPane.alignment="CENTER">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ToggleButton fx:id="leaderCard2CoinButton" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/coin.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="leaderCard2OutputToggleGroup" />
+                                       </toggleGroup>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="leaderCard2ServantButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$leaderCard2OutputToggleGroup" GridPane.columnIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/servant.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="leaderCard2ShieldButton" layoutX="109.0" layoutY="10.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$leaderCard2OutputToggleGroup" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/shield.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </ToggleButton>
+                                    <ToggleButton fx:id="leaderCard2StoneButton" layoutX="10.0" layoutY="101.0" mnemonicParsing="false" prefHeight="101.0" prefWidth="116.0" toggleGroup="$leaderCard2OutputToggleGroup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <graphic>
+                                          <ImageView fitHeight="150.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../img/resources/stone.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </ToggleButton>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </GridPane>
+                           </center>
+                           <top>
+                              <Text fill="#ebe7e7" strokeType="OUTSIDE" strokeWidth="0.0" text="Leader Card 2" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                                 <BorderPane.margin>
+                                    <Insets top="14.0" />
+                                 </BorderPane.margin>
+                              </Text>
+                           </top>
+                        </BorderPane>
+                     </children>
+                  </TilePane>
+                  <Text fx:id="resourceSelectionText1" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a resource as output for each production element!">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Text>
+               </children>
+            </VBox>
             <VBox fx:id="pregameResourceChoiceLayer" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0" styleClass="covering-pane">
                <children>
                   <GridPane alignment="CENTER" maxHeight="450.0" maxWidth="450.0" minHeight="450.0" minWidth="450.0" prefHeight="450.0" prefWidth="450.0">
@@ -89,19 +319,7 @@
                         </Button>
                      </children>
                   </GridPane>
-               </children>
-            </VBox>
-            <VBox fx:id="preGameLeaderCardSelectionLayer" alignment="CENTER" fillWidth="false" prefHeight="267.0" prefWidth="462.0" styleClass="covering-pane" />
-            <TilePane fx:id="visitLayer" alignment="CENTER" prefColumns="2" prefHeight="200.0" prefWidth="200.0" styleClass="covering-pane" />
-            <HBox fx:id="selectMarblesLayer" alignment="CENTER" maxHeight="250.0" maxWidth="1008.0" minHeight="250.0" minWidth="1008.0" prefHeight="250.0" prefWidth="1008.0" spacing="10.0" styleClass="covering-pane" StackPane.alignment="TOP_CENTER">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </HBox>
-            <VBox fx:id="resourceSelectionLayer" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="covering-pane">
-               <children>
-                  <TilePane fx:id="resourceSelectionSlidersTilePane" alignment="CENTER" prefHeight="550.0" prefWidth="200.0" />
-                  <Text fx:id="resourceSelectionText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="The selected action requires the following resources:">
+                  <Text fx:id="sequentialResourceSelectionText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose n resources!">
                      <font>
                         <Font size="27.0" />
                      </font>
@@ -246,7 +464,7 @@
                            <children>
                               <AnchorPane prefHeight="200.0" prefWidth="160.0">
                                  <children>
-                                    <ToggleButton fx:id="defaultProductionToggleButton" layoutX="20.0" layoutY="262.0" mnemonicParsing="false" opacity="0.82" prefHeight="120.0" prefWidth="123.0" text="Default Production" />
+                                    <ToggleButton fx:id="defaultSlotToggleButton" layoutX="20.0" layoutY="262.0" mnemonicParsing="false" opacity="0.82" prefHeight="120.0" prefWidth="123.0" text="Default Production" />
                                  </children>
                               </AnchorPane>
                               <HBox prefHeight="496.0" prefWidth="629.0">
@@ -380,7 +598,7 @@
                            <children>
                               <Button mnemonicParsing="false" onAction="#startActivateLeaderCard" text="Activate Leader Card" />
                               <Button layoutX="84.0" layoutY="148.0" mnemonicParsing="false" onAction="#startDiscardLeaderCard" text="Discard Leader Card" />
-                              <Button layoutX="84.0" layoutY="211.0" mnemonicParsing="false" text="Activate Production" />
+                              <Button layoutX="84.0" layoutY="211.0" mnemonicParsing="false" onAction="#startProductionToggleButtonsSelection" text="Activate Production" />
                               <Button layoutX="84.0" layoutY="232.0" mnemonicParsing="false" onAction="#openVisitMenu" text="Visit" />
                               <Button mnemonicParsing="false" onAction="#endTurn" text="End Turn" />
                            </children>

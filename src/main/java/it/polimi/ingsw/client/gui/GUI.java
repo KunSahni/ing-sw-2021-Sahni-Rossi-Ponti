@@ -188,7 +188,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderActivateProductionConfirmation() {
-
+        personalController.endProductionChoices();
     }
 
     @Override

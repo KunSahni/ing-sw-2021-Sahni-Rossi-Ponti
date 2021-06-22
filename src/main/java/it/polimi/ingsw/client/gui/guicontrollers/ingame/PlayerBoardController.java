@@ -269,6 +269,7 @@ public abstract class PlayerBoardController extends JFXController {
                                                StackPane stackPane) {
         stackPane.setUserData(dumbDevelopmentCard);
         ToggleButton toggleButton = new ToggleButton();
+        toggleButton.setUserData(dumbDevelopmentCard);
         ImageView imageView = new ImageView(getImageFromPath(dumbDevelopmentCard.toImgPath()));
         imageView.setFitHeight(210);
         imageView.setPreserveRatio(true);

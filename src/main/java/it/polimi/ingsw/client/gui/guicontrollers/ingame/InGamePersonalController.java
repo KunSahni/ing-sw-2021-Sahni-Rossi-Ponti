@@ -5,6 +5,7 @@ import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.*;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
+import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -75,9 +76,52 @@ public class InGamePersonalController extends PlayerBoardController {
     @FXML
     private ToggleGroup selectDevCardSlotToggleGroup;
     private final ToggleGroup leaderCardActionToggleGroup = new ToggleGroup();
-    private ObservableSet<ToggleButton> selectedProductionToggleButtons;
+    private ObservableSet<ToggleButton> selectedProduceLeaderCardsToggleButtons;
+    private ObservableSet<ToggleButton> selectedDevelopmentCardsToggleButtons;
     @FXML
-    private ToggleButton defaultProductionToggleButton;
+    private ToggleButton defaultSlotToggleButton;
+    @FXML
+    private Text sequentialResourceSelectionText;
+    @FXML
+    private VBox outputResourcesSelectionLayer;
+    @FXML
+    private TilePane outputResourcesTilePane;
+    @FXML
+    private BorderPane defaultSlotOutputTile;
+    @FXML
+    private ToggleButton defaultSlotCoinButton;
+    @FXML
+    private ToggleGroup defaultSlotOutputToggleGroup;
+    @FXML
+    private ToggleButton defaultSlotServantButton;
+    @FXML
+    private ToggleButton defaultSlotShieldButton;
+    @FXML
+    private ToggleButton defaultSlotStoneButton;
+    @FXML
+    private BorderPane leaderCard1OutputTile;
+    @FXML
+    private ToggleButton leaderCard1CoinButton;
+    @FXML
+    private ToggleGroup leaderCard1OutputToggleGroup;
+    @FXML
+    private ToggleButton leaderCard1ServantButton;
+    @FXML
+    private ToggleButton leaderCard1ShieldButton;
+    @FXML
+    private ToggleButton leaderCard1StoneButton;
+    @FXML
+    private BorderPane leaderCard2OutputTile;
+    @FXML
+    private ToggleButton leaderCard2CoinButton;
+    @FXML
+    private ToggleGroup leaderCard2OutputToggleGroup;
+    @FXML
+    private ToggleButton leaderCard2ServantButton;
+    @FXML
+    private ToggleButton leaderCard2ShieldButton;
+    @FXML
+    private ToggleButton leaderCard2StoneButton;
 
     @FXML
     @Override
@@ -90,6 +134,23 @@ public class InGamePersonalController extends PlayerBoardController {
         stoneButton.setOnAction(e -> addResourceToChoiceMap(Resource.STONE));
         // Initialize Dev Card slot selection buttons
         IntStream.range(0, 3).forEach(i -> ((ToggleButton) selectDevCardSlotToggleGroup.getToggles().get(i)).setVisible(false));
+        // Initialize resources in output toggle buttons
+        defaultSlotCoinButton.setUserData(Resource.COIN);
+        defaultSlotShieldButton.setUserData(Resource.SHIELD);
+        defaultSlotStoneButton.setUserData(Resource.STONE);
+        defaultSlotServantButton.setUserData(Resource.SERVANT);
+        leaderCard1CoinButton.setUserData(Resource.COIN);
+        leaderCard1ShieldButton.setUserData(Resource.SHIELD);
+        leaderCard1StoneButton.setUserData(Resource.STONE);
+        leaderCard1ServantButton.setUserData(Resource.SERVANT);
+        leaderCard2CoinButton.setUserData(Resource.COIN);
+        leaderCard2ShieldButton.setUserData(Resource.SHIELD);
+        leaderCard2StoneButton.setUserData(Resource.STONE);
+        leaderCard2ServantButton.setUserData(Resource.SERVANT);
+        // Remove Output tiles from parent node (will be added on need)
+        outputResourcesTilePane.getChildren().remove(defaultSlotOutputTile);
+        outputResourcesTilePane.getChildren().remove(leaderCard1OutputTile);
+        outputResourcesTilePane.getChildren().remove(leaderCard2OutputTile);
     }
 
     public void initialize(GUI gui) {
@@ -129,6 +190,8 @@ public class InGamePersonalController extends PlayerBoardController {
             case DISCARD_LEADER_CARD -> confirmDiscardLeaderCard();
             case ACTIVATE_LEADER_CARD -> confirmActivateLeaderCard();
             case SELECT_PRODUCTION_BUTTONS -> confirmProductionButtonsSelection();
+            case SELECT_PRODUCTION_INPUT_RESOURCES -> confirmProductionInputResources();
+            case SELECT_PRODUCTION_OUTPUT_RESOURCES -> confirmProduction();
         }
     }
 
@@ -139,9 +202,12 @@ public class InGamePersonalController extends PlayerBoardController {
                 chosenResourcesMap.clear();
                 populateInfoLabel("Resource choice cleared.");
             }
-            case VISIT, SELECT_DEVELOPMENT_SLOT -> bringToFront(actionsLayer, personalBoardLayer);
+            case VISIT, SELECT_DEVELOPMENT_SLOT,
+                    SELECT_PRODUCTION_INPUT_RESOURCES-> bringToFront(actionsLayer, personalBoardLayer);
             case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> cancelResourceChoice();
             case DISCARD_LEADER_CARD, ACTIVATE_LEADER_CARD -> cancelLeaderCardAction();
+            case SELECT_PRODUCTION_OUTPUT_RESOURCES -> endProductionChoices();
+            case SELECT_PRODUCTION_BUTTONS -> endProductionButtonsSelection();
         }
     }
 
@@ -314,8 +380,8 @@ public class InGamePersonalController extends PlayerBoardController {
             ConfirmResetButtonsStrategy.PRE_GAME_RESOURCES_CHOICE.applyTo(confirmButton,
                     resetButton);
             switch (ownPosition) {
-                case 2, 3 -> populateInfoLabel("Pick a resource!");
-                case 4 -> populateInfoLabel("Pick two resources!");
+                case 2, 3 -> sequentialResourceSelectionText.setText("Pick a resource!");
+                case 4 -> sequentialResourceSelectionText.setText("Pick two resources!");
             }
             bringToFront(confirmResetLayer, pregameResourceChoiceLayer);
         }
@@ -332,6 +398,7 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     public void endPreGameResourceChoice() {
+        chosenResourcesMap.clear();
         bringToFront(actionsLayer, personalBoardLayer);
     }
 
@@ -491,6 +558,8 @@ public class InGamePersonalController extends PlayerBoardController {
     private void confirmDevelopmentSlotSelection() {
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
         startResourceChoice(((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost(), null);
+        ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
+        bringToFront(confirmResetLayer, resourceSelectionLayer);
     }
 
     private void confirmDevelopmentCardPurchase() {
@@ -517,7 +586,8 @@ public class InGamePersonalController extends PlayerBoardController {
         cancelResourceChoice();
     }
 
-    private void startResourceChoice(Map<Resource, Integer> requiredResources, String extraMessage) {
+    private void startResourceChoice(Map<Resource, Integer> requiredResources,
+                                     String extraMessage) {
         StringBuilder requiredResourcesMessage = new StringBuilder("The selected action requires " +
                 "the following resources:\n");
         requiredResources.forEach((resource, quantity) -> requiredResourcesMessage.append(resource).append(": x").append(quantity).append("\n"));
@@ -539,8 +609,6 @@ public class InGamePersonalController extends PlayerBoardController {
                         "Card", card.getStoredResources()));
         resourceContainersMap.forEach((containerName, resourcesMap) ->
                 resourceSelectionSlidersTilePane.getChildren().add(createResourceSlidersBorderPane(containerName, resourcesMap)));
-        ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
-        bringToFront(confirmResetLayer, resourceSelectionLayer);
     }
 
     private void cancelResourceChoice() {
@@ -632,36 +700,145 @@ public class InGamePersonalController extends PlayerBoardController {
 
     @FXML
     private void startProductionToggleButtonsSelection() {
-        selectedProductionToggleButtons = FXCollections.observableSet();
+        selectedProduceLeaderCardsToggleButtons = FXCollections.observableSet();
+        selectedDevelopmentCardsToggleButtons = FXCollections.observableSet();
         leaderCardsHBox.getChildren().stream()
                 .filter(node -> ((DumbLeaderCard) node.getUserData()).isActive()
-                        && ((DumbLeaderCard) node.getUserData()).getAbility().equals(LeaderCardAbility.STORE))
+                        && ((DumbLeaderCard) node.getUserData()).getAbility().equals(LeaderCardAbility.PRODUCE))
                 .map(node -> (ToggleButton) node)
-                .forEach(this::addButtonToProductionGroup);
-        addButtonToProductionGroup(defaultProductionToggleButton);
+                .forEach(button -> addButtonToProductionGroup(button,
+                        selectedProduceLeaderCardsToggleButtons));
         IntStream.range(0, 3).forEach(i -> {
             StackPane slotPane = devCardSlotsStackPanes.get(i);
             Optional<DumbDevelopmentCard> paneCard =
                     Optional.ofNullable((DumbDevelopmentCard) slotPane.getUserData());
             if (paneCard.isPresent()) {
                 addButtonToProductionGroup(
-                        (ToggleButton) slotPane.getChildren().get(slotPane.getChildren().size() - 1));
+                        (ToggleButton) slotPane.getChildren().get(slotPane.getChildren().size() - 1),
+                        selectedDevelopmentCardsToggleButtons);
             }
         });
         ConfirmResetButtonsStrategy.SELECT_PRODUCTION_BUTTONS.applyTo(confirmButton, resetButton);
+        bringToFront(confirmResetLayer, personalBoardLayer);
+    }
+
+    private void endProductionButtonsSelection() {
+        Platform.runLater(() -> {
+            selectedProduceLeaderCardsToggleButtons.forEach(toggleButton -> toggleButton.setSelected(false));
+            selectedDevelopmentCardsToggleButtons.forEach(toggleButton -> toggleButton.setSelected(false));
+            defaultSlotToggleButton.setSelected(false);
+            resourceSelectionSlidersTilePane.getChildren().clear();
+        });
+        bringToFront(actionsLayer, personalBoardLayer);
+    }
+
+    private void addButtonToProductionGroup(ToggleButton button,
+                                            ObservableSet<ToggleButton> productionGroup) {
+        button.selectedProperty().addListener((observable, oldValue, selectedNow) -> {
+            if (selectedNow) {
+                productionGroup.add(button);
+            } else {
+                productionGroup.remove(button);
+            }
+        });
     }
 
     private void confirmProductionButtonsSelection() {
-
+        Map<Resource, Integer> productionCostMap = new HashMap<>();
+        selectedDevelopmentCardsToggleButtons.forEach(selectedDevCardToggleButton ->
+                ((DumbDevelopmentCard) selectedDevCardToggleButton.getUserData())
+                        .getInputResources()
+                        .forEach((inputResource, quantity) ->
+                                productionCostMap.compute(inputResource,
+                                        (k, v) -> (v == null) ? quantity : v + quantity)));
+        selectedProduceLeaderCardsToggleButtons.forEach(selectedProdLeaderCardButton ->
+                productionCostMap.compute(
+                        ((DumbProduceLeaderCard) selectedProdLeaderCardButton.getUserData()).getInputResource(),
+                        (k, v) -> v == null ? 1 : v + 1
+                )
+        );
+        startResourceChoice(productionCostMap,
+                defaultSlotToggleButton.isSelected()
+                        ? "2x random (Default Production)"
+                        : null);
+        ConfirmResetButtonsStrategy.SELECT_PRODUCTION_INPUT_RESOURCES.applyTo(confirmButton,
+                resetButton);
+        bringToFront(confirmResetLayer, resourceSelectionLayer);
     }
 
-    private void addButtonToProductionGroup(ToggleButton button) {
-        button.selectedProperty().addListener((observable, oldValue, selectedNow) -> {
-            if (selectedNow) {
-                selectedProductionToggleButtons.add(button);
-            } else {
-                selectedProductionToggleButtons.remove(button);
+    private void confirmProductionInputResources() {
+        boolean defaultSlotSelected = defaultSlotToggleButton.isSelected();
+        ToggleButton leaderCard1ToggleButton = (ToggleButton) leaderCardsHBox.getChildren().get(0);
+        ToggleButton leaderCard2ToggleButton = (ToggleButton) leaderCardsHBox.getChildren().get(1);
+        boolean leaderCard1Selected = (leaderCard1ToggleButton.isSelected()
+                && ((DumbLeaderCard) leaderCard1ToggleButton.getUserData()).isActive()
+                && ((DumbLeaderCard) leaderCard1ToggleButton.getUserData()).getAbility().equals(LeaderCardAbility.PRODUCE));
+        boolean leaderCard2Selected = (leaderCard2ToggleButton.isSelected()
+                && ((DumbLeaderCard) leaderCard2ToggleButton.getUserData()).isActive()
+                && ((DumbLeaderCard) leaderCard2ToggleButton.getUserData()).getAbility().equals(LeaderCardAbility.PRODUCE));
+        if (defaultSlotSelected || leaderCard1Selected || leaderCard2Selected) {
+            startOutputResourcesChoice(defaultSlotSelected, leaderCard1Selected,
+                    leaderCard2Selected);
+        } else {
+            confirmProduction();
+        }
+    }
+
+    private void startOutputResourcesChoice(boolean defaultSlot, boolean leaderCard1,
+                                            boolean leaderCard2) {
+        if (defaultSlot) outputResourcesTilePane.getChildren().add(defaultSlotOutputTile);
+        if (leaderCard1) outputResourcesTilePane.getChildren().add(leaderCard1OutputTile);
+        if (leaderCard2) outputResourcesTilePane.getChildren().add(leaderCard2OutputTile);
+        ConfirmResetButtonsStrategy.SELECT_PRODUCTION_OUTPUT_RESOURCES.applyTo(confirmButton,
+                resetButton);
+        bringToFront(confirmResetLayer, outputResourcesSelectionLayer);
+    }
+
+    private void confirmProduction() {
+        ProductionCombo productionCombo = new ProductionCombo();
+        if (selectedDevelopmentCardsToggleButtons.size() > 0)
+            productionCombo.setDevelopmentCards(
+                    selectedDevelopmentCardsToggleButtons.stream()
+                            .map(button -> (DumbDevelopmentCard) button.getUserData())
+                            .collect(Collectors.toList()));
+        if (outputResourcesTilePane.getChildren().contains(defaultSlotOutputTile)) {
+            Map<Resource, Integer> resourceIntegerMap = new HashMap<>();
+            resourceIntegerMap.put((Resource) defaultSlotOutputToggleGroup.getSelectedToggle().getUserData(), 1);
+            productionCombo.setDefaultSlotOutput(resourceIntegerMap);
+        }
+        if (selectedProduceLeaderCardsToggleButtons.size() > 0) {
+            Map<DumbProduceLeaderCard, Resource> dumbProduceLeaderCardResourceMap = new HashMap<>();
+            if (outputResourcesTilePane.getChildren().contains(leaderCard1OutputTile)) {
+                dumbProduceLeaderCardResourceMap.put((DumbProduceLeaderCard) leaderCardsHBox.getChildren().get(0).getUserData(),
+                        (Resource) leaderCard1OutputToggleGroup.getSelectedToggle().getUserData());
             }
+
+            if (outputResourcesTilePane.getChildren().contains(leaderCard2OutputTile)) {
+                dumbProduceLeaderCardResourceMap.put((DumbProduceLeaderCard) leaderCardsHBox.getChildren().get(1).getUserData(),
+                        (Resource) leaderCard2OutputToggleGroup.getSelectedToggle().getUserData());
+            }
+            productionCombo.setLeaderCardProduction(dumbProduceLeaderCardResourceMap);
+        }
+        productionCombo.setDiscardedResourcesFromDepots(createDepotsMapFromSliders());
+        productionCombo.setDiscardedResourcesFromStrongbox(createStrongboxMapFromSliders());
+        if (gui.getInputVerifier().canProduce(productionCombo)) {
+            gui.getClientSocket().sendAction(new ActivateProductionAction(productionCombo));
+        } else {
+            populateInfoLabel("Invalid production!");
+        }
+    }
+
+    public void endProductionChoices() {
+        bringToFront(actionsLayer, personalBoardLayer);
+        Platform.runLater(() -> {
+            resourceSelectionSlidersTilePane.getChildren().clear();
+            outputResourcesTilePane.getChildren().clear();
+            defaultSlotToggleButton.setSelected(false);
+            selectedDevelopmentCardsToggleButtons.forEach(button -> button.setSelected(false));
+            selectedProduceLeaderCardsToggleButtons.forEach(button -> button.setSelected(false));
+            defaultSlotOutputToggleGroup.getSelectedToggle().setSelected(false);
+            leaderCard1OutputToggleGroup.getSelectedToggle().setSelected(false);
+            leaderCard2OutputToggleGroup.getSelectedToggle().setSelected(false);
         });
     }
 
