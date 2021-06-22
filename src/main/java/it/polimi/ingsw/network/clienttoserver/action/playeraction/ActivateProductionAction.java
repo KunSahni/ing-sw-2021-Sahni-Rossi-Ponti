@@ -43,10 +43,10 @@ public class ActivateProductionAction extends PlayerAction {
         productionOutputs.forEach(productionOutput ->
                 super.moveFaithMarker(productionOutput.getFaithIncrement()));
         // Discard resources
-        player.getPersonalBoard()
-                .discardFromDepots(productionCombo.getDiscardedResourcesFromDepots());
-        player.getPersonalBoard()
-                .discardFromStrongbox(productionCombo.getDiscardedResourcesFromStrongbox());
+        Optional.ofNullable(productionCombo.getDiscardedResourcesFromDepots()).ifPresent(map -> player.getPersonalBoard()
+                .discardFromDepots(map));
+        Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox()).ifPresent(map -> player.getPersonalBoard()
+                .discardFromStrongbox(map));
         player.addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
         return null;
     }
@@ -77,12 +77,16 @@ public class ActivateProductionAction extends PlayerAction {
         if (!discardMapsMatchProductionCosts())
             throw new InvalidActionException("The resources that you have selected to discard do " +
                     "not match production costs.");
-        if (!player.getPersonalBoard()
-                .depotsContainResources(productionCombo.getDiscardedResourcesFromDepots())
-                || !player.getPersonalBoard()
-                .strongboxContainsResources(productionCombo.getDiscardedResourcesFromStrongbox()))
-            throw new InvalidActionException("You are trying to discard from your storages " +
-                    "resources you do not have.");
+        Optional<Map<Resource, Integer>> toDiscardFromDepots = Optional.ofNullable(productionCombo.getDiscardedResourcesFromDepots());
+        if (toDiscardFromDepots.isPresent()) {
+            if (!player.getPersonalBoard().depotsContainResources(toDiscardFromDepots.get()))
+                throw new InvalidActionException("You cannot discard the selected resources from your depots!");
+        }
+        Optional<Map<Resource, Integer>> toDiscardFromStrongbox = Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox());
+        if (toDiscardFromStrongbox.isPresent()) {
+            if (!player.getPersonalBoard().depotsContainResources(toDiscardFromStrongbox.get()))
+                throw new InvalidActionException("You cannot discard the selected resources from your strongbox!");
+        }
     }
 
     private boolean productionComboIsEmpty() {
@@ -117,22 +121,27 @@ public class ActivateProductionAction extends PlayerAction {
         // Merge depots discards and strongbox discards
         Map<Resource, Integer> totalDiscardMap =
                 new HashMap<>(productionCombo.getDiscardedResourcesFromDepots());
-        productionCombo.getDiscardedResourcesFromStrongbox().forEach(
-                (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)
-                        ? value : v + value)
+        Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox()).ifPresent(
+                resourceIntegerMap -> resourceIntegerMap.forEach(
+                        (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)
+                                ? value : v + value)
+                )
         );
         // Subtract the dev card inputs from the total discards map
-        productionCombo.getDevelopmentCards()
-                .forEach(card -> card.getInputResources().forEach(
+        Optional.ofNullable(productionCombo.getDevelopmentCards()).ifPresent(dumbDevelopmentCards ->
+                dumbDevelopmentCards.forEach(card -> card.getInputResources().forEach(
                         (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)
                                 ? -value : v - value)
-                ));
+                        )
+                )
+        );
         // Subtract leader card inputs from the total discards map
-        productionCombo.getLeaderCardProduction().keySet()
-                .stream()
-                .map(DumbLeaderCard::convert)
-                .forEach(card -> totalDiscardMap.compute(((ProduceLeaderCard) card).getInputResource(),
-                        (k, v) -> (v == null) ? -1 : v - 1));
+        Optional.ofNullable(productionCombo.getLeaderCardProduction()).ifPresent(dumbLeaderCardResourceMap ->
+                dumbLeaderCardResourceMap.keySet().stream()
+                        .map(DumbLeaderCard::convert)
+                        .forEach(card -> totalDiscardMap.compute(((ProduceLeaderCard) card).getInputResource(),
+                                (k, v) -> (v == null) ? -1 : v - 1))
+        );
         // If any field of the discard map went negative while counting dev cards
         // costs it means that the player did not supply enough resources to cover
         // the production
