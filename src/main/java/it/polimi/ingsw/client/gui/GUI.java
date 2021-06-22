@@ -8,11 +8,11 @@ import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGamePersonalController
 import it.polimi.ingsw.client.gui.guicontrollers.ingame.PlayerBoardController;
 import it.polimi.ingsw.client.gui.guicontrollers.mainmenu.MainMenuController;
 import it.polimi.ingsw.client.utils.InputVerifier;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
 import javafx.application.Application;
@@ -227,7 +227,7 @@ public class GUI extends Application implements UI {
     }
 
     @Override
-    public void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck) {
+    public void renderActionToken(ActionToken actionToken) {
 
     }
 

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  */
 public class ModelUpdate extends PrivateRenderable {
     GameStateUpdate gameStateUpdate;
-    ActionTokenDeckUpdate actionTokenDeckUpdate;
     DevelopmentCardsBoardUpdate  developmentCardsBoardUpdate;
     MarketUpdate marketUpdate;
     LeaderCardsPrivateUpdate leaderCardsPrivateUpdate;
@@ -124,8 +123,6 @@ public class ModelUpdate extends PrivateRenderable {
      */
     @Override
     public void update(DumbModel dumbModel){
-        if(isSinglePlayerGame)
-            actionTokenDeckUpdate.update(dumbModel);
         developmentCardsBoardUpdate.update(dumbModel);
         marketUpdate.update(dumbModel);
         leaderCardsPrivateUpdate.update(dumbModel);

@@ -5,9 +5,6 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 import it.polimi.ingsw.network.servertoclient.renderable.BroadcastRenderable;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
-import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
-
-import java.util.List;
 
 
 //todo: isn't this class useless?
@@ -15,11 +12,11 @@ import java.util.List;
 /**
  * This class contains an updated version of the ActionTokenDeck which will be saved in the local DumbModel
  */
-public class ActionTokenDeckUpdate extends BroadcastRenderable {
-    private final List<ActionToken> updatedActionTokenDeck;
+public class ActionTokenUpdate extends BroadcastRenderable {
+    private final ActionToken pickedActionToken;
 
-    public ActionTokenDeckUpdate(ActionTokenDeck updatedActionTokenDeck) {
-        this.updatedActionTokenDeck = updatedActionTokenDeck.getCurrentDeck();
+    public ActionTokenUpdate(ActionToken pickedActionToken) {
+        this.pickedActionToken = pickedActionToken;
     }
 
     /**
@@ -28,7 +25,7 @@ public class ActionTokenDeckUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
-        return null;
+        return OnScreenElement.FORCE_DISPLAY;
     }
 
     /**
@@ -37,7 +34,7 @@ public class ActionTokenDeckUpdate extends BroadcastRenderable {
      */
     @Override
     public void update(DumbModel dumbModel){
-        dumbModel.updateActionTokenDeck(updatedActionTokenDeck);
+        dumbModel.updateActionToken(pickedActionToken);
     }
 
     /**
@@ -46,6 +43,6 @@ public class ActionTokenDeckUpdate extends BroadcastRenderable {
      */
     @Override
     public void render(UI ui) {
-
+        ui.renderActionToken(pickedActionToken);
     }
 }

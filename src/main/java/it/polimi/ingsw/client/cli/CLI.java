@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourc
 import it.polimi.ingsw.network.clienttoserver.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -213,7 +214,7 @@ public class CLI implements UI {
     }
 
     @Override
-    public void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck) {
+    public void renderActionToken(ActionToken actionToken) {
         //needed?
     }
 

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.utils.dumbobjects.DumbActionTokenDeck;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
 import java.util.List;
@@ -37,8 +37,7 @@ public interface UI extends Subscriber<Renderable> {
 
     void renderTakeFromMarketConfirmation();
 
-    void renderActionTokenDeck(DumbActionTokenDeck actionTokenDeck);
-    //todo: decide how should action tokens be used
+    void renderActionToken(ActionToken actionToken);
 
     void renderGameOutcome(int finalScore);
 
