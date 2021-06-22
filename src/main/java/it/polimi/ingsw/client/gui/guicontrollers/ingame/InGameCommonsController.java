@@ -284,6 +284,14 @@ public class InGameCommonsController extends JFXController {
         }
     }
 
+    private void updateDevelopmentCards(){
+        for (int row = 0; row < 3; row++){
+            for (int column = 0; column <4; column++){
+                gridPaneDevelopmentCardArray[row][column].setUserData(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column]);
+            }
+        }
+    }
+
     private void setDevelopmentCardsGraphic(){
         Platform.runLater(() -> {
             for (int row = 0; row < 3; row++){
@@ -302,6 +310,7 @@ public class InGameCommonsController extends JFXController {
     public void renderCommonsBoard(){
         setDevelopmentCardsGraphic();
         setMarketGraphic();
+        updateDevelopmentCards();
         Optional.ofNullable(toggleMarketGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
         Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
