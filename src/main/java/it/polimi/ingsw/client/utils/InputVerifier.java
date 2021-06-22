@@ -1,9 +1,6 @@
 package it.polimi.ingsw.client.utils;
 
-import it.polimi.ingsw.client.utils.dumbobjects.DumbConvertLeaderCard;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
-import it.polimi.ingsw.client.utils.dumbobjects.DumbStoreLeaderCard;
+import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.developmentcard.Level;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
@@ -13,10 +10,7 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.ProductionCombo;
 import it.polimi.ingsw.server.model.utils.Resource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,85 +25,94 @@ public class InputVerifier {
 
     /**
      * Checks if user can activate a production
+     *
      * @param chosenProductionCombo a production combo which includes all choices made by user
      * @return true if request is valid, false otherwise
      */
-    public boolean canProduce(ProductionCombo chosenProductionCombo){
+    public boolean canProduce(ProductionCombo chosenProductionCombo) {
         //Check if at least one production item was chosen
-        if(chosenProductionCombo.getDevelopmentCards() == null ||
-                chosenProductionCombo.getLeaderCardProduction() == null ||
+        if (chosenProductionCombo.getDevelopmentCards() == null &&
+                chosenProductionCombo.getLeaderCardProduction() == null &&
                 chosenProductionCombo.getDefaultSlotOutput() == null)
             return false;
 
         //Check if resources to discard were chosen
-        if(chosenProductionCombo.getDiscardedResourcesFromStrongbox() == null ||
+        if (chosenProductionCombo.getDiscardedResourcesFromStrongbox() == null &&
                 chosenProductionCombo.getDiscardedResourcesFromDepots() == null)
             return false;
 
         //Check correctness of default slot output resources choice in case it was made
-        if(chosenProductionCombo.getDefaultSlotOutput() != null
-                && chosenProductionCombo.getDefaultSlotOutput().values().stream().allMatch( resourceCount -> resourceCount>0))
+        if (chosenProductionCombo.getDefaultSlotOutput() != null
+                && chosenProductionCombo.getDefaultSlotOutput().values().stream().reduce(0,
+                Integer::sum) != 1)
             return false;
 
         //Check correctness of development cards choice in case it was made
-        if(chosenProductionCombo.getDevelopmentCards() != null &&
+        if (chosenProductionCombo.getDevelopmentCards() != null &&
                 !dumbModel
                         .getOwnPersonalBoard()
                         .getDevelopmentCardSlots()
                         .stream()
-                        .map(
-                                developmentCardSlot -> developmentCardSlot.getDevelopmentCards().get(0))
+                        .map(DumbDevelopmentCardSlot::peek)
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList())
-                        .contains(chosenProductionCombo.getDevelopmentCards()))
+                        .containsAll(chosenProductionCombo.getDevelopmentCards()))
             return false;
 
         //Check correctness of leader cards choice in case it was made
-        if(chosenProductionCombo.getLeaderCardProduction() != null &&
+        if (chosenProductionCombo.getLeaderCardProduction() != null &&
                 !dumbModel
                         .getOwnPersonalBoard()
                         .getLeaderCards()
-                        .contains(chosenProductionCombo.getLeaderCardProduction().keySet()))
+                        .containsAll(chosenProductionCombo.getLeaderCardProduction().keySet()))
             return false;
 
         //Check correctness of depots resources choice in case it was made
-        if(chosenProductionCombo.getDiscardedResourcesFromDepots()!= null
-                && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromDepots())
-                && chosenProductionCombo.getDiscardedResourcesFromDepots().values().stream().allMatch( resourceCount -> resourceCount>0))
-            return false;
+        if (chosenProductionCombo.getDiscardedResourcesFromDepots() != null)
+            if (!legalResourcesChoice(dumbModel.getOwnPersonalBoard().getDepots().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromDepots())
+                    || chosenProductionCombo.getDiscardedResourcesFromDepots().values().stream().anyMatch(resourceCount -> resourceCount < 1))
+                return false;
 
 
         //Check correctness of strongbox resources choice in case it was made
-        if(chosenProductionCombo.getDiscardedResourcesFromStrongbox()!= null &&
-                legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromStrongbox())
-                && chosenProductionCombo.getDiscardedResourcesFromStrongbox().values().stream().allMatch( resourceCount -> resourceCount>0))
-            return false;
+        if (chosenProductionCombo.getDiscardedResourcesFromStrongbox() != null)
+            if (!legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), chosenProductionCombo.getDiscardedResourcesFromStrongbox())
+                    || chosenProductionCombo.getDiscardedResourcesFromStrongbox().values().stream().anyMatch(resourceCount -> resourceCount < 1))
+                return false;
 
         return canDoAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
     }
 
     /**
      * Checks if user can take resource from market
+     *
      * @param place string value which should either be "row" or "column", indicates the
      *              place from which user wants to pick a resource from market
-     * @param index the number of the row/column from which user wants to pick a resource from market
+     * @param index the number of the row/column from which user wants to pick a resource from
+     *              market
      * @return true if request is valid, false otherwise
      */
-    public boolean canTake(String place, int index){
-        return ((place.equals("row") && index<=2) || (place.equals("column") && index<=3))
+    public boolean canTake(String place, int index) {
+        return ((place.equals("row") && index <= 2) || (place.equals("column") && index <= 3))
                 && canDoAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION)
-                && index>=0;
+                && index >= 0;
     }
 
     /**
      * Checks if user can buy the selected development card
-     * @param chosenLevel level of chosen development card
-     * @param chosenColor color of chosen development card
-     * @param developmentCardSlotIndex index of development card slot where user wants to place new card
-     * @param depotsResources map of resources which will be discarded from depots or store leader cards
-     * @param strongboxResources map of resources which will be discarded from strongbox
+     *
+     * @param chosenLevel              level of chosen development card
+     * @param chosenColor              color of chosen development card
+     * @param developmentCardSlotIndex index of development card slot where user wants to place
+     *                                 new card
+     * @param depotsResources          map of resources which will be discarded from depots or
+     *                                 store leader cards
+     * @param strongboxResources       map of resources which will be discarded from strongbox
      * @return true if request is valid, false otherwise
      */
-    public boolean canBuy(Level chosenLevel, Color chosenColor, int developmentCardSlotIndex, Map<Resource, Integer> depotsResources, Map<Resource, Integer> strongboxResources){
+    public boolean canBuy(Level chosenLevel, Color chosenColor, int developmentCardSlotIndex,
+                          Map<Resource, Integer> depotsResources,
+                          Map<Resource, Integer> strongboxResources) {
 
         //Create a map of resources based on store leader cards
         Map<Resource, Integer> totalDepotsResources = dumbModel.getOwnPersonalBoard()
@@ -130,23 +133,25 @@ public class InputVerifier {
                 .getStoredResources()
                 .forEach(
                         (key, value) -> totalDepotsResources.merge(key, value, Integer::sum)
-        );
+                );
 
 
         return chosenColor != null && chosenLevel != null
-                && ((depotsResources !=null && legalResourcesChoice(totalDepotsResources, depotsResources))
-                || (strongboxResources!= null && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)))
+                && ((depotsResources != null && legalResourcesChoice(totalDepotsResources,
+                depotsResources))
+                || (strongboxResources != null && legalResourcesChoice(dumbModel.getOwnPersonalBoard().getStrongbox().getStoredResources(), strongboxResources)))
                 && dumbModel.getDevelopmentCardsBoard().peekCard(chosenLevel, chosenColor) != null
-                && dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(developmentCardSlotIndex-1).getDevelopmentCards().size() < chosenLevel.getLevel()
+                && dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(developmentCardSlotIndex - 1).getDevelopmentCards().size() < chosenLevel.getLevel()
                 && canDoAction(ExecutedActions.BOUGHT_DEVELOPMENT_CARD_ACTION);
     }
 
     /**
      * Checks if user can discard selected leader card
+     *
      * @param leaderCard leader card which user wants to activate
      * @return true if request is valid, false otherwise
      */
-    public boolean canActivate(DumbLeaderCard leaderCard){
+    public boolean canActivate(DumbLeaderCard leaderCard) {
         return leaderCard != null
                 && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(leaderCard)
                 && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(dumbModel.getOwnPersonalBoard().getLeaderCards().indexOf(leaderCard)).isActive()
@@ -155,10 +160,11 @@ public class InputVerifier {
 
     /**
      * Checks if user can discard selected leader card
+     *
      * @param leaderCard leader card which user wants to discard
      * @return true if request is valid, false otherwise
      */
-    public boolean canDiscard(DumbLeaderCard leaderCard){
+    public boolean canDiscard(DumbLeaderCard leaderCard) {
         return leaderCard != null
                 && dumbModel.getOwnPersonalBoard().getLeaderCards().contains(leaderCard)
                 && !dumbModel.getOwnPersonalBoard().getLeaderCards().get(dumbModel.getOwnPersonalBoard().getLeaderCards().indexOf(leaderCard)).isActive()
@@ -167,54 +173,59 @@ public class InputVerifier {
 
     /**
      * Checks if selected resources in pregame are correct
+     *
      * @param pickedResources resource chosen by user in pregame
      * @return true if request is valid, false otherwise
      */
-    public boolean canPickResources(Map<Resource, Integer> pickedResources){
+    public boolean canPickResources(Map<Resource, Integer> pickedResources) {
         return pickedResources
                 .values()
                 .stream()
                 .mapToInt(
                         value -> value
                 )
-                .sum() == dumbModel.getOwnPersonalBoard().getPosition()/2
+                .sum() == dumbModel.getOwnPersonalBoard().getPosition() / 2
                 && dumbModel.getGameState().equals(GameState.ASSIGNED_INKWELL);
     }
 
     /**
      * Checks if the selected leader cards are correct
+     *
      * @param chosenLeaderCards leader cards chosen by user
      * @return true if request is valid, false otherwise
      */
-    public boolean canPickLeaderCards(List<DumbLeaderCard> chosenLeaderCards){
-        return chosenLeaderCards.size()==2 &&
+    public boolean canPickLeaderCards(List<DumbLeaderCard> chosenLeaderCards) {
+        return chosenLeaderCards.size() == 2 &&
                 dumbModel.getTempLeaderCards().containsAll(chosenLeaderCards) &&
                 dumbModel.getGameState().equals(GameState.DEALT_LEADER_CARDS);
     }
 
     /**
      * Checks if the chosen market marbles are a valid selection
+     *
      * @param chosenMarbles map of chosen market marbles
      * @return true if request is valid, false otherwise
      */
-    public boolean canPickTempMarbles(Map<MarketMarble, Integer> chosenMarbles){
+    public boolean canPickTempMarbles(Map<MarketMarble, Integer> chosenMarbles) {
         return canDoAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
                 && !tempMarblesContainSelectedMarbles(chosenMarbles);
     }
 
     /**
      * Checks if nextAction is valid based on turn action order logic
+     *
      * @param nextAction the nextAction which user wants to execute
      * @return true if it can be executed in that order, false otherwise
      */
-    private boolean canDoAction(ExecutedActions nextAction){
-        if(!dumbModel.getOwnPersonalBoard().getTurnStatus())
+    private boolean canDoAction(ExecutedActions nextAction) {
+        if (!dumbModel.getOwnPersonalBoard().getTurnStatus())
             return false;
 
-        if(!dumbModel.getGameState().equals(GameState.IN_GAME))
+        if (!dumbModel.getGameState().equals(GameState.IN_GAME))
             return false;
 
-        Optional<ExecutedActions> mostRecentAction = dumbModel.getTurnActions().stream().findFirst();
+        Optional<ExecutedActions> mostRecentAction =
+                dumbModel.getTurnActions().stream().findFirst();
         // If no action has been executed, any action is allowed except for ending turn
         // and storing market resources
         return mostRecentAction.map(recentAction -> switch (nextAction) {
@@ -232,6 +243,7 @@ public class InputVerifier {
 
     /**
      * Checks if user can end his turn or not
+     *
      * @return true if turn can be ended, false otherwise
      */
     public boolean canEndTurn() {
@@ -240,21 +252,24 @@ public class InputVerifier {
 
     /**
      * Checks if selected index by user is valid
+     *
      * @param index selected index by user
      * @return true if the index is valid, false otherwise
      */
-    public boolean canSeePersonalBoard(int index){
-        return index>0 && index<=dumbModel.getSize();
+    public boolean canSeePersonalBoard(int index) {
+        return index > 0 && index <= dumbModel.getSize();
     }
 
 
     /**
      * Checks if second map is contained in the first map
-     * @param possessedResources  the actual possessed resources by user
-     * @param selectedResources the resources selected by user
+     *
+     * @param possessedResources the actual possessed resources by user
+     * @param selectedResources  the resources selected by user
      * @return true if second map is contained in first map
      */
-    private boolean legalResourcesChoice(Map<Resource, Integer> possessedResources, Map<Resource, Integer> selectedResources){
+    private boolean legalResourcesChoice(Map<Resource, Integer> possessedResources, Map<Resource,
+            Integer> selectedResources) {
         Map<Resource, Integer> validResources = selectedResources
                 .entrySet()
                 .stream()
