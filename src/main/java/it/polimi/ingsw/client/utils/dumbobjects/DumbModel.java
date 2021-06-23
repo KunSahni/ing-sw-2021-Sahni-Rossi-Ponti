@@ -36,7 +36,7 @@ public class DumbModel {
     private final List<DumbPersonalBoard> personalBoards;
     private final DumbMarket market;
     private final DumbDevelopmentCardsBoard developmentCardsBoard;
-    private final DumbActionTokenDeck actionTokenDeck;  //todo: potrebbe non servire visto che fa tutto il server
+    private ActionToken pickedActionToken;
     private int size;
     private int gameID;
     private GameState gameState;
@@ -51,7 +51,7 @@ public class DumbModel {
         personalBoards = new ArrayList<>();
         market = DumbMarket.getInstance();
         developmentCardsBoard = DumbDevelopmentCardsBoard.getInstance();
-        actionTokenDeck = (size<=1) ? null: DumbActionTokenDeck.getInstance();
+        pickedActionToken = null;
         updatesHandler = new UpdatesHandler(ui);
 
         //Try to read existing saved gameID
@@ -102,10 +102,10 @@ public class DumbModel {
 
     /**
      * This method is called every time the client receives an update regarding DumbActionTokenDeck.
-     * @param updatedActionTokenDeck an updated version of the game's DumbActionTokenDeck
+     * @param pickedActionToken the picked action token
      */
-    public void updateActionTokenDeck(List<ActionToken> updatedActionTokenDeck){
-        getActionTokenDeck().updateActionTokens(updatedActionTokenDeck);
+    public void updateActionToken(ActionToken pickedActionToken){
+        this.pickedActionToken = pickedActionToken;
     }
 
     /**
@@ -303,8 +303,8 @@ public class DumbModel {
         return developmentCardsBoard;
     }
 
-    public DumbActionTokenDeck getActionTokenDeck() {
-        return actionTokenDeck;
+    public ActionToken getActionToken() {
+        return pickedActionToken;
     }
 
     public int getSize() {
