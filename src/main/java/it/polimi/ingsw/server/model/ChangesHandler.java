@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.servertoclient.renderable.updates.*;
+import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.actiontoken.ActionTokenDeck;
 import it.polimi.ingsw.server.model.developmentcard.*;
 import it.polimi.ingsw.server.model.leadercard.*;
@@ -237,12 +238,11 @@ public class ChangesHandler {
         return deck;
     }
 
-    public void publishActionTokenDeck(ActionTokenDeck actionTokenDeck) {
-        submissionPublisher.submit(new ActionTokenDeckUpdate(actionTokenDeck));
+    public void publishActionToken(ActionToken actionToken) {
+        submissionPublisher.submit(new ActionTokenUpdate(actionToken));
     }
 
     public void writeActionTokenDeck(ActionTokenDeck actionTokenDeck) {
-        publishActionTokenDeck(actionTokenDeck);
         changesBuffer.put(actionTokenDeck, root + "/ActionTokenDeck.json");
     }
 

@@ -44,6 +44,7 @@ public class ActionTokenDeck {
     public ActionToken pop() {
         ActionToken actionToken = currentDeck.pop();
         changesHandler.writeActionTokenDeck(this);
+        changesHandler.publishActionToken(actionToken);
         return actionToken;
     }
 
