@@ -149,6 +149,11 @@ public class Server implements Flow.Subscriber<Integer> {
     }
 
     public void wakeUpThread(){
+        for (int i=1; i<Lobby.getInstance().getSize(); i++){
+            if (!waitingThreads.isEmpty()){
+                waitingThreads.poll().start();
+            }
+        }
         if (!waitingThreads.isEmpty()){
             waitingThreads.poll().start();
         }
