@@ -83,6 +83,7 @@ public class Lobby {
 
     public void setSize(int size) {
         this.size = size;
+        server.wakeUpThread();
     }
 
     /**
@@ -141,7 +142,7 @@ public class Lobby {
      * @return true only if Lobby' size is zero
      */
     public boolean isEmpty() {
-        return size == 0;
+        return size == 0 || size==-1;
     }
 
     public synchronized boolean nicknameAvailable(String nickname) {

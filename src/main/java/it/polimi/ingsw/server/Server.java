@@ -22,6 +22,7 @@ public class Server implements Flow.Subscriber<Integer> {
     private final Map<Integer, Game> currentGames = new HashMap<>();
     private final List<Integer> dormantGames = new ArrayList<>();
     private final Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
+    private final Queue<Thread> waitingThreads = new ArrayDeque<>();
 
     public Server() throws IOException {
         this.serverSocket = null;
@@ -43,7 +44,13 @@ public class Server implements Flow.Subscriber<Integer> {
                 Socket socket = serverSocket.accept();
                 Connection connection = new Connection(socket, this);
                 Thread thread = new Thread(connection);
-                thread.start();
+                if (Lobby.getInstance().getSize()==-1){
+                    waitingThreads.add(thread);
+                }
+                else {
+                    Lobby.getInstance().setSize(-1);
+                    thread.start();
+                }
             } catch (IOException e){
                 System.err.println("Connection error!");
             }
@@ -139,5 +146,11 @@ public class Server implements Flow.Subscriber<Integer> {
     @Override
     public void onComplete() {
 
+    }
+
+    public void wakeUpThread(){
+        if (!waitingThreads.isEmpty()){
+            waitingThreads.poll().start();
+        }
     }
 }
