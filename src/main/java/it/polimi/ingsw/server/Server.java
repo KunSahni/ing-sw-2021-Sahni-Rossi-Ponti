@@ -48,7 +48,9 @@ public class Server implements Flow.Subscriber<Integer> {
                     waitingThreads.add(thread);
                 }
                 else {
-                    Lobby.getInstance().setSize(-1);
+                    if (Lobby.getInstance().getSize()==0){
+                        Lobby.getInstance().setSize(-1);
+                    }
                     thread.start();
                 }
             } catch (IOException e){
