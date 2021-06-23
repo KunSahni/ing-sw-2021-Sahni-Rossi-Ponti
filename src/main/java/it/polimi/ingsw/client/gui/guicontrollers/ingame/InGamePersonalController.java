@@ -557,9 +557,19 @@ public class InGamePersonalController extends PlayerBoardController {
 
     private void confirmDevelopmentSlotSelection() {
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
-        startResourceChoice(((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost(), null);
+        Map<Resource, Integer> fullCost =
+                ((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost();
+        gui.getDumbModel().getOwnPersonalBoard().getLeaderCards().stream()
+                .filter(card -> card.isActive() && card.getAbility().equals(LeaderCardAbility.DISCOUNT))
+                .forEach(card -> {
+                    DumbDiscountLeaderCard activeDiscountLeaderCard = (DumbDiscountLeaderCard) card;
+                    fullCost.compute(activeDiscountLeaderCard.getDiscountedResource(),
+                            (k, v) -> v == null ? null : (v == 1 ? null : v - 1));
+                });
+        startResourceChoice(fullCost, null);
         ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, resourceSelectionLayer);
+        selectDevCardSlotToggleGroup.getSelectedToggle().setSelected(false);
     }
 
     private void confirmDevelopmentCardPurchase() {
@@ -836,9 +846,9 @@ public class InGamePersonalController extends PlayerBoardController {
             defaultSlotToggleButton.setSelected(false);
             selectedDevelopmentCardsToggleButtons.forEach(button -> button.setSelected(false));
             selectedProduceLeaderCardsToggleButtons.forEach(button -> button.setSelected(false));
-            defaultSlotOutputToggleGroup.getSelectedToggle().setSelected(false);
-            leaderCard1OutputToggleGroup.getSelectedToggle().setSelected(false);
-            leaderCard2OutputToggleGroup.getSelectedToggle().setSelected(false);
+            Optional.ofNullable(defaultSlotOutputToggleGroup.getSelectedToggle()).ifPresent(button -> button.setSelected(false));
+            Optional.ofNullable(leaderCard1OutputToggleGroup.getSelectedToggle()).ifPresent(button -> button.setSelected(false));
+            Optional.ofNullable(leaderCard2OutputToggleGroup.getSelectedToggle()).ifPresent(button -> button.setSelected(false));
         });
     }
 

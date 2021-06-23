@@ -58,9 +58,10 @@ public class ActivateProductionAction extends PlayerAction {
             throw new InvalidActionException("You cannot activate a production at this time.");
         if (productionComboIsEmpty())
             throw new InvalidActionException("You supplied an empty Production Combo");
-        if (productionCombo.getDefaultSlotOutput().values().stream().reduce(0, Integer::sum) != 1)
-            throw new InvalidActionException("You cannot produce more than one resource with your" +
-                    " default slot activation");
+        if (productionCombo.getDefaultSlotOutput() != null)
+            if (productionCombo.getDefaultSlotOutput().values().stream().reduce(0, Integer::sum) != 1)
+                throw new InvalidActionException("You cannot produce more than one resource with " +
+                        "your default slot activation");
         if (productionCombo.getDevelopmentCards() != null) {
             if (!developmentCardsAvailable())
                 throw new InvalidActionException("The development cards you have supplied do not " +
@@ -77,15 +78,19 @@ public class ActivateProductionAction extends PlayerAction {
         if (!discardMapsMatchProductionCosts())
             throw new InvalidActionException("The resources that you have selected to discard do " +
                     "not match production costs.");
-        Optional<Map<Resource, Integer>> toDiscardFromDepots = Optional.ofNullable(productionCombo.getDiscardedResourcesFromDepots());
+        Optional<Map<Resource, Integer>> toDiscardFromDepots =
+                Optional.ofNullable(productionCombo.getDiscardedResourcesFromDepots());
         if (toDiscardFromDepots.isPresent()) {
             if (!player.getPersonalBoard().depotsContainResources(toDiscardFromDepots.get()))
-                throw new InvalidActionException("You cannot discard the selected resources from your depots!");
+                throw new InvalidActionException("You cannot discard the selected resources from " +
+                        "your depots!");
         }
-        Optional<Map<Resource, Integer>> toDiscardFromStrongbox = Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox());
+        Optional<Map<Resource, Integer>> toDiscardFromStrongbox =
+                Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox());
         if (toDiscardFromStrongbox.isPresent()) {
             if (!player.getPersonalBoard().depotsContainResources(toDiscardFromStrongbox.get()))
-                throw new InvalidActionException("You cannot discard the selected resources from your strongbox!");
+                throw new InvalidActionException("You cannot discard the selected resources from " +
+                        "your strongbox!");
         }
     }
 
