@@ -202,12 +202,12 @@ public class InGamePersonalController extends PlayerBoardController {
                 chosenResourcesMap.clear();
                 populateInfoLabel("Resource choice cleared.");
             }
-            case VISIT, SELECT_DEVELOPMENT_SLOT,
-                    SELECT_PRODUCTION_INPUT_RESOURCES-> bringToFront(actionsLayer, personalBoardLayer);
+            case VISIT, SELECT_PRODUCTION_INPUT_RESOURCES-> bringToFront(actionsLayer, personalBoardLayer);
             case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> cancelResourceChoice();
             case DISCARD_LEADER_CARD, ACTIVATE_LEADER_CARD -> cancelLeaderCardAction();
             case SELECT_PRODUCTION_OUTPUT_RESOURCES -> endProductionChoices();
             case SELECT_PRODUCTION_BUTTONS -> endProductionButtonsSelection();
+            case SELECT_DEVELOPMENT_SLOT -> cancelDevelopmentSlotSelection();
         }
     }
 
@@ -556,7 +556,6 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     private void confirmDevelopmentSlotSelection() {
-        selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
         Map<Resource, Integer> fullCost =
                 ((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost();
         gui.getDumbModel().getOwnPersonalBoard().getLeaderCards().stream()
@@ -569,7 +568,13 @@ public class InGamePersonalController extends PlayerBoardController {
         startResourceChoice(fullCost, null);
         ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, resourceSelectionLayer);
-        selectDevCardSlotToggleGroup.getSelectedToggle().setSelected(false);
+        selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
+    }
+
+    private void cancelDevelopmentSlotSelection() {
+        bringToFront(actionsLayer, personalBoardLayer);
+        selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
+        Optional.ofNullable(selectDevCardSlotToggleGroup.getSelectedToggle()).ifPresent(toggle -> toggle.setSelected(false));
     }
 
     private void confirmDevelopmentCardPurchase() {
@@ -593,6 +598,7 @@ public class InGamePersonalController extends PlayerBoardController {
     public void endDevelopmentCardPurchase() {
         populateInfoLabel("The purchased Development Card has been added to your Development " +
                 "Slot!");
+        cancelDevelopmentSlotSelection();
         cancelResourceChoice();
     }
 
