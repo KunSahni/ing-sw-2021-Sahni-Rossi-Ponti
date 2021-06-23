@@ -207,6 +207,7 @@ public class InGameCommonsController extends JFXController {
 
     private void pickDevelopmentCards(ToggleButton toggleButton) {
         DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
+        resetCommon();
         gui.getPersonalController().startDevelopmentSlotSelection(chosenCard);
     }
 
@@ -246,6 +247,8 @@ public class InGameCommonsController extends JFXController {
         invisibleHorizontalMarketPane.toFront();
         invisibleDevelopmentPane.toFront();
         populateInfoLabel("");
+        Optional.ofNullable(toggleMarketGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
+        Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 
     @FXML
@@ -260,6 +263,7 @@ public class InGameCommonsController extends JFXController {
         invisibleHorizontalMarketPane.toFront();
         invisibleDevelopmentPane.toFront();
         Optional.ofNullable(toggleMarketGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
+        Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 
     @FXML
