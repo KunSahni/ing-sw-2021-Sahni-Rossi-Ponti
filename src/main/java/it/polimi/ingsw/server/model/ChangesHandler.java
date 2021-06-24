@@ -331,10 +331,21 @@ public class ChangesHandler {
         submissionPublisher.submit(new FaithTrackUpdate(nickname, faithTrack));
     }
 
+    public void publishSinglePlayerFaithTrack(String nickname,
+                                              SinglePlayerFaithTrack singlePlayerFaithTrack) {
+        submissionPublisher.submit(new FaithTrackUpdate(nickname, singlePlayerFaithTrack));
+    }
+
     public void writeFaithTrack(String nickname, FaithTrack faithTrack) {
-        publishFaithTrack(nickname, faithTrack);
-        String filepath = root + "/players/" + nickname +
-                (isSinglePlayerGame ? "/SinglePlayerFaithTrack.json" : "/FaithTrack.json");
+        String filepath = root + "/players/" + nickname;
+        if (isSinglePlayerGame) {
+            publishSinglePlayerFaithTrack(nickname, (SinglePlayerFaithTrack) faithTrack);
+            filepath += "/SinglePlayerFaithTrack.json";
+        }
+        else {
+            filepath += "/FaithTrack.json";
+            publishFaithTrack(nickname, faithTrack);
+        }
         changesBuffer.put(faithTrack, filepath);
     }
 
