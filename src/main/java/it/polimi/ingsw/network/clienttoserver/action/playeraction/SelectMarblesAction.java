@@ -6,6 +6,7 @@ import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
+import it.polimi.ingsw.server.model.personalboard.SinglePlayerFaithTrack;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.ResourceBank;
 
@@ -26,11 +27,13 @@ public class SelectMarblesAction extends PlayerAction {
     public GameAction execute() {
         player.getPersonalBoard().storeInDepots(ResourceBank.getResourcesFromMarbles(selectedMarbles));
         int othersIncrement = player.getTempMarbles().entrySet().stream()
-                .filter(entry -> entry.getKey()!=MarketMarble.WHITE)
+                .filter(entry -> entry.getKey() != MarketMarble.WHITE)
                 .map(Map.Entry::getValue)
                 .reduce(0, Integer::sum)
                 - selectedMarbles.values().stream().reduce(0, Integer::sum);
-        moveOtherMarkers(othersIncrement);
+        if (game.size() == 1) IntStream.range(0, othersIncrement).forEach(i ->
+                    ((SinglePlayerFaithTrack) player.getPersonalBoard().getFaithTrack()).moveBlackCross());
+        else moveOtherMarkers(othersIncrement);
         player.clearTempMarbles();
         return null;
     }
@@ -108,6 +111,7 @@ public class SelectMarblesAction extends PlayerAction {
     /**
      * This method moves all the markers and then checks if someone has passed
      * an valid Pope's place
+     *
      * @param steps faith increase for all NPCs
      */
     private void moveOtherMarkers(int steps) {
@@ -116,7 +120,7 @@ public class SelectMarblesAction extends PlayerAction {
                 game.getPlayerList().stream().filter(npc -> npc != player).collect(Collectors.toList());
         otherPlayersList.forEach(
                 npc -> IntStream.range(0, steps).forEach(
-                       $ -> npc.getPersonalBoard().getFaithTrack().moveMarker()
+                        $ -> npc.getPersonalBoard().getFaithTrack().moveMarker()
                 )
 
         );

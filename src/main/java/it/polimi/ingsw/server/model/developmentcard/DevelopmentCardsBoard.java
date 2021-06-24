@@ -18,8 +18,9 @@ public class DevelopmentCardsBoard {
 
     /**
      * pick the first card of the deck of color and level specified
-    * @return the picked card
-    */
+     *
+     * @return the picked card
+     */
     public DevelopmentCard pick(Level level, Color color) {
         int line;
         int column;
@@ -43,7 +44,7 @@ public class DevelopmentCardsBoard {
 
     /**
      * @return the first deck development card of color and level specified not picking it
-    */
+     */
     public DevelopmentCard peekCard(Level level, Color color) {
         int line;
         int column;
@@ -63,15 +64,16 @@ public class DevelopmentCardsBoard {
     }
 
     public DevelopmentCardsDeck[][] peekBoard() {
-        DevelopmentCardsDeck [][] newBoard = new DevelopmentCardsDeck[board.length][];
-        for(int i = 0; i < board.length; i++)
+        DevelopmentCardsDeck[][] newBoard = new DevelopmentCardsDeck[board.length][];
+        for (int i = 0; i < board.length; i++)
             newBoard[i] = board[i].clone();
         return newBoard;
     }
 
     /**
-     * discard two card from the board in single player games when the action token discard is picked
-    */
+     * discard two card from the board in single player games when the action token discard is
+     * picked
+     */
     public void discardTwo(Color color) {
         int i = 0; //counts how many cards have been discarded
         int column;
@@ -83,25 +85,34 @@ public class DevelopmentCardsBoard {
             case PURPLE -> 3;
         };
         //if there are elements in the deck discard two of them
-        for (DevelopmentCard d: board[2][column].getDeck()) {
-            if (i == 2){return;}
-            if (board[2][column].peek()!=null){
+        for (DevelopmentCard d : board[2][column].getDeck()) {
+            if (i == 2) {
+                changesHandler.writeDevelopmentCardsBoard(this);
+                return;
+            }
+            if (board[2][column].peek() != null) {
                 board[2][column].pop();
                 i++;
             }
         }
 
-        for (DevelopmentCard d: board[1][column].getDeck()) {
-            if (i == 2){return;}
-            if (board[1][column].peek()!=null){
+        for (DevelopmentCard d : board[1][column].getDeck()) {
+            if (i == 2) {
+                changesHandler.writeDevelopmentCardsBoard(this);
+                return;
+            }
+            if (board[1][column].peek() != null) {
                 board[1][column].pop();
                 i++;
             }
         }
 
-        for (DevelopmentCard d: board[0][column].getDeck()) {
-            if (i == 2){return;}
-            if (board[0][column].peek()!=null){
+        for (DevelopmentCard d : board[0][column].getDeck()) {
+            if (i == 2) {
+                changesHandler.writeDevelopmentCardsBoard(this);
+                return;
+            }
+            if (board[0][column].peek() != null) {
                 board[0][column].pop();
                 i++;
             }

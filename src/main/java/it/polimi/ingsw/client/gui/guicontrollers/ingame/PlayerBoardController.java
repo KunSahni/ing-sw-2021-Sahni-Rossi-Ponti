@@ -49,15 +49,15 @@ public abstract class PlayerBoardController extends JFXController {
     private final List<List<ImageView>> warehouseDepotsResourceImages = new ArrayList<>();
     private Map<Resource, Integer> currentWarehouseDepotsDisplay = new HashMap<>();
     @FXML
-    private GridPane faithTrackGrid;
-    private ImageView faithMarker;
-    private List<GridCoordinates> faithTrackCoordsReference;
+    protected GridPane faithTrackGrid;
+    protected ImageView faithMarker;
+    protected List<GridCoordinates> faithTrackCoordsReference;
     @FXML
-    private ImageView firstPopesFavor;
+    protected ImageView firstPopesFavor;
     @FXML
-    private ImageView secondPopesFavor;
+    protected ImageView secondPopesFavor;
     @FXML
-    private ImageView thirdPopesFavor;
+    protected ImageView thirdPopesFavor;
     @FXML
     private Label strongboxCoinQuantity;
     @FXML
@@ -195,7 +195,7 @@ public abstract class PlayerBoardController extends JFXController {
         }
     }
 
-    private void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
+    protected void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
         DumbFaithTrack faithTrack = dumbPersonalBoard.getFaithTrack();
         GridCoordinates coordinates =
                 faithTrackCoordsReference.get(faithTrack.getFaithMarkerPosition());
@@ -208,7 +208,7 @@ public abstract class PlayerBoardController extends JFXController {
         });
     }
 
-    private void renderPopesFavor(ImageView popesFavorImageView, FavorStatus favorStatus,
+    protected void renderPopesFavor(ImageView popesFavorImageView, FavorStatus favorStatus,
                                   int index) {
         popesFavorImageView.setImage(
                 switch (favorStatus) {

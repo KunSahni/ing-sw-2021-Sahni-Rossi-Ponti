@@ -122,6 +122,7 @@ public class InGamePersonalController extends PlayerBoardController {
     private ToggleButton leaderCard2ShieldButton;
     @FXML
     private ToggleButton leaderCard2StoneButton;
+    private ImageView blackCross;
 
     @FXML
     @Override
@@ -151,6 +152,10 @@ public class InGamePersonalController extends PlayerBoardController {
         outputResourcesTilePane.getChildren().remove(defaultSlotOutputTile);
         outputResourcesTilePane.getChildren().remove(leaderCard1OutputTile);
         outputResourcesTilePane.getChildren().remove(leaderCard2OutputTile);
+        // Initialize black cross
+        blackCross = new ImageView(getImageFromPath("/img/faithtrack/black_cross.png"));
+        blackCross.setFitHeight(55);
+        blackCross.setPreserveRatio(true);
     }
 
     public void initialize(GUI gui) {
@@ -202,12 +207,12 @@ public class InGamePersonalController extends PlayerBoardController {
                 chosenResourcesMap.clear();
                 populateInfoLabel("Resource choice cleared.");
             }
-            case VISIT, SELECT_DEVELOPMENT_SLOT,
-                    SELECT_PRODUCTION_INPUT_RESOURCES-> bringToFront(actionsLayer, personalBoardLayer);
+            case VISIT, SELECT_PRODUCTION_INPUT_RESOURCES-> bringToFront(actionsLayer, personalBoardLayer);
             case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> cancelResourceChoice();
             case DISCARD_LEADER_CARD, ACTIVATE_LEADER_CARD -> cancelLeaderCardAction();
             case SELECT_PRODUCTION_OUTPUT_RESOURCES -> endProductionChoices();
             case SELECT_PRODUCTION_BUTTONS -> endProductionButtonsSelection();
+            case SELECT_DEVELOPMENT_SLOT -> cancelDevelopmentSlotSelection();
         }
     }
 
@@ -228,10 +233,15 @@ public class InGamePersonalController extends PlayerBoardController {
 
     public void populateInfoLabel(String outcome) {
         BorderPane alertPane = new BorderPane();
-        alertPane.setPrefWidth(200);
+        alertPane.setPrefWidth(190);
+        alertPane.setMinWidth(Region.USE_PREF_SIZE);
+        alertPane.setMaxWidth(Region.USE_PREF_SIZE);
         alertPane.getStyleClass().add("alert");
+        alertPane.setPadding(new Insets(0, 0, 10, 0));
         Text outcomeText = new Text(outcome);
+        outcomeText.setWrappingWidth(170);
         Button closeAlertButton = new Button("x");
+        closeAlertButton.setAlignment(Pos.TOP_RIGHT);
         alertPane.setTop(closeAlertButton);
         alertPane.setCenter(outcomeText);
         closeAlertButton.setOnAction(e -> {
@@ -323,6 +333,27 @@ public class InGamePersonalController extends PlayerBoardController {
                             },
                             () -> leaderCardButton.setVisible(false));
                 });
+    }
+
+    @Override
+    protected void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
+        DumbFaithTrack faithTrack = dumbPersonalBoard.getFaithTrack();
+        GridCoordinates faithMarkerCoordinates =
+                faithTrackCoordsReference.get(faithTrack.getFaithMarkerPosition());
+        Platform.runLater(() -> {
+            faithTrackGrid.getChildren().clear();
+            if (faithTrack instanceof DumbSinglePlayerFaithTrack) {
+                DumbSinglePlayerFaithTrack dumbSinglePlayerFaithTrack = (DumbSinglePlayerFaithTrack) faithTrack;
+                GridCoordinates blackCrossCoordinates =
+                        faithTrackCoordsReference.get(dumbSinglePlayerFaithTrack.getBlackCrossPosition());
+                faithTrackGrid.add(blackCross, blackCrossCoordinates.getColumn(),
+                        blackCrossCoordinates.getRow());
+            }
+            faithTrackGrid.add(faithMarker, faithMarkerCoordinates.getColumn(), faithMarkerCoordinates.getRow());
+            renderPopesFavor(firstPopesFavor, faithTrack.getPopesFavors().get(0), 1);
+            renderPopesFavor(secondPopesFavor, faithTrack.getPopesFavors().get(1), 2);
+            renderPopesFavor(thirdPopesFavor, faithTrack.getPopesFavors().get(2), 3);
+        });
     }
 
     public void startLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
@@ -556,7 +587,6 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     private void confirmDevelopmentSlotSelection() {
-        selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
         Map<Resource, Integer> fullCost =
                 ((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost();
         gui.getDumbModel().getOwnPersonalBoard().getLeaderCards().stream()
@@ -569,7 +599,13 @@ public class InGamePersonalController extends PlayerBoardController {
         startResourceChoice(fullCost, null);
         ConfirmResetButtonsStrategy.SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, resourceSelectionLayer);
-        selectDevCardSlotToggleGroup.getSelectedToggle().setSelected(false);
+        selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
+    }
+
+    private void cancelDevelopmentSlotSelection() {
+        bringToFront(actionsLayer, personalBoardLayer);
+        selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
+        Optional.ofNullable(selectDevCardSlotToggleGroup.getSelectedToggle()).ifPresent(toggle -> toggle.setSelected(false));
     }
 
     private void confirmDevelopmentCardPurchase() {
@@ -593,6 +629,7 @@ public class InGamePersonalController extends PlayerBoardController {
     public void endDevelopmentCardPurchase() {
         populateInfoLabel("The purchased Development Card has been added to your Development " +
                 "Slot!");
+        cancelDevelopmentSlotSelection();
         cancelResourceChoice();
     }
 

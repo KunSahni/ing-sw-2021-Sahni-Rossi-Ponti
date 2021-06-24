@@ -96,7 +96,6 @@ public class Connection implements Runnable {
             // logger.info("Waiting to read next client message. Current state: " + state.getClass().getSimpleName());
             serializedMessage = (SerializedMessage) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
             closeConnection();
         }
         if (serializedMessage != null && serializedMessage.getMessage() != null) {
