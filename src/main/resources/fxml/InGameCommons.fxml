@@ -56,7 +56,7 @@
                         <HBox fx:id="HBoxMarket" maxHeight="130.0" maxWidth="180.0" minHeight="30.0" minWidth="180.0" prefHeight="100.0" prefWidth="200.0" />
                         <Pane fx:id="invisibleHorizontalMarketPane" maxHeight="30.0" maxWidth="205.0" minHeight="30.0" minWidth="205.0" opacity="0.0" prefHeight="200.0" prefWidth="200.0">
                            <StackPane.margin>
-                              <Insets left="47.5" right="57.5" />
+                              <Insets left="40.0" right="63.0" />
                            </StackPane.margin></Pane>
                      </children>
                   </StackPane>
@@ -101,6 +101,9 @@
                </font>
             </Label>
          </children>
+         <HBox.margin>
+            <Insets left="40.0" />
+         </HBox.margin>
       </VBox>
       <BorderPane prefHeight="400.0" prefWidth="386.0">
          <center>
@@ -124,7 +127,7 @@
             </StackPane>
          </center>
          <HBox.margin>
-            <Insets left="50.0" />
+            <Insets left="100.0" />
          </HBox.margin>
       </BorderPane>
    </children>
