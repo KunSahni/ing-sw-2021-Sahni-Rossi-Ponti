@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.utils.constants.Constants;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -22,6 +23,7 @@ public class DumbDevelopmentCardSlot implements Serializable {
 
     public void updateDevelopmentCards(List<DumbDevelopmentCard> updateDevelopmentCards) {
         this.developmentCards.clear();
+        updateDevelopmentCards.sort(Collections.reverseOrder());
         this.developmentCards.addAll(updateDevelopmentCards);
     }
 
