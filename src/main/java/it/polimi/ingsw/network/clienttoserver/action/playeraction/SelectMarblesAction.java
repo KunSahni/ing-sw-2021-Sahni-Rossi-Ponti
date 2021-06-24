@@ -119,19 +119,15 @@ public class SelectMarblesAction extends PlayerAction {
         List<Player> otherPlayersList =
                 game.getPlayerList().stream().filter(npc -> npc != player).collect(Collectors.toList());
         otherPlayersList.forEach(
-                npc -> IntStream.range(0, steps).forEach(
-                        $ -> npc.getPersonalBoard().getFaithTrack().moveMarker()
+                npc -> IntStream.range(0, steps).forEach(i -> {
+                            npc.getPersonalBoard().getFaithTrack().moveMarker();
+                            int faithPos = npc.getPersonalBoard().getFaithTrack().getFaithMarkerPosition();
+                            if (npc.getPersonalBoard().getFaithTrack().checkVaticanReport(faithPos))
+                                game.getPlayerList().forEach(
+                                        pl -> pl.getPersonalBoard().getFaithTrack().flipPopesFavor(faithPos / 8)
+                                );
+                        }
                 )
-
-        );
-        otherPlayersList.forEach(
-                npc -> {
-                    int faithPos = npc.getPersonalBoard().getFaithTrack().getFaithMarkerPosition();
-                    if (npc.getPersonalBoard().getFaithTrack().checkVaticanReport(faithPos))
-                        game.getPlayerList().forEach(
-                                pl -> pl.getPersonalBoard().getFaithTrack().flipPopesFavor(faithPos / 8)
-                        );
-                }
         );
     }
 
