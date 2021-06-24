@@ -221,7 +221,7 @@ public class InputVerifier {
         if (!dumbModel.getOwnPersonalBoard().getTurnStatus())
             return false;
 
-        if (!dumbModel.getGameState().equals(GameState.IN_GAME))
+        if (!dumbModel.getGameState().equals(GameState.IN_GAME) && !dumbModel.getGameState().equals(GameState.LAST_ROUND))
             return false;
 
         Optional<ExecutedActions> mostRecentAction =
