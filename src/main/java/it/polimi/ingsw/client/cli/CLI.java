@@ -245,6 +245,7 @@ public class CLI implements UI {
 
     @Override
     public void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles) {
+        System.out.println("TRYING TO PRINT");
         String printableString = formatPrintableMarblesMapStringAt(updateMarbles, 2 , 2 );
         printToCLI(printableString);
     }
@@ -253,35 +254,26 @@ public class CLI implements UI {
     public void renderResourcePregameChoice() {
         int numberOfResources = dumbModel.getPersonalBoard(nickname).getPosition()/2;
         Map<Resource, Integer> chosenResources = new HashMap<>();
-
-        for(int i=0; i<numberOfResources; i++){
-            String printableString = "\033[2;1HPick a resource (type the correspondent number):" + "\n1) " + Resource.values()[0].label + " " + Constants.COIN +
-                    "\n2) " + Resource.values()[1].label + " " + Constants.SERVANT +
-                    "\n3) " + Resource.values()[2].label + " " + Constants.SHIELD +
-                    "\n4) " + Resource.values()[3].label + " " + Constants.STONE;
+        String printableString;
+            if(numberOfResources <= 1)
+                printableString = "\033[2;1H>Pick " + numberOfResources + " resource\n";
+            else
+                printableString = "\033[2;1H>Pick " + numberOfResources + " resources\n";
             printToCLI(printableString);
 
             in.reset();
-            int readIndex = in.nextInt();
-            if(readIndex>0 && readIndex<=4)
-                chosenResources.put(Resource.values()[readIndex], 1);
-            else
-                i--;
-        }
-
-        clientSocket.sendAction(new PregameResourceChoiceAction(chosenResources));
     }
 
     @Override
     public void renderErrorMessage(String message) {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H" + message;
+        String printableString = Constants.ANSI_CLEAR + "\033[2;1H>" + message;
         printToCLI(printableString);
     }
 
     @Override
     public void renderAuthenticationRequest(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message;
         printToCLI(printableString);
 
         resetCommandPosition();
@@ -294,7 +286,7 @@ public class CLI implements UI {
     @Override
     public void renderCreateLobbyRequest(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message;
         printToCLI(printableString);
 
         resetCommandPosition();
@@ -310,28 +302,28 @@ public class CLI implements UI {
     @Override
     public void renderConnectionTerminatedNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderGameFoundNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderGameNotFoundNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderGameStartedNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
         setActiveGame(true);
     }
@@ -339,35 +331,35 @@ public class CLI implements UI {
     @Override
     public void renderJoinedLobbyNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";
         printToCLI(printableString);
     }
 
     @Override
     public void renderTimeoutWarningNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderWaitingForPlayersNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderWrongNicknameNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderNicknameAlreadyInUseNotification(String message) {
         printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H"+ message;
+        String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
@@ -397,10 +389,7 @@ public class CLI implements UI {
     public String formatPrintableMarblesMapStringAt(Map<MarketMarble, Integer> marbles, int x, int y) {
         StringBuilder printableString = new StringBuilder();
 
-        List<MarketMarble> marblesList = new ArrayList<>();
-        marbles.forEach((key, value) -> IntStream.range(0, value).forEach(
-                $ -> marblesList.add(key)
-        ));
+        List<MarketMarble> marblesList = new ArrayList<>(marbles.keySet());
 
         IntStream.range(0, marblesList.size()).forEach(
                 i -> {
@@ -447,12 +436,11 @@ public class CLI implements UI {
      */
     @Override
     public void onNext(Renderable item) {
-        new Thread(() -> {
-            if(getOnScreenElement().equals(item.getOnScreenElement(dumbModel)) || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY)){
-                renderQueue.add(item);
-                elaborateRenderQueue();
-            }
-        }).start();
+        if(getOnScreenElement().equals(item.getOnScreenElement(dumbModel))
+                || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY)){
+            renderQueue.add(item);
+            new Thread(this::elaborateRenderQueue).start();
+        }
         subscription.request(1);
     }
 
@@ -489,9 +477,10 @@ public class CLI implements UI {
     private synchronized void elaborateRenderQueue(){
         Renderable usedItem = renderQueue.remove();
         usedItem.render(this);
+        this.onScreenElement = usedItem.getOnScreenElement(dumbModel);
     }
 
-    private synchronized OnScreenElement getOnScreenElement() {
+    private OnScreenElement getOnScreenElement() {
         return onScreenElement;
     }
 

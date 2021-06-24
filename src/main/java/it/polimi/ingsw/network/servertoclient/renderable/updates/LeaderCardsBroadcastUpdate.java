@@ -32,7 +32,10 @@ public class LeaderCardsBroadcastUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
-        return OnScreenElement.valueOf(dumbModel.getPersonalBoard(nickname).getPosition());
+        if( dumbModel.getPersonalBoard(nickname).getPosition() != 0)
+            return OnScreenElement.valueOf(dumbModel.getPersonalBoard(nickname).getPosition());
+        else
+            return OnScreenElement.DONT_RENDER;
     }
 
     /**

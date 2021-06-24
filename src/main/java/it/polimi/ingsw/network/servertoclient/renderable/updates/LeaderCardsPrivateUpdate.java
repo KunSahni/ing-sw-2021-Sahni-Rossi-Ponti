@@ -27,7 +27,10 @@ public class LeaderCardsPrivateUpdate extends PrivateRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
-        return OnScreenElement.valueOf(dumbModel.getPersonalBoard(getNickname()).getPosition());
+        if( dumbModel.getPersonalBoard(getNickname()).getPosition() != 0)
+            return OnScreenElement.valueOf(dumbModel.getPersonalBoard(getNickname()).getPosition());
+        else
+            return OnScreenElement.DONT_RENDER;
     }
 
     /**

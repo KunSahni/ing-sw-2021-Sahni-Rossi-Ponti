@@ -8,6 +8,7 @@ import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
+import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -16,10 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.Flow.Subscriber;
@@ -63,12 +61,20 @@ public class DumbModel {
             this.gameID = -1;
         }
     }
+
     /**
      * This method creates a new PersonalBoard inside the DumbModel base on the passed parameters
      * @param nickname the nickname of the player that needs to be added
      */
     public void addPersonalBoard(String nickname){
         personalBoards.add(new DumbPersonalBoard(nickname, size==1));
+    }
+
+    /**
+     * This method sorts the existing personal boards based on their position
+     */
+    public void sortPersonalBoard(){
+        personalBoards.sort(Comparator.comparingInt(DumbPersonalBoard::getPosition));
     }
 
     /**
@@ -221,6 +227,8 @@ public class DumbModel {
      */
     public void updateGameState(GameState updatedGameState) {
         this.gameState = updatedGameState;
+        if(gameState == GameState.ASSIGNED_INKWELL)
+            sortPersonalBoard();
     }
 
     /**
@@ -390,8 +398,8 @@ public class DumbModel {
          */
         @Override
         public void onNext(Renderable item) {
+            updatesQueue.add(item);
             new Thread(() -> {
-                updatesQueue.add(item);
                 elaborateUpdatesQueue();
             }).start();
             subscription.request(1);
