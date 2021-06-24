@@ -203,7 +203,7 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderEndTurnConfirmation() {
-
+        personalController.populateInfoLabel("Your turn has finished!");
     }
 
     @Override
@@ -223,12 +223,12 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderTakeFromMarketConfirmation() {
-
+        personalController.populateInfoLabel("The selected marbles have been converted to resources and stored!");
     }
 
     @Override
     public void renderActionToken(ActionToken actionToken) {
-
+        personalController.populateInfoLabel("Lorenzo played: " + actionToken);
     }
 
     @Override
