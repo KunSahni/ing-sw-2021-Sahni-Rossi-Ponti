@@ -64,7 +64,7 @@ public class AuthenticationState extends ConnectionState {
                 }
             }
         } else {
-            if (!connection.getServer().getPlayers().containsValue(gameID) || !connection.getServer().getDormantGames().contains(gameID)){
+            if (!connection.getServer().getPlayers().containsValue(gameID) && !connection.getServer().getDormantGames().contains(gameID)){
                 connection.unavailableGame();
             }
             else {
@@ -74,6 +74,7 @@ public class AuthenticationState extends ConnectionState {
                         connection.readFromInputStream();
                     }
                     else{
+                        connection.setState(new PlayingState(connection));
                         connection.getServer().getController(gameID).connectPlayer(nickname, connection);
                     }
                 }

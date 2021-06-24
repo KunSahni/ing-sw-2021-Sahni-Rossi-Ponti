@@ -2,10 +2,7 @@ package it.polimi.ingsw.client.gui;
 
 import it.polimi.ingsw.client.ClientSocket;
 import it.polimi.ingsw.client.UI;
-import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameCommonsController;
-import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGameOppController;
-import it.polimi.ingsw.client.gui.guicontrollers.ingame.InGamePersonalController;
-import it.polimi.ingsw.client.gui.guicontrollers.ingame.PlayerBoardController;
+import it.polimi.ingsw.client.gui.guicontrollers.ingame.*;
 import it.polimi.ingsw.client.gui.guicontrollers.mainmenu.MainMenuController;
 import it.polimi.ingsw.client.utils.InputVerifier;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
@@ -36,11 +33,13 @@ public class GUI extends Application implements UI {
     private MainMenuController mainMenuController;
     private InGamePersonalController personalController;
     private InGameCommonsController commonsController;
+    private FinalScreenController finalScreenController;
     private Map<String, PlayerBoardController> oppsControllers;
     private Scene personalScene;
     private Scene commonsScene;
     private Map<String, Scene> oppsScenes;
     private Subscription subscription;
+    private Scene finalScene;
 
     public static void main(String[] args) {
         launch(args);
@@ -106,6 +105,8 @@ public class GUI extends Application implements UI {
         this.oppsControllers = new HashMap<>();
         FXMLLoader commonsLoader =
                 new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_COMMONS.toPathString()));
+        FXMLLoader finalLoader =
+                new FXMLLoader(getClass().getResource(FXMLResources.FINAL_SCREEN.toPathString()));
         FXMLLoader personalLoader =
                 new FXMLLoader(getClass().getResource(FXMLResources.IN_GAME_PERSONAL.toPathString()));
         // Create a map that links each opponent player to an fxml loader
@@ -119,6 +120,7 @@ public class GUI extends Application implements UI {
         try {
             commonsScene = new Scene(commonsLoader.load());
             personalScene = new Scene(personalLoader.load());
+            finalScene = new Scene(finalLoader.load());
             for (String nickname :
                     oppsLoaders.keySet()) {
                 oppsScenes.put(nickname, new Scene(oppsLoaders.get(nickname).load()));
@@ -138,6 +140,9 @@ public class GUI extends Application implements UI {
         // Initialize Commons Controller
         commonsController = commonsLoader.getController();
         commonsController.initialize(this);
+        //Initialize Final Controller
+        finalScreenController = finalLoader.getController();
+        finalScreenController.initialize(this);
         goToPersonalView();
         tearDownMainMenu();
     }
@@ -155,6 +160,8 @@ public class GUI extends Application implements UI {
     public void goToPersonalView() {
         changeScene(personalScene);
     }
+
+    public void goToFinalView(){changeScene(finalScene);}
 
     private void changeScene(Scene scene) {
         Platform.runLater(() -> stage.setScene(scene));
@@ -233,12 +240,14 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderGameOutcome(int finalScore) {
-
+        finalScreenController.renderFinal(null, finalScore);
+        goToFinalView();
     }
 
     @Override
     public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
-
+        finalScreenController.renderFinal(finalScores, -1);
+        goToFinalView();
     }
 
     @Override

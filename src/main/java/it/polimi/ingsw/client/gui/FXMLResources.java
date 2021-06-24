@@ -9,6 +9,7 @@ public enum FXMLResources {
     IN_GAME_PERSONAL("InGamePersonal"),
     IN_GAME_OPP("InGameOpp"),
     IN_GAME_COMMONS("InGameCommons"),
+    FINAL_SCREEN("FinalScreen"),
     PRE_GAME_LEADER_CARDS("PreGameLeaderCards");
 
     private final String label;
