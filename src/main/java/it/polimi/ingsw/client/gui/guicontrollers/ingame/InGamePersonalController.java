@@ -574,6 +574,8 @@ public class InGamePersonalController extends PlayerBoardController {
         Platform.runLater(() -> selectMarblesLayer.getChildren().clear());
         isTempMarblesChoiceInitialized = false;
         bringToFront(actionsLayer, personalBoardLayer);
+        populateInfoLabel("The selected marbles have been converted to " +
+                "resources and stored!");
     }
 
     public void startDevelopmentSlotSelection(DumbDevelopmentCard dumbDevelopmentCard) {

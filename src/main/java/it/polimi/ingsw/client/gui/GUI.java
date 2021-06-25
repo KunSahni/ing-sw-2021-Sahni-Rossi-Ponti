@@ -81,7 +81,8 @@ public class GUI extends Application implements UI {
     }
 
     public void loadMainMenu() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLResources.MAIN_MENU.toPathString()));
+        FXMLLoader loader =
+                new FXMLLoader(getClass().getResource(FXMLResources.MAIN_MENU.toPathString()));
         changeScene(new Scene(loader.load()));
         this.mainMenuController = loader.getController();
         this.mainMenuController.setGui(this);
@@ -147,7 +148,8 @@ public class GUI extends Application implements UI {
         tearDownMainMenu();
     }
 
-    public void tearDownGame() {}
+    public void tearDownGame() {
+    }
 
     public void goToCommonsView() {
         changeScene(commonsScene);
@@ -161,7 +163,9 @@ public class GUI extends Application implements UI {
         changeScene(personalScene);
     }
 
-    public void goToFinalView(){changeScene(finalScene);}
+    public void goToFinalView() {
+        changeScene(finalScene);
+    }
 
     private void changeScene(Scene scene) {
         Platform.runLater(() -> stage.setScene(scene));
@@ -170,8 +174,11 @@ public class GUI extends Application implements UI {
     @Override
     public void renderModelUpdate() {
         loadGame();
-        if(dumbModel.getGameState() == GameState.DEALT_LEADER_CARDS && dumbModel.getTempLeaderCards().size()>0)
+        if (dumbModel.getGameState() == GameState.DEALT_LEADER_CARDS && dumbModel.getTempLeaderCards().size() > 0)
             renderLeaderCardsChoice(dumbModel.getTempLeaderCards());
+        else {
+            dumbModel.getPersonalBoards().stream().map(DumbPersonalBoard::getNickname).forEach(this::renderPersonalBoard);
+        }
     }
 
     @Override
@@ -230,7 +237,6 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderTakeFromMarketConfirmation() {
-        personalController.populateInfoLabel("The selected marbles have been converted to resources and stored!");
     }
 
     @Override
