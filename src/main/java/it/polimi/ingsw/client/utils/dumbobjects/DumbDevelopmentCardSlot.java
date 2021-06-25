@@ -1,12 +1,10 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
+import it.polimi.ingsw.server.model.personalboard.DevelopmentCardSlot;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * This is a dumber version of a regular DevelopmentCardSlot,
@@ -23,7 +21,9 @@ public class DumbDevelopmentCardSlot implements Serializable {
 
     public void updateDevelopmentCards(List<DumbDevelopmentCard> updateDevelopmentCards) {
         this.developmentCards.clear();
-        updateDevelopmentCards.sort(Collections.reverseOrder());
+        updateDevelopmentCards.sort(
+                Comparator.comparingInt(d -> d.getLevel().getLevel())
+        );
         this.developmentCards.addAll(updateDevelopmentCards);
     }
 

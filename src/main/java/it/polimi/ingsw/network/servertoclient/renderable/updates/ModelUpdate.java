@@ -26,7 +26,6 @@ public class ModelUpdate extends PrivateRenderable {
     ArrayList<DepotsUpdate> depotsUpdates;
     ArrayList<StrongboxUpdate> strongboxUpdates;
     ArrayList<PlayerBroadcastUpdate> playerBroadcastUpdates;
-    boolean isSinglePlayerGame;
 
     /**
      * @param nickname the nickname of the player who will receive this update
@@ -34,9 +33,6 @@ public class ModelUpdate extends PrivateRenderable {
      */
     public ModelUpdate(String nickname, Game game) {
         super(nickname);
-        //todo: add getSize() and getActionTokenDeck() to game
-        //isSinglePlayerGame = game.getSize()==1;
-        //actionTokenDeckUpdate = isSinglePlayerGame ? game.getActionTokenDeck() : null;
         gameStateUpdate = new GameStateUpdate(game.getCurrentState());
         developmentCardsBoardUpdate = new DevelopmentCardsBoardUpdate(game.getDevelopmentCardsBoard());
         marketUpdate = new MarketUpdate(game.getMarket());
@@ -125,8 +121,8 @@ public class ModelUpdate extends PrivateRenderable {
     public void update(DumbModel dumbModel){
         developmentCardsBoardUpdate.update(dumbModel);
         marketUpdate.update(dumbModel);
-        leaderCardsPrivateUpdate.update(dumbModel);
         playerPrivateUpdate.update(dumbModel);
+        leaderCardsPrivateUpdate.update(dumbModel);
 
         playerBroadcastUpdates.forEach(
                 leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
