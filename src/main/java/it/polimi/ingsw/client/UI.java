@@ -72,4 +72,6 @@ public interface UI extends Subscriber<Renderable> {
     void renderWrongNicknameNotification(String message);
 
     void renderNicknameAlreadyInUseNotification(String message);
+
+    void renderServerOffline();
 }

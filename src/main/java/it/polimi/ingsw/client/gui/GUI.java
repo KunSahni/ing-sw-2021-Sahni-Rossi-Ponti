@@ -332,6 +332,11 @@ public class GUI extends Application implements UI {
         updateMainMenuFooter(FXMLResources.NICKNAME_FOOTER);
     }
 
+    @Override
+    public void renderServerOffline() {
+
+    }
+
     public DumbModel getDumbModel() {
         return dumbModel;
     }

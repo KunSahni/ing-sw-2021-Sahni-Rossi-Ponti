@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.Message;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.ServerOfflineUpdate;
 
 import java.io.*;
 import java.net.Socket;
@@ -50,12 +51,14 @@ public class ClientSocket {
                             renderablePublisher.submit(message);
                         }
                     } catch (IOException | ClassNotFoundException e) {
+                        renderablePublisher.submit(new ServerOfflineUpdate());
                         e.printStackTrace();
                         break;
                     }
                 }
             }).start();
         } catch (IOException e) {
+            renderablePublisher.submit(new ServerOfflineUpdate());
             e.printStackTrace();
         }
     }

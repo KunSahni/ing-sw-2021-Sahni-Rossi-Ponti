@@ -363,6 +363,13 @@ public class CLI implements UI {
         printToCLI(printableString);
     }
 
+    @Override
+    public void renderServerOffline() {
+        printToCLI(Constants.ANSI_CLEAR);
+        String printableString = "\033[2;1H>"+ Constants.OFFLINE_MESSAGE + "\n";
+        printToCLI(printableString);
+    }
+
     /**
      * Prints a formatted string to cli
      * @param printableString a string ready to be printed, formatted ascii escape codes
