@@ -207,8 +207,8 @@ public class InGamePersonalController extends PlayerBoardController {
                 chosenResourcesMap.clear();
                 populateInfoLabel("Resource choice cleared.");
             }
-            case VISIT, SELECT_PRODUCTION_INPUT_RESOURCES-> bringToFront(actionsLayer, personalBoardLayer);
-            case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD -> cancelResourceChoice();
+            case VISIT-> bringToFront(actionsLayer, personalBoardLayer);
+            case SELECT_RESOURCES_TO_BUY_DEVELOPMENT_CARD, SELECT_PRODUCTION_INPUT_RESOURCES -> cancelResourceChoice();
             case DISCARD_LEADER_CARD, ACTIVATE_LEADER_CARD -> cancelLeaderCardAction();
             case SELECT_PRODUCTION_OUTPUT_RESOURCES -> endProductionChoices();
             case SELECT_PRODUCTION_BUTTONS -> endProductionButtonsSelection();

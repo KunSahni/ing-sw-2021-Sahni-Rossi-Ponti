@@ -37,8 +37,8 @@ public class ActivateProductionAction extends PlayerAction {
                         .forEach(card -> productionOutputs.add(card.produce()))
         );
         // Store all outputs in the strongbox
-        productionOutputs.forEach(productionOutput ->
-                player.getPersonalBoard().storeInStrongbox(productionOutput.getResources()));
+        productionOutputs.forEach(productionOutput -> Optional.ofNullable(productionOutput.getResources())
+                .ifPresent(resourceIntegerMap -> player.getPersonalBoard().storeInStrongbox(resourceIntegerMap)));
         // Move the marker on the Faith Track
         productionOutputs.forEach(productionOutput ->
                 super.moveFaithMarker(productionOutput.getFaithIncrement()));
@@ -88,7 +88,7 @@ public class ActivateProductionAction extends PlayerAction {
         Optional<Map<Resource, Integer>> toDiscardFromStrongbox =
                 Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox());
         if (toDiscardFromStrongbox.isPresent()) {
-            if (!player.getPersonalBoard().depotsContainResources(toDiscardFromStrongbox.get()))
+            if (!player.getPersonalBoard().strongboxContainsResources(toDiscardFromStrongbox.get()))
                 throw new InvalidActionException("You cannot discard the selected resources from " +
                         "your strongbox!");
         }
