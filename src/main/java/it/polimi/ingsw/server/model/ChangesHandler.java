@@ -248,10 +248,24 @@ public class ChangesHandler {
 
     // Player on-board Leader Cards
     public List<LeaderCard> readPlayerLeaderCards(String nickname) throws FileNotFoundException {
-        return readListFromFile(
-                root + "/players/" + nickname + "/LeaderCards.json",
-                LeaderCard.class
-        );
+        List<LeaderCard> leaderCards = new ArrayList<>();
+        leaderCards.addAll(readListFromFile(
+                root + "/players/" + nickname + "/StoreLeaderCards.json",
+                StoreLeaderCard.class
+        ));
+        leaderCards.addAll(readListFromFile(
+                root + "/players/" + nickname + "/ConvertLeaderCards.json",
+                ConvertLeaderCard.class
+        ));
+        leaderCards.addAll(readListFromFile(
+                root + "/players/" + nickname + "/ProduceLeaderCards.json",
+                ProduceLeaderCard.class
+        ));
+        leaderCards.addAll(readListFromFile(
+                root + "/players/" + nickname + "/DiscountLeaderCards.json",
+                DiscountLeaderCard.class
+        ));
+        return leaderCards;
     }
 
     public void publishPlayerLeaderCards(String nickname, List<LeaderCard> cards) {
@@ -261,7 +275,26 @@ public class ChangesHandler {
 
     public void writePlayerLeaderCards(String nickname, List<LeaderCard> cards) {
         publishPlayerLeaderCards(nickname, cards);
-        changesBuffer.put(cards, root + "/players/" + nickname + "/LeaderCards.json");
+        List<StoreLeaderCard> storeLeaderCards =
+                cards.stream().filter(card -> card.getAbility().equals(LeaderCardAbility.STORE))
+                        .map(card -> (StoreLeaderCard) card).collect(Collectors.toList());
+        List<ConvertLeaderCard> convertLeaderCards =
+                cards.stream().filter(card -> card.getAbility().equals(LeaderCardAbility.CONVERT))
+                        .map(card -> (ConvertLeaderCard) card).collect(Collectors.toList());
+        List<ProduceLeaderCard> produceLeaderCards =
+                cards.stream().filter(card -> card.getAbility().equals(LeaderCardAbility.PRODUCE))
+                        .map(card -> (ProduceLeaderCard) card).collect(Collectors.toList());
+        List<DiscountLeaderCard> discountLeaderCards =
+                cards.stream().filter(card -> card.getAbility().equals(LeaderCardAbility.DISCOUNT))
+                        .map(card -> (DiscountLeaderCard) card).collect(Collectors.toList());
+        changesBuffer.put(storeLeaderCards, root + "/players/" + nickname + "/StoreLeaderCards" +
+                ".json");
+        changesBuffer.put(convertLeaderCards, root + "/players/" + nickname +
+                "/ConvertLeaderCards.json");
+        changesBuffer.put(produceLeaderCards, root + "/players/" + nickname +
+                "/ProduceLeaderCards.json");
+        changesBuffer.put(discountLeaderCards, root + "/players/" + nickname +
+                "/DiscountLeaderCards.json");
     }
 
     // Development Cards Slot
@@ -341,8 +374,7 @@ public class ChangesHandler {
         if (isSinglePlayerGame) {
             publishSinglePlayerFaithTrack(nickname, (SinglePlayerFaithTrack) faithTrack);
             filepath += "/SinglePlayerFaithTrack.json";
-        }
-        else {
+        } else {
             filepath += "/FaithTrack.json";
             publishFaithTrack(nickname, faithTrack);
         }
