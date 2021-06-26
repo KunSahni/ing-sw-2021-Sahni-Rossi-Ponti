@@ -61,7 +61,7 @@ public class PregameResourceChoiceActionTest {
         @DisplayName("All players have received their resources and game state is changed")
         void setNewStateTest() {
             pregameResourceChoiceAction.execute();
-            assertEquals(GameState.PICKED_RESOURCES, game.getCurrentState());
+            assertEquals(GameState.ASSIGNED_INKWELL, game.getCurrentState());
         }
 
         @Test

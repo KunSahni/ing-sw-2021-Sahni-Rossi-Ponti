@@ -95,7 +95,7 @@ public class Server implements Flow.Subscriber<Integer> {
         }
 
         for (int i=1; i<maxId; i++){
-            if (new File("src/main/resources/json/" + i).isDirectory()){
+            if (new File("src/main/resources/json/games/" + i).isDirectory()){
                 dormantGames.add(i);
             }
         }
