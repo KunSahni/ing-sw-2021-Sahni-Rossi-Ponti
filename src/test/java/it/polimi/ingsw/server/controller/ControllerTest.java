@@ -140,26 +140,26 @@ public class ControllerTest {
         assertEquals(GameState.DEALT_LEADER_CARDS, game.getCurrentState());
     }
 
-    @Test
-    @DisplayName("When onNext is invoked the action is performed correctly")
-    void onNextTest() {
-        DumbConvertLeaderCard dumbLeaderCard = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.STONE, 1)), Resource.COIN));
-        ActivateLeaderCardAction activateLeaderCardAction = new ActivateLeaderCardAction(dumbLeaderCard);
-        activateLeaderCardAction.setNickname(nick1);
-        game.getPlayer(nick1).setTempLeaderCards(List.of(dumbLeaderCard.convert()));
-        ConvertLeaderCard leaderCard = dumbLeaderCard.convert();
-        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(leaderCard));
-        game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
-        game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), 1), 1);
-        game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.STONE, 1));
-        game.getPlayer(nick1).startTurn();
-        controller.onNext(activateLeaderCardAction);
-
-        assertAll(
-                ()-> assertEquals(leaderCard, game.getPlayer(nick1).getPersonalBoard().getLeaderCards().get(0)),
-                ()-> assertTrue(game.getPlayer(nick1).getPersonalBoard().getLeaderCards().get(0).isActive())
-        );
-    }
+//    @Test
+//    @DisplayName("When onNext is invoked the action is performed correctly")
+//    void onNextTest() {
+//        DumbConvertLeaderCard dumbLeaderCard = new DumbConvertLeaderCard(new ConvertLeaderCard(1, new LeaderCardRequirements(Map.of(Color.GREEN, new LeaderCardRequirements.LevelQuantityPair(Level.LEVEL1, 1)), Map.of(Resource.STONE, 1)), Resource.COIN));
+//        ActivateLeaderCardAction activateLeaderCardAction = new ActivateLeaderCardAction(dumbLeaderCard);
+//        activateLeaderCardAction.setNickname(nick1);
+//        game.getPlayer(nick1).setTempLeaderCards(List.of(dumbLeaderCard.convert()));
+//        ConvertLeaderCard leaderCard = dumbLeaderCard.convert();
+//        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(leaderCard));
+//        game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
+//        game.getPlayer(nick1).getPersonalBoard().placeDevelopmentCard(new DevelopmentCard(Color.GREEN, Level.LEVEL1, 1, Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), Map.of(Resource.STONE, 1), 1), 1);
+//        game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.STONE, 1));
+//        game.getPlayer(nick1).startTurn();
+//        controller.onNext(activateLeaderCardAction);
+//
+//        assertAll(
+//                ()-> assertEquals(leaderCard, game.getPlayer(nick1).getPersonalBoard().getLeaderCards().get(0)),
+//                ()-> assertTrue(game.getPlayer(nick1).getPersonalBoard().getLeaderCards().get(0).isActive())
+//        );
+//    }
 
     @AfterEach
     void tearDown() throws InterruptedException {

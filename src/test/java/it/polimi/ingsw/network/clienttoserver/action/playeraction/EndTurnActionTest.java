@@ -85,6 +85,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("All checks are passed")
         void allChecksPassedTest() {
+            game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_PRODUCTION_ACTION);
             try {
                 endTurnAction.runChecks();
             } catch (InvalidActionException e) {
@@ -112,7 +113,7 @@ public class EndTurnActionTest {
         @Test
         @DisplayName("Not allowed action is rejected")
         void notAllowedActionTest() {
-            game.getPlayer(nick1).addAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION);
+            game.getPlayer(nick1).addAction(ExecutedActions.STORED_TEMP_MARBLES_ACTION);
 
             try {
                 endTurnAction.runChecks();
