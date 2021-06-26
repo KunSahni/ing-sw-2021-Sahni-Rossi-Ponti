@@ -105,7 +105,7 @@ public class Server implements Flow.Subscriber<Integer> {
         return dormantGames;
     }
 
-    public void restoreGame(int gameId, Game game){
+    public void restoreGame(Integer gameId, Game game){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
     }
