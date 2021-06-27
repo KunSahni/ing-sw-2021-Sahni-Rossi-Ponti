@@ -39,6 +39,8 @@ public class FaithTrackUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
+        if(dumbModel.getOwnPersonalBoard().getNickname().equals(nickname))
+            return OnScreenElement.FORCE_DISPLAY;
         return OnScreenElement.valueOf(dumbModel.getPersonalBoard(nickname).getPosition());
     }
 
@@ -51,7 +53,7 @@ public class FaithTrackUpdate extends BroadcastRenderable {
         //if multiplayer game then this is a faith track
         if(updatedBlackCrossPosition == -1)
             dumbModel.updateFaithTrack(nickname, updatedFaithTrackPosition, updatedPopesFavors);
-            //else this is a single player faith track
+        //else this is a single player faith track
         else
             dumbModel.updateSinglePlayerFaithTrack(nickname, updatedFaithTrackPosition, updatedPopesFavors, updatedBlackCrossPosition);
 

@@ -36,6 +36,8 @@ public class DevelopmentCardSlotUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
+        if(dumbModel.getOwnPersonalBoard().getNickname().equals(nickname))
+            return OnScreenElement.FORCE_DISPLAY;
         return OnScreenElement.valueOf(dumbModel.getPersonalBoard(nickname).getPosition());
     }
 

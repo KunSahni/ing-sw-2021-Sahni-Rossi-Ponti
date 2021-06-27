@@ -23,8 +23,7 @@ public class ConfirmationMessage extends PrivateRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel) {
-        //should this be shown?
-        return OnScreenElement.FORCE_DISPLAY;
+        return OnScreenElement.DONT_RENDER;
     }
 
     /**

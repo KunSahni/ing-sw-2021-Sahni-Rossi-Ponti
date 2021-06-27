@@ -125,22 +125,22 @@ public class ModelUpdate extends PrivateRenderable {
         leaderCardsPrivateUpdate.update(dumbModel);
 
         playerBroadcastUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
+                playerBroadcastUpdate -> playerBroadcastUpdate.update(dumbModel)
         );
         leaderCardsBroadcastUpdates.forEach(
                 leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         developmentCardSlotUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
+                developmentCardSlotUpdate -> developmentCardSlotUpdate.update(dumbModel)
         );
         faithTrackUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
+                faithTrackUpdate -> faithTrackUpdate.update(dumbModel)
         );
         depotsUpdates.forEach(
                 leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
         );
         strongboxUpdates.forEach(
-                leaderCardsBroadcastUpdate -> leaderCardsBroadcastUpdate.update(dumbModel)
+                strongboxUpdate -> strongboxUpdate.update(dumbModel)
         );
         gameStateUpdate.update(dumbModel);
     }

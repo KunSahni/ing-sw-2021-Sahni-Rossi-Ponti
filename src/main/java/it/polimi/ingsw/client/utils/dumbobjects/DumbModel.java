@@ -399,9 +399,7 @@ public class DumbModel {
         @Override
         public void onNext(Renderable item) {
             updatesQueue.add(item);
-            new Thread(() -> {
-                elaborateUpdatesQueue();
-            }).start();
+            new Thread(this::elaborateUpdatesQueue).start();
             subscription.request(1);
         }
 
