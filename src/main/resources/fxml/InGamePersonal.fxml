@@ -473,9 +473,6 @@
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
-                                       <padding>
-                                          <Insets bottom="100.0" />
-                                       </padding>
                                        <children>
                                           <ToggleButton mnemonicParsing="false" text="Select" translateX="-8.0" StackPane.alignment="TOP_CENTER">
                                              <StackPane.margin>
@@ -486,23 +483,32 @@
                                              </toggleGroup>
                                           </ToggleButton>
                                        </children>
+                                       <padding>
+                                          <Insets bottom="50.0" />
+                                       </padding>
                                     </StackPane>
-                                    <StackPane fx:id="devCardSlot2" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0">
+                                    <StackPane fx:id="devCardSlot2" prefHeight="150.0" prefWidth="200.0">
                                        <children>
                                           <ToggleButton mnemonicParsing="false" text="Select" toggleGroup="$selectDevCardSlotToggleGroup" translateX="-11.0" StackPane.alignment="TOP_CENTER">
                                              <StackPane.margin>
                                                 <Insets top="60.0" />
                                              </StackPane.margin>
                                           </ToggleButton>
-                                       </children></StackPane>
-                                    <StackPane fx:id="devCardSlot3" layoutX="204.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0">
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="50.0" />
+                                       </padding></StackPane>
+                                    <StackPane fx:id="devCardSlot3" prefHeight="150.0" prefWidth="200.0">
                                        <children>
                                           <ToggleButton mnemonicParsing="false" text="Select" toggleGroup="$selectDevCardSlotToggleGroup" translateX="-7.0" StackPane.alignment="TOP_CENTER">
                                              <StackPane.margin>
                                                 <Insets top="60.0" />
                                              </StackPane.margin>
                                           </ToggleButton>
-                                       </children></StackPane>
+                                       </children>
+                                       <padding>
+                                          <Insets bottom="50.0" />
+                                       </padding></StackPane>
                                  </children>
                                  <padding>
                                     <Insets right="30.0" />

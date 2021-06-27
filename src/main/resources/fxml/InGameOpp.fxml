@@ -166,11 +166,17 @@
                                     <Insets />
                                  </opaqueInsets>
                                  <padding>
-                                    <Insets bottom="100.0" />
+                                    <Insets bottom="50.0" />
                                  </padding>
                               </StackPane>
-                              <StackPane fx:id="devCardSlot2" layoutX="10.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
-                              <StackPane fx:id="devCardSlot3" layoutX="204.0" layoutY="10.0" prefHeight="150.0" prefWidth="200.0" />
+                              <StackPane fx:id="devCardSlot2" prefHeight="150.0" prefWidth="200.0">
+                                 <padding>
+                                    <Insets bottom="50.0" />
+                                 </padding></StackPane>
+                              <StackPane fx:id="devCardSlot3" prefHeight="150.0" prefWidth="200.0">
+                                 <padding>
+                                    <Insets bottom="50.0" />
+                                 </padding></StackPane>
                            </children>
                            <padding>
                               <Insets right="30.0" />
