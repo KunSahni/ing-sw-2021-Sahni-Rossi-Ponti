@@ -169,11 +169,11 @@
                                     <Insets bottom="50.0" />
                                  </padding>
                               </StackPane>
-                              <StackPane fx:id="devCardSlot2" prefHeight="150.0" prefWidth="200.0">
+                              <StackPane fx:id="devCardSlot2" alignment="BOTTOM_CENTER" prefHeight="150.0" prefWidth="200.0">
                                  <padding>
                                     <Insets bottom="50.0" />
                                  </padding></StackPane>
-                              <StackPane fx:id="devCardSlot3" prefHeight="150.0" prefWidth="200.0">
+                              <StackPane fx:id="devCardSlot3" alignment="BOTTOM_CENTER" prefHeight="150.0" prefWidth="200.0">
                                  <padding>
                                     <Insets bottom="50.0" />
                                  </padding></StackPane>

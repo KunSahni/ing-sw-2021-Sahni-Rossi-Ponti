@@ -203,6 +203,7 @@ public class GUI extends Application implements UI {
     @Override
     public void renderActivateProductionConfirmation() {
         personalController.endProductionChoices();
+        personalController.populateInfoLabel("Production completed successfully!");
     }
 
     @Override

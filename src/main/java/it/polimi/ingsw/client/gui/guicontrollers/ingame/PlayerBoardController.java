@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
+import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCardSlot;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbFaithTrack;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
@@ -209,7 +210,7 @@ public abstract class PlayerBoardController extends JFXController {
     }
 
     protected void renderPopesFavor(ImageView popesFavorImageView, FavorStatus favorStatus,
-                                  int index) {
+                                    int index) {
         popesFavorImageView.setImage(
                 switch (favorStatus) {
                     case ACTIVE -> getImageFromPath("/img/faithtrack/pope_favor" + index +
@@ -245,36 +246,32 @@ public abstract class PlayerBoardController extends JFXController {
 
 
     private void renderDevelopmentCardSlots(DumbPersonalBoard dumbPersonalBoard) {
-        IntStream.range(0, 3).forEach(i -> {
-            StackPane slotPane = devCardSlotsStackPanes.get(i);
-            DumbDevelopmentCard peekedCard =
-                    dumbPersonalBoard.getDevelopmentCardSlots().get(i).peek();
-            synchronized (slotPane) {
-                Optional<DumbDevelopmentCard> paneCard =
-                        Optional.ofNullable((DumbDevelopmentCard) slotPane.getUserData());
-                paneCard.ifPresentOrElse(cardInUserData -> {
-                    if (!cardInUserData.toImgPath().equals(peekedCard.toImgPath())) {
-                        addDevelopmentCardToStackPane(peekedCard, slotPane);
-                    }
-                }, () -> {
-                    if (peekedCard != null) {
-                        addDevelopmentCardToStackPane(peekedCard, slotPane);
+        Platform.runLater(() -> {
+            synchronized (devCardSlotsStackPanes) {
+                IntStream.range(0, 3).forEach(i -> {
+                    StackPane slotPane = devCardSlotsStackPanes.get(i);
+                    DumbDevelopmentCardSlot dumbDevelopmentCardSlot = dumbPersonalBoard.getDevelopmentCardSlots().get(i);
+                    if (slotPane.getChildren().size() != dumbDevelopmentCardSlot.getDevelopmentCards().size() + 1) {
+                        addDevelopmentCardsToStackPane(slotPane, dumbDevelopmentCardSlot.getDevelopmentCards());
                     }
                 });
             }
         });
     }
 
-    private void addDevelopmentCardToStackPane(DumbDevelopmentCard dumbDevelopmentCard,
-                                               StackPane stackPane) {
-        stackPane.setUserData(dumbDevelopmentCard);
-        ToggleButton toggleButton = new ToggleButton();
-        toggleButton.setUserData(dumbDevelopmentCard);
-        ImageView imageView = new ImageView(getImageFromPath(dumbDevelopmentCard.toImgPath()));
-        imageView.setFitHeight(210);
-        imageView.setPreserveRatio(true);
-        toggleButton.setGraphic(imageView);
-        toggleButton.setTranslateY(stackPane.getChildren().size() * (-50));
-        Platform.runLater(() -> stackPane.getChildren().add(toggleButton));
+    private void addDevelopmentCardsToStackPane(StackPane stackPane,
+                                                List<DumbDevelopmentCard> dumbDevelopmentCards) {
+        stackPane.setUserData(dumbDevelopmentCards.get(dumbDevelopmentCards.size() - 1));
+        IntStream.range(0, dumbDevelopmentCards.size()).forEach(i -> {
+            DumbDevelopmentCard dumbDevelopmentCard = dumbDevelopmentCards.get(i);
+            ToggleButton toggleButton = new ToggleButton();
+            toggleButton.setUserData(dumbDevelopmentCard);
+            ImageView imageView = new ImageView(getImageFromPath(dumbDevelopmentCard.toImgPath()));
+            imageView.setFitHeight(210);
+            imageView.setPreserveRatio(true);
+            toggleButton.setGraphic(imageView);
+            toggleButton.setTranslateY(i * (-50));
+            stackPane.getChildren().add(toggleButton);
+        });
     }
 }

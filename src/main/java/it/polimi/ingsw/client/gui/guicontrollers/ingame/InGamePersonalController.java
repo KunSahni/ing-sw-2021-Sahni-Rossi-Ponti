@@ -259,14 +259,14 @@ public class InGamePersonalController extends PlayerBoardController {
         // Only called once, after the server has confirmed the player's initial
         // leader cards choice
         List<DumbLeaderCard> cards = dumbPersonalBoard.getLeaderCards();
-        cards.forEach(card -> Platform.runLater(() -> leaderCardsHBox.getChildren().add(createLeaderCardNode(card))));
-        Platform.runLater(() -> preGameLeaderCardSelectionLayer.getChildren().clear());
+        cards.forEach(card -> leaderCardsHBox.getChildren().add(createLeaderCardNode(card)));
+        preGameLeaderCardSelectionLayer.getChildren().clear();
     }
 
     private ToggleButton createLeaderCardNode(DumbLeaderCard card) {
         ToggleButton button = new ToggleButton();
         button.setUserData(card);
-        button.getStyleClass().add("inactive-leader-card");
+        button.getStyleClass().add(card.isActive() ? "active-leader-card" : "inactive-leader-card");
         ImageView image = new ImageView(getImageFromPath(card.toImgPath()));
         image.setFitWidth(135);
         image.setPreserveRatio(true);
@@ -295,44 +295,48 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     @Override
-    protected synchronized void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
-        if (!areLeaderCardsInitialized) {
-            areLeaderCardsInitialized = true;
-            initLeaderCardsDisplay(dumbPersonalBoard);
-        }
-        leaderCardsHBox.getChildren().stream().map(child -> (ToggleButton) child)
-                .filter(ToggleButton::isVisible)
-                .forEach(leaderCardButton -> {
-                    DumbLeaderCard cardInButton =
-                            (DumbLeaderCard) leaderCardButton.getUserData();
-                    Optional<DumbLeaderCard> cardInBoardOptional = dumbPersonalBoard
-                            .getLeaderCards()
-                            .stream()
-                            .filter(card -> card.toImgPath().equals(cardInButton.toImgPath()))
-                            .findAny();
-                    cardInBoardOptional.ifPresentOrElse(cardInBoard -> {
-                                if (cardInBoard.isActive()) {
-                                    if (!cardInButton.isActive()) {
-                                        leaderCardButton.getStyleClass().add("active-leader-card");
-                                        leaderCardButton.getStyleClass().remove("inactive-leader" +
-                                                "-card");
-                                        leaderCardButton.setUserData(cardInBoard);
-                                    }
-                                    if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
-                                        // Update Storage card every time to keep track of
-                                        // resource changes
-                                        leaderCardButton.setUserData(cardInBoard);
-                                        IntStream.range(0, 2).forEach(i -> {
-                                            HBox resourcesHBox =
-                                                    (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
-                                            resourcesHBox.getChildren().get(i)
-                                                    .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
-                                        });
-                                    }
-                                }
-                            },
-                            () -> leaderCardButton.setVisible(false));
-                });
+    protected void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
+        Platform.runLater(() -> {
+            synchronized (leaderCardsHBox) {
+                if (!areLeaderCardsInitialized) {
+                    areLeaderCardsInitialized = true;
+                    initLeaderCardsDisplay(dumbPersonalBoard);
+                }
+                leaderCardsHBox.getChildren().stream().map(child -> (ToggleButton) child)
+                        .filter(ToggleButton::isVisible)
+                        .forEach(leaderCardButton -> {
+                            DumbLeaderCard cardInButton =
+                                    (DumbLeaderCard) leaderCardButton.getUserData();
+                            Optional<DumbLeaderCard> cardInBoardOptional = dumbPersonalBoard
+                                    .getLeaderCards()
+                                    .stream()
+                                    .filter(card -> card.toImgPath().equals(cardInButton.toImgPath()))
+                                    .findAny();
+                            cardInBoardOptional.ifPresentOrElse(cardInBoard -> {
+                                        if (cardInBoard.isActive()) {
+                                            if (!cardInButton.isActive()) {
+                                                leaderCardButton.getStyleClass().add("active-leader-card");
+                                                leaderCardButton.getStyleClass().remove("inactive-leader" +
+                                                        "-card");
+                                                leaderCardButton.setUserData(cardInBoard);
+                                            }
+                                            if (cardInBoard.getAbility().equals(LeaderCardAbility.STORE)) {
+                                                // Update Storage card every time to keep track of
+                                                // resource changes
+                                                leaderCardButton.setUserData(cardInBoard);
+                                                IntStream.range(0, 2).forEach(i -> {
+                                                    HBox resourcesHBox =
+                                                            (HBox) ((StackPane) leaderCardButton.getGraphic()).getChildren().get(1);
+                                                    resourcesHBox.getChildren().get(i)
+                                                            .setVisible(((DumbStoreLeaderCard) cardInBoard).getResourceCount() > i);
+                                                });
+                                            }
+                                        }
+                                    },
+                                    () -> leaderCardButton.setVisible(false));
+                        });
+            }
+        });
     }
 
     @Override
