@@ -183,18 +183,19 @@ public class PersonalBoard implements VictoryPointsElement {
                                 k -> Integer.min(resources.get(k),
                                         warehouseDepots.getStoredResources().get(k))));
         warehouseDepots.discardResources(discardMapWarehouse);
-        leaderCards.stream()
-                .filter(x -> (x instanceof StoreLeaderCard) && x.isActive())
-                .map(leaderCard -> (StoreLeaderCard) leaderCard)
-                .forEach(storeLeaderCard -> storeLeaderCard.discardResources(
-                        new HashMap<>() {{
-                            put(
-                                    storeLeaderCard.getStoredType(),
-                                    resources.get(storeLeaderCard.getStoredType()) -
-                                            Optional.ofNullable(discardMapWarehouse.get(storeLeaderCard.getStoredType())).orElse(0)
-                            );
-                        }}
-                ));
+        Map<Resource, Integer> yetToDiscard = new HashMap<>(resources);
+        discardMapWarehouse.forEach((resource, quantity) -> yetToDiscard.compute(resource, (k, v) -> v - quantity));
+        yetToDiscard.forEach((resource, quantity) -> {
+            if (quantity > 0) {
+                leaderCards.stream()
+                        .filter(leaderCard -> leaderCard.isActive() && leaderCard.getAbility().equals(LeaderCardAbility.STORE))
+                        .map(card -> (StoreLeaderCard) card)
+                        .filter(storeLeaderCard -> storeLeaderCard.getStoredType().equals(resource))
+                        .forEach(storeLeaderCard -> storeLeaderCard.discardResources(new HashMap<>() {{
+                            put(resource, quantity);
+                        }}));
+            }
+        });
         changesHandler.writePlayerLeaderCards(nickname, leaderCards);
         changesHandler.writeWarehouseDepots(nickname, warehouseDepots);
     }
