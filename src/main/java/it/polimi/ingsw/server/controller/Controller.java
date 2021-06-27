@@ -45,12 +45,13 @@ public class Controller implements Subscriber<PlayerAction> {
             case NOT_STARTED -> new DealLeaderCardsAction(game);
             case PICKED_LEADER_CARDS -> new AssignInkwellAction(game);
             case PICKED_RESOURCES -> new StartGameAction(game);
-            case IN_GAME, LAST_ROUND -> game.getCurrentTurnPlayer()
-                    .getPerformedActions()
-                    .get(game.getCurrentTurnPlayer().getPerformedActions().size() - 1)
-                    .equals(ExecutedActions.TURN_ENDED_ACTION)
-                    ? new StartNextTurnAction(game)
-                    : null;
+            case IN_GAME, LAST_ROUND -> game.getCurrentTurnPlayer().isPresent()
+                    ? game.getCurrentTurnPlayer().get().getPerformedActions().size() > 0
+                    ? game.getCurrentTurnPlayer().get().getPerformedActions().get(
+                    game.getCurrentTurnPlayer().get().getPerformedActions().size() - 1
+            ).equals(ExecutedActions.TURN_ENDED_ACTION) ? new StartNextTurnAction(game) : null
+                    : null
+                    : new StartNextTurnAction(game);
             case ASSIGNED_INKWELL, DEALT_LEADER_CARDS -> null;
         };
         handleGameAction(initiator);
@@ -66,7 +67,8 @@ public class Controller implements Subscriber<PlayerAction> {
     private synchronized void handlePlayerAction(PlayerAction playerAction) {
         try {
             playerAction.runChecks();
-            remoteView.sendConfirmation(playerAction.getNickname(), playerAction.getConfirmationMessage());
+            remoteView.sendConfirmation(playerAction.getNickname(),
+                    playerAction.getConfirmationMessage());
             Optional<GameAction> consequentAction = Optional.ofNullable(playerAction.execute());
             consequentAction.ifPresent(this::handleGameAction);
         } catch (InvalidActionException e) {
