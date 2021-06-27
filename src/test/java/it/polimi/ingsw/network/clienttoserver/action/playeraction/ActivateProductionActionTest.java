@@ -67,9 +67,7 @@ public class ActivateProductionActionTest {
 
         productionCombo.setDevelopmentCards(List.of(new DumbDevelopmentCard(developmentCard)));
 
-        productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2));
-
-        productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.COIN, 1));
+        productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2, Resource.COIN, 1));
 
         activateProductionAction = new ActivateProductionAction(productionCombo);
 
@@ -87,9 +85,7 @@ public class ActivateProductionActionTest {
 
         game.getPlayer(nick1).addAction(ExecutedActions.ACTIVATED_LEADER_CARD_ACTION);
 
-        game.getPlayer(nick1).getPersonalBoard().storeInDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2));
-
-        game.getPlayer(nick1).getPersonalBoard().storeInStrongbox(Map.of(Resource.COIN, 1));
+        game.getPlayer(nick1).getPersonalBoard().storeInDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2, Resource.COIN, 1));
 
     }
 
@@ -266,8 +262,8 @@ public class ActivateProductionActionTest {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
             } catch (InvalidActionException e) {
-                if (!e.getMessage().equals("You are trying to discard from your storages " +
-                        "resources you do not have.")){
+                if (!e.getMessage().equals("You cannot discard the selected resources from " +
+                        "your depots!")){
                     e.printStackTrace();
                     throw new AssertionError("Wrong exception was thrown");
                 }
@@ -277,13 +273,14 @@ public class ActivateProductionActionTest {
         @Test
         @DisplayName("Not enough resources are in strongbox, so the action is rejected")
         void notEnoughResourcesInStrongboxTest() {
-            game.getPlayer(nick1).getPersonalBoard().discardFromStrongbox(Map.of(Resource.COIN, 1));
+            productionCombo.setDiscardedResourcesFromStrongbox(Map.of(Resource.COIN, 1));
+            productionCombo.setDiscardedResourcesFromDepots(Map.of(Resource.STONE, 1, Resource.SHIELD, 2));
             try {
                 activateProductionAction.runChecks();
                 throw new AssertionError("Exception was not thrown");
             } catch (InvalidActionException e) {
-                if (!e.getMessage().equals("You are trying to discard from your storages " +
-                        "resources you do not have.")){
+                if (!e.getMessage().equals("You cannot discard the selected resources from " +
+                        "your strongbox!")){
                     e.printStackTrace();
                     throw new AssertionError("Wrong exception was thrown");
                 }
