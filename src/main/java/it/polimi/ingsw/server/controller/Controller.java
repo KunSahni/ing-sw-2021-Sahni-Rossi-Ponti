@@ -30,6 +30,10 @@ public class Controller implements Subscriber<PlayerAction> {
     public void connectPlayer(String nickname, Connection connection) {
         remoteView.connectPlayer(nickname, connection);
         game.connect(nickname);
+        game.getCurrentTurnPlayer().ifPresent(player -> {
+            if (!player.isConnected())
+                handleGameAction(new StartNextTurnAction(game));
+        });
     }
 
     public void disconnectPlayer(String nickname) {
