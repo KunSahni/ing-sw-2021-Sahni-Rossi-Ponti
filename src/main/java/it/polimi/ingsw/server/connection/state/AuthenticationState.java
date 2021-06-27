@@ -5,7 +5,9 @@ import it.polimi.ingsw.network.clienttoserver.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.requests.CreateLobbyRequest;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.remoteview.RemoteView;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -86,7 +88,11 @@ public class AuthenticationState extends ConnectionState {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        Controller controller = new Controller(game);
+                        RemoteView remoteView = new RemoteView(controller);
+                        controller.setRemoteView(remoteView);
                         connection.getServer().restoreGame(gameID, game);
+                        connection.getServer().addGameIdController(gameID, controller);
                         connection.setState(new PlayingState(connection));
                         connection.getServer().getController(gameID).connectPlayer(nickname, connection);
                     }
