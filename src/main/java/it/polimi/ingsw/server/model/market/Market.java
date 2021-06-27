@@ -31,6 +31,7 @@ public class Market {
                 this.market[line][column] = rawMarbles.remove(0);
             }
         }
+        changesHandler.writeMarket(this);
     }
 
     /**

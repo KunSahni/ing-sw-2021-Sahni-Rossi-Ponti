@@ -35,5 +35,6 @@ public class LeaderCardsDeck {
 
     public void shuffle() {
         Collections.shuffle(deck);
+        changesHandler.writeLeaderCardsDeck(this);
     }
 }

@@ -36,14 +36,14 @@ public class ChangesHandler {
     private final SubmissionPublisher<Renderable> submissionPublisher;
     private boolean isNewGame;
     private boolean isSinglePlayerGame;
-    private Map<Object, String> changesBuffer;
+    private LinkedHashMap<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
         this.root = "src/main/resources/json/games/" + gameId;
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isSinglePlayerGame = false;
         this.isNewGame = false;
-        changesBuffer = new HashMap<>();
+        changesBuffer = new LinkedHashMap<>();
     }
 
     public void createGameFilesFromBlueprint(List<String> nicknames) throws IOException {
@@ -231,11 +231,13 @@ public class ChangesHandler {
 
     // Action Token Deck
     public ActionTokenDeck readActionTokenDeck() throws FileNotFoundException {
-        ActionTokenDeck deck = readValueFromFile(root + "/ActionTokenDeck.json",
+        ActionTokenDeck actionTokenDeck = readValueFromFile(root + "/ActionTokenDeck.json",
                 ActionTokenDeck.class);
-        deck.init(this);
-        if (isNewGame) deck.shuffle();
-        return deck;
+        actionTokenDeck.init(this);
+        if (isNewGame) {
+            actionTokenDeck.shuffle();
+        }
+        return actionTokenDeck;
     }
 
     public void publishActionToken(ActionToken actionToken) {
@@ -442,6 +444,6 @@ public class ChangesHandler {
                 e.printStackTrace();
             }
         });
-        changesBuffer = new HashMap<>();
+        changesBuffer = new LinkedHashMap<>();
     }
 }

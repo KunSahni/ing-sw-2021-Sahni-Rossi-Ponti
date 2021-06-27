@@ -121,5 +121,6 @@ public class DevelopmentCardsBoard {
 
     public void shuffle() {
         Arrays.stream(board).flatMap(Arrays::stream).forEach(DevelopmentCardsDeck::shuffle);
+        changesHandler.writeDevelopmentCardsBoard(this);
     }
 }
