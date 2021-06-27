@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
 import it.polimi.ingsw.server.model.Game;
+import it.polimi.ingsw.server.model.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -108,6 +109,10 @@ public class Server implements Flow.Subscriber<Integer> {
     public void restoreGame(Integer gameId, Game game){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
+        for (Player player: game.getPlayerList()) {
+            players.put(player.getNickname(), gameId);
+        }
+        Lobby.getInstance().setSize(0);
     }
 
     public void addNicknameGameId(String nickname, int gameId){
