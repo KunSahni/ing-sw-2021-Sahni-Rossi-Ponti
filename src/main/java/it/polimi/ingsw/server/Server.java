@@ -165,4 +165,13 @@ public class Server implements Flow.Subscriber<Integer> {
             waitingThreads.poll().start();
         }
     }
+
+    public boolean playerAlreadyConnected(String nickname, Integer id){
+        for (Player player: currentGames.get(id).getPlayerList()) {
+            if (player.getNickname().equals(nickname) && player.isConnected()){
+                return true;
+            }
+        }
+        return false;
+    }
 }

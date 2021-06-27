@@ -76,8 +76,14 @@ public class AuthenticationState extends ConnectionState {
                         connection.readFromInputStream();
                     }
                     else{
-                        connection.setState(new PlayingState(connection));
-                        connection.getServer().getController(gameID).connectPlayer(nickname, connection);
+                        if (connection.getServer().playerAlreadyConnected(nickname, gameID)){
+                            connection.wrongNickname();
+                            connection.readFromInputStream();
+                        }
+                        else {
+                            connection.setState(new PlayingState(connection));
+                            connection.getServer().getController(gameID).connectPlayer(nickname, connection);
+                        }
                     }
                 }
                 else{
