@@ -79,7 +79,7 @@ public class GameTest {
     @DisplayName("getCurrentTurnPlayer method test")
     void getCurrentTurnPlayerTest() {
         game.getPlayer("Mario").startTurn();
-        assertEquals(game.getPlayer("Mario"), game.getCurrentTurnPlayer(), "Error: game did not return correct player");
+        assertEquals(game.getPlayer("Mario"), game.getCurrentTurnPlayer().get(), "Error: game did not return correct player");
     }
 
     @Test
