@@ -137,6 +137,7 @@ public class CLI implements UI {
             renderCommons();
 
         new Thread(() -> {
+            setActiveGame(true);
             try {
                 loop();
             } catch (InterruptedException e) {

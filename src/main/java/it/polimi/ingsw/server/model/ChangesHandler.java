@@ -122,10 +122,13 @@ public class ChangesHandler {
 
     // Nicknames List
     public List<String> readNicknameList() throws FileNotFoundException {
-        return readListFromFile(
+        List<String> nicknames = readListFromFile(
                 root + "/Nicknames.json",
                 String.class
         );
+        if (nicknames.size() == 1)
+            isSinglePlayerGame = true;
+        return nicknames;
     }
 
     public void writeNicknameList(List<String> nicknameList) {

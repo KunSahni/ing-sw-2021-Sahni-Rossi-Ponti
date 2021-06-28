@@ -26,6 +26,7 @@ public class ModelUpdate extends PrivateRenderable {
     ArrayList<DepotsUpdate> depotsUpdates;
     ArrayList<StrongboxUpdate> strongboxUpdates;
     ArrayList<PlayerBroadcastUpdate> playerBroadcastUpdates;
+    int size;
 
     /**
      * @param nickname the nickname of the player who will receive this update
@@ -33,11 +34,13 @@ public class ModelUpdate extends PrivateRenderable {
      */
     public ModelUpdate(String nickname, Game game) {
         super(nickname);
+        size = game.size();
         gameStateUpdate = new GameStateUpdate(game.getCurrentState());
         developmentCardsBoardUpdate = new DevelopmentCardsBoardUpdate(game.getDevelopmentCardsBoard());
         marketUpdate = new MarketUpdate(game.getMarket());
-        leaderCardsPrivateUpdate = new LeaderCardsPrivateUpdate(nickname, game.getPlayer(nickname).getPersonalBoard().getLeaderCards());
+
         playerPrivateUpdate = new PlayerPrivateUpdate(game.getPlayer(nickname));
+        leaderCardsPrivateUpdate = new LeaderCardsPrivateUpdate(nickname, game.getPlayer(nickname).getPersonalBoard().getLeaderCards());
 
         leaderCardsBroadcastUpdates = game
                 .getPlayerList()
@@ -119,6 +122,7 @@ public class ModelUpdate extends PrivateRenderable {
      */
     @Override
     public void update(DumbModel dumbModel){
+        dumbModel.updateGameSize(size);
         developmentCardsBoardUpdate.update(dumbModel);
         marketUpdate.update(dumbModel);
         playerPrivateUpdate.update(dumbModel);
