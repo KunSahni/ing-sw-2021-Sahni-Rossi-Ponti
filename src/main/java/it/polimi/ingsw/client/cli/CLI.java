@@ -260,6 +260,8 @@ public class CLI implements UI {
         int numberOfResources = dumbModel.getPersonalBoard(nickname).getPosition()/2;
         Map<Resource, Integer> chosenResources = new HashMap<>();
         String printableString;
+        if(numberOfResources == 0 )
+            return;
         if(numberOfResources <= 1)
             printableString = "\033[2;1H>Pick " + numberOfResources + " resource\n";
         else

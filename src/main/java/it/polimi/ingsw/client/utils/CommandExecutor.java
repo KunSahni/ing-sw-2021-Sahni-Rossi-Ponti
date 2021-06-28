@@ -373,7 +373,7 @@ public class CommandExecutor {
                 //retrieve development card
                 DumbDevelopmentCard developmentCard;
                 try {
-                    developmentCard = dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(index - 1).getDevelopmentCards().get(0);
+                    developmentCard = dumbModel.getOwnPersonalBoard().getDevelopmentCardSlots().get(index - 1).peek();
                 } catch (IndexOutOfBoundsException e) {
                     throw new WrongCommandArgsException();
                 }

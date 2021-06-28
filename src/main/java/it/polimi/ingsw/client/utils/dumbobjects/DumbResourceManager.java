@@ -58,19 +58,19 @@ public class DumbResourceManager implements Serializable {
                         IntStream.range(0, entryList.get(i).getValue()).forEach(
                                 $ -> printableResourceList.get(i).add(entryList.get(i).getKey().formatPrintableString())
                         );
-                    fixLength(printableResourceList.get(i), 3-i);
+                    fixLength(printableResourceList.get(i), i+1);
                 }
         );
 
 
         return    "\033[" + x + ";" + (y+6) + "H╔═══╗"
-                + "\033[" + (x+1) + ";" + (y+6) + "H║ "+ printableResourceList.get(2).get(0) +" ║"
+                + "\033[" + (x+1) + ";" + (y+6) + "H║ "+ printableResourceList.get(0).get(0) +" ║"
                 + "\033[" + (x+2) + ";" + (y+6) + "H╚═══╝"
                 + "\033[" + (x+3) + ";" + (y+3) + "H╔═══╗ ╔═══╗"
                 + "\033[" + (x+4) + ";" + (y+3) + "H║ "+ printableResourceList.get(1).get(0) +" ║ ║ "+ printableResourceList.get(1).get(1) +" ║"
                 + "\033[" + (x+5) + ";" + (y+3) + "H╚═══╝ ╚═══╝"
                 + "\033[" + (x+6) + ";" + y + "H╔═══╗ ╔═══╗ ╔═══╗"
-                + "\033[" + (x+7) + ";" + y + "H║ "+ printableResourceList.get(0).get(0) +" ║ ║ "+ printableResourceList.get(0).get(1) +" ║ ║ "+ printableResourceList.get(0).get(2) +" ║"
+                + "\033[" + (x+7) + ";" + y + "H║ "+ printableResourceList.get(2).get(0) +" ║ ║ "+ printableResourceList.get(2).get(1) +" ║ ║ "+ printableResourceList.get(2).get(2) +" ║"
                 + "\033[" + (x+8) + ";" + y + "H╚═══╝ ╚═══╝ ╚═══╝";
     }
 

@@ -94,7 +94,7 @@ public class DumbPersonalBoard {
         StringBuilder printableString = new StringBuilder(Constants.ANSI_CLEAR);
         if(turnStatus)
             printableString.append("\033[1;1H" + Constants.ANSI_ORANGE + "Nickname:" + nickname + "(in turn)" + Constants.ANSI_RESET + " \033[1;117Hposition:" + position + "");
-        else if(connectionStatus)
+        else if(!connectionStatus)
             printableString.append("\033[1;1H" + Constants.ANSI_GREY + "Nickname:" + nickname + "(offline)" + Constants.ANSI_RESET + " \033[1;117Hposition:" + position + "");
         else
             printableString.append("\033[1;1HNickname:" + nickname + " \033[1;117Hposition:" + position + "");
