@@ -13,6 +13,9 @@ import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.logging.Logger;
 
+/**
+ * Object representing a Masters of Renaissance match.
+ */
 public class Game {
     private final int gameId;
     private GameState currentState;
@@ -178,6 +181,10 @@ public class Game {
         return developmentCardsBoard;
     }
 
+    /**
+     * Terminates the match and executes tear-down routines to deregister the game
+     * from its host server.
+     */
     public void end() {
         changesHandler.publishGameOutcome(this);
         gameEndedPublisher.submit(gameId);

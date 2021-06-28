@@ -14,8 +14,14 @@ import it.polimi.ingsw.network.clienttoserver.action.playeraction.PlayerAction;
 import java.util.*;
 import java.util.concurrent.Flow.*;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.logging.Logger;
 
+/**
+ * Class which forwards server-side model updates to the network and submits
+ * user-initiated action to the controller.
+ */
 public class RemoteView implements Subscriber<Renderable> {
+    private final Logger logger;
     /**
      * Utility class created to submit to the Game instance all player's
      * Actions received from Connection instances
@@ -56,6 +62,7 @@ public class RemoteView implements Subscriber<Renderable> {
      * @param controller Controller that will subscribe to the RemoteView.
      */
     public RemoteView(Controller controller) {
+        this.logger = Logger.getLogger(getClass().getSimpleName());
         connectedPlayers = new HashMap<>();
         submissionPublisher = new SubmissionPublisher<>();
         submissionPublisher.subscribe(controller);
@@ -117,6 +124,7 @@ public class RemoteView implements Subscriber<Renderable> {
      */
     @Override
     public void onNext(Renderable item) {
+        // logger.info("Received item: " + item.getClass().getSimpleName());
         if(item instanceof PrivateRenderable) {
             Optional<Connection> connection = Optional.ofNullable(connectedPlayers.get(((PrivateRenderable) item).getNickname()));
             connection.ifPresent(c -> c.send(item));
