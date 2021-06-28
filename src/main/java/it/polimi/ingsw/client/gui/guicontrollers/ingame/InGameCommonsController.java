@@ -390,6 +390,9 @@ public class InGameCommonsController extends JFXController {
                     ImageView imageView = getDevelopmentCardImage(row, column);
                     ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmentCardArray[row][column];
                     toggleButton.setGraphic(imageView);
+                    if (gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column] == null){
+                        toggleButton.setDisable(true);
+                    }
                 }
             }
         });
