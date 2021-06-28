@@ -208,7 +208,7 @@ public class InputVerifier {
      */
     public boolean canPickTempMarbles(Map<MarketMarble, Integer> chosenMarbles) {
         return canDoAction(ExecutedActions.STORED_MARKET_RESOURCES_ACTION)
-                && !tempMarblesContainSelectedMarbles(chosenMarbles);
+                && tempMarblesContainSelectedMarbles(chosenMarbles);
     }
 
     /**
@@ -312,6 +312,7 @@ public class InputVerifier {
                 .stream()
                 .filter(card -> card.getAbility().equals(LeaderCardAbility.CONVERT))
                 .map(card -> (DumbConvertLeaderCard) card)
+                .filter(card -> card.isActive())
                 .collect(Collectors.toList());
         // Subtract the tempMarbles from the selectedMarbles one by one.
         // If the resulting list is empty the selected marbles do not exceed
@@ -322,7 +323,7 @@ public class InputVerifier {
             } else {
                 // Handle WHITE marbles in case there are some active
                 // ConvertLeaderCards
-                if (activeConvertCards.get(0) != null) {
+                if (activeConvertCards.size() > 0) {
                     // If the first ConvertLeaderCard does not remove
                     // any marble from the list, check if there is a
                     // second one active and use that.
@@ -330,7 +331,7 @@ public class InputVerifier {
                             .remove(activeConvertCards.get(0)
                                     .getConvertedResource()
                                     .toMarble())
-                            && activeConvertCards.get(1) != null) {
+                            && activeConvertCards.size() > 1) {
                         selectedMarblesList
                                 .remove(activeConvertCards.get(1)
                                         .getConvertedResource()

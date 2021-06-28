@@ -94,14 +94,16 @@ public class DumbPersonalBoard {
         StringBuilder printableString = new StringBuilder(Constants.ANSI_CLEAR);
         if(turnStatus)
             printableString.append("\033[1;1H" + Constants.ANSI_ORANGE + "Nickname:" + nickname + "(in turn)" + Constants.ANSI_RESET + " \033[1;117Hposition:" + position + "");
+        else if(connectionStatus)
+            printableString.append("\033[1;1H" + Constants.ANSI_GREY + "Nickname:" + nickname + "(offline)" + Constants.ANSI_RESET + " \033[1;117Hposition:" + position + "");
         else
             printableString.append("\033[1;1HNickname:" + nickname + " \033[1;117Hposition:" + position + "");
         printableString.append(faithTrack.formatPrintableStringAt(2, 1));
         printableString.append(depots.formatPrintableStringAtAsDepots(8, 1));
         printableString.append(strongbox.formatPrintableStringAtAsStrongbox(10, 22));
-        if(leaderCards.get(0)!=null)
+        if(leaderCards.size()>0 && leaderCards.get(0)!=null)
             printableString.append(leaderCards.get(0).formatPrintableStringAt(8, 31));
-        if(leaderCards.get(1)!=null)
+        if(leaderCards.size()>1 && leaderCards.get(1)!=null)
             printableString.append(leaderCards.get(1).formatPrintableStringAt(8, 48));
 
         printableString.append(developmentCardSlots.get(0).formatPrintableStringAt(8, 52));

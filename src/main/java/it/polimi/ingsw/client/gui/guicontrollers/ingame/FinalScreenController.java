@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
-import it.polimi.ingsw.client.utils.exceptions.ConnectionTerminatedException;
 import it.polimi.ingsw.network.clienttoserver.messages.ExitRequestMessage;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;

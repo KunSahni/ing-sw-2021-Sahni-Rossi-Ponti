@@ -34,7 +34,7 @@ public class CLI implements UI {
     private Flow.Subscription subscription;
     private final DumbModel dumbModel;
     private OnScreenElement onScreenElement;
-    private boolean activeGame;
+    private volatile boolean activeGame;
     private final CommandExecutor commandExecutor;
     private final ConcurrentLinkedQueue<Renderable> renderQueue;
 
@@ -116,13 +116,8 @@ public class CLI implements UI {
             }
 
         }
-        try {
-            clientSocket.close();
-        }catch (ConnectionTerminatedException e){
-            out.println(e.getMessage());
-        }
-        in.close();
-        out.close();
+
+        clientSocket.close();
     }
 
     private void renderCommandHelpException(Commands command) {
@@ -140,23 +135,29 @@ public class CLI implements UI {
             renderLeaderCardsChoice(dumbModel.getTempLeaderCards());
         else
             renderCommons();
-        try {
-            loop();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        new Thread(() -> {
+            try {
+                loop();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
     public void renderPersonalBoard(String nickname) {
-        String printableString = dumbModel.getPersonalBoard(nickname).formatPrintableStringAt(2,2);
+        DumbPersonalBoard dumbPersonalBoard = dumbModel.getPersonalBoard(nickname);
+        String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
-        setOnScreenElement(OnScreenElement.valueOf(nickname));
+        resetCommandPosition();
+        setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
     public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
         String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
+        resetCommandPosition();
         setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
@@ -165,6 +166,7 @@ public class CLI implements UI {
         String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2, 2) +
                 dumbModel.getMarket().formatPrintableStringAt(15, 72);
         printToCLI(printableString);
+        resetCommandPosition();
         setOnScreenElement(OnScreenElement.COMMONS);
     }
 
@@ -215,7 +217,8 @@ public class CLI implements UI {
 
     @Override
     public void renderActionToken(ActionToken actionToken) {
-        //needed?
+        printToCLI(actionToken.getMessage());
+        resetCommandPosition();
     }
 
     @Override
@@ -241,13 +244,14 @@ public class CLI implements UI {
                 i -> printableString.append(leaderCards.get(i).formatPrintableStringAt(2, 1+17*i))
         );
         printToCLI(printableString.toString());
+        resetCommandPosition();
     }
 
     @Override
     public void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles) {
-        System.out.println("TRYING TO PRINT");
         String printableString = formatPrintableMarblesMapStringAt(updateMarbles, 2 , 2 );
         printToCLI(printableString);
+        resetCommandPosition();
     }
 
     @Override
@@ -255,19 +259,19 @@ public class CLI implements UI {
         int numberOfResources = dumbModel.getPersonalBoard(nickname).getPosition()/2;
         Map<Resource, Integer> chosenResources = new HashMap<>();
         String printableString;
-            if(numberOfResources <= 1)
-                printableString = "\033[2;1H>Pick " + numberOfResources + " resource\n";
-            else
-                printableString = "\033[2;1H>Pick " + numberOfResources + " resources\n";
-            printToCLI(printableString);
-
-            in.reset();
+        if(numberOfResources <= 1)
+            printableString = "\033[2;1H>Pick " + numberOfResources + " resource\n";
+        else
+            printableString = "\033[2;1H>Pick " + numberOfResources + " resources\n";
+        printToCLI(printableString);
+        resetCommandPosition();
     }
 
     @Override
     public void renderErrorMessage(String message) {
         String printableString = Constants.ANSI_CLEAR + "\033[2;1H>" + message;
         printToCLI(printableString);
+        resetCommandPosition();
     }
 
     @Override
@@ -354,6 +358,7 @@ public class CLI implements UI {
         printToCLI(Constants.ANSI_CLEAR);
         String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
+        resetCommandPosition();
     }
 
     @Override
@@ -361,13 +366,15 @@ public class CLI implements UI {
         printToCLI(Constants.ANSI_CLEAR);
         String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
+        resetCommandPosition();
     }
 
     @Override
     public void renderServerOffline() {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ Constants.OFFLINE_MESSAGE + "\n";
+        String printableString = Constants.ANSI_CLEAR + "\033[2;1H>"+ Constants.OFFLINE_MESSAGE + "\n";
         printToCLI(printableString);
+        in.close();
+        out.close();
     }
 
     /**
@@ -396,7 +403,12 @@ public class CLI implements UI {
     public String formatPrintableMarblesMapStringAt(Map<MarketMarble, Integer> marbles, int x, int y) {
         StringBuilder printableString = new StringBuilder();
 
-        List<MarketMarble> marblesList = new ArrayList<>(marbles.keySet());
+        List<MarketMarble> marblesList = new ArrayList<>();
+        marbles.forEach((k, v) -> {
+            for (int i = 0; i < v; i++) {
+                marblesList.add(k);
+            }
+        });
 
         IntStream.range(0, marblesList.size()).forEach(
                 i -> {
@@ -443,11 +455,7 @@ public class CLI implements UI {
      */
     @Override
     public void onNext(Renderable item) {
-        if(getOnScreenElement().equals(item.getOnScreenElement(dumbModel))
-                || item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY)){
-            renderQueue.add(item);
-            new Thread(this::elaborateRenderQueue).start();
-        }
+            item.render(this);
         subscription.request(1);
     }
 
@@ -484,7 +492,6 @@ public class CLI implements UI {
     private synchronized void elaborateRenderQueue(){
         Renderable usedItem = renderQueue.remove();
         usedItem.render(this);
-        this.onScreenElement = usedItem.getOnScreenElement(dumbModel);
     }
 
     private OnScreenElement getOnScreenElement() {

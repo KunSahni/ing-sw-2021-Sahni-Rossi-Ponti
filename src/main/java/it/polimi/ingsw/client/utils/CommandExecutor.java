@@ -54,8 +54,7 @@ public class CommandExecutor {
             HelpException,
             CommandHelpException,
             QuitException,
-            InvalidArgsException
-    {
+            InvalidArgsException{
 
         insertedCommand = insertedCommand.toLowerCase();
 
@@ -123,7 +122,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageActivateCommand(String command) throws WrongCommandArgsException, InvalidArgsException {
+    private void manageActivateCommand(String command) throws WrongCommandArgsException, InvalidArgsException{
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//activate
         
@@ -154,7 +153,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageDiscardCommand(String command) throws WrongCommandArgsException, InvalidArgsException {
+    private void manageDiscardCommand(String command) throws WrongCommandArgsException, InvalidArgsException{
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//discard
         
@@ -186,7 +185,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageBuyCommand(String command) throws WrongCommandArgsException, InvalidArgsException {
+    private void manageBuyCommand(String command) throws WrongCommandArgsException, InvalidArgsException{
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//buy
         
@@ -218,8 +217,13 @@ public class CommandExecutor {
             throw new WrongCommandArgsException();
         }
 
+        Map<Resource, Integer> depotsResources;
+
         //manage discarded resources from depots
-        Map<Resource, Integer> depotsResources = parseResources(commandArgs, "-depots", "-strongbox");
+        if(commandArgs.contains("-strongbox"))
+            depotsResources = parseResources(commandArgs, "-depots", "-strongbox");
+        else
+            depotsResources = parseResources(commandArgs, "-depots", null);
 
         //manage discarded resources from strongbox
         Map<Resource, Integer> strongboxResources = parseResources(commandArgs, "-strongbox", null);
@@ -239,7 +243,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageTakeCommand(String command) throws WrongCommandArgsException, InvalidArgsException {
+    private void manageTakeCommand(String command) throws WrongCommandArgsException, InvalidArgsException{
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//take
 
@@ -274,7 +278,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageProduceCommand(String command) throws WrongCommandArgsException, InvalidArgsException {
+    private void manageProduceCommand(String command) throws WrongCommandArgsException, InvalidArgsException{
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//produce
 
@@ -351,8 +355,8 @@ public class CommandExecutor {
         if(commandArgs.peek()==null && !hasSelectedAtLeastOneProduction)
             throw new WrongCommandArgsException();
 
-        while(commandArgs.peek() != null) {
-            if (commandArgs.peek().equals("-developmentcards")) {
+        if(commandArgs.peek() != null && commandArgs.peek().equals("-developmentcards")){
+             while(commandArgs.peek() != null && !commandArgs.peek().equals("-strongbox") && !commandArgs.peek().equals("-depots")){
                 commandArgs.remove();
                 hasSelectedAtLeastOneProduction = true;
 
@@ -379,7 +383,10 @@ public class CommandExecutor {
             }
         }
         //manage discarded resources from depots
-        discardedResourcesFromDepots = parseResources(commandArgs, "-depots", "-strongbox");
+        if(commandArgs.contains("-strongbox"))
+            discardedResourcesFromDepots = parseResources(commandArgs, "-depots", "-strongbox");
+        else
+            discardedResourcesFromDepots = parseResources(commandArgs, "-depots", null);
 
         //manage discarded resources from strongbox
         discardedResourcesFromStrongbox = parseResources(commandArgs, "-strongbox", null);
@@ -474,7 +481,7 @@ public class CommandExecutor {
      * @throws WrongCommandArgsException thrown when the passed arguments aren't formatted properly
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void managePickTempMarblesCommand(String command)throws WrongCommandArgsException, InvalidArgsException {
+    private void managePickTempMarblesCommand(String command) throws WrongCommandArgsException, InvalidArgsException{
         Queue<String> commandArgs = new LinkedList<>(Arrays.asList(command.split(" ")));
         commandArgs.remove();//pick
         commandArgs.remove();//marbles
@@ -522,7 +529,7 @@ public class CommandExecutor {
      * This method has the goal of ending user's only when such action is valid
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageEndTurn() throws InvalidArgsException {
+    private void manageEndTurn() throws InvalidArgsException{
         //if action is valid, send it to server
         if(inputVerifier.canEndTurn())
             clientSocket.sendAction(
@@ -543,9 +550,9 @@ public class CommandExecutor {
     private Map<Resource, Integer> parseResources(Queue<String> commandArgs, String from, String to) throws WrongCommandArgsException {
         Map<Resource, Integer> resources = new HashMap<>();
 
-        //manage discarded resources from depots
+        //manage discarded resources
         if(commandArgs.peek()==null)
-            throw new WrongCommandArgsException();
+            return null;
 
         if(commandArgs.peek().equals(from)){
             commandArgs.remove();
@@ -572,8 +579,6 @@ public class CommandExecutor {
             }
         }
 
-        if(resources.size()==0)
-            return null;
         return resources;
     }
 

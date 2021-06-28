@@ -45,14 +45,14 @@ public class DumbFaithTrack implements Serializable {
         printableString.append("║");
         for(int i =0; i<=24; i++)
             if(i%8==0 && i>0)
-                printableString.append(String.format(" %s%-2d%s ║", popesFavors.get(i/8-1).getStatusColor(), i, Constants.ANSI_RESET));
+                printableString.append(String.format(" %s%-2d%s ║", this.getPopesFavors().get(i/8-1).getStatusColor(), i, Constants.ANSI_RESET));
             else if(i >= 5 && i < 8 || i >= 12 && i < 16 || i >= 19)
                 printableString.append(String.format(" %s%-2d%s ║", Constants.ANSI_ORANGE, i, Constants.ANSI_RESET));
             else
                 printableString.append(String.format(" %-2d ║", i));
         printableString.append("\n║");
         for(int i =1; i<=24; i++)
-            if(i == faithMarkerPosition)
+            if(i == this.getFaithMarkerPosition())
                 printableString.append(String.format( " %s  ║", Constants.FAITH_MARKER));
             else
                 printableString.append("    ║");

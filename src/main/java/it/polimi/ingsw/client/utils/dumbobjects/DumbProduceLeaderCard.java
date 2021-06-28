@@ -48,7 +48,7 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
 
         return    "\033["+ x +";"+ y +"H╔══════════╗"
                 + "\033["+ (x+1) +";"+ y +"H║ 1x " + color + Constants.LEVEL + Constants.LEVEL + Constants.ANSI_RESET + "        ║"
-                + "\033["+ (x+3) +";"+ y +"H║              ║"
+                + (isActive()? "\033["+ (x+2) +";"+ y +"H║   activated  ║" : "\033["+ (x+2) +";"+ y +"H║              ║")
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║              ║"
                 + "\033["+ (x+5) +";"+ y +"H║    " + inputResource.formatPrintableString() + " -> " + Constants.ANY_RESOURCE + "    ║"
