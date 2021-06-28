@@ -39,7 +39,10 @@ public class ChangesHandler {
     private LinkedHashMap<Object, String> changesBuffer;
 
     public ChangesHandler(int gameId) {
-        this.root = "src/main/resources/json/games/" + gameId;
+        this.root = getWorkingDirectory() + "/games/" + gameId;
+        File rootDir = new File(root);
+        if(!rootDir.exists())
+            rootDir.mkdirs();
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isSinglePlayerGame = false;
         this.isNewGame = false;
@@ -448,5 +451,17 @@ public class ChangesHandler {
             }
         });
         changesBuffer = new LinkedHashMap<>();
+    }
+
+    public static String getWorkingDirectory(){
+        String workingDirectory;
+        String OS = (System.getProperty("os.name")).toUpperCase();
+
+        if (OS.contains("WIN"))
+            workingDirectory = System.getenv("AppData");
+        else
+            workingDirectory = System.getProperty("user.home");
+
+        return workingDirectory;
     }
 }
