@@ -63,6 +63,9 @@ public class InGameCommonsController extends JFXController {
 
     private Node[][] gridPaneDevelopmentCardArray = null;
 
+    /**
+     * Initialize the Common scene by creating toggle groups and adding to them buttons
+     */
     @FXML
     private void initialize(){
         toggleMarketGroup = new ToggleGroup();
@@ -76,6 +79,9 @@ public class InGameCommonsController extends JFXController {
         toggleDevelopmentGroup = new ToggleGroup();
     }
 
+    /**
+     * Creates toggle buttons for market and add them to toggleMarketGroup
+     */
     private void addMarketButtons(){
         marketButtons.add(0, new ArrayList<>());
         marketButtons.add(1, new ArrayList<>());
@@ -105,6 +111,10 @@ public class InGameCommonsController extends JFXController {
         }
     }
 
+    /**
+     * initialize Common scene by setting gui, all graphics and adding development cards
+     * @param gui is the gui of the client
+     */
     public void initialize(GUI gui) {
         super.setGui(gui);
 
@@ -117,6 +127,9 @@ public class InGameCommonsController extends JFXController {
         setDevelopmentCardsGraphic();
     }
 
+    /**
+     * initialize an array that contains all children of gridDevelopmentCard
+     */
     private void initializeGridPaneDevelopmentCardArray()
     {
         this.gridPaneDevelopmentCardArray = new Node[3][4];
@@ -128,6 +141,9 @@ public class InGameCommonsController extends JFXController {
         }
     }
 
+    /**
+     * set market graphic by adding all images of marbles
+     */
     private void setMarketGraphic(){
         Platform.runLater(() -> {
             imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
@@ -146,12 +162,31 @@ public class InGameCommonsController extends JFXController {
     @FXML
     private Label alertsLabel;
 
-    private String getDevelopmentCardImage(int row, int column){
-        String path;
-        path = gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT);
-        return path;
+    /**
+     *
+     * @param row is the row of the grid pane of development cards that is consider to place the image
+     * @param column is the column of the grid pane of development cards that is consider to place the image
+     * @return path where to get a development card image
+     */
+    private ImageView getDevelopmentCardImage(int row, int column){
+        ImageView imageView;
+        if (gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column] != null){
+            imageView = new ImageView(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT));
+            imageView.setFitWidth(154);
+            imageView.setPreserveRatio(true);
+        }
+        else {
+            imageView = new ImageView("/img/deck_end.png");
+            imageView.setFitWidth(154);
+            imageView.setFitHeight(232.67);
+        }
+        return imageView;
     }
 
+    /**
+     * method called by the Common Scene when the confirm button is clicked
+     * depending on current ConfirmButtonStrategy calls another method to pick marbles or pick a development card
+     */
     @FXML
     private void confirm() {
         switch ((ConfirmResetButtonsStrategy) confirmButton.getUserData()) {
@@ -161,6 +196,12 @@ public class InGameCommonsController extends JFXController {
 
     }
 
+    /**
+     *
+     * @param row is the row of the market that is consider to place the image
+     * @param column is the column of the market that is consider to place the image
+     * @return path where to get a marble image
+     */
     private String getMarbleImage(int row, int column){
         String name;
         if (row==-1){
@@ -180,10 +221,18 @@ public class InGameCommonsController extends JFXController {
         };
     }
 
+    /**
+     * populate a label with something to communicate to the user
+     * @param outcome is the string that will be printed
+     */
     private void populateInfoLabel(String outcome) {
         Platform.runLater(() -> alertsLabel.setText(outcome));
     }
 
+    /**
+     * call the method to verify if the action il legal, and if it is send the action to the server to be performed
+     * @param toggleButton represents the row or the column choose by the user
+     */
     private void pickMarbles(ToggleButton toggleButton){
         String choose;
         int index;
@@ -205,12 +254,21 @@ public class InGameCommonsController extends JFXController {
 
     }
 
+    /**
+     * via the chosen toggle button get the chosen development card and sand it to the gui
+     * @param toggleButton is the button that represents the chosen leader card
+     */
     private void pickDevelopmentCards(ToggleButton toggleButton) {
         DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
         resetCommon();
         gui.getPersonalController().startDevelopmentSlotSelection(chosenCard);
     }
 
+    /**
+     * this class represents a couple with a string and an integer that are associate to each market buttons
+     * the string can be "row" or "column", depending if the button select a row or a column
+     * integer represents number of column or row
+     */
     private static class Couple {
         Integer index;
         String choose;
@@ -229,6 +287,9 @@ public class InGameCommonsController extends JFXController {
         }
     }
 
+    /**
+     * Set to front market toggles, confirm and reset buttons, and set ConfirmReset button strategy to pick marbles
+     */
     @FXML
     private void pickFromMarket(){
         VBoxMarket.toFront();
@@ -237,10 +298,17 @@ public class InGameCommonsController extends JFXController {
         ConfirmResetButtonsStrategy.PICK_MARBLES.applyTo(confirmButton, resetButton);
     }
 
+    /**
+     * @param choose can be "row" or "columns"
+     * @return true only if choose is row
+     */
     private boolean isRow(String choose){
         return choose.equals("row");
     }
 
+    /**
+     * reset common scene by setting all market and development card toggles not pushable
+     */
     private void resetCommon(){
         actionBox.toFront();
         invisibleVerticalMarketPane.toFront();
@@ -251,11 +319,17 @@ public class InGameCommonsController extends JFXController {
         Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 
+    /**
+     * change the scene to personal
+     */
     @FXML
     private void backToPersonal(){
         gui.goToPersonalView();
     }
 
+    /**
+     * reset common scene by setting all market and development card toggles not pushable
+     */
     @FXML
     private void reset(){
         actionBox.toFront();
@@ -266,6 +340,10 @@ public class InGameCommonsController extends JFXController {
         Optional.ofNullable(toggleDevelopmentGroup.getSelectedToggle()).ifPresent(toggle ->toggle.selectedProperty().setValue(false));
     }
 
+    /**
+     * set to front development cards buttons to allow to player to choose which he wants.
+     * It also set confirmReset button strategy to BUY_DEVELOPMENT_CARD
+     */
     @FXML
     private void buyDevelopmentCard(){
         gridDevelopmentCard.toFront();
@@ -273,6 +351,9 @@ public class InGameCommonsController extends JFXController {
         ConfirmResetButtonsStrategy.BUY_DEVELOPMENT_CARD.applyTo(confirmButton, resetButton);
     }
 
+    /**
+     * Add all toggle buttons representing development cards in the scene, set their user data and add all to a toggle group
+     */
     private void addDevelopmentCards(){
         for (int row = 0; row < 3; row++){
             for (int column = 0; column <4; column++){
@@ -288,6 +369,9 @@ public class InGameCommonsController extends JFXController {
         }
     }
 
+    /**
+     * update user data to all development cards
+     */
     private void updateDevelopmentCards(){
         for (int row = 0; row < 3; row++){
             for (int column = 0; column <4; column++){
@@ -296,13 +380,14 @@ public class InGameCommonsController extends JFXController {
         }
     }
 
+    /**
+     * set all development toggle buttons images
+     */
     private void setDevelopmentCardsGraphic(){
         Platform.runLater(() -> {
             for (int row = 0; row < 3; row++){
                 for (int column = 0; column <4; column++){
-                    ImageView imageView = new ImageView(getDevelopmentCardImage(row, column));
-                    imageView.setFitWidth(154);
-                    imageView.setPreserveRatio(true);
+                    ImageView imageView = getDevelopmentCardImage(row, column);
                     ToggleButton toggleButton = (ToggleButton) gridPaneDevelopmentCardArray[row][column];
                     toggleButton.setGraphic(imageView);
                 }
@@ -311,6 +396,9 @@ public class InGameCommonsController extends JFXController {
 
     }
 
+    /**
+     * set all common scene graphic
+     */
     public void renderCommonsBoard(){
         setDevelopmentCardsGraphic();
         setMarketGraphic();

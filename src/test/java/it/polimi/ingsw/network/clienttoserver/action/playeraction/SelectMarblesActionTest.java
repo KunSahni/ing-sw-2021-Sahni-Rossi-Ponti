@@ -139,11 +139,10 @@ public class SelectMarblesActionTest {
     @Test
     void convertTest() {
         ConvertLeaderCard convertLeaderCard = new ConvertLeaderCard(1, new LeaderCardRequirements(null, null), Resource.COIN);
-        ConvertLeaderCard convertLeaderCard1 = new ConvertLeaderCard(1, new LeaderCardRequirements(null, null), Resource.SERVANT);
-        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard, convertLeaderCard1));
+        game.getPlayer(nick1).getPersonalBoard().setLeaderCards(List.of(convertLeaderCard));
         game.getPlayer(nick1).getPersonalBoard().activateLeaderCard(convertLeaderCard);
         game.getPlayer(nick1).setTempMarbles(Map.of(MarketMarble.BLUE, 2, MarketMarble.WHITE, 2));
-        SelectMarblesAction selectMarblesAction1 = new SelectMarblesAction(Map.of(MarketMarble.BLUE, 1, MarketMarble.YELLOW, 1, MarketMarble.PURPLE, 1));
+        SelectMarblesAction selectMarblesAction1 = new SelectMarblesAction(Map.of(MarketMarble.BLUE, 1, MarketMarble.YELLOW, 2));
         selectMarblesAction1.setNickname(nick1);
         selectMarblesAction1.setGame(game);
 
@@ -155,8 +154,7 @@ public class SelectMarblesActionTest {
         }
         assertAll(
                 () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.SHIELD, 1))),
-                () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.COIN, 1))),
-                () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.SERVANT, 1)))
+                () -> assertTrue(game.getPlayer(nick1).getPersonalBoard().getWarehouseDepots().contains(Map.of(Resource.COIN, 2)))
         );
 
     }
