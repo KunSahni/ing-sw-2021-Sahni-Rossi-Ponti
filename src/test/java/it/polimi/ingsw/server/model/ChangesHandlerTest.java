@@ -74,8 +74,14 @@ public class ChangesHandlerTest {
         File file15 = new File("src/main/resources/json/default/player/DevelopmentCardSlot3.json");
         File file16 = new File("src/main/resources/json/games/1/players/Mario/DevelopmentCardSlot3.json");
         File file17 = new File("src/main/resources/json/games/1/players/Mario/FaithTrack.json");
-        File file19 = new File("src/main/resources/json/default/player/LeaderCards.json");
-        File file20 = new File("src/main/resources/json/games/1/players/Mario/LeaderCards.json");
+        File file19 = new File("src/main/resources/json/default/player/ConvertLeaderCards.json");
+        File file20 = new File("src/main/resources/json/games/1/players/Mario/ConvertLeaderCards.json");
+        File file19_1 = new File("src/main/resources/json/default/player/DiscountLeaderCards.json");
+        File file20_1 = new File("src/main/resources/json/games/1/players/Mario/DiscountLeaderCards.json");
+        File file19_2 = new File("src/main/resources/json/default/player/ProduceLeaderCards.json");
+        File file20_2 = new File("src/main/resources/json/games/1/players/Mario/ProduceLeaderCards.json");
+        File file19_3 = new File("src/main/resources/json/default/player/StoreLeaderCards.json");
+        File file20_3 = new File("src/main/resources/json/games/1/players/Mario/StoreLeaderCards.json");
         File file21 = new File("src/main/resources/json/default/player/Player.json");
         File file22 = new File("src/main/resources/json/games/1/players/Mario/Player.json");
         File file23 = new File("src/main/resources/json/default/player/FaithTrack.json");
@@ -104,6 +110,9 @@ public class ChangesHandlerTest {
                 () -> assertArrayEquals(Files.readAllBytes(file15.toPath()), Files.readAllBytes(file16.toPath()), "Error: files are not identical"),
                 () -> assertTrue(file17.exists(), "Error: file should exist"),
                 () -> assertArrayEquals(Files.readAllBytes(file19.toPath()), Files.readAllBytes(file20.toPath()), "Error: files are not identical"),
+                () -> assertArrayEquals(Files.readAllBytes(file19_1.toPath()), Files.readAllBytes(file20_1.toPath()), "Error: files are not identical"),
+                () -> assertArrayEquals(Files.readAllBytes(file19_2.toPath()), Files.readAllBytes(file20_2.toPath()), "Error: files are not identical"),
+                () -> assertArrayEquals(Files.readAllBytes(file19_3.toPath()), Files.readAllBytes(file20_3.toPath()), "Error: files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file21.toPath()), Files.readAllBytes(file22.toPath()), "Error: files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file23.toPath()), Files.readAllBytes(file24.toPath()), "Error: files are not identical"),
                 () -> assertArrayEquals(Files.readAllBytes(file25.toPath()), Files.readAllBytes(file26.toPath()), "Error: files are not identical"),
