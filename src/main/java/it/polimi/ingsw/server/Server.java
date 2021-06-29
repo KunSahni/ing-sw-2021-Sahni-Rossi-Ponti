@@ -90,7 +90,7 @@ public class Server implements Flow.Subscriber<Integer> {
     public void restoreGame(Integer gameId, Game game, String nickname){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
-        players.put(gameId, Arrays.asList(nickname));
+        players.put(gameId, new ArrayList() {{ add(nickname);}});
         for (Player player: game.getPlayerList()) {
             if (!player.getNickname().equals(nickname)){
                 players.get(gameId).add(player.getNickname());
@@ -104,7 +104,7 @@ public class Server implements Flow.Subscriber<Integer> {
             players.get(gameId).add(nickname);
         }
         else {
-            players.put(gameId, Arrays.asList(nickname));
+            players.put(gameId, new ArrayList() {{ add(nickname);}});
         }
     }
 
