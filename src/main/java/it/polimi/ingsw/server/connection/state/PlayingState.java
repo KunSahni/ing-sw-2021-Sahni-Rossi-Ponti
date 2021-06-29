@@ -20,12 +20,20 @@ public class PlayingState extends ConnectionState{
         return serializedMessage.getAction() != null; //|| serializedMessage.getMessage() instanceof disconnectMessage;
     }
 
+    /**
+     * send a message to the client to notify that he has sent a wrong message
+     */
     @Override
     public void invalidMessage() {
         connection.invalidMessage();
         connection.readFromInputStream();
     }
 
+    /**
+     * extract the action from the message received, set player nickname in the action
+     * and publish the action
+     * @param serializedMessage is the message sent from the client
+     */
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
         logger.info("Reading action from " + connection.getNickname() + ", of type: " + serializedMessage.getAction().getClass());

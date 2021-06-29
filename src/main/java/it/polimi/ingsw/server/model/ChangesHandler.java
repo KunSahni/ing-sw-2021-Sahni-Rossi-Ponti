@@ -28,9 +28,10 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-// TODO: this has to be async to not interrupt server flow
-// maybe not, it is important that the calls happen in the right order
-// TODO: move to model package
+/**
+ * Class which handles Model changes, publishing them to its subscribed RemoteView and writing
+ * them to disk when needed. For the following model elements:
+ */
 public class ChangesHandler {
     private final String root;
     private final SubmissionPublisher<Renderable> submissionPublisher;
@@ -38,6 +39,10 @@ public class ChangesHandler {
     private boolean isSinglePlayerGame;
     private LinkedHashMap<Object, String> changesBuffer;
 
+    /**
+     * Constructor invoked upon game generation.
+     * @param gameId identifier stored in order to access correct disk information.
+     */
     public ChangesHandler(int gameId) {
         this.root = getWorkingDirectory() + "/games/" + gameId;
         File rootDir = new File(root);
@@ -49,6 +54,11 @@ public class ChangesHandler {
         changesBuffer = new LinkedHashMap<>();
     }
 
+    /**
+     * Creates fresh game files which will be used to instantiate all Model related Objects.
+     * @param nicknames each entry will be used to create a personal folder
+     * @throws IOException thrown when something goes wrong in folders copying.
+     */
     public void createGameFilesFromBlueprint(List<String> nicknames) throws IOException {
         copyFolder("src/main/resources/json/default/game", root);
         writeNicknameList(nicknames);
@@ -70,6 +80,12 @@ public class ChangesHandler {
         }
     }
 
+    /**
+     * Utility method implemented to copy folders via the java.nio API
+     * @param sourceDir directory that will be copied
+     * @param destinationDir destination of the copy
+     * @throws IOException never thrown because the disk is considered solid.
+     */
     private void copyFolder(String sourceDir, String destinationDir) throws IOException {
         Files.walk(Paths.get(sourceDir))
                 .forEach(source -> {
@@ -83,6 +99,10 @@ public class ChangesHandler {
                 });
     }
 
+    /**
+     * Publishes the outcome of a match to its players.
+     * @param game ended Game instance.
+     */
     public void publishGameOutcome(Game game) {
         if (deleteDirectory(new File(root)))
             submissionPublisher.submit(game.size() == 1
@@ -90,6 +110,11 @@ public class ChangesHandler {
                     : new MultiPlayerGameOutcomeUpdate(game));
     }
 
+    /**
+     * Utility method used to delete folders via the java.io API
+     * @param directoryToBeDeleted target of deletion.
+     * @return true if the directory has been deleted successfully, false otherwise.
+     */
     private boolean deleteDirectory(File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
@@ -139,6 +164,13 @@ public class ChangesHandler {
     }
 
     // Publisher on reconnection
+
+    /**
+     * Publishes the entire model. Used on connection to bring the newly connected player up to date
+     * with all occurred changes.
+     * @param nickname receiver of the update.
+     * @param game model instance.
+     */
     public void publishModel(String nickname, Game game) {
         submissionPublisher.submit(new ModelUpdate(nickname, game));
     }
@@ -151,6 +183,12 @@ public class ChangesHandler {
         return player;
     }
 
+    /**
+     * Publishes Player instance. The corresponding Client will receive an update containing all
+     * its information, while the other players will receive a slimmer version, not containing
+     * private information.
+     * @param player updated Player object.
+     */
     public void publishPlayer(Player player) {
         submissionPublisher.submit(new PlayerPrivateUpdate(player));
         submissionPublisher.submit(new PlayerBroadcastUpdate(player));
@@ -162,6 +200,7 @@ public class ChangesHandler {
     }
 
     // Market
+
     public Market readMarket() throws FileNotFoundException {
         Market market = readValueFromFile(root + "/Market.json", Market.class);
         market.init(this);

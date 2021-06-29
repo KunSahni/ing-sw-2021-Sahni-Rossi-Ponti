@@ -52,8 +52,7 @@ public class Lobby {
     }
 
     /**
-     * add a player to server players map
-     *
+     * add nickname and connection to a map to trace players that will be part of the same game
      * @param nickname   is the nickname of the player
      * @param connection is the connection of the player
      */
@@ -81,6 +80,10 @@ public class Lobby {
         return size;
     }
 
+    /**
+     * set Lobby size and call a server method to start waiting threads
+     * @param size
+     */
     public void setSize(int size) {
         this.size = size;
         server.wakeUpThread();

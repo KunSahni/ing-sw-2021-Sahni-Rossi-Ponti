@@ -31,7 +31,9 @@ public class AuthenticationState extends ConnectionState {
         return serializedMessage.getMessage() instanceof AuthenticationMessage;
     }
 
-
+    /**
+     * send a message to the client to notify that he has sent a wrong message
+     */
     @Override
     public void invalidMessage() {
         connection.invalidMessage();
@@ -66,12 +68,12 @@ public class AuthenticationState extends ConnectionState {
                 }
             }
         } else {
-            if (!connection.getServer().getPlayers().containsValue(gameID) && !connection.getServer().getDormantGames().contains(gameID)){
+            if (!connection.getServer().getPlayers().containsKey(gameID) && !connection.getServer().getDormantGames().contains(gameID)){
                 connection.unavailableGame();
             }
             else {
-                if (connection.getServer().getPlayers().containsValue(gameID)){
-                    if (!connection.getServer().getPlayers().containsKey(nickname)){
+                if (connection.getServer().getPlayers().containsKey(gameID)){
+                    if (!connection.getServer().getPlayers().get(gameID).contains(nickname)){
                         connection.wrongNickname();
                         connection.readFromInputStream();
                     }
@@ -81,6 +83,7 @@ public class AuthenticationState extends ConnectionState {
                             connection.readFromInputStream();
                         }
                         else {
+                            Lobby.getInstance().setSize(0);
                             connection.setState(new PlayingState(connection));
                             connection.setGameId(gameID);
                             connection.getServer().getController(gameID).connectPlayer(nickname, connection);
@@ -98,7 +101,7 @@ public class AuthenticationState extends ConnectionState {
                         Controller controller = new Controller(game);
                         RemoteView remoteView = new RemoteView(controller);
                         controller.setRemoteView(remoteView);
-                        connection.getServer().restoreGame(gameID, game);
+                        connection.getServer().restoreGame(gameID, game, nickname);
                         connection.getServer().addGameIdController(gameID, controller);
                         connection.setState(new PlayingState(connection));
                         connection.getServer().getController(gameID).connectPlayer(nickname, connection);

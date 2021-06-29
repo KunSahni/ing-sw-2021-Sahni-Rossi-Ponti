@@ -20,7 +20,7 @@ import java.util.concurrent.Flow;
 public class Server implements Flow.Subscriber<Integer> {
     private static final int port = 8080;
     private ServerSocket serverSocket;
-    private final Map<String, Integer> players = new HashMap<>();
+    private final Map<Integer, List<String>> players = new HashMap<>();
     private final Map<Integer, Game> currentGames = new HashMap<>();
     private final List<Integer> dormantGames = new ArrayList<>();
     private final Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
@@ -32,6 +32,8 @@ public class Server implements Flow.Subscriber<Integer> {
 
     /**
      * server starts to hear on the port to accept, create and run connections
+     * only one connection can choose Lobby size, so the first who arrived is started, the others wait until
+     * Lobby size is set, than are ran.
      */
     public void start(){
         Lobby.getInstance().setServer(this);
@@ -61,27 +63,7 @@ public class Server implements Flow.Subscriber<Integer> {
         }
     }
 
-    /**
-     * check if a player was disconnected from a Game looking for player nickname in players attribute, once found check
-     * if his game is in currentGame attribute
-     * @param nickname is the nickname of the player
-     * @param gameId is the gameId of the player
-     * @return the game of the disconnected player or null if the game doesn't exist
-     */
-    public Game checkDisconnectedPlayer(String nickname, int gameId){
-        for (String n: players.keySet()) {
-            if (nickname.equals(n)){
-                if (gameId == players.get(nickname)){
-                    if(currentGames.get(gameId)!=null){
-                        return currentGames.get(gameId);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public Map<String, Integer> getPlayers() {
+    public Map<Integer, List<String>> getPlayers() {
         return players;
     }
 
@@ -107,17 +89,37 @@ public class Server implements Flow.Subscriber<Integer> {
         return dormantGames;
     }
 
-    public void restoreGame(Integer gameId, Game game){
+    /**
+     * remove the passed gameId from dormant games and add it to current games,
+     * add all nicknames of that game to players map
+     * @param gameId
+     * @param game
+     * @param nickname
+     */
+    public void restoreGame(Integer gameId, Game game, String nickname){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
+        players.put(gameId, new ArrayList() {{ add(nickname);}});
         for (Player player: game.getPlayerList()) {
-            players.put(player.getNickname(), gameId);
+            if (!player.getNickname().equals(nickname)){
+                players.get(gameId).add(player.getNickname());
+            }
         }
         Lobby.getInstance().setSize(0);
     }
 
+    /**
+     * add nickname and gameId passed to players list
+     * @param nickname is the nickname that will be added to the map
+     * @param gameId is the gameId that will be added to the map
+     */
     public void addNicknameGameId(String nickname, int gameId){
-        players.put(nickname, gameId);
+        if (players.containsKey(gameId)){
+            players.get(gameId).add(nickname);
+        }
+        else {
+            players.put(gameId, new ArrayList() {{ add(nickname);}});
+        }
     }
 
     public void addGameToCurrentGames(int gameId, Game game) {
@@ -137,13 +139,15 @@ public class Server implements Flow.Subscriber<Integer> {
 
     }
 
+    /**
+     * remove the gameId passed from currentGames, gameIDControllerMap and players map
+     * @param item is the gameId to be removed
+     */
     @Override
     public void onNext(Integer item) {
         currentGames.remove(item);
         gameIDControllerMap.remove(item);
-        while (players.containsValue(item)){
-            players.values().removeIf(value -> value.equals(item));
-        }
+        players.remove(item);
     }
 
     @Override
@@ -156,6 +160,9 @@ public class Server implements Flow.Subscriber<Integer> {
 
     }
 
+    /**
+     * start a number of thread equals to the Lobby size
+     */
     public void wakeUpThread(){
         for (int i=1; i<Lobby.getInstance().getSize(); i++){
             if (!waitingThreads.isEmpty()){
@@ -164,9 +171,15 @@ public class Server implements Flow.Subscriber<Integer> {
         }
         if (!waitingThreads.isEmpty()){
             waitingThreads.poll().start();
+            Lobby.getInstance().setSize(-1);
         }
     }
 
+    /**
+     * @param nickname nickname of the player who is controlled
+     * @param id id of the game controlled
+     * @return true only if the player with same nickname passed is connected
+     */
     public boolean playerAlreadyConnected(String nickname, Integer id){
         for (Player player: currentGames.get(id).getPlayerList()) {
             if (player.getNickname().equals(nickname) && player.isConnected()){
