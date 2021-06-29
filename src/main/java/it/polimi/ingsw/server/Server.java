@@ -20,7 +20,7 @@ import java.util.concurrent.Flow;
 public class Server implements Flow.Subscriber<Integer> {
     private static final int port = 8080;
     private ServerSocket serverSocket;
-    private final Map<String, Integer> players = new HashMap<>();
+    private final Map<Integer, List<String>> players = new HashMap<>();
     private final Map<Integer, Game> currentGames = new HashMap<>();
     private final List<Integer> dormantGames = new ArrayList<>();
     private final Map<Integer, Controller> gameIDControllerMap = new HashMap<>();
@@ -61,27 +61,7 @@ public class Server implements Flow.Subscriber<Integer> {
         }
     }
 
-    /**
-     * check if a player was disconnected from a Game looking for player nickname in players attribute, once found check
-     * if his game is in currentGame attribute
-     * @param nickname is the nickname of the player
-     * @param gameId is the gameId of the player
-     * @return the game of the disconnected player or null if the game doesn't exist
-     */
-    public Game checkDisconnectedPlayer(String nickname, int gameId){
-        for (String n: players.keySet()) {
-            if (nickname.equals(n)){
-                if (gameId == players.get(nickname)){
-                    if(currentGames.get(gameId)!=null){
-                        return currentGames.get(gameId);
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public Map<String, Integer> getPlayers() {
+    public Map<Integer, List<String>> getPlayers() {
         return players;
     }
 
@@ -107,17 +87,25 @@ public class Server implements Flow.Subscriber<Integer> {
         return dormantGames;
     }
 
-    public void restoreGame(Integer gameId, Game game){
+    public void restoreGame(Integer gameId, Game game, String nickname){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
+        players.put(gameId, Arrays.asList(nickname));
         for (Player player: game.getPlayerList()) {
-            players.put(player.getNickname(), gameId);
+            if (!player.getNickname().equals(nickname)){
+                players.get(gameId).add(player.getNickname());
+            }
         }
         Lobby.getInstance().setSize(0);
     }
 
     public void addNicknameGameId(String nickname, int gameId){
-        players.put(nickname, gameId);
+        if (players.containsKey(gameId)){
+            players.get(gameId).add(nickname);
+        }
+        else {
+            players.put(gameId, Arrays.asList(nickname));
+        }
     }
 
     public void addGameToCurrentGames(int gameId, Game game) {
@@ -141,9 +129,7 @@ public class Server implements Flow.Subscriber<Integer> {
     public void onNext(Integer item) {
         currentGames.remove(item);
         gameIDControllerMap.remove(item);
-        while (players.containsValue(item)){
-            players.values().removeIf(value -> value.equals(item));
-        }
+        players.remove(item);
     }
 
     @Override

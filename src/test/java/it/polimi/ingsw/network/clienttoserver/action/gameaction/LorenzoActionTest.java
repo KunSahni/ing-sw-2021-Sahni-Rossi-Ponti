@@ -133,7 +133,7 @@ public class LorenzoActionTest {
             }
             game.getDevelopmentCardsBoard().pick(Level.LEVEL3, Color.GREEN);
             lorenzoAction.execute();
-            assertFalse(server.getPlayers().containsValue(1));
+            assertFalse(server.getPlayers().containsKey(1));
         }
 
         @Test
@@ -150,7 +150,7 @@ public class LorenzoActionTest {
             }
             lorenzoAction.execute();
 
-            assertFalse(server.getPlayers().containsValue(1));
+            assertFalse(server.getPlayers().containsKey(1));
         }
     }
 }

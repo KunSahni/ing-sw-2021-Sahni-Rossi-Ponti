@@ -66,12 +66,12 @@ public class AuthenticationState extends ConnectionState {
                 }
             }
         } else {
-            if (!connection.getServer().getPlayers().containsValue(gameID) && !connection.getServer().getDormantGames().contains(gameID)){
+            if (!connection.getServer().getPlayers().containsKey(gameID) && !connection.getServer().getDormantGames().contains(gameID)){
                 connection.unavailableGame();
             }
             else {
-                if (connection.getServer().getPlayers().containsValue(gameID)){
-                    if (!connection.getServer().getPlayers().containsKey(nickname)){
+                if (connection.getServer().getPlayers().containsKey(gameID)){
+                    if (!connection.getServer().getPlayers().get(gameID).contains(nickname)){
                         connection.wrongNickname();
                         connection.readFromInputStream();
                     }
@@ -99,7 +99,7 @@ public class AuthenticationState extends ConnectionState {
                         Controller controller = new Controller(game);
                         RemoteView remoteView = new RemoteView(controller);
                         controller.setRemoteView(remoteView);
-                        connection.getServer().restoreGame(gameID, game);
+                        connection.getServer().restoreGame(gameID, game, nickname);
                         connection.getServer().addGameIdController(gameID, controller);
                         connection.setState(new PlayingState(connection));
                         connection.getServer().getController(gameID).connectPlayer(nickname, connection);
