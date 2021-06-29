@@ -44,7 +44,10 @@ public class ChangesHandler {
      * @param gameId identifier stored in order to access correct disk information.
      */
     public ChangesHandler(int gameId) {
-        this.root = "src/main/resources/json/games/" + gameId;
+        this.root = getWorkingDirectory() + "/games/" + gameId;
+        File rootDir = new File(root);
+        if(!rootDir.exists())
+            rootDir.mkdirs();
         this.submissionPublisher = new SubmissionPublisher<>();
         this.isSinglePlayerGame = false;
         this.isNewGame = false;
@@ -147,10 +150,13 @@ public class ChangesHandler {
 
     // Nicknames List
     public List<String> readNicknameList() throws FileNotFoundException {
-        return readListFromFile(
+        List<String> nicknames = readListFromFile(
                 root + "/Nicknames.json",
                 String.class
         );
+        if (nicknames.size() == 1)
+            isSinglePlayerGame = true;
+        return nicknames;
     }
 
     public void writeNicknameList(List<String> nicknameList) {
@@ -484,5 +490,17 @@ public class ChangesHandler {
             }
         });
         changesBuffer = new LinkedHashMap<>();
+    }
+
+    public static String getWorkingDirectory(){
+        String workingDirectory;
+        String OS = (System.getProperty("os.name")).toUpperCase();
+
+        if (OS.contains("WIN"))
+            workingDirectory = System.getenv("AppData");
+        else
+            workingDirectory = System.getProperty("user.home");
+
+        return workingDirectory;
     }
 }

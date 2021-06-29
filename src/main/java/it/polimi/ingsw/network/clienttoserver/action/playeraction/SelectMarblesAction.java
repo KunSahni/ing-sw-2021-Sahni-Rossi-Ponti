@@ -78,6 +78,7 @@ public class SelectMarblesAction extends PlayerAction {
                 .stream()
                 .filter(card -> card.getAbility().equals(LeaderCardAbility.CONVERT))
                 .map(card -> (ConvertLeaderCard) card)
+                .filter(card -> card.isActive())
                 .collect(Collectors.toList());
         // Subtract the tempMarbles from the selectedMarbles one by one.
         // If the resulting list is empty the selected marbles do not exceed

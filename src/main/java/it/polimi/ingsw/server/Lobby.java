@@ -96,7 +96,7 @@ public class Lobby {
      */
     public void startGame() {
         // logger.info("Launching game " + maxGameId);
-        players.values().forEach(connection -> connection.send(new GameStartedNotification()));
+        players.values().forEach(connection -> connection.send(new GameStartedNotification(size)));
         Game game = null;
         try {
             game = new Game(server, maxGameId, new ArrayList<>(players.keySet()));

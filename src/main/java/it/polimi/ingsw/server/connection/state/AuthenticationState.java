@@ -82,6 +82,7 @@ public class AuthenticationState extends ConnectionState {
                         }
                         else {
                             connection.setState(new PlayingState(connection));
+                            connection.setGameId(gameID);
                             connection.getServer().getController(gameID).connectPlayer(nickname, connection);
                         }
                     }
@@ -101,6 +102,7 @@ public class AuthenticationState extends ConnectionState {
                         connection.getServer().addGameIdController(gameID, controller);
                         connection.setState(new PlayingState(connection));
                         connection.getServer().getController(gameID).connectPlayer(nickname, connection);
+                        connection.setGameId(gameID);
                     }
                 }
             }

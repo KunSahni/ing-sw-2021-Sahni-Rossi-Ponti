@@ -48,7 +48,7 @@ public final class Constants {
 
     public static final String WRONG_COMMAND = "Command doesn't exist, type help for help";
     public static final String WRONG_COMMAND_ARGS = "Command wrongly used, possible error in argument typing, use -h for help";
-    public static final String INVALID_ARGS = "Command was typed properly, but invalid command arguments, use -h for help";
+    public static final String INVALID_ARGS = "Command was typed properly, but either it can't be executed right now or command arguments are invalid, use -h for help";
 
-    public static final String OFFLINE_MESSAGE = "Server went offline, try to reconnect in a few minutes";
+    public static final String OFFLINE_MESSAGE = "Connection with server was dropped";
 }

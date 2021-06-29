@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 
@@ -96,7 +97,7 @@ public class Server implements Flow.Subscriber<Integer> {
         }
 
         for (int i=1; i<maxId; i++){
-            if (new File("src/main/resources/json/games/" + i).isDirectory()){
+            if (new File(ChangesHandler.getWorkingDirectory() + "/games/" + i).isDirectory()){
                 dormantGames.add(i);
             }
         }

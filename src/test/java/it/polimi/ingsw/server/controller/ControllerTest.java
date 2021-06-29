@@ -82,7 +82,7 @@ public class ControllerTest {
 
         controller.disconnectPlayer(nick1);
 
-        assertEquals(game.getPlayer(nick2), game.getCurrentTurnPlayer());
+        assertTrue(game.getPlayer(nick2).isTurn());
     }
 
     @Test
@@ -108,14 +108,14 @@ public class ControllerTest {
     @Test
     @DisplayName("Turn pass to the next player")
     void inGameTest() {
+        controller.connectPlayer(nick1, new Connection(new Socket(), server));
+        controller.connectPlayer(nick2, new Connection(new Socket(), server));
         game.setState(GameState.IN_GAME);
         game.getPlayer(nick1).startTurn();
         game.getPlayer(nick1).addAction(ExecutedActions.TURN_ENDED_ACTION);
-        controller.connectPlayer(nick1, new Connection(new Socket(), server));
-        controller.connectPlayer(nick2, new Connection(new Socket(), server));
         new Controller(game);
 
-        assertEquals(game.getPlayer(nick2), game.getCurrentTurnPlayer());
+        assertTrue(game.getPlayer(nick2).isTurn());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class ControllerTest {
         controller.connectPlayer(nick2, new Connection(new Socket(), server));
         new Controller(game);
 
-        assertEquals(game.getPlayer(nick1), game.getCurrentTurnPlayer());
+        assertTrue(game.getPlayer(nick1).isTurn());
     }
 
     @Test

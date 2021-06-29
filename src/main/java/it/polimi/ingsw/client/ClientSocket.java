@@ -1,7 +1,6 @@
 package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
-import it.polimi.ingsw.client.utils.exceptions.ConnectionTerminatedException;
 import it.polimi.ingsw.network.clienttoserver.SerializedMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.Message;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
@@ -52,27 +51,23 @@ public class ClientSocket {
                         }
                     } catch (IOException | ClassNotFoundException e) {
                         renderablePublisher.submit(new ServerOfflineUpdate());
-                        e.printStackTrace();
                         break;
                     }
                 }
             }).start();
         } catch (IOException e) {
             renderablePublisher.submit(new ServerOfflineUpdate());
-            e.printStackTrace();
         }
     }
 
     /**
      * This method closes the connection established through the socket and its input/output streams
      */
-    public void close() throws ConnectionTerminatedException {
+    public void close() {
         try {
-            inputStream.close();
-            outputStream.close();
             socket.close();
         } catch (IOException e) {
-            throw new ConnectionTerminatedException();
+            renderablePublisher.submit(new ServerOfflineUpdate());
         }
     }
 
