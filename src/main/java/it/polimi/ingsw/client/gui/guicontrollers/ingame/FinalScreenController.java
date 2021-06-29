@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.network.clienttoserver.messages.ExitRequestMessage;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -116,6 +117,6 @@ public class FinalScreenController extends JFXController {
 
     @FXML
     private void quit(){
-        gui.getClientSocket().sendMessage(new ExitRequestMessage());
+        Platform.exit();
     }
 }
