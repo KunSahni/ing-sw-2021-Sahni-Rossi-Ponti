@@ -124,8 +124,13 @@ public class ActivateProductionAction extends PlayerAction {
 
     private boolean discardMapsMatchProductionCosts() {
         // Merge depots discards and strongbox discards
-        Map<Resource, Integer> totalDiscardMap =
-                new HashMap<>(productionCombo.getDiscardedResourcesFromDepots());
+        Map<Resource, Integer> totalDiscardMap = new HashMap<>();
+        Optional.ofNullable(productionCombo.getDiscardedResourcesFromDepots()).ifPresent(
+                resourceIntegerMap -> resourceIntegerMap.forEach(
+                        (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)
+                                ? value : v + value)
+                )
+        );
         Optional.ofNullable(productionCombo.getDiscardedResourcesFromStrongbox()).ifPresent(
                 resourceIntegerMap -> resourceIntegerMap.forEach(
                         (key, value) -> totalDiscardMap.compute(key, (k, v) -> (v == null)

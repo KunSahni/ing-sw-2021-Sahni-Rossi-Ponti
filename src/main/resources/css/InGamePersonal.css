@@ -7,6 +7,10 @@
     -fx-background-color: rgba(252, 186, 3, 0.95);
 }
 
+.toggle-button:selected{
+    -fx-opacity: 0.7;
+}
+
 /*
 #left-curtain {
     -fx-background-image: url("../img/curtain.png");
