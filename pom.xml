@@ -9,8 +9,6 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>master-of-renaissance</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -100,19 +98,11 @@
           <version>3.0.0</version>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>15</source>
-            <target>15</target>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-maven-plugin</artifactId>
           <version>0.0.6</version>
           <configuration>
-            <mainClass>HelloFX</mainClass>
+            <mainClass>it.polimi.ingsw.MasterOfRenaissance</mainClass>
           </configuration>
         </plugin>
       </plugins>
