@@ -81,6 +81,7 @@ public class AuthenticationState extends ConnectionState {
                             connection.readFromInputStream();
                         }
                         else {
+                            Lobby.getInstance().setSize(0);
                             connection.setState(new PlayingState(connection));
                             connection.setGameId(gameID);
                             connection.getServer().getController(gameID).connectPlayer(nickname, connection);

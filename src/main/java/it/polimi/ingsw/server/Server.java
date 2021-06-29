@@ -164,6 +164,7 @@ public class Server implements Flow.Subscriber<Integer> {
         }
         if (!waitingThreads.isEmpty()){
             waitingThreads.poll().start();
+            Lobby.getInstance().setSize(-1);
         }
     }
 
