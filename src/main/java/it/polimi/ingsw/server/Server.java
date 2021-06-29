@@ -32,6 +32,8 @@ public class Server implements Flow.Subscriber<Integer> {
 
     /**
      * server starts to hear on the port to accept, create and run connections
+     * only one connection can choose Lobby size, so the first who arrived is started, the others wait until
+     * Lobby size is set, than are ran.
      */
     public void start(){
         Lobby.getInstance().setServer(this);
@@ -87,6 +89,13 @@ public class Server implements Flow.Subscriber<Integer> {
         return dormantGames;
     }
 
+    /**
+     * remove the passed gameId from dormant games and add it to current games,
+     * add all nicknames of that game to players map
+     * @param gameId
+     * @param game
+     * @param nickname
+     */
     public void restoreGame(Integer gameId, Game game, String nickname){
         dormantGames.remove(gameId);
         currentGames.put(gameId, game);
@@ -99,6 +108,11 @@ public class Server implements Flow.Subscriber<Integer> {
         Lobby.getInstance().setSize(0);
     }
 
+    /**
+     * add nickname and gameId passed to players list
+     * @param nickname is the nickname that will be added to the map
+     * @param gameId is the gameId that will be added to the map
+     */
     public void addNicknameGameId(String nickname, int gameId){
         if (players.containsKey(gameId)){
             players.get(gameId).add(nickname);
@@ -125,6 +139,10 @@ public class Server implements Flow.Subscriber<Integer> {
 
     }
 
+    /**
+     * remove the gameId passed from currentGames, gameIDControllerMap and players map
+     * @param item is the gameId to be removed
+     */
     @Override
     public void onNext(Integer item) {
         currentGames.remove(item);
@@ -142,6 +160,9 @@ public class Server implements Flow.Subscriber<Integer> {
 
     }
 
+    /**
+     * start a number of thread equals to the Lobby size
+     */
     public void wakeUpThread(){
         for (int i=1; i<Lobby.getInstance().getSize(); i++){
             if (!waitingThreads.isEmpty()){
@@ -154,6 +175,11 @@ public class Server implements Flow.Subscriber<Integer> {
         }
     }
 
+    /**
+     * @param nickname nickname of the player who is controlled
+     * @param id id of the game controlled
+     * @return true only if the player with same nickname passed is connected
+     */
     public boolean playerAlreadyConnected(String nickname, Integer id){
         for (Player player: currentGames.get(id).getPlayerList()) {
             if (player.getNickname().equals(nickname) && player.isConnected()){

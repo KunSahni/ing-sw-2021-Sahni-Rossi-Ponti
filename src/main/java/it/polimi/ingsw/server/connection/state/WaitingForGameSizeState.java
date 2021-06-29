@@ -16,18 +16,31 @@ public class WaitingForGameSizeState extends ConnectionState {
         this.connection = connection;
     }
 
+    /**
+     * control if the message received is an instance of CreateLobbyMessage
+     * @param serializedMessage is the message sent from the client received by the connection
+     * @return true if message is an instance of CreateLobbyMessage, in contrary case false
+     */
     @Override
     public boolean messageAllowed(SerializedMessage serializedMessage) {
         logger.info("Checking if message is allowed.");
         return serializedMessage.getMessage() instanceof CreateLobbyMessage;
     }
 
+    /**
+     * send a message to the client to notify that he has sent a wrong message
+     */
     @Override
     public void invalidMessage() {
         connection.invalidMessage();
         connection.readFromInputStream();
     }
 
+    /**
+     * read the message sent from the client, if it is a valid lobby size set the Lobby size,
+     * otherwise send a message to notify client that he has sent an invalid size
+     * @param serializedMessage is the message received from the client
+     */
     @Override
     public void readMessage(SerializedMessage serializedMessage) {
         logger.info("Reading lobby size");

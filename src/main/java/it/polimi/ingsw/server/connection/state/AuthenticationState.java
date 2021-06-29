@@ -31,7 +31,9 @@ public class AuthenticationState extends ConnectionState {
         return serializedMessage.getMessage() instanceof AuthenticationMessage;
     }
 
-
+    /**
+     * send a message to the client to notify that he has sent a wrong message
+     */
     @Override
     public void invalidMessage() {
         connection.invalidMessage();
