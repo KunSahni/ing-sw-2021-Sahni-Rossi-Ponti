@@ -501,6 +501,6 @@ public class ChangesHandler {
         else
             workingDirectory = System.getProperty("user.home");
 
-        return workingDirectory;
+        return workingDirectory + "/MasterOfRenaissance";
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.client.UI;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
@@ -13,10 +14,7 @@ import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow.Subscription;
@@ -54,11 +52,11 @@ public class DumbModel {
 
         //Try to read existing saved gameID
         try {
-            JsonReader reader = new JsonReader(new FileReader("src/main/resources/json/client/gameID.json"));
+            JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/gameID.json"));
             this.gameID = new Gson().fromJson(reader, int.class);
             reader.close();
         } catch (Exception e) {
-            this.gameID = -1;
+            updateGameID(-1);
         }
     }
 
@@ -248,7 +246,10 @@ public class DumbModel {
 
         //write the new gamedID on a json file
         try {
-            Writer writer = new FileWriter("src/main/resources/json/client/gameID.json");
+            File rootDir = new File(ChangesHandler.getWorkingDirectory());
+            if(!rootDir.exists())
+                rootDir.mkdirs();
+            Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/gameID.json");
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
             gson.toJson(gameID, writer);
             writer.flush();
