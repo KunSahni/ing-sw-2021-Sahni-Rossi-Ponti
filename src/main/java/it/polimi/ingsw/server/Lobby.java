@@ -1,11 +1,13 @@
 package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.network.servertoclient.renderable.requests.GameStartedNotification;
 import it.polimi.ingsw.network.servertoclient.renderable.requests.JoinedLobbyNotification;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
+import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.remoteview.RemoteView;
 import it.polimi.ingsw.server.connection.state.PlayingState;
@@ -33,9 +35,24 @@ public class Lobby {
         players = new HashMap<>();
         size = 0;
         try {
-            maxGameId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources" +
-                    "/json/maxId.json")), Integer.class);
+            JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/server/maxID.json"));
+            maxGameId = new Gson().fromJson(reader, int.class);
+            reader.close();
         } catch (FileNotFoundException e) {
+            maxGameId = 1;
+            try {
+                File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/server");
+                if(!rootDir.exists())
+                    rootDir.mkdirs();
+                Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
+                Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+                gson.toJson(maxGameId, writer);
+                writer.flush();
+                writer.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -119,8 +136,13 @@ public class Lobby {
                 }
         );
         try {
-            Writer writer = new FileWriter("src/main/resources/json/maxId.json");
-            new Gson().toJson(maxGameId + 1, writer);
+            File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/server");
+            if(!rootDir.exists())
+                rootDir.mkdirs();
+            Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+            gson.toJson(maxGameId, writer);
+            writer.flush();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

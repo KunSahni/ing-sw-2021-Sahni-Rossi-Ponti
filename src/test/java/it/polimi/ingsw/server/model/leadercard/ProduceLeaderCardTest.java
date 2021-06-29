@@ -27,7 +27,7 @@ public class ProduceLeaderCardTest {
     private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
         LeaderCardsDeck leaderCardsDeck = game.getLeaderCardsDeck();
         leaderCardsDeck.shuffle();
-        Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
+        Optional<LeaderCard> leaderCard = leaderCardsDeck.getDeck().stream().filter(
                 leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
         ).findFirst();
         return leaderCard.orElseGet(() -> {

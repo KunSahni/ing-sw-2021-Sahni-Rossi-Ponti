@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import it.polimi.ingsw.server.connection.Connection;
 import it.polimi.ingsw.server.controller.Controller;
@@ -8,10 +9,7 @@ import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -73,13 +71,29 @@ public class Server implements Flow.Subscriber<Integer> {
     private void checkDormantGames(){
         int maxId = 0;
         try {
-            maxId = new Gson().fromJson(new JsonReader(new FileReader("src/main/resources/json/maxId.json")), Integer.class);
+            JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/server/maxID.json"));
+            maxId = new Gson().fromJson(reader, int.class);
+            reader.close();
         } catch (FileNotFoundException e) {
+            maxId = 1;
+            try {
+                File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/server");
+                if(!rootDir.exists())
+                    rootDir.mkdirs();
+                Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
+                Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+                gson.toJson(maxId, writer);
+                writer.flush();
+                writer.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         for (int i=1; i<maxId; i++){
-            if (new File(ChangesHandler.getWorkingDirectory() + "/games/" + i).isDirectory()){
+            if (new File(ChangesHandler.getWorkingDirectory() + "/server/games/" + i).isDirectory()){
                 dormantGames.add(i);
             }
         }

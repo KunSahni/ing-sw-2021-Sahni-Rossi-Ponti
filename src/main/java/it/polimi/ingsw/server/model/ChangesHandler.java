@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class ChangesHandler {
      * @param gameId identifier stored in order to access correct disk information.
      */
     public ChangesHandler(int gameId) {
-        this.root = getWorkingDirectory() + "/games/" + gameId;
+        this.root = getWorkingDirectory() + "/server/games/" + gameId;
         File rootDir = new File(root);
         if(!rootDir.exists())
             rootDir.mkdirs();
@@ -92,7 +93,7 @@ public class ChangesHandler {
                     Path destination = Paths.get(destinationDir, source.toString()
                             .substring(sourceDir.length()));
                     try {
-                        Files.copy(source, destination);
+                        Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

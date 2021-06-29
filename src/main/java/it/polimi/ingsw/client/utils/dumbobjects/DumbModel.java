@@ -52,7 +52,7 @@ public class DumbModel {
 
         //Try to read existing saved gameID
         try {
-            JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/gameID.json"));
+            JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/client/gameID.json"));
             this.gameID = new Gson().fromJson(reader, int.class);
             reader.close();
         } catch (Exception e) {
@@ -246,10 +246,10 @@ public class DumbModel {
 
         //write the new gamedID on a json file
         try {
-            File rootDir = new File(ChangesHandler.getWorkingDirectory());
+            File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/client");
             if(!rootDir.exists())
                 rootDir.mkdirs();
-            Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/gameID.json");
+            Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/client/gameID.json");
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
             gson.toJson(gameID, writer);
             writer.flush();
