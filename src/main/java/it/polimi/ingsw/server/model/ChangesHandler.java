@@ -61,11 +61,11 @@ public class ChangesHandler {
      * @throws IOException thrown when something goes wrong in folders copying.
      */
     public void createGameFilesFromBlueprint(List<String> nicknames) throws IOException {
-        copyFolder("src/main/resources/json/default/game", root);
+        copyFolder(getWorkingDirectory() + "/server/games/default/game", root);
         writeNicknameList(nicknames);
         flushBufferToDisk();
         for (String nickname : nicknames) {
-            copyFolder("src/main/resources/json/default/player",
+            copyFolder(getWorkingDirectory() + "/server/games/default/player",
                     root + "/players/" + nickname);
         }
         isNewGame = true;

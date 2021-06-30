@@ -23,6 +23,7 @@ import javafx.scene.shape.Circle;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -117,8 +118,8 @@ public abstract class PlayerBoardController extends JFXController {
 
     private void initFaithTrackCoordsReferenceList() {
         try {
-            JsonReader reader = new JsonReader(new FileReader(
-                    "src/main/resources/json/client/faithTrackGridCoordinates.json"));
+            InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getResourceAsStream("/json/client/faithTrackGridCoordinates.json"));
+            JsonReader reader = new JsonReader(inputStreamReader);
             GridCoordinates[] array =
                     new GsonBuilder().setPrettyPrinting().serializeNulls().create()
                             .fromJson(reader, GridCoordinates[].class);

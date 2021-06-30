@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.model.personalboard;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import com.google.gson.Gson;
@@ -78,10 +79,11 @@ public class FaithTrack implements VictoryPointsElement {
      */
     private int calculateTrackPositionVictoryPoints() {
         try {
-            JsonReader reader = new JsonReader(new FileReader("src/main/resources/json/default/FaithTrackPoints.json"));
+            InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getResourceAsStream("/json/default/FaithTrackPoints.json"));
+            JsonReader reader = new JsonReader(inputStreamReader);
             Map<String, Double> victoryPointsMap = new Gson().fromJson(reader, Map.class);
             return victoryPointsMap.get(Integer.toString(getFaithMarkerPosition())).intValue();
-        } catch (FileNotFoundException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
             return -1;
         }
