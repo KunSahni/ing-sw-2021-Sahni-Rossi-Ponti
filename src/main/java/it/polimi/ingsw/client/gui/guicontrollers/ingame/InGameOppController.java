@@ -67,8 +67,7 @@ public class InGameOppController extends PlayerBoardController {
             IntStream.range(0, inBoardLeaderCards.size()).forEach(i -> {
                 DumbLeaderCard dumbLeaderCard = inBoardLeaderCards.get(i);
                 if (dumbLeaderCard == null)
-                    leaderCardImages.get(i).setImage(getImageFromPath("/img/cards" +
-                            "/leader_card_back.png"));
+                    leaderCardImages.get(i).setImage(getImageFromPath("/img/cards/leader_card_back.png"));
                 else {
                     leaderCardImages.get(i).setImage(getImageFromPath(dumbLeaderCard.toImgPath()));
                     if (dumbLeaderCard.getAbility().equals(LeaderCardAbility.STORE)) {

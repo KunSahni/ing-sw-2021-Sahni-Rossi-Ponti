@@ -7,7 +7,6 @@ import it.polimi.ingsw.client.utils.constants.Commands;
 import it.polimi.ingsw.client.utils.constants.Constants;
 import it.polimi.ingsw.client.utils.dumbobjects.*;
 import it.polimi.ingsw.client.utils.exceptions.*;
-import it.polimi.ingsw.network.clienttoserver.action.playeraction.PregameResourceChoiceAction;
 import it.polimi.ingsw.network.clienttoserver.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
@@ -84,7 +83,6 @@ public class CLI implements UI {
 
         //Connect socket
         this.clientSocket = new ClientSocket(ip, port, dumbModel.getUpdatesHandler());
-        printToCLI(Constants.ANSI_CLEAR);
         clientSocket.connect();
         setOnScreenElement(OnScreenElement.COMMONS);
         commandExecutor.setClientSocket(clientSocket);
@@ -148,6 +146,7 @@ public class CLI implements UI {
 
     @Override
     public void renderPersonalBoard(String nickname) {
+        clearScreen();
         DumbPersonalBoard dumbPersonalBoard = dumbModel.getPersonalBoard(nickname);
         String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
@@ -156,6 +155,7 @@ public class CLI implements UI {
     }
 
     public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
+        clearScreen();
         String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
         resetCommandPosition();
@@ -164,6 +164,7 @@ public class CLI implements UI {
 
     @Override
     public void renderCommons() {
+        clearScreen();
         String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2, 2) +
                 dumbModel.getMarket().formatPrintableStringAt(15, 72);
         printToCLI(printableString);
@@ -224,13 +225,15 @@ public class CLI implements UI {
 
     @Override
     public void renderGameOutcome(int finalScore) {
-        String printableString = Constants.ANSI_CLEAR + Constants.ANSI_BOLD + "\033[2;1HYour final score is: " + finalScore + " points";
+        clearScreen();
+        String printableString = Constants.ANSI_BOLD + "\033[2;1HYour final score is: " + finalScore + " points";
         printToCLI(printableString);
     }
 
     @Override
     public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
-        StringBuilder printableString = new StringBuilder(Constants.ANSI_CLEAR + Constants.ANSI_BOLD + "\033[2;1HThe final scores are:");
+        clearScreen();
+        StringBuilder printableString = new StringBuilder(Constants.ANSI_BOLD + "\033[2;1HThe final scores are:");
         finalScores.forEach(
                 (integer, s) -> printableString.append("\n" + integer + ") " + s)
         );
@@ -239,6 +242,7 @@ public class CLI implements UI {
 
     @Override
     public void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
+        clearScreen();
         setActiveGame(true);
         StringBuilder printableString = new StringBuilder();
         IntStream.range(0,leaderCards.size()).forEach(
@@ -279,9 +283,7 @@ public class CLI implements UI {
 
     @Override
     public void renderAuthenticationRequest(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message;
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
 
         resetCommandPosition();
         in.reset();
@@ -292,9 +294,7 @@ public class CLI implements UI {
 
     @Override
     public void renderCreateLobbyRequest(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message;
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
 
         resetCommandPosition();
         int size = in.nextInt();
@@ -308,74 +308,54 @@ public class CLI implements UI {
 
     @Override
     public void renderConnectionTerminatedNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
+        clearScreen();
         String printableString = "\033[2;1H>"+ message + "\n";;
         printToCLI(printableString);
     }
 
     @Override
     public void renderGameFoundNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderGameNotFoundNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderGameStartedNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
-        setActiveGame(true);
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderJoinedLobbyNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderTimeoutWarningNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderWaitingForPlayersNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderWrongNicknameNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
-        resetCommandPosition();
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderNicknameAlreadyInUseNotification(String message) {
-        printToCLI(Constants.ANSI_CLEAR);
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
-        resetCommandPosition();
+        printToCLI(">"+ message + "\n");
     }
 
     @Override
     public void renderServerOffline() {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H>"+ Constants.OFFLINE_MESSAGE + "\n";
-        printToCLI(printableString);
+        printToCLI(">"+ Constants.OFFLINE_MESSAGE);
         in.close();
         out.close();
     }
@@ -393,7 +373,7 @@ public class CLI implements UI {
      * Reprints the insert command message in a fixed position
      */
     private void resetCommandPosition(){
-        out.print(Constants.CMD_MESSAGE);
+        out.print(Constants.INPUT_MESSAGE);
         out.flush();
     }
 
@@ -503,5 +483,9 @@ public class CLI implements UI {
 
     private synchronized void setOnScreenElement(OnScreenElement onScreenElement) {
         this.onScreenElement = onScreenElement;
+    }
+
+    private void clearScreen(){
+        printToCLI(Constants.ANSI_CLEAR);
     }
 }

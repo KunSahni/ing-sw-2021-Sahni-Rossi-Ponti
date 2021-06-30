@@ -21,6 +21,8 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * This class contains a copy of some elements of the Model contained on the Server,
@@ -44,6 +46,11 @@ public class DumbModel {
 
     public DumbModel(UI ui) {
         this.logger = Logger.getLogger(getClass().getSimpleName());
+        try {
+            createImgDir();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         personalBoards = new ArrayList<>();
         market = DumbMarket.getInstance();
         developmentCardsBoard = DumbDevelopmentCardsBoard.getInstance();
@@ -369,7 +376,7 @@ public class DumbModel {
         private synchronized void elaborateUpdatesQueue(){
             Renderable usedItem = updatesQueue.remove();
             usedItem.update(DumbModel.this);
-            logger.info("Elaborated: " + usedItem.getClass().getSimpleName());
+            //logger.info("Elaborated: " + usedItem.getClass().getSimpleName());
             publisher.submit(usedItem);
         }
 
@@ -430,5 +437,51 @@ public class DumbModel {
         public void onComplete() {
 
         }
+    }
+
+    private void createImgDir() throws IOException {
+        InputStream resFolder = this.getClass().getResourceAsStream("/img.zip");
+        File destDir = new File(ChangesHandler.getWorkingDirectory() + "/client");
+        byte[] buffer = new byte[1024];
+        ZipInputStream zis = new ZipInputStream(resFolder);
+        ZipEntry zipEntry = zis.getNextEntry();
+        while (zipEntry != null) {
+            File newFile = newFile(destDir, zipEntry);
+            if (zipEntry.isDirectory()) {
+                if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                    throw new IOException("Failed to create directory " + newFile);
+                }
+            } else {
+                // fix for Windows-created archives
+                File parent = newFile.getParentFile();
+                if (!parent.isDirectory() && !parent.mkdirs()) {
+                    throw new IOException("Failed to create directory " + parent);
+                }
+
+                // write file content
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
+    }
+
+    private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
     }
 }

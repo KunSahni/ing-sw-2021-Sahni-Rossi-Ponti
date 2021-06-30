@@ -146,7 +146,7 @@ public class InGameCommonsController extends JFXController {
      */
     private void setMarketGraphic(){
         Platform.runLater(() -> {
-            imageViewExtraMarble.setImage(new Image(getMarbleImage(-1, -1)));
+            imageViewExtraMarble.setImage(getMarbleImage(-1, -1));
 
             for (int i = 0; i < 3; i++){
                 for (int j = 0; j<4; j++){
@@ -171,12 +171,12 @@ public class InGameCommonsController extends JFXController {
     private ImageView getDevelopmentCardImage(int row, int column){
         ImageView imageView;
         if (gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column] != null){
-            imageView = new ImageView(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath().toLowerCase(Locale.ROOT));
+            imageView = new ImageView(getImageFromPath(gui.getDumbModel().getDevelopmentCardsBoard().getBoard()[row][column].toImgPath()));
             imageView.setFitWidth(154);
             imageView.setPreserveRatio(true);
         }
         else {
-            imageView = new ImageView("/img/deck_end.png");
+            imageView = new ImageView(getImageFromPath("/img/deck_end.png"));
             imageView.setFitWidth(154);
             imageView.setFitHeight(232.67);
         }
@@ -202,7 +202,7 @@ public class InGameCommonsController extends JFXController {
      * @param column is the column of the market that is consider to place the image
      * @return path where to get a marble image
      */
-    private String getMarbleImage(int row, int column){
+    private Image getMarbleImage(int row, int column){
         String name;
         if (row==-1){
             name = gui.getDumbModel().getMarket().getExtraMarble().name();
@@ -210,15 +210,17 @@ public class InGameCommonsController extends JFXController {
         else {
             name = gui.getDumbModel().getMarket().getMarket()[row][column].name();
         }
-        return switch (name) {
-            case "WHITE" -> "img/marbles/white.png";
-            case "RED" -> "img/marbles/red.png";
-            case "GREY" -> "img/marbles/grey.png";
-            case "BLUE" -> "img/marbles/blue.png";
-            case "YELLOW" -> "img/marbles/yellow.png";
-            case "PURPLE" -> "img/marbles/purple.png";
+        String marblePath = switch (name) {
+            case "WHITE" -> "/img/marbles/white.png";
+            case "RED" -> "/img/marbles/red.png";
+            case "GREY" -> "/img/marbles/grey.png";
+            case "BLUE" -> "/img/marbles/blue.png";
+            case "YELLOW" -> "/img/marbles/yellow.png";
+            case "PURPLE" -> "/img/marbles/purple.png";
             default -> null;
         };
+
+        return getImageFromPath(marblePath);
     }
 
     /**
