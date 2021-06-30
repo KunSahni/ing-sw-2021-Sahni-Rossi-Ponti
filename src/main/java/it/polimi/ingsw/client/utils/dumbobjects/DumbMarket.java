@@ -57,10 +57,10 @@ public class DumbMarket {
     public String formatPrintableStringAt(int x, int y) {
         return   "\033[" + x + ";" + y + "H╔═══════════╗"
                + "\033[" + (x+1) + ";" + y + "H║ ╔═══════╗ ║"
-               + "\033[" + (x+1) + ";" + y + "H║ ║" + market[0][0].formatPrintableString() + " " + market[0][1].formatPrintableString() + " " + market[0][2].formatPrintableString() + " " + market[0][3].formatPrintableString() + "║" + extraMarble.formatPrintableString() + "║"
-               + "\033[" + (x+2) + ";" + y + "H║ ║" + market[1][0].formatPrintableString() + " " + market[1][1].formatPrintableString() + " " + market[1][2].formatPrintableString() + " " + market[1][3].formatPrintableString() + "║ ║"
-               + "\033[" + (x+3) + ";" + y + "H║ ║" + market[2][0].formatPrintableString() + " " + market[2][1].formatPrintableString() + " " + market[2][2].formatPrintableString() + " " + market[2][3].formatPrintableString() + "║ ║"
-               + "\033[" + (x+4) + ";" + y + "H║ ╚═══════╝ ║"
-               + "\033[" + (x+5) + ";" + y + "H╚═══════════╝";
+               + "\033[" + (x+2) + ";" + y + "H║ ║" + market[0][0].formatPrintableString() + " " + market[0][1].formatPrintableString() + " " + market[0][2].formatPrintableString() + " " + market[0][3].formatPrintableString() + "║" + extraMarble.formatPrintableString() + "║"
+               + "\033[" + (x+3) + ";" + y + "H║ ║" + market[1][0].formatPrintableString() + " " + market[1][1].formatPrintableString() + " " + market[1][2].formatPrintableString() + " " + market[1][3].formatPrintableString() + "║ ║"
+               + "\033[" + (x+4) + ";" + y + "H║ ║" + market[2][0].formatPrintableString() + " " + market[2][1].formatPrintableString() + " " + market[2][2].formatPrintableString() + " " + market[2][3].formatPrintableString() + "║ ║"
+               + "\033[" + (x+5) + ";" + y + "H║ ╚═══════╝ ║"
+               + "\033[" + (x+6) + ";" + y + "H╚═══════════╝";
     }
 }

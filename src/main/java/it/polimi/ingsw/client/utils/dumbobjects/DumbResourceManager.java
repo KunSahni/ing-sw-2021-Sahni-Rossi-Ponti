@@ -92,10 +92,10 @@ public class DumbResourceManager implements Serializable {
      * @return a string color of a leader Card with the top left corner in position x,y
      */
     public String formatPrintableStringAtAsStrongbox(int x, int y) {
-        return    "\033[" + x + ";" + y + "H" + (storedResources.get(Resource.COIN)!= null? storedResources.get(Resource.COIN) : "0") + " x " + Resource.COIN.formatPrintableString()
-                + "\033[" + (x+1) + ";" + y + "H" + (storedResources.get(Resource.SHIELD)!= null? storedResources.get(Resource.SHIELD) : "0") + " x " + Resource.SHIELD.formatPrintableString()
-                + "\033[" + (x+1) + ";" + y + "H" + (storedResources.get(Resource.SERVANT)!= null? storedResources.get(Resource.SERVANT) : "0") + " x " + Resource.SERVANT.formatPrintableString()
-                + "\033[" + (x+1) + ";" + y + "H" + (storedResources.get(Resource.STONE)!= null? storedResources.get(Resource.STONE) : "0") + " x " + Resource.STONE.formatPrintableString();
+        return    "\033[" + x + ";" + y + "H" + (storedResources.containsKey(Resource.COIN) ? storedResources.get(Resource.COIN) : "0") + " x " + Resource.COIN.formatPrintableString()
+                + "\033[" + (x+1) + ";" + y + "H" + (storedResources.containsKey(Resource.SHIELD) ? storedResources.get(Resource.SHIELD) : "0") + " x " + Resource.SHIELD.formatPrintableString()
+                + "\033[" + (x+2) + ";" + y + "H" + (storedResources.containsKey(Resource.SERVANT) ? storedResources.get(Resource.SERVANT) : "0") + " x " + Resource.SERVANT.formatPrintableString()
+                + "\033[" + (x+3) + ";" + y + "H" + (storedResources.containsKey(Resource.STONE) ? storedResources.get(Resource.STONE) : "0") + " x " + Resource.STONE.formatPrintableString();
     }
 
 }

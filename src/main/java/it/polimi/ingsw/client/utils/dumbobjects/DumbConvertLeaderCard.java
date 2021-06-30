@@ -6,6 +6,8 @@ import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,23 +40,22 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
      */
     @Override
     public String formatPrintableStringAt(int x, int y) {
-        //contains the color of the requirement with a quantity equal to one
-        Color color1 = this.getLeaderCardRequirements().getRequiredDevelopmentCards().entrySet().stream().sorted(
-                Comparator.comparingInt(
-                        obj -> obj.getValue().getQuantity()
+        //contains the colors of both requirements sorted by quantity
+        List<Color> colors = this.getLeaderCardRequirements()
+                .getRequiredDevelopmentCards()
+                .entrySet()
+                .stream()
+                .sorted(
+                        Comparator.comparingInt(
+                                obj -> obj.getValue().getQuantity()))
+                .map(
+                        Map.Entry::getKey
                 )
-        ).collect(Collectors.toList()).get(0).getKey();
-
-        //contains the color of the requirement with a quantity equal to two
-        Color color2 = this.getLeaderCardRequirements().getRequiredDevelopmentCards().entrySet().stream().sorted(
-                Comparator.comparingInt(
-                        obj -> obj.getValue().getQuantity()
-                )
-        ).collect(Collectors.toList()).get(1).getKey();
+                .collect(Collectors.toList());
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
-                + "\033["+ (x+1) +";"+ y +"║ 2x " + color2.getColoredLevel() + Constants.ANSI_RESET + "   ║"
-                + "\033["+ (x+2) +";"+ y +"H║ 1x " + color1.getColoredLevel() + Constants.ANSI_RESET + "   ║"
+                + "\033["+ (x+1) +";"+ y +"H║ 2x " + colors.get(1).getColoredLevel() + Constants.ANSI_RESET + "         ║"
+                + "\033["+ (x+2) +";"+ y +"H║ 1x " + colors.get(0).getColoredLevel() + Constants.ANSI_RESET + "         ║"
                 + (isActive()? "\033["+ (x+3) +";"+ y +"H║   activated  ║" : "\033["+ (x+3) +";"+ y +"H║              ║")
                 + "\033["+ (x+4) +";"+ y +"H║              ║"
                 + "\033["+ (x+5) +";"+ y +"H║ 1x " + Constants.WHITE_MARBLE + " -> 1x " + convertedResource.formatPrintableString() + " ║"

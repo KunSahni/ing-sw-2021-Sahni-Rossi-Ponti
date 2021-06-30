@@ -150,7 +150,6 @@ public class CLI implements UI {
         DumbPersonalBoard dumbPersonalBoard = dumbModel.getPersonalBoard(nickname);
         String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
-        resetCommandPosition();
         setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
@@ -158,7 +157,6 @@ public class CLI implements UI {
         clearScreen();
         String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
         printToCLI(printableString);
-        resetCommandPosition();
         setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
@@ -168,7 +166,6 @@ public class CLI implements UI {
         String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2, 2) +
                 dumbModel.getMarket().formatPrintableStringAt(15, 72);
         printToCLI(printableString);
-        resetCommandPosition();
         setOnScreenElement(OnScreenElement.COMMONS);
     }
 
@@ -283,7 +280,7 @@ public class CLI implements UI {
 
     @Override
     public void renderAuthenticationRequest(String message) {
-        printToCLI(">"+ message + "\n");
+        printToCLI(">"+ message);
 
         resetCommandPosition();
         in.reset();
@@ -294,7 +291,7 @@ public class CLI implements UI {
 
     @Override
     public void renderCreateLobbyRequest(String message) {
-        printToCLI(">"+ message + "\n");
+        printToCLI(">"+ message);
 
         resetCommandPosition();
         int size = in.nextInt();

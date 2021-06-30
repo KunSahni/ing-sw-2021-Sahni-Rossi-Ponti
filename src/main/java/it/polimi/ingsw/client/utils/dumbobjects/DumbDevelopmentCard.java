@@ -91,12 +91,15 @@ public class DumbDevelopmentCard implements Serializable {
     public String formatPrintableStringAt(int x, int y) {
         List<String> costList = convertMapToPrintableList(this.getCost(), 3);
         List<String> inputList = convertMapToPrintableList(this.getInputResources(), 2);
-        List<String> outputList = convertMapToPrintableList(
+        List<String> outputList = new ArrayList<>();
+        if(faithIncrement>0)
+            outputList.add(0, faithIncrement + "x " + Constants.FAITH_MARKER);
+        outputList.addAll(convertMapToPrintableList(
                 Optional.ofNullable(
                         this.getOutputResources()
                 ).orElse(new HashMap<>()),
-                3
-        );
+                2
+        ));
         List<String> levelList = convertLevelToPrintableList();
 
         return "\033[" + x + ";" + y + "H╔══════════════╗"
@@ -108,7 +111,7 @@ public class DumbDevelopmentCard implements Serializable {
                 + "\033[" + (x + 6) + ";" + y + "H║ " + inputList.get(1) + "    " + outputList.get(1) + " ║"
                 + "\033[" + (x + 7) + ";" + y + "H║         " + outputList.get(2) + " ║"
                 + "\033[" + (x + 8) + ";" + y + "H║              ║"
-                + "\033[" + (x + 9) + ";" + y + "H║    " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET + "     ║"
+                + "\033[" + (x + 9) + ";" + y + "H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET + "       ║"
                 + "\033[" + (x + 10) + ";" + y + "H╚══════════════╝";
     }
 
@@ -128,13 +131,6 @@ public class DumbDevelopmentCard implements Serializable {
         IntStream.range(0, maxSize - stringList.size()).forEach(
                 i -> stringList.add("    ")
         );
-
-        if (stringList.get(0).equals("   ") && faithIncrement > 0)
-            stringList.set(0,
-                    String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
-        else if (!stringList.get(0).equals("   ") && stringList.get(1).equals("   ") && faithIncrement > 0)
-            stringList.set(1,
-                    String.valueOf(faithIncrement).concat("x ").concat(Constants.FAITH_MARKER));
 
         return stringList;
     }

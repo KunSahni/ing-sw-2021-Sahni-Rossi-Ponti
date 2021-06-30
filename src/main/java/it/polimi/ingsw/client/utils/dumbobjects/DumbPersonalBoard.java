@@ -106,9 +106,9 @@ public class DumbPersonalBoard {
         if(leaderCards.size()>1 && leaderCards.get(1)!=null)
             printableString.append(leaderCards.get(1).formatPrintableStringAt(8, 48));
 
-        printableString.append(developmentCardSlots.get(0).formatPrintableStringAt(8, 52));
-        printableString.append(developmentCardSlots.get(1).formatPrintableStringAt(8, 69));
-        printableString.append(developmentCardSlots.get(2).formatPrintableStringAt(8, 86));
+        printableString.append(developmentCardSlots.get(0).formatPrintableStringAt(8, 65));
+        printableString.append(developmentCardSlots.get(1).formatPrintableStringAt(8, 82));
+        printableString.append(developmentCardSlots.get(2).formatPrintableStringAt(8, 99));
 
         return printableString.toString();
     }

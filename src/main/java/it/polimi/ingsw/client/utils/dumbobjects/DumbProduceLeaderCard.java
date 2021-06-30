@@ -47,7 +47,7 @@ public class DumbProduceLeaderCard extends DumbLeaderCard{
         Color color = new TreeMap<>(this.getLeaderCardRequirements().getRequiredDevelopmentCards()).firstEntry().getKey();
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
-                + "\033["+ (x+1) +";"+ y +"H║ 1x " + color.getColoredLevel() + color.getColoredLevel() + Constants.ANSI_RESET + "    ║"
+                + "\033["+ (x+1) +";"+ y +"H║ 1x " + color.getColoredLevel() + color.getColoredLevel() + Constants.ANSI_RESET + "        ║"
                 + (isActive()? "\033["+ (x+2) +";"+ y +"H║   activated  ║" : "\033["+ (x+2) +";"+ y +"H║              ║")
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║              ║"

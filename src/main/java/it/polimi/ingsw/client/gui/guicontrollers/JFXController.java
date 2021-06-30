@@ -20,8 +20,6 @@ public abstract class JFXController {
 
     protected Image getImageFromPath(String path) {
         File file = new File(ChangesHandler.getWorkingDirectory() + "/client" + path);
-        Logger logger = Logger.getLogger(getClass().getSimpleName());
-        logger.info(file.getAbsolutePath());
         return new Image(file.toURI().toString());
     }
 }
