@@ -22,6 +22,9 @@ public class Market {
         this.changesHandler = changesHandler;
     }
 
+    /**
+     * Randomly arranges Marbles on the grid.
+     */
     public void shuffle() {
         List<MarketMarble> rawMarbles = convertMarketToList();
         Collections.shuffle(rawMarbles);
@@ -51,6 +54,9 @@ public class Market {
         return marbles;
     }
 
+    /**
+     * Moves all marbles of the passed row one step to the left.
+     */
     private void moveLeft(int row) {
         MarketMarble supp = market[row][0];
         for (int i = 0; i < 3; i++)
@@ -65,8 +71,6 @@ public class Market {
      * @param column is the column chosen by the player
      * @return a map with the Market Marble in the chosen line
      */
-
-
     public Map<MarketMarble, Integer> chooseColumn(int column) {
         MarketMarble[] marketMarbles = new MarketMarble[3];
         for (int i = 0; i < 3; i++) {
@@ -80,7 +84,9 @@ public class Market {
         changesHandler.writeMarket(this);
         return marbles;
     }
-
+    /**
+     * Moves all marbles of the passed column on step up.
+     */
     private void moveUp(int column) {
         MarketMarble supp = market[0][column];
         for (int i = 0; i < 2; i++)
@@ -108,6 +114,9 @@ public class Market {
         return Arrays.stream(market).map(MarketMarble[]::clone).toArray($ -> market.clone());
     }
 
+    /**
+     * Utility method which transforms the two dimensional array of marbles to a List.
+     */
     private List<MarketMarble> convertMarketToList() {
         List<MarketMarble> marbleList = new ArrayList<>();
         marbleList.add(extraMarble);

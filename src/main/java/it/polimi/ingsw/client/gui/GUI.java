@@ -24,6 +24,9 @@ import java.util.*;
 import java.util.concurrent.Flow.*;
 import java.util.logging.Logger;
 
+/**
+ * JavaFX Application which acts as the backbone of the graphical user interface of the game.
+ */
 public class GUI extends Application implements UI {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private DumbModel dumbModel;
@@ -81,6 +84,9 @@ public class GUI extends Application implements UI {
         return personalController;
     }
 
+    /**
+     * Loads the entry main menu from files.
+     */
     public void loadMainMenu() throws IOException {
         FXMLLoader loader =
                 new FXMLLoader(getClass().getResource(FXMLResources.MAIN_MENU.toPathString()));
@@ -89,19 +95,36 @@ public class GUI extends Application implements UI {
         this.mainMenuController.setGui(this);
     }
 
+    /**
+     * Changes the footer currently shown in the main menu.
+     *
+     * @param footer resource to be shown to screen.
+     */
     private void updateMainMenuFooter(FXMLResources footer) {
         Platform.runLater(() -> mainMenuController.setFooter(footer));
     }
 
+    /**
+     * Updates the text in the main menu loading screen.
+     *
+     * @param message text that will be rendered under the loading spinning animation.
+     */
     private void updateMainMenuLoadingText(String message) {
         Platform.runLater(() -> mainMenuController.setLoadingFooterText(message));
 
     }
 
+    /**
+     * Removes the main menu from the GUI application.
+     */
     public void tearDownMainMenu() {
         mainMenuController = null;
     }
 
+    /**
+     * Loads personal, common and opponents information about the game. Sets up controllers
+     * and scenes that will be used during the actual game.
+     */
     public void loadGame() {
         this.oppsScenes = new HashMap<>();
         this.oppsControllers = new HashMap<>();
@@ -152,26 +175,47 @@ public class GUI extends Application implements UI {
     public void tearDownGame() {
     }
 
+    /**
+     * Switches the view to commons.
+     */
     public void goToCommonsView() {
         changeScene(commonsScene);
     }
 
+    /**
+     * Switches the view to an opponent's board.
+     *
+     * @param nickname opponent identifier.
+     */
     public void goToOppView(String nickname) {
         changeScene(oppsScenes.get(nickname));
     }
 
+    /**
+     * Switches the view to the player's board.
+     */
     public void goToPersonalView() {
         changeScene(personalScene);
     }
 
+    /**
+     * Switches the view to the final scene.
+     */
     public void goToFinalView() {
         changeScene(finalScene);
     }
 
+    /**
+     * Sets the passed parameter scene as the currently displayed scene.
+     */
     private void changeScene(Scene scene) {
         Platform.runLater(() -> stage.setScene(scene));
     }
 
+    /**
+     * Renders the first update received from the server containing all of the
+     * game's information.
+     */
     @Override
     public void renderModelUpdate() {
         loadGame();
@@ -182,6 +226,11 @@ public class GUI extends Application implements UI {
         }
     }
 
+    /**
+     * Renders a player's personal board.
+     *
+     * @param nickname player identifier.
+     */
     @Override
     public void renderPersonalBoard(String nickname) {
         if (nickname.equals(personalNickname)) {
@@ -191,6 +240,9 @@ public class GUI extends Application implements UI {
         }
     }
 
+    /**
+     * Renders the commons scene.
+     */
     @Override
     public void renderCommons() {
         commonsController.renderCommonsBoard();
@@ -239,6 +291,8 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderTakeFromMarketConfirmation() {
+        personalController.populateInfoLabel("The selected market marbles have been stored, " +
+                "choose which ones you would like to store!");
     }
 
     @Override
@@ -321,7 +375,10 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderServerOffline() {
-
+        if (personalController != null) {
+            personalController.populateInfoLabel("The server you were playing on went offline, " +
+                    "please close the client and reconnect...");
+        }
     }
 
     public DumbModel getDumbModel() {

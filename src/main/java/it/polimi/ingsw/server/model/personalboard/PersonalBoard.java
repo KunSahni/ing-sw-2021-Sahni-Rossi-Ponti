@@ -55,6 +55,9 @@ public class PersonalBoard implements VictoryPointsElement {
         return warehouseDepots;
     }
 
+    /**
+     * Returns the sum of all currently stored resources.
+     */
     public int getResourceCount() {
         return getTotalResources().values().stream().reduce(0, Integer::sum);
     }
@@ -102,6 +105,11 @@ public class PersonalBoard implements VictoryPointsElement {
         return totalResourcesMap.values().stream().noneMatch(v -> v < 0);
     }
 
+    /**
+     * Checks if the passed resource map is available in the depots.
+     * @param resources Map that will get compared to the board's current content.
+     * @return true if the resources are available, false otherwise.
+     */
     public boolean depotsContainResources(Map<Resource, Integer> resources) {
         Map<Resource, Integer> allResourcesInDepots =
                 new HashMap<>(warehouseDepots.getStoredResources());
@@ -120,14 +128,24 @@ public class PersonalBoard implements VictoryPointsElement {
         return allResourcesInDepots.values().stream().allMatch(val -> val >= 0);
     }
 
-    public boolean strongboxContainsResources(Map<Resource, Integer> resource) {
+    /**
+     * Checks if the passed resources map is available in the strongbox.
+     * @param resources Map that will get compared to the board's current content.
+     * @return true if the resources are available, false otherwise.
+     */
+    public boolean strongboxContainsResources(Map<Resource, Integer> resources) {
         Map<Resource, Integer> resourcesInStrongbox = new HashMap<>(strongbox.getStoredResources());
-        resource.forEach((key, value) ->
+        resources.forEach((key, value) ->
                 resourcesInStrongbox.compute(key, (k, v) -> (v == null) ? -value : v - value)
         );
         return resourcesInStrongbox.values().stream().allMatch(val -> val >= 0);
     }
 
+    /**
+     * Checks if the passed resources map can be stored in the depots.
+     * @param resources Resources that the player wishes to add.
+     * @return true if the storage is possible, false otherwise.
+     */
     public boolean depotsCanContain(Map<Resource, Integer> resources) {
         Map<Resource, Integer> resourcesToStore = new HashMap<>(resources);
         // Verify effects of StoreLeaderCards
@@ -170,8 +188,7 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     /**
-     * Discards resources from depots
-     *
+     * Discards resources from depots.
      * @param resources map of resources that will get discarded
      */
     public void discardFromDepots(Map<Resource, Integer> resources) {
@@ -201,8 +218,7 @@ public class PersonalBoard implements VictoryPointsElement {
     }
 
     /**
-     * Discards resources from the strongbox
-     *
+     * Discards resources from the strongbox.
      * @param resources map of resources that will get discarded
      */
     public void discardFromStrongbox(Map<Resource, Integer> resources) {
@@ -229,8 +245,7 @@ public class PersonalBoard implements VictoryPointsElement {
 
     /**
      * Stores the given resources in the Warehouse Depots and, if possible, in Storage
-     * Leader Cards
-     *
+     * Leader Cards.
      * @param addedResources map containing the resources to add
      */
     public void storeInDepots(Map<Resource, Integer> addedResources) {
@@ -294,12 +309,16 @@ public class PersonalBoard implements VictoryPointsElement {
         changesHandler.writePlayerLeaderCards(nickname, leaderCards);
     }
 
+    /**
+     * Adds the passed development card to the selected development card slot.
+     * @param slotIndex can be 1, 2 or 3.
+     */
     public void placeDevelopmentCard(DevelopmentCard card, int slotIndex) {
         developmentCardSlots.get(slotIndex - 1).placeCard(card);
     }
 
     /**
-     * Returns the number of purchased development cards
+     * Returns the number of development cards that are currently on the board.
      */
     public int getDevelopmentCardsCount() {
         return developmentCardSlots.stream()
@@ -307,6 +326,9 @@ public class PersonalBoard implements VictoryPointsElement {
                 .sum();
     }
 
+    /**
+     * Generates a map of all the stored resources.
+     */
     private Map<Resource, Integer> getTotalResources() {
         Map<Resource, Integer> totalResourcesMap = new HashMap<>();
         List<Map<Resource, Integer>> storages = new ArrayList<>();

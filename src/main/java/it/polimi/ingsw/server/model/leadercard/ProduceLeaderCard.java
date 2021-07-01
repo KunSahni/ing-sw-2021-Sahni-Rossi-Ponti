@@ -8,8 +8,12 @@ import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.util.*;
 
+/**
+ * Leader card which can produce a resource chosen from the player and
+ * grants one step on the faith track. It requires as input one resource of
+ * the type specified in the inputResource attribute.
+ */
 public class ProduceLeaderCard extends LeaderCard {
-
     private final Resource inputResource;
     private final int faithIncrement;
 

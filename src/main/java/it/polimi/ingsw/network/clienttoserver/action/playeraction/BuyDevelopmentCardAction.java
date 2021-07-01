@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * This class represents the action of buying a DevelopmentCard
+ * This class represents the action of purchasing a DevelopmentCard
  */
 public class BuyDevelopmentCardAction extends PlayerAction {
     private final Level level;
@@ -46,16 +46,6 @@ public class BuyDevelopmentCardAction extends PlayerAction {
         this.discardedResourcesFromStrongbox = Objects.isNull(discardedResourcesFromStrongbox)
                 ? new HashMap<>() : discardedResourcesFromStrongbox;
     }
-    /*
-    todo: this should be moved to View (maybe ModelView?)
-    public List<DevelopmentCard> affordableCards() {
-        return Arrays.stream(developmentCardsBoard.peekBoard()).filter(
-                developmentCards -> Arrays.stream(developmentCards).filter(
-                        developmentCard -> board.hasResources(developmentCard.getCost())
-                )
-        ).collect(Collectors.toList());
-    }
-    */
 
     @Override
     public GameAction execute() {
@@ -90,6 +80,10 @@ public class BuyDevelopmentCardAction extends PlayerAction {
                     " in the Development Cards Slot number " + index);
     }
 
+    /**
+     * Checks if the resources that will get discarded match the effective development card
+     * cost.
+     */
     private boolean passedResourcesMatchCardCost() {
         Map<Resource, Integer> cost =
                 game.getDevelopmentCardsBoard().peekCard(level, color).getCost();

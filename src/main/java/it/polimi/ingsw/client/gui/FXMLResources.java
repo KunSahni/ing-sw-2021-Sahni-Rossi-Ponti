@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.gui;
 
+/**
+ * Enum used to locate FXML resource on the disk.
+ */
 public enum FXMLResources {
     MAIN_MENU("MainMenu"),
     CONNECT_FOOTER("ConnectFooter"),
@@ -18,6 +21,10 @@ public enum FXMLResources {
         this.label = label;
     }
 
+    /**
+     * Returns the disk location of the selected Enum element.
+     * @return /fxml/ path location.
+     */
     public String toPathString() {
         return "/fxml/" + label + ".fxml";
     }

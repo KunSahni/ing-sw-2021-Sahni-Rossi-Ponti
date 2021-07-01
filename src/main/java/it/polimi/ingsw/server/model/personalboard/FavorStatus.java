@@ -4,6 +4,9 @@ import it.polimi.ingsw.client.utils.constants.Constants;
 
 import java.io.Serializable;
 
+/**
+ * Enum representing the state of a Pope's favor.
+ */
 public enum FavorStatus implements Serializable {
     INACTIVE(Constants.ANSI_RED),
     ACTIVE(Constants.ANSI_GREEN),

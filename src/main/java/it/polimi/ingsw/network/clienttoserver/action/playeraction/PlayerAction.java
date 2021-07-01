@@ -71,5 +71,8 @@ public abstract class PlayerAction implements Action, Serializable {
         }
     }
 
+    /**
+     * Method used to retrieve the respective confirmation message from an action.
+     */
     public abstract ConfirmationMessageType getConfirmationMessage();
 }

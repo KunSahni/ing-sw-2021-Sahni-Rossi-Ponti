@@ -29,6 +29,9 @@ import java.util.stream.IntStream;
 
 import static javafx.scene.paint.Color.WHITE;
 
+/**
+ * JavaFX controller for the personal playing Scene.
+ */
 public class InGamePersonalController extends PlayerBoardController {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private boolean isTempMarblesChoiceInitialized = false;
@@ -158,6 +161,11 @@ public class InGamePersonalController extends PlayerBoardController {
         blackCross.setPreserveRatio(true);
     }
 
+    /**
+     * Renders the player's nickname and initializes the Visit menu.
+     * @param gui GUI Object saved to obtain references to DumbModel,
+     *            ClientSocket and InputVerifier.
+     */
     public void initialize(GUI gui) {
         super.setGui(gui);
         super.setNicknameLabel(gui.getPersonalNickname());
@@ -167,6 +175,10 @@ public class InGamePersonalController extends PlayerBoardController {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * Adds buttons to visit all opponents' boards to the Visit menu.
+     * @param oppsNicknames List of opponents' nicknames.
+     */
     private void initVisitMenu(List<String> oppsNicknames) {
         Button commonsButton = new Button("Commons");
         commonsButton.setOnAction(e -> {
@@ -184,6 +196,10 @@ public class InGamePersonalController extends PlayerBoardController {
         });
     }
 
+    /**
+     * FXML method called by the Confirm button. Depending on the current state of the button's
+     * UserData a certain choice is confirmed.
+     */
     @FXML
     private void confirm() {
         switch ((ConfirmResetButtonsStrategy) confirmButton.getUserData()) {
@@ -200,6 +216,10 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * FXML method called by the Reset button. Depending on the current state of the button's
+     * UserData a certain choice is reset or cancelled.
+     */
     @FXML
     private void reset() {
         switch ((ConfirmResetButtonsStrategy) resetButton.getUserData()) {
@@ -216,12 +236,20 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Gives the user the choice to visit the commons board or any other players'
+     * board.
+     */
     @FXML
     private void openVisitMenu() {
         ConfirmResetButtonsStrategy.VISIT.applyTo(confirmButton, resetButton);
         bringToFront(confirmResetLayer, visitLayer);
     }
 
+    /**
+     * Queries the InputVerifier and, if granted, the server with a request to end
+     * the user's turn.
+     */
     @FXML
     private void endTurn() {
         if (!gui.getInputVerifier().canEndTurn()) {
@@ -231,6 +259,10 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Displays a temporary pop up message to communicate information to the user.
+     * @param outcome Displayed text.
+     */
     public void populateInfoLabel(String outcome) {
         BorderPane alertPane = new BorderPane();
         alertPane.setPrefWidth(190);
@@ -255,6 +287,12 @@ public class InGamePersonalController extends PlayerBoardController {
         animation.play();
     }
 
+    /**
+     * Initializes the two leader cards buttons, which are not displayed up to this
+     * method's call. Should only be called once.
+     * @param dumbPersonalBoard DumbModel element containing the required information
+     *                          that will be rendered to screen.
+     */
     private void initLeaderCardsDisplay(DumbPersonalBoard dumbPersonalBoard) {
         // Only called once, after the server has confirmed the player's initial
         // leader cards choice
@@ -263,6 +301,13 @@ public class InGamePersonalController extends PlayerBoardController {
         preGameLeaderCardSelectionLayer.getChildren().clear();
     }
 
+    /**
+     * Creates a ToggleButton as display node for the passed DumbLeaderCard. If the card
+     * has ability type of Store, the method will initialize JavaFX elements to display
+     * the stored resources.
+     * @param card rendered DumbLeaderCard
+     * @return Node to be placed on the view.
+     */
     private ToggleButton createLeaderCardNode(DumbLeaderCard card) {
         ToggleButton button = new ToggleButton();
         button.setUserData(card);
@@ -294,6 +339,11 @@ public class InGamePersonalController extends PlayerBoardController {
         return button;
     }
 
+    /**
+     * Renders to screen the current state of the players' DumbLeaderCards.
+     * @param dumbPersonalBoard DumbModel element containing the required information
+     *                          that will be rendered to screen.
+     */
     @Override
     protected void renderLeaderCards(DumbPersonalBoard dumbPersonalBoard) {
         Platform.runLater(() -> {
@@ -339,6 +389,11 @@ public class InGamePersonalController extends PlayerBoardController {
         });
     }
 
+    /**
+     * Renders to screen the current state of the players' FaithTrack.
+     * @param dumbPersonalBoard DumbModel element containing the required information
+     *                          that will be rendered to screen.
+     */
     @Override
     protected void renderFaithTrack(DumbPersonalBoard dumbPersonalBoard) {
         DumbFaithTrack faithTrack = dumbPersonalBoard.getFaithTrack();
@@ -360,6 +415,11 @@ public class InGamePersonalController extends PlayerBoardController {
         });
     }
 
+    /**
+     * Initializes the rendering of the pre-game leader cards choice.
+     * @param leaderCards List of four DumbLeaderCards that will be shown to the player
+     *                    as alternatives.
+     */
     public void startLeaderCardsChoice(List<DumbLeaderCard> leaderCards) {
         HBox hBox = new HBox();
         hBox.setSpacing(10);
@@ -370,6 +430,12 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
     }
 
+    /**
+     * Creates a ToggleButton that will be shown, next to three others, during the pre-game
+     * DumbLeaderCards choice. It displays the image of the passed card.
+     * @param card DumbLeaderCard alternative in the pre-game choice.
+     * @return JavaFX node that will be displayed to screen.
+     */
     private ToggleButton createPreGameLeaderCardToggleButton(DumbLeaderCard card) {
         ToggleButton button = new ToggleButton();
         button.setUserData(card);
@@ -387,6 +453,9 @@ public class InGamePersonalController extends PlayerBoardController {
         return button;
     }
 
+    /**
+     * Attempts to finalize the pre-game leader cards choice.
+     */
     private void pickLeaderCards() {
         if (selectedPreGameLeaderCardToggleButtons.size() != 2) {
             populateInfoLabel("Select two cards.");
@@ -404,13 +473,19 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Terminates the pre-game leader card choice.
+     */
     public void endLeaderCardsChoice() {
         bringToFront(actionsLayer, personalBoardLayer);
     }
 
+    /**
+     * Initializes the pre-game resource choice if the player has a position
+     * greater than 1.
+     */
     public void startPreGameResourceChoice() {
         int ownPosition = gui.getDumbModel().getOwnPersonalBoard().getPosition();
-        logger.info(String.valueOf(ownPosition));
         if (ownPosition > 1) {
             ConfirmResetButtonsStrategy.PRE_GAME_RESOURCES_CHOICE.applyTo(confirmButton,
                     resetButton);
@@ -422,6 +497,9 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Attempts to finalize the pre-game resource choice.
+     */
     private void confirmPreGameResourceChoice() {
         if (gui.getInputVerifier().canPickResources(chosenResourcesMap)) {
             gui.getClientSocket().sendAction(new PregameResourceChoiceAction(chosenResourcesMap));
@@ -432,11 +510,18 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Terminates the pre-game resource choice.
+     */
     public void endPreGameResourceChoice() {
         chosenResourcesMap.clear();
         bringToFront(actionsLayer, personalBoardLayer);
     }
 
+    /**
+     * Adds the passed resource to the chosenResourceMap map.
+     * @param resource Resource instance.
+     */
     private void addResourceToChoiceMap(Resource resource) {
         chosenResourcesMap.compute(resource, (k, v) -> (v == null) ? 1 : v + 1);
         StringBuilder resourceMap = new StringBuilder("You have selected: ");
@@ -446,6 +531,9 @@ public class InGamePersonalController extends PlayerBoardController {
         populateInfoLabel(resourceMap.toString());
     }
 
+    /**
+     * Initializes the choice of discarding a leader card.
+     */
     @FXML
     private void startDiscardLeaderCard() {
         leaderCardsHBox.getChildren().stream().map(node ->
@@ -454,6 +542,9 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
     }
 
+    /**
+     * Attempts to finalize the choice of discarding a leader card.
+     */
     private void confirmDiscardLeaderCard() {
         DumbLeaderCard toDiscardLeaderCard =
                 (DumbLeaderCard) leaderCardActionToggleGroup.getSelectedToggle().getUserData();
@@ -464,16 +555,25 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Interrupts any current leader card action (activation or discarding).
+     */
     private void cancelLeaderCardAction() {
         leaderCardActionToggleGroup.getToggles().clear();
         bringToFront(actionsLayer, personalBoardLayer);
     }
 
+    /**
+     * Ends a successful discarding of a leader card.
+     */
     public void endDiscardLeaderCard() {
         populateInfoLabel("You have successfully discarded your leader card!");
         cancelLeaderCardAction();
     }
 
+    /**
+     * Initializes the choice of activating a leader card.
+     */
     @FXML
     private void startActivateLeaderCard() {
         leaderCardsHBox.getChildren().stream().map(node ->
@@ -482,6 +582,9 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(confirmResetLayer, preGameLeaderCardSelectionLayer);
     }
 
+    /**
+     * Attempts to finalize the choice of activating a leader card.
+     */
     private void confirmActivateLeaderCard() {
         DumbLeaderCard toActivateLeaderCard =
                 (DumbLeaderCard) leaderCardActionToggleGroup.getSelectedToggle().getUserData();
@@ -492,11 +595,18 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Ends a successful activation of a leader card.
+     */
     public void endActivateLeaderCard() {
         populateInfoLabel("You have successfully activated your leader card!");
         cancelLeaderCardAction();
     }
 
+    /**
+     * Initializes the choice of MarketMarbles after a PickFromMarketAction is confirmed.
+     * @param tempMarbles map of temporarily stored MarketMarbles, awaiting for selection.
+     */
     public synchronized void startTempMarblesChoice(Map<MarketMarble, Integer> tempMarbles) {
         if (!isTempMarblesChoiceInitialized) {
             isTempMarblesChoiceInitialized = true;
@@ -509,6 +619,15 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Creates a JavaFX Node Optional which, if present, contains at least one ToggleButton
+     * representing a marble.
+     * @param marble MarketMarble that will get displayed. Depending on the current DumbModel
+     *               state, for example if a convert leader card is active, the output node
+     *               will vary.
+     * @return empty optional if the passed marble is White and there are no convert leader
+     * cards active. Otherwise returns a Node containing buttons that will forward the choice.
+     */
     private Optional<Node> createMarbleChoiceNode(MarketMarble marble) {
         if (marble.equals(MarketMarble.WHITE)) {
             List<DumbConvertLeaderCard> convertLeaderCards = gui.getDumbModel()
@@ -544,6 +663,11 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Creates a single ToggleButton containing the passed marble image.
+     * @param marble MarketMarble that will be displayed on the button.
+     * @return ToggleButton used in the marble choice.
+     */
     private ToggleButton createMarbleToggleButton(MarketMarble marble) {
         if (marble.equals(MarketMarble.WHITE))
             logger.info("Something went wrong: creating white marble button");
@@ -564,6 +688,9 @@ public class InGamePersonalController extends PlayerBoardController {
         return button;
     }
 
+    /**
+     * Attempts to finalize the Market Marbles selection.
+     */
     private void confirmMarbleSelection() {
         Map<MarketMarble, Integer> confirmedMarblesChoice = new HashMap<>();
         selectedTempMarblesToggleButtons.forEach(button ->
@@ -573,6 +700,9 @@ public class InGamePersonalController extends PlayerBoardController {
         gui.getClientSocket().sendAction(new SelectMarblesAction(confirmedMarblesChoice));
     }
 
+    /**
+     * Ends a successful selection of marbles.
+     */
     public void endTempMarblesChoice() {
         selectedTempMarblesToggleButtons.clear();
         Platform.runLater(() -> selectMarblesLayer.getChildren().clear());
@@ -582,6 +712,11 @@ public class InGamePersonalController extends PlayerBoardController {
                 "resources and stored!");
     }
 
+    /**
+     * Initializes the development slot selection during the purchase of a DumbDevelopmentCard
+     * from the board.
+     * @param dumbDevelopmentCard card which is getting purchased.
+     */
     public void startDevelopmentSlotSelection(DumbDevelopmentCard dumbDevelopmentCard) {
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> {
             ((ToggleButton) toggle).setVisible(true);
@@ -592,6 +727,9 @@ public class InGamePersonalController extends PlayerBoardController {
         gui.goToPersonalView();
     }
 
+    /**
+     * Attempts to finalize the development slot selection.
+     */
     private void confirmDevelopmentSlotSelection() {
         Map<Resource, Integer> fullCost =
                 ((DumbDevelopmentCard) selectDevCardSlotToggleGroup.getSelectedToggle().getUserData()).getCost();
@@ -608,12 +746,19 @@ public class InGamePersonalController extends PlayerBoardController {
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
     }
 
+    /**
+     * Cancels the player action of selecting a development slot, interrupting the whole
+     * development card purchase process.
+     */
     private void cancelDevelopmentSlotSelection() {
         bringToFront(actionsLayer, personalBoardLayer);
         selectDevCardSlotToggleGroup.getToggles().forEach(toggle -> ((ToggleButton) toggle).setVisible(false));
         Optional.ofNullable(selectDevCardSlotToggleGroup.getSelectedToggle()).ifPresent(toggle -> toggle.setSelected(false));
     }
 
+    /**
+     * Attempts to finalize the purchase of a development card.
+     */
     private void confirmDevelopmentCardPurchase() {
         ToggleButton selectedDevelopmentSlotToggleButton =
                 (ToggleButton) selectDevCardSlotToggleGroup.getSelectedToggle();
@@ -632,6 +777,9 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Ends a successful purchase of a development card.
+     */
     public void endDevelopmentCardPurchase() {
         populateInfoLabel("The purchased Development Card has been added to your Development " +
                 "Slot!");
@@ -639,6 +787,12 @@ public class InGamePersonalController extends PlayerBoardController {
         cancelResourceChoice();
     }
 
+    /**
+     * Initializes a resource discard choice on the screen.
+     * @param requiredResources Map of required resources for the associated choice.
+     * @param extraMessage Additional information communicated on the screen during the resource
+     *                     choice.
+     */
     private void startResourceChoice(Map<Resource, Integer> requiredResources,
                                      String extraMessage) {
         StringBuilder requiredResourcesMessage = new StringBuilder("The selected action requires " +
@@ -664,13 +818,25 @@ public class InGamePersonalController extends PlayerBoardController {
                 resourceSelectionSlidersTilePane.getChildren().add(createResourceSlidersBorderPane(containerName, resourcesMap)));
     }
 
+    /**
+     * Interrupts a resource choice and therefore the associated action, either a development
+     * card purchase or a production activation.
+     */
     private void cancelResourceChoice() {
         bringToFront(actionsLayer, personalBoardLayer);
         Platform.runLater(() -> resourceSelectionSlidersTilePane.getChildren().clear());
     }
 
+    /**
+     * Creates a BorderPane containing JavaFX Sliders for each resource of the passed map and a
+     * header containing the passed text.
+     * @param labelText String that will be displayed at the top of the created pane.
+     * @param resourcesMap Resources map that will dictate the number of sliders, their associated
+     *                     ImageViews and their length.
+     * @return A JavaFX BorderPane displayed in a resource choice.
+     */
     private BorderPane createResourceSlidersBorderPane(String labelText,
-                                                       Map<Resource, Integer> chosenResourcesMap) {
+                                                       Map<Resource, Integer> resourcesMap) {
         BorderPane pane = new BorderPane();
         pane.setId(labelText);
         pane.getStyleClass().add("left-pane");
@@ -679,7 +845,7 @@ public class InGamePersonalController extends PlayerBoardController {
         pane.setTop(sliderTileLabel);
         sliderTileLabel.setAlignment(Pos.CENTER);
         VBox slidersVBox = new VBox();
-        chosenResourcesMap.forEach((resource, quantity) -> {
+        resourcesMap.forEach((resource, quantity) -> {
             HBox imageSliderHBox = new HBox();
             imageSliderHBox.setAlignment(Pos.CENTER);
             imageSliderHBox.setSpacing(12);
@@ -702,6 +868,10 @@ public class InGamePersonalController extends PlayerBoardController {
         return pane;
     }
 
+    /**
+     * Creates a data structure of resources to be discarded from depots.
+     * @return Resource, Integer Map parsed from the resource choice sliders.
+     */
     private Map<Resource, Integer> createDepotsMapFromSliders() {
         List<Map<Resource, Integer>> depotsAndLeaderCardsStorages = new ArrayList<>();
         depotsAndLeaderCardsStorages.add(getResourceMapFromSliders("Warehouse Depots"));
@@ -720,6 +890,10 @@ public class InGamePersonalController extends PlayerBoardController {
         return depotsMap;
     }
 
+    /**
+     * Creates a data structure of resources to be discarded from the strongbox.
+     * @return Resource, Integer Map parsed from the resource choice sliders.
+     */
     private Map<Resource, Integer> createStrongboxMapFromSliders() {
         Map<Resource, Integer> strongboxMap = getResourceMapFromSliders("Strongbox");
         if (strongboxMap.values().stream().reduce(0, Integer::sum) == 0) strongboxMap = null;
@@ -727,8 +901,7 @@ public class InGamePersonalController extends PlayerBoardController {
     }
 
     /**
-     * Returns a Map, even with no entries, parsed from the sliders. Each value is > 0
-     *
+     * Returns a Map, even with no entries, parsed from the sliders. Each value is > 0.
      * @param id identifier to distinguish depots/strongbox/leader cards.
      * @return resource map of the DumbResourceManager associated to the given id.
      */
@@ -751,6 +924,10 @@ public class InGamePersonalController extends PlayerBoardController {
         return resourcesMap;
     }
 
+    /**
+     * Initializes all ToggleButtons that could be used in a production. When selected they
+     * will be counted towards the to-be-activated production.
+     */
     @FXML
     private void startProductionToggleButtonsSelection() {
         selectedProduceLeaderCardsToggleButtons = FXCollections.observableSet();
@@ -775,6 +952,9 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(confirmResetLayer, personalBoardLayer);
     }
 
+    /**
+     * Ends the selection of selectable production elements.
+     */
     private void endProductionButtonsSelection() {
         Platform.runLater(() -> {
             selectedProduceLeaderCardsToggleButtons.forEach(toggleButton -> toggleButton.setSelected(false));
@@ -785,6 +965,13 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(actionsLayer, personalBoardLayer);
     }
 
+    /**
+     * Utility method created to add the passed ToggleButton to an ObservableSet on click
+     * and remove it on deselection.
+     * @param button target ToggleButton.
+     * @param productionGroup set that will host all buttons for a certain production type.
+     *                        For example produce leader card buttons or development card buttons.
+     */
     private void addButtonToProductionGroup(ToggleButton button,
                                             ObservableSet<ToggleButton> productionGroup) {
         button.selectedProperty().addListener((observable, oldValue, selectedNow) -> {
@@ -796,6 +983,10 @@ public class InGamePersonalController extends PlayerBoardController {
         });
     }
 
+    /**
+     * Finalizes the selection of productions buttons and calculates the price of
+     * the production, which will be passed onto the StartResourceChoice method.
+     */
     private void confirmProductionButtonsSelection() {
         Map<Resource, Integer> productionCostMap = new HashMap<>();
         selectedDevelopmentCardsToggleButtons.forEach(selectedDevCardToggleButton ->
@@ -819,6 +1010,11 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(confirmResetLayer, resourceSelectionLayer);
     }
 
+    /**
+     * Finalizes the selection of resources that will be discarded from the production. If
+     * any of the selected buttons have a wildcard output, a new choice will be initialized.
+     * Otherwise the confirmProduction method will be called.
+     */
     private void confirmProductionInputResources() {
         boolean defaultSlotSelected = defaultSlotToggleButton.isSelected();
         ToggleButton leaderCard1ToggleButton = (ToggleButton) leaderCardsHBox.getChildren().get(0);
@@ -837,6 +1033,12 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Initializes the choice for wildcard outputs.
+     * @param defaultSlot flag which indicates if the default slot was selected in the production.
+     * @param leaderCard1 flag which indicates if the first leader card was selected in the production.
+     * @param leaderCard2 flag which indicates if the second leader card was selected in the production.
+     */
     private void startOutputResourcesChoice(boolean defaultSlot, boolean leaderCard1,
                                             boolean leaderCard2) {
         if (defaultSlot) outputResourcesTilePane.getChildren().add(defaultSlotOutputTile);
@@ -847,6 +1049,9 @@ public class InGamePersonalController extends PlayerBoardController {
         bringToFront(confirmResetLayer, outputResourcesSelectionLayer);
     }
 
+    /**
+     * Attempts to finalize the production.
+     */
     private void confirmProduction() {
         ProductionCombo productionCombo = new ProductionCombo();
         if (selectedDevelopmentCardsToggleButtons.size() > 0)
@@ -881,6 +1086,10 @@ public class InGamePersonalController extends PlayerBoardController {
         }
     }
 
+    /**
+     * Terminates all production related choices and resets buttons and layers related to a
+     * production activation visual process.
+     */
     public void endProductionChoices() {
         bringToFront(actionsLayer, personalBoardLayer);
         Platform.runLater(() -> {
@@ -895,6 +1104,11 @@ public class InGamePersonalController extends PlayerBoardController {
         });
     }
 
+    /**
+     * Shows to screen the two passed Nodes.
+     * @param left layer which will be brought to front on the bottom left StackPane
+     * @param right layer which will be brought to front on the main StackPane
+     */
     private void bringToFront(Node left, Node right) {
         Platform.runLater(() -> {
             left.toFront();

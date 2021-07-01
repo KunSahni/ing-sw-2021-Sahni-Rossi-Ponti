@@ -6,12 +6,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+/**
+ * JFX Controller which handles nickname selection.
+ */
 public class NicknameFooterController extends FooterController {
     @FXML
     private TextField nicknameField;
-    @FXML
-    private Button joinButton;
 
+    /**
+     * Sends an authentication reply to the server communicating the gameId saved to disk and
+     * the selected nickname.
+     */
     @FXML
     private void sendAuthReply() {
         int gameId = parentController.getGui().getDumbModel().getGameID();

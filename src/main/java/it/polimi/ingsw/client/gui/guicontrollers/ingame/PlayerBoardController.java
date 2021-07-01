@@ -28,6 +28,9 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
+/**
+ * Javafx controller class for any player board.
+ */
 public abstract class PlayerBoardController extends JFXController {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     protected boolean areLeaderCardsInitialized = false;
@@ -100,6 +103,11 @@ public abstract class PlayerBoardController extends JFXController {
         devCardSlotsStackPanes.add(devCardSlot3);
     }
 
+    /**
+     * Initializes JavaFX nodes data structure to facilitate rendering of the Warehouse depots.
+     * @param numberOfImageViews number of ImageViews that will be created and appended to the data
+     *                           structure.
+     */
     private void initWarehouseDepotsResourceImages(int numberOfImageViews) {
         List<ImageView> resourceRowImages = new ArrayList<>();
         HBox resourcesRow = new HBox();
@@ -116,6 +124,10 @@ public abstract class PlayerBoardController extends JFXController {
         warehouseDepotsResourceImages.add(resourceRowImages);
     }
 
+    /**
+     * Parses from file a reference list of coordinates used to correctly place the faith
+     * markers and black cross on the faith track.
+     */
     private void initFaithTrackCoordsReferenceList() {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getResourceAsStream("/json/client/faithTrackGridCoordinates.json"));
@@ -130,10 +142,18 @@ public abstract class PlayerBoardController extends JFXController {
         }
     }
 
+    /**
+     * Adds the player's nickname to the player information box.
+     * @param nickname Player's identifier
+     */
     public void setNicknameLabel(String nickname) {
         nicknameLabel.setText(nickname);
     }
 
+    /**
+     * Renders the entire board
+     * @param dumbPersonalBoard DumbModel element containing information needed in the rendering.
+     */
     public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
         renderPlayerInformation(dumbPersonalBoard);
         renderLeaderCards(dumbPersonalBoard);
@@ -143,6 +163,10 @@ public abstract class PlayerBoardController extends JFXController {
         renderDevelopmentCardSlots(dumbPersonalBoard);
     }
 
+    /**
+     * Renders all information in the player information box.
+     * @param dumbPersonalBoard DumbModel element containing information needed in the rendering.
+     */
     private void renderPlayerInformation(DumbPersonalBoard dumbPersonalBoard) {
         int position = dumbPersonalBoard.getPosition();
         if (positionLEDs.stream().noneMatch(led -> (boolean) led.getUserData()) && position != 0) {
@@ -160,12 +184,18 @@ public abstract class PlayerBoardController extends JFXController {
         }
     }
 
+    /**
+     * Turns the passed Circle element to green.
+     */
     private void switchOnLed(Circle led) {
         led.getStyleClass().add("active-led");
         led.getStyleClass().remove("inactive-led");
         led.setUserData(true);
     }
 
+    /**
+     * Turns the passed Circle element to red.
+     */
     private void switchOffLed(Circle led) {
         led.getStyleClass().add("inactive-led");
         led.getStyleClass().remove("active-led");
@@ -239,6 +269,12 @@ public abstract class PlayerBoardController extends JFXController {
         });
     }
 
+    /**
+     * Returns a String representing the amount of a specific resource in the strongbox.
+     * @param strongboxResourcesMap Strongbox content.
+     * @param resource Resource to be analyzed.
+     * @return String which will get rendered next to the selected resource's image.
+     */
     private String resourceAmountInStrongbox(Map<Resource, Integer> strongboxResourcesMap,
                                              Resource resource) {
         return "x" + (strongboxResourcesMap.get(resource) == null ? "0" :
@@ -260,6 +296,12 @@ public abstract class PlayerBoardController extends JFXController {
         });
     }
 
+    /**
+     * Adds the passed development cards List to the passed StackPane
+     * @param stackPane one of the three StackPanes representing a development card slot in the
+     *                  GUI
+     * @param dumbDevelopmentCards DumbModel element containing information needed in the rendering.
+     */
     private void addDevelopmentCardsToStackPane(StackPane stackPane,
                                                 List<DumbDevelopmentCard> dumbDevelopmentCards) {
         stackPane.setUserData(dumbDevelopmentCards.get(dumbDevelopmentCards.size() - 1));

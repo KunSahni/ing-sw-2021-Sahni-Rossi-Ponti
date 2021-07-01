@@ -12,21 +12,44 @@ import it.polimi.ingsw.server.remoteview.RemoteView;
 import java.util.Optional;
 import java.util.concurrent.Flow.*;
 
+/**
+ * Handles game related logic via Action legality checks and execution.
+ * It's the outer most level used by the server to interact with a running game.
+ */
 public class Controller implements Subscriber<PlayerAction> {
     private final Game game;
     private RemoteView remoteView;
     private Subscription subscription;
 
+    /**
+     * Gets instantiated when the model abstraction (a Game Object) has already
+     * been created. After this point, the game passed as parameter is running.
+     * @param game Game instance associated 1:1 with the controller.
+     */
     public Controller(Game game) {
         this.game = game;
         runGame();
     }
 
+    /**
+     * Handles the linking between Model and server-side View by subscribing
+     * the latter to the former.
+     * @param remoteView Server-side view that will received all updates from
+     *                   the Model associated with the Controller's game attribute.
+     */
     public void setRemoteView(RemoteView remoteView) {
         this.remoteView = remoteView;
         game.subscribe(remoteView);
     }
 
+    /**
+     * Communicates to the RemoteView and to the Model that the player with the
+     * nickname passed as parameter has connected. The player will start receiving
+     * Model updates.
+     * @param nickname Connected Player's nickname.
+     * @param connection Connection Object associated with the passed nickname's
+     *                   Player. Will receive all Model updates.
+     */
     public void connectPlayer(String nickname, Connection connection) {
         remoteView.connectPlayer(nickname, connection);
         game.connect(nickname);
@@ -36,6 +59,12 @@ public class Controller implements Subscriber<PlayerAction> {
         });
     }
 
+    /**
+     * Communicates to the RemoteView and to the Model that the player with the
+     * nickname passed as parameter has disconnected. The server will stop sending
+     * Model updates to that player's Connection object.
+     * @param nickname Disconnected Player's nickname.
+     */
     public void disconnectPlayer(String nickname) {
         remoteView.disconnectPlayer(nickname);
         game.disconnect(nickname);
@@ -44,6 +73,10 @@ public class Controller implements Subscriber<PlayerAction> {
         }
     }
 
+    /**
+     * Runs the Game associated with the Controller. Depending on the state the
+     * game is in, a specific configuration will be ran.
+     */
     private void runGame() {
         GameAction initiator = switch (game.getCurrentState()) {
             case NOT_STARTED -> new DealLeaderCardsAction(game);
@@ -61,6 +94,10 @@ public class Controller implements Subscriber<PlayerAction> {
         handleGameAction(initiator);
     }
 
+    /**
+     * Executes a GameAction and all its consequent GameActions.
+     * @param gameAction GameAction to be executed.
+     */
     private synchronized void handleGameAction(GameAction gameAction) {
         Action currentAction = gameAction;
         while (currentAction != null) {
@@ -68,6 +105,11 @@ public class Controller implements Subscriber<PlayerAction> {
         }
     }
 
+    /**
+     * Runs legality checks on the passed PlayerAction. If legal, the Action is
+     * executed, otherwise an error gets sent to the player.
+     * @param playerAction PlayerAction which will be checked and executed.
+     */
     private synchronized void handlePlayerAction(PlayerAction playerAction) {
         try {
             playerAction.runChecks();

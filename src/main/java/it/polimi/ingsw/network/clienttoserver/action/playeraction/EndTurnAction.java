@@ -7,6 +7,9 @@ import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 
+/**
+ * This class represents the action of ending a Player's turn.
+ */
 public class EndTurnAction extends PlayerAction {
 
     @Override

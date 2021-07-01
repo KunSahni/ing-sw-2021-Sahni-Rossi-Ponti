@@ -31,7 +31,14 @@ import java.util.stream.IntStream;
 
 /**
  * Class which handles Model changes, publishing them to its subscribed RemoteView and writing
- * them to disk when needed. For the following model elements:
+ * them to disk when needed.
+ * The "read" methods read the wanted information from a game specific folder and return it
+ * to the caller. They are used in Game initialization to satisfy the persistency requirement.
+ * Every publish method forwards the passed Model to the listening
+ * RemoteView by creating an instance of a Renderable subclass. Every write method adds the
+ * passed parameter to a writing queue which gets flushed only when an action is completed.
+ * This approach has been chosen in order to save to disk only Model states that contain
+ * completed actions.
  */
 public class ChangesHandler {
     private final String root;
@@ -466,18 +473,17 @@ public class ChangesHandler {
         return Arrays.asList(array);
     }
 
-    private <T, K> Map<T, K> readMapFromFile(String filepath)
-            throws FileNotFoundException {
-        Type mapType = new TypeToken<Map<T, K>>() {
-        }.getType();
-        return new Gson().fromJson(new JsonReader(new FileReader(filepath)),
-                mapType);
-    }
-
+    /**
+     * Subscribes the passed RemoteView object to a submission publisher element which will be
+     * the source of all model renderables.
+     */
     public void subscribe(RemoteView remoteView) {
         submissionPublisher.subscribe(remoteView);
     }
 
+    /**
+     * Writes all the information saved in the changesBuffer map to disk.
+     */
     public void flushBufferToDisk() {
         Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
         changesBuffer.forEach((object, filepath) -> {

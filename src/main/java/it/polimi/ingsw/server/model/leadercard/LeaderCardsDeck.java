@@ -1,13 +1,15 @@
 package it.polimi.ingsw.server.model.leadercard;
 
-import java.io.*;
 import java.util.*;
 import it.polimi.ingsw.server.model.ChangesHandler;
 
-
+/**
+ * Deck of leader cards from which each player will draw 4 cards
+ * at the beginning of a match.
+ */
 public class LeaderCardsDeck {
     private final LinkedList<LeaderCard> deck;
-    private ChangesHandler changesHandler;
+    private final ChangesHandler changesHandler;
 
     public LeaderCardsDeck(List<LeaderCard> cards, ChangesHandler changesHandler) {
         this.deck = new LinkedList<>(cards);

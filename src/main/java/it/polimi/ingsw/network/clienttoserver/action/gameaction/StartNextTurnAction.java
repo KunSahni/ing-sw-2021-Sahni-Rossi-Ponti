@@ -7,7 +7,10 @@ import it.polimi.ingsw.server.model.utils.GameState;
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * Class which, when possible, starts the next turn. Contains the logic to check for a player's
+ * winning move, starting the last round of turns or ending the game altogether.
+ */
 public class StartNextTurnAction extends GameAction {
 
     public StartNextTurnAction(Game game) {
@@ -39,6 +42,12 @@ public class StartNextTurnAction extends GameAction {
         return null;
     }
 
+    /**
+     * Searches for the first connected player in the given List
+     * @param players List of Players.
+     * @return empty optional if, in the given list, no player is connected. Otherwise
+     * returns the first instance of a connected player in the collection.
+     */
     private Optional<Player> findNextConnected(List<Player> players) {
         return players.stream().filter(Player::isConnected).findFirst();
     }

@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.clienttoserver.action.gameaction.GameAction;
 import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.server.model.Player;
 import it.polimi.ingsw.server.model.leadercard.ConvertLeaderCard;
+import it.polimi.ingsw.server.model.leadercard.LeaderCard;
 import it.polimi.ingsw.server.model.leadercard.LeaderCardAbility;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.SinglePlayerFaithTrack;
@@ -16,6 +17,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Class which represents the action of selecting a subset of Market Marbles from the
+ * temporarily stored ones.
+ */
 public class SelectMarblesAction extends PlayerAction {
     private final Map<MarketMarble, Integer> selectedMarbles;
 
@@ -78,7 +83,7 @@ public class SelectMarblesAction extends PlayerAction {
                 .stream()
                 .filter(card -> card.getAbility().equals(LeaderCardAbility.CONVERT))
                 .map(card -> (ConvertLeaderCard) card)
-                .filter(card -> card.isActive())
+                .filter(LeaderCard::isActive)
                 .collect(Collectors.toList());
         // Subtract the tempMarbles from the selectedMarbles one by one.
         // If the resulting list is empty the selected marbles do not exceed

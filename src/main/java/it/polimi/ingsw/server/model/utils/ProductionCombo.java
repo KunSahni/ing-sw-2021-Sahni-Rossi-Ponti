@@ -8,11 +8,31 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An element which groups all information needed to start a production.
+ */
 public class ProductionCombo implements Serializable {
+    /**
+     * Development cards which will take part in the production.
+     */
     private List<DumbDevelopmentCard> developmentCards;
+    /**
+     * A map which represents the resource the player has chosen as output to
+     * a default slot production activation.
+     */
     private Map<Resource, Integer> defaultSlotOutput;
+    /**
+     * Map which links each activated produce leader card with the resource the
+     * player has selected as output.
+     */
     private Map<DumbProduceLeaderCard, Resource> leaderCardProduction;
+    /**
+     * Resources that will get discarded from store leader cards and warehouse depots
+     */
     private Map<Resource, Integer> discardedResourcesFromDepots;
+    /**
+     * Resources that will get discarded from the strongbox.
+     */
     private Map<Resource, Integer> discardedResourcesFromStrongbox;
 
     public void setDevelopmentCards(List<DumbDevelopmentCard> developmentCards) {

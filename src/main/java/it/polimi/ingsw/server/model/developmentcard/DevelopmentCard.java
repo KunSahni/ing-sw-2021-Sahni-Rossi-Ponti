@@ -1,6 +1,5 @@
 package it.polimi.ingsw.server.model.developmentcard;
 
-import it.polimi.ingsw.client.utils.dumbobjects.DumbDevelopmentCard;
 import it.polimi.ingsw.server.model.utils.*;
 
 import java.util.HashMap;
@@ -9,15 +8,30 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-
-
+/**
+ * Card which can be placed in development card slots and used to convert the
+ * required input resource into the fixed output resources. When activating a
+ * production, its outputs will be stored in the player's strongbox.
+ */
 public class DevelopmentCard implements VictoryPointsElement {
     private final Color color;
     private final Level level;
     private final int victoryPoints;
+    /**
+     * Resources taken as input in a production.
+     */
     private final Map<Resource, Integer> inputResources;
+    /**
+     * Resources outputted in a production.
+     */
     private final Map<Resource, Integer> outputResources;
+    /**
+     * Amount of resources required to purchase the card from the board.
+     */
     private final Map<Resource, Integer> cost;
+    /**
+     * Number of steps on the faith track granted on production.
+     */
     private final int faithIncrement;
 
 
