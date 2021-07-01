@@ -5,8 +5,13 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbDiscountLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+/**
+ * Leader Card which reduces the price of Development Cards.
+ */
 public class DiscountLeaderCard extends LeaderCard {
-
+    /**
+     * Resource that the leader card discounts from a development card purchase.
+     */
     private final Resource discountedResource;
 
     public DiscountLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource discountedResource) {

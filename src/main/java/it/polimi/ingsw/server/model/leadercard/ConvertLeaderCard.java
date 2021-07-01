@@ -5,10 +5,12 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
 /**
- * requirement1 requires 2 card of that color
+ * Leader Card which is able to convert white marbles to its convertedResource type.
  */
 public class ConvertLeaderCard extends LeaderCard {
-
+    /**
+     * Resource that the leader card converts during a PickFromMarket / SelectMarbles action.
+     */
     private final Resource convertedResource;
 
     public ConvertLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements, Resource convertedResource) {

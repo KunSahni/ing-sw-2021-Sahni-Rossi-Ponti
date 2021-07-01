@@ -4,6 +4,9 @@ import it.polimi.ingsw.server.model.ChangesHandler;
 
 import java.util.*;
 
+/**
+ * Deck of action tokens used in a single player game.
+ */
 public class ActionTokenDeck {
     private final Stack<ActionToken> currentDeck;
     private transient ChangesHandler changesHandler;

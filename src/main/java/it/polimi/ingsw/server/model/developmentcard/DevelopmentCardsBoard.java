@@ -4,8 +4,16 @@ import java.util.Arrays;
 
 import it.polimi.ingsw.server.model.ChangesHandler;
 
+/**
+ * 3 rows-4 columns grid of Development card from which all
+ * players can purchase cards during a match.
+ */
 public class DevelopmentCardsBoard {
     private transient ChangesHandler changesHandler;
+    /**
+     * Data structure hosting one development cards deck for each cell.
+     * Only the top-most card in each deck is visible.
+     */
     private final DevelopmentCardsDeck[][] board;
 
     private DevelopmentCardsBoard() {
@@ -63,6 +71,9 @@ public class DevelopmentCardsBoard {
 
     }
 
+    /**
+     * Returns a structure containing only the top-most card of each deck.
+     */
     public DevelopmentCardsDeck[][] peekBoard() {
         DevelopmentCardsDeck[][] newBoard = new DevelopmentCardsDeck[board.length][];
         for (int i = 0; i < board.length; i++)

@@ -15,6 +15,10 @@ import java.util.Optional;
  * LeaderCard
  */
 public class LeaderCardRequirements implements Serializable {
+    /**
+     * Utility class created to group the required level and quantity of a specific
+     * color development card.
+     */
     public static class LevelQuantityPair implements Serializable{
         private final Level level;
         private final int quantity;
@@ -40,7 +44,15 @@ public class LeaderCardRequirements implements Serializable {
             return quantity == that.quantity && level == that.level;
         }
     }
+
+    /**
+     * Each entry represent the number and level of a specific color development
+     * card required in an activation.
+     */
     private Map<Color, LevelQuantityPair> requiredDevelopmentCards;
+    /**
+     * Resources required to activate the card.
+     */
     private Map<Resource, Integer> requiredResources;
 
     /**

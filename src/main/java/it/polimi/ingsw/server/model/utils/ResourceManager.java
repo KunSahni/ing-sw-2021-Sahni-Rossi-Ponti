@@ -3,6 +3,9 @@ package it.polimi.ingsw.server.model.utils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Class used to handle resource-related actions.
+ */
 public class ResourceManager {
     private final Map<Resource, Integer> storedResources;
 

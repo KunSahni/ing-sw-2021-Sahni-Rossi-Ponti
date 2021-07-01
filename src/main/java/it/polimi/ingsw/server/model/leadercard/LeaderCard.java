@@ -4,6 +4,12 @@ package it.polimi.ingsw.server.model.leadercard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.server.model.utils.VictoryPointsElement;
 
+/**
+ * Card of which each player has 2 of. Has special abilities which are
+ * automatically applied to all actions of the owner when active.
+ * Can be discarded when inactive and will grant a 1 step movement on
+ * the faith track to its owner.
+ */
 public abstract class LeaderCard implements VictoryPointsElement {
     private final LeaderCardAbility ability;
     private final int victoryPoints;

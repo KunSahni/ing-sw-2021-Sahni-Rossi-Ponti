@@ -7,8 +7,14 @@ import it.polimi.ingsw.server.model.utils.ResourceManager;
 
 import java.util.Map;
 
+/**
+ * Leader card which can store up to 2 of a specific resource.
+ */
 public class StoreLeaderCard extends LeaderCard {
     private final ResourceManager storage;
+    /**
+     * Resource type which can be stored in the storage ResourceManager.
+     */
     private final Resource storedResource;
 
     public StoreLeaderCard(int victoryPoints, LeaderCardRequirements leaderCardRequirements,

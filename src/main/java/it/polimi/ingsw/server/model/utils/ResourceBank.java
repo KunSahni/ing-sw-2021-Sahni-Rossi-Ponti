@@ -6,6 +6,9 @@ import java.util.*;
 import static it.polimi.ingsw.server.model.market.MarketMarble.*;
 import static it.polimi.ingsw.server.model.utils.Resource.*;
 
+/**
+ * Class which "spawns" resources when requested.
+ */
 public final class ResourceBank {
 
     private ResourceBank() {
