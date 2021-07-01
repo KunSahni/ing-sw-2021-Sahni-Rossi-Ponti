@@ -96,6 +96,7 @@ public class GUI extends Application implements UI {
 
     /**
      * Changes the footer currently shown in the main menu.
+     *
      * @param footer resource to be shown to screen.
      */
     private void updateMainMenuFooter(FXMLResources footer) {
@@ -104,6 +105,7 @@ public class GUI extends Application implements UI {
 
     /**
      * Updates the text in the main menu loading screen.
+     *
      * @param message text that will be rendered under the loading spinning animation.
      */
     private void updateMainMenuLoadingText(String message) {
@@ -181,6 +183,7 @@ public class GUI extends Application implements UI {
 
     /**
      * Switches the view to an opponent's board.
+     *
      * @param nickname opponent identifier.
      */
     public void goToOppView(String nickname) {
@@ -224,6 +227,7 @@ public class GUI extends Application implements UI {
 
     /**
      * Renders a player's personal board.
+     *
      * @param nickname player identifier.
      */
     @Override
@@ -286,6 +290,8 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderTakeFromMarketConfirmation() {
+        personalController.populateInfoLabel("The selected market marbles have been stored, " +
+                "choose which ones you would like to store!");
     }
 
     @Override
@@ -368,7 +374,10 @@ public class GUI extends Application implements UI {
 
     @Override
     public void renderServerOffline() {
-
+        if (personalController != null) {
+            personalController.populateInfoLabel("The server you were playing on went offline, " +
+                    "please close the client and reconnect...");
+        }
     }
 
     public DumbModel getDumbModel() {
