@@ -2,6 +2,9 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
 import javafx.scene.control.Button;
 
+/**
+ * Enum used as strategy pattern for confirmation and reset buttons in GUI controllers.
+ */
 public enum ConfirmResetButtonsStrategy {
     NONE,
     PRE_GAME_LEADER_CARDS_CHOICE,
@@ -18,6 +21,9 @@ public enum ConfirmResetButtonsStrategy {
     SELECT_PRODUCTION_INPUT_RESOURCES,
     SELECT_PRODUCTION_OUTPUT_RESOURCES;
 
+    /**
+     * Acts as selector for the strategy that will be applied.
+     */
     public void applyTo(Button confirmButton, Button resetButton) {
         switch (this) {
             case NONE -> setStrategy(confirmButton, resetButton, null, false, false);
@@ -33,6 +39,9 @@ public enum ConfirmResetButtonsStrategy {
         }
     }
 
+    /**
+     * Sets visibility rules and UserData of the passed buttons.
+     */
     private void setStrategy(Button confirmButton, Button resetButton,
                              ConfirmResetButtonsStrategy strategy, boolean confirmVisibility,
                              boolean resetVisibility) {

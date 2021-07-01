@@ -11,6 +11,9 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
+/**
+ * JavaFX controller for the main menu.
+ */
 public class MainMenuController extends JFXController {
     @FXML
     private AnchorPane variablePane;
@@ -21,6 +24,10 @@ public class MainMenuController extends JFXController {
         setFooter(FXMLResources.CONNECT_FOOTER);
     }
 
+    /**
+     * Changes the footer by rendering the newly passed footer.
+     * @param footer Identifier for the new footer that will get applied to the GUI.
+     */
     public void setFooter(FXMLResources footer) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(footer.toPathString()));
         variablePane.getChildren().clear();
@@ -33,6 +40,10 @@ public class MainMenuController extends JFXController {
         footerController.setParentController(this);
     }
 
+    /**
+     * Edits the text displayed on the loading footer.
+     * @param text Updated text.
+     */
     public void setLoadingFooterText(String text) {
         ((LoadingFooterController) footerController).setLoadingFooterText(text);
     }

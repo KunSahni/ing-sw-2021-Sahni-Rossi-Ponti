@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+/**
+ * JFX Controller used to handle interaction on an opponent's board.
+ */
 public class InGameOppController extends PlayerBoardController {
     @FXML
     private Button backToPersonalBoardButton;

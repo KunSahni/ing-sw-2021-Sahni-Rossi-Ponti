@@ -7,14 +7,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+/**
+ * JFX Footer controller which handles connection to a server.
+ */
 public class ConnectFooterController extends FooterController {
     @FXML
     private TextField ipField;
     @FXML
     private TextField portField;
-    @FXML
-    private Button connectButton;
 
+    /**
+     * Connects to the server using the address and port passed by the user.
+     */
     @FXML
     private void connectToServer() {
         GUI gui = parentController.getGui();
