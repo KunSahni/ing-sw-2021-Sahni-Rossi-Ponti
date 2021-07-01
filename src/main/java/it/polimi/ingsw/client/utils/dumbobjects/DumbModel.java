@@ -95,6 +95,7 @@ public class DumbModel {
                     dumbPersonalBoard.updateConnectionStatus(updatedConnectionStatus);
                     dumbPersonalBoard.updateTurnStatus(updatedTurnStatus);
                     dumbPersonalBoard.updatePosition(position);
+                    sortPersonalBoards();
                 },
                 ()->{
                     addPersonalBoard(nickname);

@@ -125,7 +125,7 @@ public class CLI implements UI {
 
     private void renderHelp() {
         clearScreen();
-        printToCLI(">help");
+        printToCLI("\033[1;1H>help");
         resetCommandPosition(3);
     }
 
