@@ -13,13 +13,14 @@ import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
-import it.polimi.ingsw.server.model.utils.Resource;
 
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Flow;
 import java.util.stream.IntStream;
+
+import static java.lang.Thread.sleep;
 
 /**
  * This is a cli client for master of renaissance
@@ -60,13 +61,13 @@ public class CLI implements UI {
     private void connectToServer(){
         //Ask for server IP
         printToCLI(">Insert the server IP address");
-        resetCommandPosition();
+        resetCommandPosition(-1);
         in.reset();
         String ip = in.next();
 
         //Ask for server port
         printToCLI(">Insert the server port");
-        resetCommandPosition();
+        resetCommandPosition(-1);
         in.reset();
         int port = in.nextInt();
         in.nextLine();
@@ -74,7 +75,7 @@ public class CLI implements UI {
         //Ask for reconnection to existing game
         if(dumbModel.getGameID()!=-1) {
             printToCLI(">Unfinished game found, do you want to reconnect? (y or n)");
-            resetCommandPosition();
+            resetCommandPosition(-1);
             in.reset();
             String answer = in.next();
             if (answer.equals("n"))
@@ -93,7 +94,6 @@ public class CLI implements UI {
      */
     private void loop() throws InterruptedException {
         while(isActiveGame()){
-            resetCommandPosition();
             String insertedCommand = in.nextLine();
 
             try {
@@ -104,7 +104,7 @@ public class CLI implements UI {
             } catch (CommonsException e) {
                 renderCommons();
             } catch (WrongCommandException | InvalidArgsException e) {
-                renderErrorMessage(e.getMessage());
+                renderInputVerifierErrorMessage(e.getMessage());
             } catch (HelpException e) {
                 renderHelp();
             } catch (CommandHelpException e) {
@@ -123,8 +123,8 @@ public class CLI implements UI {
     }
 
     private void renderHelp() {
-        String printableString = Constants.ANSI_CLEAR + "HELP";
-        printToCLI(printableString);
+        printToCLI(">help");
+        resetCommandPosition(3);
     }
 
     @Override
@@ -148,24 +148,27 @@ public class CLI implements UI {
     public void renderPersonalBoard(String nickname) {
         clearScreen();
         DumbPersonalBoard dumbPersonalBoard = dumbModel.getPersonalBoard(nickname);
-        String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
+        String printableString = dumbPersonalBoard.formatPrintableString();
         printToCLI(printableString);
+        resetCommandPosition(19);
         setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
     public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
         clearScreen();
-        String printableString = dumbPersonalBoard.formatPrintableStringAt(2,2);
+        String printableString = dumbPersonalBoard.formatPrintableString();
         printToCLI(printableString);
+        resetCommandPosition(19);
         setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
     @Override
     public void renderCommons() {
         clearScreen();
-        String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(2, 2) +
+        String printableString = dumbModel.getDevelopmentCardsBoard().formatPrintableStringAt(1, 2) +
                 dumbModel.getMarket().formatPrintableStringAt(15, 72);
         printToCLI(printableString);
+        resetCommandPosition(34);
         setOnScreenElement(OnScreenElement.COMMONS);
     }
 
@@ -216,21 +219,26 @@ public class CLI implements UI {
 
     @Override
     public void renderActionToken(ActionToken actionToken) {
-        printToCLI(actionToken.getMessage());
-        resetCommandPosition();
+        clearScreen();
+        printToCLI("\033[1;1H> " + actionToken.getMessage());
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void renderGameOutcome(int finalScore) {
         clearScreen();
-        String printableString = Constants.ANSI_BOLD + "\033[2;1HYour final score is: " + finalScore + " points";
+        String printableString = Constants.ANSI_BOLD + "\033[1;2HYour final score is: " + finalScore + " points";
         printToCLI(printableString);
     }
 
     @Override
     public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
         clearScreen();
-        StringBuilder printableString = new StringBuilder(Constants.ANSI_BOLD + "\033[2;1HThe final scores are:");
+        StringBuilder printableString = new StringBuilder(Constants.ANSI_BOLD + "\033[1;2HThe final scores are:");
         finalScores.forEach(
                 (integer, s) -> printableString.append("\n" + integer + ") " + s)
         );
@@ -243,46 +251,57 @@ public class CLI implements UI {
         setActiveGame(true);
         StringBuilder printableString = new StringBuilder();
         IntStream.range(0,leaderCards.size()).forEach(
-                i -> printableString.append(leaderCards.get(i).formatPrintableStringAt(2, 1+17*i))
+                i -> printableString.append(leaderCards.get(i).formatPrintableStringAt(1, 2+17*i))
         );
         printToCLI(printableString.toString());
-        resetCommandPosition();
+        resetCommandPosition(11);
     }
 
     @Override
     public void renderTempMarblesChoice(Map<MarketMarble, Integer> updateMarbles) {
-        String printableString = formatPrintableMarblesMapStringAt(updateMarbles, 2 , 2 );
+        clearScreen();
+        String printableString = formatPrintableMarblesMapStringAt(updateMarbles, 1 , 2 );
         printToCLI(printableString);
-        resetCommandPosition();
+        resetCommandPosition(4);
     }
 
     @Override
     public void renderResourcePregameChoice() {
         int numberOfResources = dumbModel.getPersonalBoard(nickname).getPosition()/2;
-        Map<Resource, Integer> chosenResources = new HashMap<>();
         String printableString;
         if(numberOfResources == 0 )
             return;
         if(numberOfResources <= 1)
-            printableString = "\033[2;1H>Pick " + numberOfResources + " resource\n";
+            printableString = "\033[1;1H>Pick " + numberOfResources + " resource\n";
         else
-            printableString = "\033[2;1H>Pick " + numberOfResources + " resources\n";
+            printableString = "\033[1;1H>Pick " + numberOfResources + " resources\n";
         printToCLI(printableString);
-        resetCommandPosition();
+        resetCommandPosition(3);
     }
 
     @Override
     public void renderErrorMessage(String message) {
-        String printableString = Constants.ANSI_CLEAR + "\033[2;1H>" + message;
-        printToCLI(printableString);
-        resetCommandPosition();
+        clearScreen();
+        printToCLI("\033[1;1H>" + message);
+        try {
+            sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        resetCommandPosition(3);
+    }
+
+    private void renderInputVerifierErrorMessage(String message) {
+        clearScreen();
+        printToCLI(">" + message);
+        resetCommandPosition(3);
     }
 
     @Override
     public void renderAuthenticationRequest(String message) {
         printToCLI(">"+ message);
 
-        resetCommandPosition();
+        resetCommandPosition(-1);
         in.reset();
         nickname = in.next();
         dumbModel.setNickname(nickname);
@@ -293,7 +312,7 @@ public class CLI implements UI {
     public void renderCreateLobbyRequest(String message) {
         printToCLI(">"+ message);
 
-        resetCommandPosition();
+        resetCommandPosition(-1);
         int size = in.nextInt();
         in.nextLine();
 
@@ -304,57 +323,58 @@ public class CLI implements UI {
     }
 
     @Override
-    public void renderConnectionTerminatedNotification(String message) {
-        clearScreen();
-        String printableString = "\033[2;1H>"+ message + "\n";;
-        printToCLI(printableString);
-    }
-
-    @Override
-    public void renderGameFoundNotification(String message) {
-        printToCLI(">"+ message + "\n");
-    }
-
-    @Override
     public void renderGameNotFoundNotification(String message) {
-        printToCLI(">"+ message + "\n");
+        renderNotification(message, 1, 1, 2500);
     }
 
     @Override
     public void renderGameStartedNotification(String message) {
-        printToCLI(">"+ message + "\n");
+        renderNotification(message, 1, 1, 1500);
     }
 
     @Override
     public void renderJoinedLobbyNotification(String message) {
-        printToCLI(">"+ message + "\n");
-    }
-
-    @Override
-    public void renderTimeoutWarningNotification(String message) {
-        printToCLI(">"+ message + "\n");
+        renderNotification(message, 1, 1, 1500);
     }
 
     @Override
     public void renderWaitingForPlayersNotification(String message) {
-        printToCLI(">"+ message + "\n");
+        renderNotification(message, 1, 1, 0);
     }
 
     @Override
     public void renderWrongNicknameNotification(String message) {
-        printToCLI(">"+ message + "\n");
+        renderNotification(message, 1, 1, 2500);
     }
 
     @Override
     public void renderNicknameAlreadyInUseNotification(String message) {
-        printToCLI(">"+ message + "\n");
+        renderNotification(message, 1, 1, 2500);
     }
 
     @Override
     public void renderServerOffline() {
-        printToCLI(">"+ Constants.OFFLINE_MESSAGE);
+        clearScreen();
+        printToCLI("\033[1;1H>" + Constants.OFFLINE_MESSAGE + "\n");
         in.close();
         out.close();
+    }
+
+    /**
+     * Render a notification at specified position for specified time
+     * @param message the message which should be presented
+     * @param x vertical coordinate of position
+     * @param y horizontal coordinate of position
+     * @param time the time for which the message should be displayed
+     */
+    private void renderNotification(String message, int x, int y, int time){
+        clearScreen();
+        printToCLI("\033[" + x + ";" + y + "H>" + message + "\n");
+        try {
+            sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -368,9 +388,13 @@ public class CLI implements UI {
 
     /**
      * Reprints the insert command message in a fixed position
+     * @param line the line on which input message should be printed, use -1 to print on next line
      */
-    private void resetCommandPosition(){
-        out.print(Constants.INPUT_MESSAGE);
+    private void resetCommandPosition(int line){
+        if(line != -1)
+            out.print("\033["+ line +";1H" +Constants.INPUT_MESSAGE);
+        else
+            out.print(Constants.INPUT_MESSAGE);
         out.flush();
     }
 
@@ -394,7 +418,7 @@ public class CLI implements UI {
                 i -> {
                     printableString.append("\033[" + x + ";" + (y+i*6) + "H╔═══╗ ");
                     printableString.append("\033[" + (x+1) + ";" + (y+i*6) + "H║ "+ marblesList.get(i).formatPrintableString() +" ║ ");
-                    printableString.append("\033[" + x + ";" + (y+i*6) + "H╚═══╝ ");
+                    printableString.append("\033[" + (x+2) + ";" + (y+i*6) + "H╚═══╝ ");
                 }
         );
 

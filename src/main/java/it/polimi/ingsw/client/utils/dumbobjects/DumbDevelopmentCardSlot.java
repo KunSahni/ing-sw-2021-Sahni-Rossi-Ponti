@@ -66,12 +66,12 @@ public class DumbDevelopmentCardSlot implements Serializable {
                 new StringBuilder(developmentCards.peek().formatPrintableStringAt(x, y));
         if (developmentCards.size() >= 2)
             printableString.append(
-                    "\033[" + (x + 11) + ";" + y + "H║    " + Constants.ANSI_YELLOW + developmentCards.get(1).getVictoryPoints() + Constants.ANSI_RESET + "     ║"
+                    "\033[" + (x + 11) + ";" + y + "H║      " + Constants.ANSI_YELLOW + developmentCards.get(developmentCards.size()==2? 0:1).getVictoryPoints() + Constants.ANSI_RESET + "       ║"
                             + "\033[" + (x + 12) + ";" + y + "H╚══════════════╝"
             );
         if (developmentCards.size() == 3)
             printableString.append(
-                    "\033[" + (x + 13) + ";" + y + "H║    " + Constants.ANSI_YELLOW + developmentCards.get(2).getVictoryPoints() + Constants.ANSI_RESET + "     ║"
+                    "\033[" + (x + 13) + ";" + y + "H║      " + Constants.ANSI_YELLOW + developmentCards.get(0).getVictoryPoints() + Constants.ANSI_RESET + "       ║"
                             + "\033[" + (x + 14) + ";" + y + "H╚══════════════╝"
             );
 

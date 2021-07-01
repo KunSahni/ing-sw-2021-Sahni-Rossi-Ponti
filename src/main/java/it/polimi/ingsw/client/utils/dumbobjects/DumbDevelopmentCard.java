@@ -98,7 +98,7 @@ public class DumbDevelopmentCard implements Serializable {
                 Optional.ofNullable(
                         this.getOutputResources()
                 ).orElse(new HashMap<>()),
-                2
+                3
         ));
         List<String> levelList = convertLevelToPrintableList();
 
@@ -111,7 +111,7 @@ public class DumbDevelopmentCard implements Serializable {
                 + "\033[" + (x + 6) + ";" + y + "H║ " + inputList.get(1) + "    " + outputList.get(1) + " ║"
                 + "\033[" + (x + 7) + ";" + y + "H║         " + outputList.get(2) + " ║"
                 + "\033[" + (x + 8) + ";" + y + "H║              ║"
-                + "\033[" + (x + 9) + ";" + y + "H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET + "       ║"
+                + "\033[" + (x + 9) + ";" + y + "H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET + (getVictoryPoints()<10? "       ║" : "      ║" )
                 + "\033[" + (x + 10) + ";" + y + "H╚══════════════╝";
     }
 

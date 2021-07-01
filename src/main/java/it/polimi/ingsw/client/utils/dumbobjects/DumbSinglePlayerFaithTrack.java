@@ -36,7 +36,9 @@ public class DumbSinglePlayerFaithTrack extends DumbFaithTrack{
                 printableString.append(String.format(" %-2d ║", i));
         printableString.append("\n║");
         for(int i = 0; i<=24; i++)
-            if(i == this.getFaithMarkerPosition())
+            if(i == this.getFaithMarkerPosition() && i == this.getBlackCrossPosition())
+                printableString.append(String.format( " %s%s ║", Constants.FAITH_MARKER, Constants.BLACK_CROSS));
+            else if(i == this.getFaithMarkerPosition())
                 printableString.append(String.format( " %s  ║", Constants.FAITH_MARKER));
             else if(i == this.getBlackCrossPosition())
                 printableString.append(String.format( " %s  ║", Constants.BLACK_CROSS));

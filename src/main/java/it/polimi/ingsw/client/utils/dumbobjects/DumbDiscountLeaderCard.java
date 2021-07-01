@@ -5,6 +5,9 @@ import it.polimi.ingsw.server.model.developmentcard.Color;
 import it.polimi.ingsw.server.model.leadercard.DiscountLeaderCard;
 import it.polimi.ingsw.server.model.utils.Resource;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -38,30 +41,24 @@ public class DumbDiscountLeaderCard extends DumbLeaderCard{
     @Override
     public String formatPrintableStringAt(int x, int y) {
         //contains the color of the first requirement
-        Color color1 = this.getLeaderCardRequirements()
+        List<Color> colors = this.getLeaderCardRequirements()
                 .getRequiredDevelopmentCards()
-                .keySet()
+                .entrySet()
                 .stream()
-                .findFirst()
-                .get();
-
-        //contains the color of the second requirement
-        Color color2 = this.getLeaderCardRequirements()
-                .getRequiredDevelopmentCards()
-                .keySet()
-                .stream()
-                .findFirst()
-                .get();
+                .map(
+                        Map.Entry::getKey
+                )
+                .collect(Collectors.toList());
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
-                + "\033["+ (x+1) +";"+ y +"H║ 1x " + color1.getColoredLevel() + Constants.ANSI_RESET + "         ║"
-                + "\033["+ (x+2) +";"+ y +"H║ 1x " + color2.getColoredLevel() + Constants.ANSI_RESET + "         ║"
-                + (isActive()? "\033["+ (x+3) +";"+ y +"H║   activated  ║" : "\033["+ (x+3) +";"+ y +"H║              ║")
+                + "\033["+ (x+1) +";"+ y +"H║ 1x " + colors.get(0).getColoredLevel() + Constants.ANSI_RESET + "         ║"
+                + "\033["+ (x+2) +";"+ y +"H║ 1x " + colors.get(1).getColoredLevel() + Constants.ANSI_RESET + "         ║"
+                + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║              ║"
                 + "\033["+ (x+5) +";"+ y +"H║              ║"
                 + "\033["+ (x+6) +";"+ y +"H║    -1 " + discountedResource.formatPrintableString() + "      ║"
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
-                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
+                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     " + (isActive()? Constants.GREEN_TICK:Constants.RED_CROSS) + " ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
     }
 

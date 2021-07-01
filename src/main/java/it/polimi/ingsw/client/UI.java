@@ -55,17 +55,11 @@ public interface UI extends Subscriber<Renderable> {
 
     void renderCreateLobbyRequest(String message);
 
-    void renderConnectionTerminatedNotification(String message);
-
-    void renderGameFoundNotification(String message);
-
     void renderGameNotFoundNotification(String message);
 
     void renderGameStartedNotification(String message);
 
     void renderJoinedLobbyNotification(String message);
-
-    void renderTimeoutWarningNotification(String message);
 
     void renderWaitingForPlayersNotification(String message);
 

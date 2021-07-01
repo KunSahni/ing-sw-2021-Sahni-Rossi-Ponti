@@ -86,11 +86,9 @@ public class DumbPersonalBoard {
     }
 
     /**
-     * @param x the x position of the cursor in the console
-     * @param y the y position of the cursor in the console
-     * @return a string color of a leader Card with the top left corner in position x,y
+     * @return a string representation of a personal board
      */
-    public String formatPrintableStringAt(int x, int y) {
+    public String formatPrintableString() {
         StringBuilder printableString = new StringBuilder(Constants.ANSI_CLEAR);
         if(turnStatus)
             printableString.append("\033[1;1H" + Constants.ANSI_ORANGE + "Nickname:" + nickname + "(in turn)" + Constants.ANSI_RESET + " \033[1;117Hposition:" + position + "");

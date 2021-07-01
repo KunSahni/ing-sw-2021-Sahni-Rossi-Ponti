@@ -67,13 +67,13 @@ public class DumbStoreLeaderCard extends DumbLeaderCard{
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
                 + "\033["+ (x+1) +";"+ y +"H║ 5x " + resource.formatPrintableString() + "       " + storedResource.formatPrintableString() + " ║"
-                + (isActive()? "\033["+ (x+2) +";"+ y +"H║   activated  ║" : "\033["+ (x+2) +";"+ y +"H║              ║")
+                + "\033["+ (x+2) +";"+ y +"H║              ║"
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║ ╔═══╗  ╔═══╗ ║"
                 + "\033["+ (x+5) +";"+ y +"H║ ║ " + containedResource1 + " ║  ║ " + containedResource2 + " ║ ║"
                 + "\033["+ (x+6) +";"+ y +"H║ ╚═══╝  ╚═══╝ ║"
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
-                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
+                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     " + (isActive()? Constants.GREEN_TICK:Constants.RED_CROSS) + " ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
     }
 

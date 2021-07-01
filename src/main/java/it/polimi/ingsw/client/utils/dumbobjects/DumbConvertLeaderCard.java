@@ -54,14 +54,14 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
                 .collect(Collectors.toList());
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
-                + "\033["+ (x+1) +";"+ y +"H║ 2x " + colors.get(1).getColoredLevel() + Constants.ANSI_RESET + "         ║"
+                + "\033["+ (x+1) +";"+ y +"H║ 2x " + colors.get(1).getColoredLevel() + Constants.ANSI_RESET + "        ║"
                 + "\033["+ (x+2) +";"+ y +"H║ 1x " + colors.get(0).getColoredLevel() + Constants.ANSI_RESET + "         ║"
-                + (isActive()? "\033["+ (x+3) +";"+ y +"H║   activated  ║" : "\033["+ (x+3) +";"+ y +"H║              ║")
+                + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║              ║"
                 + "\033["+ (x+5) +";"+ y +"H║ 1x " + Constants.WHITE_MARBLE + " -> 1x " + convertedResource.formatPrintableString() + " ║"
                 + "\033["+ (x+6) +";"+ y +"H║              ║"
                 + "\033["+ (x+7) +";"+ y +"H║              ║"
-                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "       ║"
+                + "\033["+ (x+8) +";"+ y +"H║      " + Constants.ANSI_YELLOW + getVictoryPoints() + Constants.ANSI_RESET+ "     " + (isActive()? Constants.GREEN_TICK:Constants.RED_CROSS) + " ║"
                 + "\033["+ (x+9) +";"+ y +"H╚══════════════╝";
     }
 

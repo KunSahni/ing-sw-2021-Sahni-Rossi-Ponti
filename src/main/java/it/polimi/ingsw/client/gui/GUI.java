@@ -288,16 +288,6 @@ public class GUI extends Application implements UI {
     }
 
     @Override
-    public void renderConnectionTerminatedNotification(String message) {
-
-    }
-
-    @Override
-    public void renderGameFoundNotification(String message) {
-
-    }
-
-    @Override
     public void renderGameNotFoundNotification(String message) {
 
     }
@@ -310,11 +300,6 @@ public class GUI extends Application implements UI {
     @Override
     public void renderJoinedLobbyNotification(String message) {
         updateMainMenuLoadingText(message);
-    }
-
-    @Override
-    public void renderTimeoutWarningNotification(String message) {
-
     }
 
     @Override
