@@ -33,7 +33,7 @@ public final class Constants {
     public final static String PURPLE_LEVEL = ANSI_PURPLE + "\u25C8" + ANSI_RESET;
     public final static String GREEN_LEVEL = ANSI_GREEN + "\u25C8" + ANSI_RESET;
     public final static String GREEN_TICK = ANSI_GREEN + "\u2713" + ANSI_RESET;
-    public final static String RED_CROSS = ANSI_RED + "\u274C" + ANSI_RESET;
+    public final static String RED_CROSS = ANSI_RED + "\u2A2F" + ANSI_RESET;
     public static final String ANSI_CLEAR = "\033[2J";
     public static final String INPUT_MESSAGE = "\n" + ANSI_BLUE + ">" + ANSI_RESET;
     public static final String MASTER_OF_RENAISSANCE =

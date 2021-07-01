@@ -9,7 +9,6 @@ import it.polimi.ingsw.server.model.ChangesHandler;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.personalboard.FavorStatus;
-import it.polimi.ingsw.server.model.personalboard.PersonalBoard;
 import it.polimi.ingsw.server.model.utils.ExecutedActions;
 import it.polimi.ingsw.server.model.utils.GameState;
 import it.polimi.ingsw.server.model.utils.Resource;
@@ -73,12 +72,13 @@ public class DumbModel {
      */
     public void addPersonalBoard(String nickname){
         personalBoards.add(new DumbPersonalBoard(nickname, size==1));
+        sortPersonalBoards();
     }
 
     /**
      * This method sorts the existing personal boards based on their position
      */
-    public void sortPersonalBoard(){
+    public void sortPersonalBoards(){
         personalBoards.sort(Comparator.comparingInt(DumbPersonalBoard::getPosition));
     }
 
@@ -233,7 +233,7 @@ public class DumbModel {
     public void updateGameState(GameState updatedGameState) {
         this.gameState = updatedGameState;
         if(gameState == GameState.ASSIGNED_INKWELL)
-            sortPersonalBoard();
+            sortPersonalBoards();
     }
 
     /**

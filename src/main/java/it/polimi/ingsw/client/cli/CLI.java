@@ -111,6 +111,7 @@ public class CLI implements UI {
                 renderCommandHelpException(e.getCommand());
             } catch (QuitException e) {
                 setActiveGame(false);
+                System.exit(0);
             }
 
         }
@@ -123,6 +124,7 @@ public class CLI implements UI {
     }
 
     private void renderHelp() {
+        clearScreen();
         printToCLI(">help");
         resetCommandPosition(3);
     }
@@ -271,6 +273,7 @@ public class CLI implements UI {
         String printableString;
         if(numberOfResources == 0 )
             return;
+        clearScreen();
         if(numberOfResources <= 1)
             printableString = "\033[1;1H>Pick " + numberOfResources + " resource\n";
         else
@@ -293,7 +296,7 @@ public class CLI implements UI {
 
     private void renderInputVerifierErrorMessage(String message) {
         clearScreen();
-        printToCLI(">" + message);
+        printToCLI("\033[1;1H>" + message);
         resetCommandPosition(3);
     }
 
@@ -459,6 +462,7 @@ public class CLI implements UI {
      */
     @Override
     public void onNext(Renderable item) {
+        if(item.getOnScreenElement(dumbModel).equals(OnScreenElement.FORCE_DISPLAY) || item.getOnScreenElement(dumbModel).equals(getOnScreenElement()))
             item.render(this);
         subscription.request(1);
     }

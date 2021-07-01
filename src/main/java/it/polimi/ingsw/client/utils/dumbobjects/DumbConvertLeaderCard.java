@@ -54,7 +54,7 @@ public class DumbConvertLeaderCard extends DumbLeaderCard{
                 .collect(Collectors.toList());
 
         return    "\033["+ x +";"+ y +"H╔══════════════╗"
-                + "\033["+ (x+1) +";"+ y +"H║ 2x " + colors.get(1).getColoredLevel() + Constants.ANSI_RESET + "        ║"
+                + "\033["+ (x+1) +";"+ y +"H║ 2x " + colors.get(1).getColoredLevel() + Constants.ANSI_RESET + "         ║"
                 + "\033["+ (x+2) +";"+ y +"H║ 1x " + colors.get(0).getColoredLevel() + Constants.ANSI_RESET + "         ║"
                 + "\033["+ (x+3) +";"+ y +"H║              ║"
                 + "\033["+ (x+4) +";"+ y +"H║              ║"

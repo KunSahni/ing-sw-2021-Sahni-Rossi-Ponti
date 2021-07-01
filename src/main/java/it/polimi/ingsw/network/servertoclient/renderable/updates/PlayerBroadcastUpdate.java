@@ -32,6 +32,8 @@ public class PlayerBroadcastUpdate extends BroadcastRenderable {
      */
     @Override
     public OnScreenElement getOnScreenElement(DumbModel dumbModel){
+        if(updatedTurnStatus)
+            return OnScreenElement.FORCE_DISPLAY;
         return OnScreenElement.valueOf(dumbModel.getPersonalBoard(nickname).getPosition());
     }
 
