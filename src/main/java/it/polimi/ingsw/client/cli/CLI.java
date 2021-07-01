@@ -108,8 +108,7 @@ public class CLI implements UI {
             } catch (HelpException e) {
                 renderHelp();
             } catch (CommandHelpException e) {
-                //Didn't implement help feature for all commands
-                renderHelp();
+                renderCommandHelpException(e.getCommand());
             } catch (QuitException e) {
                 setActiveGame(false);
                 System.exit(0);
@@ -121,7 +120,9 @@ public class CLI implements UI {
     }
 
     private void renderCommandHelpException(Commands command) {
-
+        clearScreen();
+        printToCLI("\033[1;1H>" + command.getHelp());
+        resetCommandPosition(-1);
     }
 
     private void renderHelp() {

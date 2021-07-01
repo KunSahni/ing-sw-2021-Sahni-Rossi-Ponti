@@ -10,7 +10,7 @@ import java.io.Serializable;
 public enum FavorStatus implements Serializable {
     INACTIVE(Constants.ANSI_RED),
     ACTIVE(Constants.ANSI_GREEN),
-    DISCARDED(Constants.ANSI_GREY);
+    DISCARDED(Constants.ANSI_DARK_GREY);
 
     private final String statusColor;
 

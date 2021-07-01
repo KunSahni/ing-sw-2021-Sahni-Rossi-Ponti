@@ -11,6 +11,7 @@ public final class Constants {
     public final static String ANSI_YELLOW = "\u001b[33;1m";
     public final static String ANSI_BLUE = "\u001b[34;1m";
     public final static String ANSI_PURPLE = "\u001B[35;1m";
+    public final static String ANSI_DARK_GREY = "\u001b[38;5;239m";
     public final static String ANSI_GREY = "\u001b[38;5;244m";
     public final static String ANSI_ORANGE = "\u001b[38;5;208m";
     public final static String ANSI_WHITE = "\u001b[37;1m";
@@ -57,30 +58,68 @@ public final class Constants {
     public static final String INVALID_ARGS = "Command was typed properly, but either it can't be executed right now or command arguments are invalid, type help for help";
 
     public static final String OFFLINE_MESSAGE = "Connection with server was dropped";
-    public static final String HELP = "HELP MANUAL\n" +
-            "show commons\n" +
-            "\tdisplays game commons, which includes development cards board and market\n" +
-            "\tsyntax: show commons\n" +
-            "\n" +
-            "show personal board\n" +
-            "\tdisplays a player's personal board\n" +
-            "\tsyntax: show personal board i\n" +
+
+    public static final String QUIT_HELP = "quit\n" +
+            "\tquit game\n" +
+            "\tsyntax: quit";
+    public static final String END_TURN_HELP = "end turn\n" +
+            "\tends current turn\n" +
+            "\tsyntax: end turn";
+    public static final String SHOW_LEGEND_HELP = "show legend\n" +
+            "\tdisplays legend of symbols used in the game\n" +
+            "\tsyntax: show legend";
+    public static final String PICK_MARBLES_HELP = "pick marbles\n" +
+            "\tpick marbles from the ones picked from market. The selected marbles will be converted to resources and stored in warehouse depots\n" +
+            "\tsyntax: pick marbles color\n" +
             "\targuments:\n" +
-            "\t\ti\tposition of the player\n" +
+            "\t\tcolor\tcolor of marble which you want to convert in resource\n" +
             "\n" +
-            "activate\n" +
-            "\tactivates one of your leader cards\n" +
-            "\tsyntax: activate i\n" +
+            "\tTo select multiple marbles just write color of each selected marble in the end\n" +
+            "\te.g: pick marbles yellow yellow blue\t-> picks 2 yellow marbles and 1 blue marble\n";
+    public static final String PICK_LEADER_CARDS_HELP = "pick leader cards\n" +
+            "\tpick leader cards at the beginning of the game\n" +
+            "\tsyntax: pick leader cards i j\n" +
             "\targuments:\n" +
-            "\t\ti\tindex of leader card (1 for first LC, 2 for second)\n" +
-            "\n" +
-            "discard\n" +
-            "\tdiscards one of your leader cards\n" +
-            "\tsyntax: activate i\n" +
+            "\t\ti\tindex of first picked leader card\n" +
+            "\t\tj\tindex of second picked leader card\n";
+    public static final String PICK_RESOURCES_HELP = "pick resources\n" +
+            "\tpick resources at the beginning of the game\n" +
+            "\tsyntax: pick resources i res\n" +
             "\targuments:\n" +
-            "\t\ti\tindex of leader card (1 for first LC, 2 for second)\n" +
+            "\t\ti\tquantity of res\n" +
+            "\t\tres\tname of picked resource\n" +
+            "\t\t\n" +
+            "\t\tYou can add more resources in the end, each separated by space\n" +
+            "\t\te.g: pick resources shield coin\t\t-> pick a shield and a coin\n";
+    public static final String TAKE_FROM_MARKET_HELP = "take\n" +
+            "\ttake resources from market\n" +
+            "\tsyntax: take place i\n" +
+            "\targuments:\n" +
+            "\t\tplace\trow if you want to take from a row\n" +
+            "\t\t\tcolumn if you want to take from a column\n" +
+            "\t\ti\tnumber of row or column\n";
+    public static final String BUY_HELP = "buy\n" +
+            "\tbuys a development card from development cards board\n" +
+            "\tsyntax: buy level color slotIndex [-depots i res] [-strongbox i res]\n" +
+            "\targuments:\n" +
+            "\t\tlevel\t\tlevel of selected development card\n" +
+            "\t\tcolor\t\tcolor of selected development card\n" +
+            "\t\tslotIndex\tindex of development card slot where you want to place the selected development card\t\n" +
+            "\toptions:\n" +
+            "\t\t-depots i res\t\tif you want to discard resources from warehouse depots\n" +
+            "\t\t\t\t\twrite quantity of res instead of i\n" +
+            "\t\t\t\t\twrite discarded resource name instead of res\n" +
+            "\t\t\t\t\tyou can add more resources in the end, each separated by space\n" +
+            "\t\t-strongbox i res\tif you want to discard resources from strongbox\n" +
+            "\t\t\t\t\twrite quantity of res instead of i\n" +
+            "\t\t\t\t\twrite discarded resource name instead of res\n" +
+            "\t\t\t\t\tyou can add more resources in the end, each separated by space\n" +
             "\n" +
-            "produce\n" +
+            "\t\tIn order to write a valid command at least one of the two options should be present\n" +
+            "\t\te.g: buy 1 blue 2 -depots 2 coin -strongbox 2 stone\t-> buys a level 1 blue development card and places it \n" +
+            "\t\t\t\t\t\t\t\t\tin the second development card slot while discarding 2 coins \n" +
+            "\t\t\t\t\t\t\t\t\tfrom depots and 2 stones from strongbox\n";
+    public static final String PRODUCE_HELP = "produce\n" +
             "\tactivates a production\n" +
             "\tsyntax: produce [-default res] [-leadercard i res] [-developmentcards i] [-depots i res] [-strongbox i res]\n" +
             "\toptions:\n" +
@@ -103,65 +142,69 @@ public final class Constants {
             "\t\tIn order to write a valid command at least one production element and one resource element should be present\n" +
             "\t\te.g: produce -default coin -leadercard 1 shield -developmentcards 2 3 -depots 3 coin 2 shield -strongbox 2 shield\n" +
             "\t\t\t-> produce a coin from default slot, a shield from leader card 1, activates second and third development cards,\n" +
-            "\t\t\tdiscards 3 coins and 2 shields from depots and discards 2 shields from strongbox\n" +
-            "\n" +
-            "buy\n" +
-            "\tbuys a development card from development cards board\n" +
-            "\tsyntax: buy level color slotIndex [-depots i res] [-strongbox i res]\n" +
+            "\t\t\tdiscards 3 coins and 2 shields from depots and discards 2 shields from strongbox\n";
+    public static final String DISCARD_HELP = "discard\n" +
+                    "\tdiscards one of your leader cards\n" +
+                    "\tsyntax: activate i\n" +
+                    "\targuments:\n" +
+                    "\t\ti\tindex of leader card (1 for first LC, 2 for second)\n";
+    public static final String ACTIVATE_HELP = "activate\n" +
+            "\tactivates one of your leader cards\n" +
+            "\tsyntax: activate i\n" +
             "\targuments:\n" +
-            "\t\tlevel\t\tlevel of selected development card\n" +
-            "\t\tcolor\t\tcolor of selected development card\n" +
-            "\t\tslotIndex\tindex of development card slot where you want to place the selected development card\t\n" +
-            "\toptions:\n" +
-            "\t\t-depots i res\t\tif you want to discard resources from warehouse depots\n" +
-            "\t\t\t\t\twrite quantity of res instead of i\n" +
-            "\t\t\t\t\twrite discarded resource name instead of res\n" +
-            "\t\t\t\t\tyou can add more resources in the end, each separated by space\n" +
-            "\t\t-strongbox i res\tif you want to discard resources from strongbox\n" +
-            "\t\t\t\t\twrite quantity of res instead of i\n" +
-            "\t\t\t\t\twrite discarded resource name instead of res\n" +
-            "\t\t\t\t\tyou can add more resources in the end, each separated by space\n" +
-            "\n" +
-            "\t\tIn order to write a valid command at least one of the two options should be present\n" +
-            "\t\te.g: buy 1 blue 2 -depots 2 coin -strongbox 2 stone\t-> buys a level 1 blue development card and places it \n" +
-            "\t\t\t\t\t\t\t\t\tin the second development card slot while discarding 2 coins \n" +
-            "\t\t\t\t\t\t\t\t\tfrom depots and 2 stones from strongbox\n" +
-            "\n" +
-            "take\n" +
-            "\ttake resources from market\n" +
-            "\tsyntax: take place i\n" +
+            "\t\ti\tindex of leader card (1 for first LC, 2 for second)\n";
+    public static final String SHOW_PERSONAL_BOARD_HELP = "show personal board\n" +
+            "\tdisplays a player's personal board\n" +
+            "\tsyntax: show personal board i\n" +
             "\targuments:\n" +
-            "\t\tplace\trow if you want to take from a row\n" +
-            "\t\t\tcolumn if you want to take from a column\n" +
-            "\t\ti\tnumber of row or column\n" +
-            "\n" +
-            "pick resources\n" +
-            "\tpick resources at the beginning of the game\n" +
-            "\tsyntax: pick resources i res\n" +
-            "\targuments:\n" +
-            "\t\ti\tquantity of res\n" +
-            "\t\tres\tname of picked resource\n" +
-            "\t\t\n" +
-            "\t\tYou can add more resources in the end, each separated by space\n" +
-            "\t\te.g: pick resources shield coin\t\t-> pick a shield and a coin\n" +
-            "\n" +
-            "pick leader cards\n" +
-            "\tpick leader cards at the beginning of the game\n" +
-            "\tsyntax: pick leader cards i j\n" +
-            "\targuments:\n" +
-            "\t\ti\tindex of first picked leader card\n" +
-            "\t\tj\tindex of second picked leader card\n" +
-            "\n" +
-            "pick marbles\n" +
-            "\tpick marbles from the ones picked from market. The selected marbles will be converted to resources and stored in warehouse depots\n" +
-            "\tsyntax: pick marbles color\n" +
-            "\targuments:\n" +
-            "\t\tcolor\tcolor of marble which you want to convert in resource\n" +
-            "\n" +
-            "\tTo select multiple marbles just write color of each selected marble in the end\n" +
-            "\te.g: pick marbles yellow yellow blue\t-> picks 2 yellow marbles and 1 blue marble\n" +
-            "\n" +
-            "quit\n" +
-            "\tquit game\n" +
-            "\tsyntax: quit";
+            "\t\ti\tposition of the player\n";
+    public static final String SHOW_COMMONS_HELP = "show commons\n" +
+            "\tdisplays game commons, which includes development cards board and market\n" +
+            "\tsyntax: show commons\n";
+
+    public static final String HELP = "HELP MANUAL\n" +
+            SHOW_COMMONS_HELP + "\n" +
+            SHOW_PERSONAL_BOARD_HELP + "\n" +
+            ACTIVATE_HELP + "\n" +
+            DISCARD_HELP + "\n" +
+            PRODUCE_HELP + "\n" +
+            BUY_HELP + "\n" +
+            TAKE_FROM_MARKET_HELP + "\n" +
+            PICK_RESOURCES_HELP + "\n" +
+            PICK_LEADER_CARDS_HELP + "\n" +
+            PICK_MARBLES_HELP + "\n" +
+            END_TURN_HELP + "\n" +
+            SHOW_LEGEND_HELP + "\n" +
+            QUIT_HELP;
+
+    public static final String LEGEND = "SYMBOLS LEGEND\n" +
+            "\nRESOURCES\n" +
+            "\t" + COIN + ": coin\n" +
+            "\t" + SERVANT + ": servant\n" +
+            "\t" + SHIELD + ": shield\n" +
+            "\t" + STONE + ": stone\n" +
+            "\t" + FAITH_POINT + ": faith point\n" +
+            "\nMARKET MARBLES\n" +
+            "\t" + ANSI_YELLOW + MARBLE + ANSI_RESET + ": yellow marble (coin)\n" +
+            "\t" + ANSI_PURPLE + MARBLE + ANSI_RESET + ": purple marble (servant)\n" +
+            "\t" + ANSI_BLUE + MARBLE + ANSI_RESET + ": blue marble (shield)\n" +
+            "\t" + ANSI_GREY + MARBLE + ANSI_RESET + ": grey marble (stone)\n" +
+            "\t" + ANSI_RED + MARBLE + ANSI_RESET + ": red marble (faith point)\n" +
+            "\t" + WHITE_MARBLE + ": white marble\n" +
+            "\nLEVELS\n" +
+            "\t" + YELLOW_LEVEL + ": yellow level 1\n" +
+            "\t" + PURPLE_LEVEL + ": purple level 1\n" +
+            "\t" + BLUE_LEVEL + BLUE_LEVEL + ": blue level 2\n" +
+            "\t" + GREEN_LEVEL + GREEN_LEVEL + GREEN_LEVEL + ": green level 3\n" +
+            "\tLevels can be displayed both vertically and horizontally\n" +
+            "\nFAITH TRACK CELL COLORS\n" +
+            "\t" + ANSI_WHITE + "white" + ANSI_RESET + ": basi faith track cell\n" +
+            "\t" + ANSI_ORANGE + "orange" + ANSI_RESET + ": cell inside pope's favor\n" +
+            "\t" + ANSI_RED + "red" + ANSI_RESET + ": inactive pope's favor cell\n" +
+            "\t" + ANSI_GREEN + "green" + ANSI_RESET + ": active pope's favor cell\n" +
+            "\t" + ANSI_DARK_GREY + "grey" + ANSI_RESET + ": discarded pope's favor cell\n" +
+            "\nOTHERS\n" +
+            "\t" + BLACK_CROSS + ": lorenzo's faith marker (equivalent to black cross)\n" +
+            "\tAll yellow numbers indicate victory points";
+
 }

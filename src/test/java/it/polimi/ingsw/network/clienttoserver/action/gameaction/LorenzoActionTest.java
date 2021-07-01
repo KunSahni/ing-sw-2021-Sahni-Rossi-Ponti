@@ -25,7 +25,6 @@ public class LorenzoActionTest {
 
     @BeforeEach
     void setUp(){
-        changesHandler = new ChangesHandler(1);
         nick1 = "qwe";
         nicknameList = List.of(nick1);
         try {
@@ -39,6 +38,7 @@ public class LorenzoActionTest {
             e.printStackTrace();
         }
         lorenzoAction = new LorenzoAction(game);
+        changesHandler = new ChangesHandler(1);
     }
 
     @AfterEach

@@ -93,7 +93,7 @@ public class DumbDevelopmentCard implements Serializable {
         List<String> inputList = convertMapToPrintableList(this.getInputResources(), 2);
         List<String> outputList = new ArrayList<>();
         if(faithIncrement>0)
-            outputList.add(0, faithIncrement + "x " + Constants.FAITH_MARKER);
+            outputList.add(0, faithIncrement + "x " + Constants.FAITH_POINT);
         outputList.addAll(convertMapToPrintableList(
                 Optional.ofNullable(
                         this.getOutputResources()

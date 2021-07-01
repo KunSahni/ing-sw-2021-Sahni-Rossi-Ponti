@@ -83,6 +83,7 @@ public class CommandExecutor {
             case PICK_RESOURCES -> managePickResourcesCommand(insertedCommand);
             case PICK_LEADER_CARDS -> managePickLeaderCardCommand(insertedCommand);
             case PICK_TEMP_MARBLES -> managePickTempMarblesCommand(insertedCommand);
+            case LEGEND -> throw new CommandHelpException(correspondentCommand);
             case END_TURN -> manageEndTurn();
             default -> throw new WrongCommandException();
         }
