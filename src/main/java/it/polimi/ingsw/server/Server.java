@@ -32,6 +32,7 @@ public class Server implements Flow.Subscriber<Integer> {
 
     public Server() throws IOException {
         this.serverSocket = null;
+        createDefaultGameDir();
     }
 
     /**
@@ -43,11 +44,6 @@ public class Server implements Flow.Subscriber<Integer> {
         Lobby.getInstance().setServer(this);
         try {
             this.serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            createDefaultGameDir();
         } catch (IOException e) {
             e.printStackTrace();
         }
