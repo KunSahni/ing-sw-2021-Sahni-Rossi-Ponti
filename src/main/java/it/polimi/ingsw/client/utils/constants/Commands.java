@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.utils.constants;
 
+/**
+ * This class contains a set of commands which can be selected by the user when playing on the CLI
+ */
 public enum Commands {
     PERSONAL_BOARD("show personal board"),
     COMMONS("show commons"),

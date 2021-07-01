@@ -1,5 +1,9 @@
 package it.polimi.ingsw.client.utils.constants;
 
+/**
+ * This class contains a set of constants (messages, ascii escape codes, ascii arts, etc.)
+ * used to make a nicer CLI
+ */
 public final class Constants {
     public final static String ANSI_RESET = "\u001B[0m";
     public final static String ANSI_RED = "\u001b[31;1m";

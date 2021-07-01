@@ -19,7 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class has the goal of executing all the commands which are considered valid
+ * This class has the goal of parsing commands and verifying their validity,
+ * if valid it also forwards them to server
  */
 
 public class CommandExecutor {

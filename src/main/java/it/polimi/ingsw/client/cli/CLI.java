@@ -23,9 +23,8 @@ import java.util.stream.IntStream;
 import static java.lang.Thread.sleep;
 
 /**
- * This is a cli client for master of renaissance
+ * This is the CLI client for the game, mainly handles pregame activity, input reading and visualization
  */
-
 public class CLI implements UI {
     private final Scanner in;
     private final PrintWriter out;
