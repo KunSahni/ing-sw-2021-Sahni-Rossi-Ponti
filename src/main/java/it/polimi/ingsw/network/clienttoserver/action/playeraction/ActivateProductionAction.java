@@ -13,9 +13,16 @@ import it.polimi.ingsw.server.model.utils.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents the action of activating a Production chosen by a Player
+ */
 public class ActivateProductionAction extends PlayerAction {
     private final ProductionCombo productionCombo;
 
+    /**
+     * @param productionCombo the production combo containing production inputs, outputs and
+     *                        mediums.
+     */
     public ActivateProductionAction(ProductionCombo productionCombo) {
         this.productionCombo = productionCombo;
     }
@@ -94,12 +101,19 @@ public class ActivateProductionAction extends PlayerAction {
         }
     }
 
+    /**
+     * Checks if the production combo is empty.
+     */
     private boolean productionComboIsEmpty() {
         return productionCombo.getDevelopmentCards() == null
                 && productionCombo.getLeaderCardProduction() == null
                 && productionCombo.getDefaultSlotOutput() == null;
     }
 
+    /**
+     * Checks if the selected dev cards are present at the top of
+     * the development card slots.
+     */
     private boolean developmentCardsAvailable() {
         return player.getPersonalBoard().getDevelopmentCardSlots().stream()
                 .map(DevelopmentCardSlot::peek).collect(Collectors.toList())
@@ -107,6 +121,10 @@ public class ActivateProductionAction extends PlayerAction {
                         .map(DumbDevelopmentCard::convert).collect(Collectors.toList()));
     }
 
+    /**
+     * Checks if the passed leader cards are present and active on the
+     * personal board.
+     */
     private boolean leaderCardsMatch() {
         return productionCombo.getLeaderCardProduction().keySet().stream()
                 .map(DumbLeaderCard::convert)
@@ -116,12 +134,18 @@ public class ActivateProductionAction extends PlayerAction {
                         .contains(card));
     }
 
+    /**
+     * Checks if the passed leader cards have the ability of type Produce.
+     */
     private boolean leaderCardsAreProduce() {
         return productionCombo.getLeaderCardProduction().keySet().stream()
                 .map(DumbLeaderCard::convert)
                 .allMatch(card -> card instanceof ProduceLeaderCard);
     }
 
+    /**
+     * Checks if the resources to be discarded match the production costs.
+     */
     private boolean discardMapsMatchProductionCosts() {
         // Merge depots discards and strongbox discards
         Map<Resource, Integer> totalDiscardMap = new HashMap<>();

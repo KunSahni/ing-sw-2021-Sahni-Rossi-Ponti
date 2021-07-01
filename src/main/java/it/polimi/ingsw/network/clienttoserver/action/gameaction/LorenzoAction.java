@@ -7,6 +7,9 @@ import it.polimi.ingsw.server.model.personalboard.SinglePlayerFaithTrack;
 
 import java.util.Arrays;
 
+/**
+ * Class representing a play executed by Lorenzo at the end of a single player game's turn.
+ */
 public class LorenzoAction extends GameAction {
     public LorenzoAction(Game game) {
         super(game);
@@ -41,6 +44,10 @@ public class LorenzoAction extends GameAction {
         return consequentAction;
     }
 
+    /**
+     * Moves the black cross on the faith track.
+     * @param steps number of steps the black cross will take.
+     */
     private void moveBlackCross(int steps) {
         SinglePlayerFaithTrack faithTrack = (SinglePlayerFaithTrack) game.getPlayerList().get(0)
                 .getPersonalBoard().getFaithTrack();

@@ -8,6 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * Class representing the assignment of the Inkwell marker and consequent
+ * move order for all players.
+ */
 public class AssignInkwellAction extends GameAction{
     public AssignInkwellAction(Game game) {
         super(game);
