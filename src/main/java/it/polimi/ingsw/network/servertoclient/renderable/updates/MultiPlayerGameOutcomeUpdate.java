@@ -7,20 +7,23 @@ import it.polimi.ingsw.network.servertoclient.renderable.BroadcastRenderable;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 
-import java.util.Comparator;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *  This class contains an regarding the outcome of a multiplayer game
  */
 public class MultiPlayerGameOutcomeUpdate extends BroadcastRenderable {
-    private final TreeMap<Integer, String> finalScores;
+    private final List<ScoreTuple> finalScores;
 
     public MultiPlayerGameOutcomeUpdate(Game game) {
-        Comparator<Player> c = Comparator.comparingInt(Player::getPosition);
-        finalScores = new TreeMap<>();
+        finalScores = new ArrayList<>();
+        //Add all scores to list
         for(Player player: game.getPlayerList())
-            finalScores.put(player.getPersonalBoard().getVictoryPoints(), player.getNickname());
+            finalScores.add(new ScoreTuple(player.getNickname(), player.getPersonalBoard().getVictoryPoints()));
+        //Sort the scores and reverse
+        finalScores.sort(Comparator.comparingInt(ScoreTuple::getScore));
+        Collections.reverse(finalScores);
     }
 
     /**
@@ -48,5 +51,26 @@ public class MultiPlayerGameOutcomeUpdate extends BroadcastRenderable {
     @Override
     public void render(UI ui) {
         ui.renderGameOutcome(finalScores);
+    }
+
+    /**
+     * Inner class used to store final scores as tuples
+     */
+    public class ScoreTuple{
+        private final String name;
+        private final int score;
+
+        public ScoreTuple(String name, int score) {
+            this.name = name;
+            this.score = score;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getScore() {
+            return score;
+        }
     }
 }

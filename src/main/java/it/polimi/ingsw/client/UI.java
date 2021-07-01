@@ -2,6 +2,7 @@ package it.polimi.ingsw.client;
 
 import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.MultiPlayerGameOutcomeUpdate;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 
@@ -41,7 +42,7 @@ public interface UI extends Subscriber<Renderable> {
 
     void renderGameOutcome(int finalScore);
 
-    void renderGameOutcome(TreeMap<Integer, String> finalScores);
+    void renderGameOutcome(List<MultiPlayerGameOutcomeUpdate.ScoreTuple> finalScores);
 
     void renderLeaderCardsChoice(List<DumbLeaderCard> leaderCards);
 

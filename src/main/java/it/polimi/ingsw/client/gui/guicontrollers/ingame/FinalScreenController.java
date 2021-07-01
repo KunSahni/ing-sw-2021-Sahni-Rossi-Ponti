@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
 import it.polimi.ingsw.network.clienttoserver.messages.ExitRequestMessage;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.MultiPlayerGameOutcomeUpdate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -54,18 +55,18 @@ public class FinalScreenController extends JFXController {
         }
     }
 
-    public void renderFinal(TreeMap<Integer, String> finalScores, int finalScore){
+    public void renderFinal(List<MultiPlayerGameOutcomeUpdate.ScoreTuple> finalScores, int finalScore){
 
         if (finalScores!=null){
             int i = 2;
 
-            winnerLabel.setText(finalScores.lastEntry().getValue());
-            winnerPointsLabel.setText(finalScores.lastKey().toString());
-            finalScores.remove(finalScores.lastKey());
+            winnerLabel.setText(finalScores.get(0).getName());
+            winnerPointsLabel.setText(String.valueOf(finalScores.get(0).getScore()));
+            finalScores.remove(0);
 
             for (VBox box: othersVBox) {
-                Label nameLabel = new Label(finalScores.lastEntry().getValue());
-                Label pointsLabel = new Label(finalScores.lastKey().toString());
+                Label nameLabel = new Label(finalScores.get(0).getName());
+                Label pointsLabel = new Label(String.valueOf(finalScores.get(0).getScore()));
                 Label positionLabel = new Label();
 
                 nameLabel.setMaxHeight(43.33);
@@ -105,7 +106,7 @@ public class FinalScreenController extends JFXController {
                 box.getChildren().add(1, nameLabel);
                 box.getChildren().add(2, pointsLabel);
 
-                finalScores.remove(finalScores.lastKey());
+                finalScores.remove(0);
                 i++;
             }
         }

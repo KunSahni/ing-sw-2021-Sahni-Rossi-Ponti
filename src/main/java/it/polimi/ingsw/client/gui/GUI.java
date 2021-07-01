@@ -9,6 +9,7 @@ import it.polimi.ingsw.client.utils.dumbobjects.DumbLeaderCard;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbModel;
 import it.polimi.ingsw.client.utils.dumbobjects.DumbPersonalBoard;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.MultiPlayerGameOutcomeUpdate;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
@@ -252,7 +253,7 @@ public class GUI extends Application implements UI {
     }
 
     @Override
-    public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
+    public void renderGameOutcome(List<MultiPlayerGameOutcomeUpdate.ScoreTuple> finalScores) {
         finalScreenController.renderFinal(finalScores, -1);
         goToFinalView();
     }

@@ -10,6 +10,7 @@ import it.polimi.ingsw.client.utils.exceptions.*;
 import it.polimi.ingsw.network.clienttoserver.messages.AuthenticationMessage;
 import it.polimi.ingsw.network.clienttoserver.messages.CreateLobbyMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.Renderable;
+import it.polimi.ingsw.network.servertoclient.renderable.updates.MultiPlayerGameOutcomeUpdate;
 import it.polimi.ingsw.server.model.actiontoken.ActionToken;
 import it.polimi.ingsw.server.model.market.MarketMarble;
 import it.polimi.ingsw.server.model.utils.GameState;
@@ -237,11 +238,11 @@ public class CLI implements UI {
     }
 
     @Override
-    public void renderGameOutcome(TreeMap<Integer, String> finalScores) {
+    public void renderGameOutcome(List<MultiPlayerGameOutcomeUpdate.ScoreTuple> finalScores) {
         clearScreen();
-        StringBuilder printableString = new StringBuilder(Constants.ANSI_BOLD + "\033[1;2HThe final scores are:");
-        finalScores.forEach(
-                (integer, s) -> printableString.append("\n" + integer + ") " + s)
+        StringBuilder printableString = new StringBuilder(Constants.ANSI_BOLD + "\033[1;2HThe final scores are:\n");
+        IntStream.range(1, finalScores.size()+1).forEach(
+                i -> printableString.append("\033[" + (i+1) + ";2H" + i + ") " + finalScores.get(i-1).getName() + ": " + finalScores.get(i-1).getScore() + " points\n")
         );
         printToCLI(printableString.toString());
     }
