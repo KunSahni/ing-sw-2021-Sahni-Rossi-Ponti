@@ -69,6 +69,10 @@ java -jar MastersOfRenaissance.jar
 
 Warning: keep in mind that CLI was implemented to function on Linux, in order to run it on Windows you should use WSL (https://github.com/ingconti/W10JavaCLI)
 
+![Masters of Renaissance CLI running in WSL](.github/assets/cli_personal.png "Masters of Renaissance CLI running in WSL")
+![Masters of Renaissance GUI running in Windows](.github/assets/gui_personal.png "Masters of Renaissance GUI running in Windows")
+
+
 ## Development
 
 The software has been written using [Java SE 15](https://docs.oracle.com/en/java/javase/15/).
