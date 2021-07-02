@@ -141,6 +141,9 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.2.0</version>
+          <configuration>
+            <finalName>MastersOfRenaissance</finalName>
+          </configuration>
           <executions>
             <execution>
               <id>default-jar</id>
