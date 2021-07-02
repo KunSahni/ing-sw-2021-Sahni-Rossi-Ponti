@@ -39,7 +39,9 @@ The final version includes:
 
 Extensive tesing was performed on each part of the project, specifically with the help of unit testing for server components (Model, Controller) and with manual testing on all parts of the project.
 Unit tests cover 100% of classes contained in controller and model, with a 92% line coverage. 
+
 Other unit tests were written for user actions (it.polimi.ingsw.network.clienttoserver.action), which are a key part of our controller, these tests have a class coverage of 100% and a line coverage of 92%.
+
 Testing on client side was done through quality assurance since with unit testing we would've had to mock UI-specific functions.
 
 ## Compile
@@ -57,7 +59,7 @@ mvn package
 
 ## Quick start guide
 
-The following commands are meant to be run inside the [`deliverables/final/jar`](./deliverables/final/jar) folder.
+The following command is meant to be run inside the [`deliverables/final/jar`](./deliverables/final/jar) folder.
 
 ### Windows/Linux
 
