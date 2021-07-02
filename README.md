@@ -21,19 +21,20 @@
 | Socket | :heavy_check_mark: |
 | Advanced functionality 1 (FA 1) | :heavy_check_mark: Multiple matches ("Partite multiple") |
 | Advanced functionality 2 (FA 2) | :heavy_check_mark: Persistence ("Persistenza") |
-| Advanced functionality 3 (FA 3) | :heavy_check_mark: resilience to disconnections ("Resilienza alle disconnessioni") |
+| Advanced functionality 3 (FA 3) | :heavy_check_mark: Resilience to disconnections ("Resilienza alle disconnessioni") |
 
 ## Project specification
 The project consists of a Java version of the board game *Masters of Renaissance*, made by Cranio Creations.
 
-You can find the full game [here](https://craniointernational.com/products/masters-of-renaissance/).
+You can find more about it [here](https://craniointernational.com/products/masters-of-renaissance/).
 
-The final version includes:
-* source code of implementations
+The repository includes:
+* source code of implementation
 * source code of unit tests
-* initial UML diagram
-* auto-generated final UML diagram
+* initial UML diagrams
+* auto-generated final UML diagrams
 * working game implementation compliant to project requirements
+* ready to use jar for server, CLI and GUI
 
 ## Testing
 
@@ -42,7 +43,7 @@ Unit tests cover 100% of classes contained in controller and model, with a 92% l
 
 Other unit tests were written for user actions (it.polimi.ingsw.network.clienttoserver.action), which are a key part of our controller, these tests have a class coverage of 100% and a line coverage of 92%.
 
-Testing on client side was done through quality assurance since with unit testing we would've had to mock UI-specific functions.
+Testing on client side was done through quality assurance since unit testing would've consisted in mocking UI-specific functions.
 
 ## Compile
 
@@ -70,6 +71,7 @@ java -jar MastersOfRenaissance.jar
 2. Select the option based on output (0 for server, 1 for CLI, 2 for GUI)
 
 Warning: keep in mind that CLI was implemented to function on Linux, in order to run it on Windows you should use WSL (https://github.com/ingconti/W10JavaCLI)
+A minimum size of 126 columns and 25 lines is required in order to correctly view the CLI.
 
 ![Masters of Renaissance CLI running in WSL](.github/assets/cli_personal.png "Masters of Renaissance CLI running in WSL")
 ![Masters of Renaissance GUI running in Windows](.github/assets/gui_personal.png "Masters of Renaissance GUI running in Windows")
