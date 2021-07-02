@@ -238,19 +238,23 @@ public class InGameCommonsController extends JFXController {
         String choose;
         int index;
 
-        Couple couple = (Couple) toggleButton.getUserData();
-
-        index = couple.getIndex();
-        choose = couple.getChoose();
-
-        if (gui.getInputVerifier().canTake(choose, index)){
-             gui.getClientSocket().sendAction(new TakeFromMarketAction(index, isRow(choose)));
-             populateInfoLabel("Confirmed.");
-             resetCommon();
-             gui.goToPersonalView();
+        if (toggleButton==null){
+            populateInfoLabel("Select one action");
         }
         else {
-            populateInfoLabel("Select one action");
+            Couple couple = (Couple) toggleButton.getUserData();
+
+            index = couple.getIndex();
+            choose = couple.getChoose();
+
+            if (gui.getInputVerifier().canTake(choose, index)) {
+                gui.getClientSocket().sendAction(new TakeFromMarketAction(index, isRow(choose)));
+                populateInfoLabel("Confirmed.");
+                resetCommon();
+                gui.goToPersonalView();
+            } else {
+                populateInfoLabel("Select one action");
+            }
         }
 
     }
@@ -260,9 +264,14 @@ public class InGameCommonsController extends JFXController {
      * @param toggleButton is the button that represents the chosen leader card
      */
     private void pickDevelopmentCards(ToggleButton toggleButton) {
-        DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
-        resetCommon();
-        gui.getPersonalController().startDevelopmentSlotSelection(chosenCard);
+        if (toggleButton==null){
+            populateInfoLabel("Select one action");
+        }
+        else {
+            DumbDevelopmentCard chosenCard = (DumbDevelopmentCard) toggleButton.getUserData();
+            resetCommon();
+            gui.getPersonalController().startDevelopmentSlotSelection(chosenCard);
+        }
     }
 
     /**

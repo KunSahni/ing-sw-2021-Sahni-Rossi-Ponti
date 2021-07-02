@@ -7,6 +7,7 @@ import it.polimi.ingsw.network.servertoclient.renderable.BroadcastRenderable;
 import it.polimi.ingsw.server.model.Game;
 import it.polimi.ingsw.server.model.Player;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class MultiPlayerGameOutcomeUpdate extends BroadcastRenderable {
     /**
      * Inner class used to store final scores as tuples
      */
-    public class ScoreTuple{
+    public class ScoreTuple implements Serializable {
         private final String name;
         private final int score;
 

@@ -17,3 +17,7 @@
     -fx-border-width: 1;
     -fx-border-color: #d18080;
 }
+
+.label{
+    -fx-text-fill: #ffffff;
+}
