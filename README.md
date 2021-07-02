@@ -1,6 +1,6 @@
 # Software engineering final project A.A 2020-2021
 
-<img src="https://craniointernational.com/2021/wp-content/uploads/2021/05/Masters-of-Renaissance_box3D.png" width=192px height=192 px align="right" />
+<img src="https://craniointernational.com/2021/wp-content/uploads/2021/05/Masters-of-Renaissance_box3D.png" width=250px height=250px align="right" />
 
 **Professor**: Gianpaolo Cugola
 
@@ -67,7 +67,7 @@ java -jar MastersOfRenaissance.jar
 ```
 2. Select the option based on output (0 for server, 1 for CLI, 2 for GUI)
 
-Warning: keep in mind that CLI was implemented to fucntion on Linux, in order to run it on Windows you should use WSL (https://github.com/ingconti/W10JavaCLI)
+Warning: keep in mind that CLI was implemented to function on Linux, in order to run it on Windows you should use WSL (https://github.com/ingconti/W10JavaCLI)
 
 ## Development
 

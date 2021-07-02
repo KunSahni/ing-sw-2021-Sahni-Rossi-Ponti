@@ -69,7 +69,7 @@ public final class Constants {
             "\tdisplays legend of symbols used in the game\n" +
             "\tsyntax: show legend";
     public static final String PICK_MARBLES_HELP = "pick marbles\n" +
-            "\tpick marbles from the ones picked from market. The selected marbles will be converted to resources and stored in warehouse depots\n" +
+            "\tpick marbles from the ones picked from market. The selected marbles will be converted to resources\n\tand stored in warehouse depots\n" +
             "\tsyntax: pick marbles color\n" +
             "\targuments:\n" +
             "\t\tcolor\tcolor of marble which you want to convert in resource\n" +
