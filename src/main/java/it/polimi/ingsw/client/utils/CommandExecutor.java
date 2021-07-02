@@ -84,7 +84,7 @@ public class CommandExecutor {
             case PICK_LEADER_CARDS -> managePickLeaderCardCommand(insertedCommand);
             case PICK_TEMP_MARBLES -> managePickTempMarblesCommand(insertedCommand);
             case LEGEND -> throw new CommandHelpException(correspondentCommand);
-            case END_TURN -> manageEndTurn();
+            case END_TURN -> manageEndTurnCommand();
             default -> throw new WrongCommandException();
         }
 
@@ -531,7 +531,7 @@ public class CommandExecutor {
      * This method has the goal of ending user's only when such action is valid
      * @throws InvalidArgsException thrown when the passed arguments are correctly formatted, but still not valid
      */
-    private void manageEndTurn() throws InvalidArgsException{
+    private void manageEndTurnCommand() throws InvalidArgsException{
         //if action is valid, send it to server
         if(inputVerifier.canEndTurn())
             clientSocket.sendAction(

@@ -36,21 +36,17 @@ public class CLI implements UI {
     private OnScreenElement onScreenElement;
     private volatile boolean activeGame;
     private final CommandExecutor commandExecutor;
-    private final ConcurrentLinkedQueue<Renderable> renderQueue;
 
     public CLI() {
         in = new Scanner(System.in);
         out = new PrintWriter(System.out);
         dumbModel = new DumbModel(this);
         commandExecutor = new CommandExecutor(dumbModel, clientSocket);
-        renderQueue = new ConcurrentLinkedQueue<>();
     }
 
     public static void main(String[] args) {
         System.out.println(Constants.ANSI_CLEAR);
         System.out.println(Constants.MASTER_OF_RENAISSANCE);
-        //System.out.println(Constants.AUTHORS);
-        //System.out.println(Constants.RULES + "\n");
         CLI cli = new CLI();
         cli.connectToServer();
     }
@@ -271,7 +267,7 @@ public class CLI implements UI {
 
     @Override
     public void renderResourcePregameChoice() {
-        int numberOfResources = dumbModel.getPersonalBoard(nickname).getPosition()/2;
+        int numberOfResources = dumbModel.getOwnPersonalBoard().getPosition()/2;
         String printableString;
         if(numberOfResources == 0 )
             return;
@@ -494,14 +490,6 @@ public class CLI implements UI {
     @Override
     public void onComplete() {
 
-    }
-
-    /**
-     * This method call render() on the head of updatesQueue
-     */
-    private synchronized void elaborateRenderQueue(){
-        Renderable usedItem = renderQueue.remove();
-        usedItem.render(this);
     }
 
     private OnScreenElement getOnScreenElement() {
