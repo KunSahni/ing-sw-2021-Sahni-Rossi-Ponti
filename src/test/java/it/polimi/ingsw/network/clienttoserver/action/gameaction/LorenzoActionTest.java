@@ -131,7 +131,12 @@ public class LorenzoActionTest {
             while (game.getDevelopmentCardsBoard().peekBoard()[0][0].getDeck().size()!=2){
                 game.getDevelopmentCardsBoard().discardTwo(Color.GREEN);
             }
-            game.getDevelopmentCardsBoard().pick(Level.LEVEL3, Color.GREEN);
+            game.getActionTokenDeck().getCurrentDeck().remove(ActionToken.MOVE_BY_TWO);
+            game.getActionTokenDeck().getCurrentDeck().remove(ActionToken.MOVE_BY_TWO);
+            game.getActionTokenDeck().getCurrentDeck().remove(ActionToken.MOVE_AND_SHUFFLE);
+            game.getActionTokenDeck().getCurrentDeck().remove(ActionToken.REMOVE_PURPLE);
+            game.getActionTokenDeck().getCurrentDeck().remove(ActionToken.REMOVE_YELLOW);
+            game.getActionTokenDeck().getCurrentDeck().remove(ActionToken.REMOVE_BLUE);
             lorenzoAction.execute();
             assertFalse(server.getPlayers().containsKey(1));
         }
