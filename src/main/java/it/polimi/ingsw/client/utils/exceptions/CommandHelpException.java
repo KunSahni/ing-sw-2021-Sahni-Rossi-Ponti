@@ -2,6 +2,9 @@ package it.polimi.ingsw.client.utils.exceptions;
 
 import it.polimi.ingsw.client.utils.constants.Commands;
 
+/**
+ * This Exception is thrown when user wants to see help for a specific command
+ */
 public class CommandHelpException extends Exception {
     private final Commands command;
 

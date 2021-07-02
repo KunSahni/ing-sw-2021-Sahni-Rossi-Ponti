@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.servertoclient.renderable;
 
+/**
+ * Contains various types of actions which can be sent by user and might be valid
+ */
 public enum ConfirmationMessageType {
     ACTIVATE_LEADER_CARD("Activated leader card"),
     ACTIVATE_PRODUCTION("Activated production"),

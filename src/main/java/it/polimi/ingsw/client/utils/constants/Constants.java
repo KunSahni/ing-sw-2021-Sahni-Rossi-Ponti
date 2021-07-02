@@ -54,8 +54,8 @@ public final class Constants {
                     \033[9;35H█████████████████████████████████████████████████████████████████████""";
 
     public static final String WRONG_COMMAND = "Command doesn't exist, type help for help";
-    public static final String WRONG_COMMAND_ARGS = "Command wrongly used, possible error in argument typing, type help for help";
-    public static final String INVALID_ARGS = "Command was typed properly, but either it can't be executed right now or command arguments are invalid, type help for help";
+    public static final String WRONG_COMMAND_ARGS = "Command wrongly used, possible error in argument typing, use -h for help";
+    public static final String INVALID_ARGS = "Command was typed properly, but either it can't be executed right now or command arguments are invalid, use -h for help";
 
     public static final String OFFLINE_MESSAGE = "Connection with server was dropped";
 

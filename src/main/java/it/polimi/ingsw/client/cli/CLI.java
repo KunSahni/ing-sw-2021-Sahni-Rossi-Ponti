@@ -37,6 +37,9 @@ public class CLI implements UI {
     private volatile boolean activeGame;
     private final CommandExecutor commandExecutor;
 
+    /**
+     * CLI constructor, creates in/out streams and initiates the client side model
+     */
     public CLI() {
         in = new Scanner(System.in);
         out = new PrintWriter(System.out);
@@ -154,6 +157,10 @@ public class CLI implements UI {
         setOnScreenElement(OnScreenElement.valueOf(dumbPersonalBoard.getPosition()));
     }
 
+    /**
+     * Renders a personal board on user's terminal
+     * @param dumbPersonalBoard the personal board which should be rendered
+     */
     public void renderPersonalBoard(DumbPersonalBoard dumbPersonalBoard) {
         clearScreen();
         String printableString = dumbPersonalBoard.formatPrintableString();

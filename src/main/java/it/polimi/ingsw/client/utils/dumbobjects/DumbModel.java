@@ -360,6 +360,9 @@ public class DumbModel {
         this.nickname = nickname;
     }
 
+    /**
+     * This class has the goal of updating model based on received updates and forwarding them to UI
+     */
     public class UpdatesHandler implements Subscriber<Renderable>{
         private final ConcurrentLinkedQueue<Renderable> updatesQueue;
         private Subscription subscription;

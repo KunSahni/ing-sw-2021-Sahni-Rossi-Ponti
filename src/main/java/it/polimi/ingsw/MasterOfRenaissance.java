@@ -8,6 +8,9 @@ import it.polimi.ingsw.server.ServerApp;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * This is the main entry-point for the whole project
+ */
 public class MasterOfRenaissance {
 
     /**

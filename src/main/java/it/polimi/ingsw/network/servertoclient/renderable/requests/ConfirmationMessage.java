@@ -6,6 +6,9 @@ import it.polimi.ingsw.client.utils.dumbobjects.OnScreenElement;
 import it.polimi.ingsw.network.servertoclient.renderable.ConfirmationMessageType;
 import it.polimi.ingsw.network.servertoclient.renderable.PrivateRenderable;
 
+/**
+ * Generic confirmation message sent to client when the received action is legitimate
+ */
 public class ConfirmationMessage extends PrivateRenderable {
     private final ConfirmationMessageType confirmationMessage;
 

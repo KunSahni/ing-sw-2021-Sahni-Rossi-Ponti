@@ -2,6 +2,9 @@ package it.polimi.ingsw.client.utils.exceptions;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
 
+/**
+ * This Excpetion is thrown when user types in a syntactically correct command, with syntactically correct arguments, but still the command is not valid
+ */
 public class InvalidArgsException extends Throwable {
 
     /**

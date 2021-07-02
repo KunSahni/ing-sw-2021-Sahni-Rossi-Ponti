@@ -94,42 +94,50 @@ public interface UI extends Subscriber<Renderable> {
 
     /**
      * Renders an authentication request
+     * @param message a message sent from server
      */
     void renderAuthenticationRequest(String message);
 
     /**
      * Renders a create lobby request
+     * @param message a message sent from server
      */
     void renderCreateLobbyRequest(String message);
 
 
     /**
      * Renders a game not found notification
+     * @param message a message sent from server
      */
     void renderGameNotFoundNotification(String message);
 
     /**
      * Renders a game started notification
+     * @param message a message sent from server
      */
     void renderGameStartedNotification(String message);
 
     /**
      * Renders a joined lobby notification
+     * @param message a message sent from server
      */
     void renderJoinedLobbyNotification(String message);
 
     /**
      * Renders a waiting for players notification
+     * @param message a message sent from server
      */
     void renderWaitingForPlayersNotification(String message);
 
     /**
      * Renders a wrong nickname notification
+     * @param message a message sent from server
      */
     void renderWrongNicknameNotification(String message);
 
     /**
      * Renders a nickname already in use notification
+     * @param message a message sent from server
      */
     void renderNicknameAlreadyInUseNotification(String message);
 

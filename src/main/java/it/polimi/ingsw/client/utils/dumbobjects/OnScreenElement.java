@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.utils.dumbobjects;
 
+/**
+ * Each enum value represents types of objects which need to be displayed on CLI, each name is pretty self-explanatory
+ */
 public enum OnScreenElement {
     PERSONAL_BOARD1(1),
     PERSONAL_BOARD2(2),

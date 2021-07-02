@@ -2,6 +2,9 @@ package it.polimi.ingsw.client.utils.exceptions;
 
 import it.polimi.ingsw.client.utils.constants.Constants;
 
+/**
+ * This exception is used when user types in existing command, but the passed arguments aren't syntactically correct
+ */
 public class WrongCommandArgsException extends WrongCommandException {
 
     /**

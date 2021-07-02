@@ -1,7 +1,8 @@
 package it.polimi.ingsw.client.utils.exceptions;
 
-import it.polimi.ingsw.client.utils.constants.Commands;
-
+/**
+ * This Exception is thrown when user wants to see help menu
+ */
 public class HelpException extends Exception {
     /**
      * Constructs a new exception with {@code null} as its detail message.

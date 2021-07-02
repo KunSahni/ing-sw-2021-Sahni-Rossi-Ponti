@@ -24,6 +24,12 @@ public class ClientSocket {
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
 
+    /**
+     * Creates a new ClientSocket based on passed parameters, but doesn't try to connect.
+     * @param serverAddress address of server
+     * @param serverPort port of server
+     * @param updatesHandler updatesHandler contained in DumbModel, used for handling of updates
+     */
     public ClientSocket(String serverAddress, int serverPort, DumbModel.UpdatesHandler updatesHandler) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
