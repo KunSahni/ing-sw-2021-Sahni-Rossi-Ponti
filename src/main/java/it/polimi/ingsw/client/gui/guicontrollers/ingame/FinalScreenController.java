@@ -2,7 +2,6 @@ package it.polimi.ingsw.client.gui.guicontrollers.ingame;
 
 import it.polimi.ingsw.client.gui.GUI;
 import it.polimi.ingsw.client.gui.guicontrollers.JFXController;
-import it.polimi.ingsw.network.clienttoserver.messages.ExitRequestMessage;
 import it.polimi.ingsw.network.servertoclient.renderable.updates.MultiPlayerGameOutcomeUpdate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,7 +14,6 @@ import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 public class FinalScreenController extends JFXController {
 
@@ -35,6 +33,9 @@ public class FinalScreenController extends JFXController {
 
     }
 
+    /**
+     * initialize this scene by setting gui and creating boxes where elements will be placed
+     */
     public void initialize(GUI gui){
         super.setGui(gui);
 
@@ -55,6 +56,11 @@ public class FinalScreenController extends JFXController {
         }
     }
 
+    /**
+     * Write in the boxes who is the winner and all other players place and corresponding scores
+     * @param finalScores is a map passed in case of a multiplayer game containing all players scores
+     * @param finalScore is an integer passed in case of single player game with player score
+     */
     public void renderFinal(List<MultiPlayerGameOutcomeUpdate.ScoreTuple> finalScores, int finalScore){
 
         if (finalScores!=null){

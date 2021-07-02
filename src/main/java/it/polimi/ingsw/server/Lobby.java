@@ -174,6 +174,10 @@ public class Lobby {
         return !players.containsKey(nickname);
     }
 
+    /**
+     * remove a player from the Lobby
+     * @param nickname is the nickname of the player that should be removed
+     */
     public void removePlayer(String nickname) {
         players.remove(nickname);
         if (players.size() == 0) {
