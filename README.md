@@ -74,9 +74,3 @@ Warning: keep in mind that CLI was implemented to fucntion on Linux, in order to
 The software has been written using [Java SE 15](https://docs.oracle.com/en/java/javase/15/).
 
 The IDE used for the development is [IntelliJ Idea](https://www.jetbrains.com/idea/) 2021.1.
-
-### How to correctly view CLI colors in IntelliJ
-
-Please, be aware that some CLI features can't be rendered correctly in the `Run` window of IntelliJ. 
-The `Run` window of IntelliJ is meant just for debugging and testing purposes. 
-Run the compiled JAR in a WSL terminal to benefit from the full experience.
