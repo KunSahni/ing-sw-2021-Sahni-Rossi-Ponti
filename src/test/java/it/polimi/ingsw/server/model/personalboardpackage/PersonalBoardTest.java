@@ -95,7 +95,7 @@ class PersonalBoardTest {
         @DisplayName("Test containsLeaderCardRequirements when the PersonalBoard does contain such requirements")
         void containsLeaderCardRequirementsWhenTrueTest(LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
             DevelopmentCardsBoard developmentCardsBoard = game.getDevelopmentCardsBoard();
-            LeaderCard leaderCard = getLeaderCardWithAbility(leaderCardAbility);
+            LeaderCard leaderCard = getLeaderCardWithAbility(leaderCardAbility, new ArrayList<>());
 
             //Sets the board so that it will surely contain all the requirements needed by the above created leaderCard
             switch (leaderCardAbility){
@@ -144,7 +144,7 @@ class PersonalBoardTest {
         @EnumSource(LeaderCardAbility.class)
         @DisplayName("Test containsLeaderCardRequirements when the PersonalBoard does not contain such requirements")
         void containsLeaderCardRequirementsWhenFalseTest(LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
-            LeaderCard leaderCard = getLeaderCardWithAbility(leaderCardAbility);
+            LeaderCard leaderCard = getLeaderCardWithAbility(leaderCardAbility, new ArrayList<>());
             //assertTrue because the board surely does not contain all the requirements
             assertFalse(personalBoard.containsLeaderCardRequirements(leaderCard.getLeaderCardRequirements()), "Error: was expecting false, but received true instead");
         }
@@ -216,8 +216,8 @@ class PersonalBoardTest {
         @BeforeEach
         void setUp() throws FileNotFoundException {
             List<LeaderCard> leaderCards = new ArrayList<>();
-            leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE));
-            leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE));
+            leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE, new ArrayList<>()));
+            leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE, leaderCards));
 
             personalBoard.setLeaderCards(leaderCards);
             personalBoard.activateLeaderCard(personalBoard.getLeaderCards().get(0));
@@ -348,8 +348,8 @@ class PersonalBoardTest {
     @DisplayName("Test getVictoryPoints")
     void getVictoryPointsTest() throws FileNotFoundException {
         List<LeaderCard> leaderCards = new ArrayList<>();
-        leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE));
-        leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.CONVERT));
+        leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.STORE, new ArrayList<>()));
+        leaderCards.add(getLeaderCardWithAbility(LeaderCardAbility.CONVERT, leaderCards));
 
         personalBoard.setLeaderCards(leaderCards);
 
@@ -407,19 +407,20 @@ class PersonalBoardTest {
      * @param leaderCardAbility the ability that the returned LeaderCard should have
      * @return a LeaderCard of the specified LeaderCardAbility
      */
-    private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility) throws FileNotFoundException {
+    private LeaderCard getLeaderCardWithAbility (LeaderCardAbility leaderCardAbility, List<LeaderCard> unwantedCards) throws FileNotFoundException {
         LeaderCardsDeck leaderCardsDeck = game.getLeaderCardsDeck();
-        Optional<LeaderCard> leaderCard = leaderCardsDeck.popFour().stream().filter(
-                leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
-        ).findFirst();
-        return leaderCard.orElseGet(() -> {
-            try {
-                return getLeaderCardWithAbility(leaderCardAbility);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
+        Optional<LeaderCard> leaderCard = leaderCardsDeck
+                .getDeck()
+                .stream()
+                .filter(
+                        leaderCard1 -> leaderCard1.getAbility().equals(leaderCardAbility)
+                )
+                .filter(
+                        lc -> !unwantedCards.contains(lc)
+                )
+                .findFirst();
+
+        return leaderCard.orElseGet(null);
     }
 
     @Nested
