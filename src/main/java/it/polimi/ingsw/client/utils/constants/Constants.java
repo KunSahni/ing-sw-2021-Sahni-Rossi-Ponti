@@ -67,7 +67,7 @@ public final class Constants {
             "\tsyntax: end turn";
     public static final String SHOW_LEGEND_HELP = "show legend\n" +
             "\tdisplays legend of symbols used in the game\n" +
-            "\tsyntax: show legend";
+            "\tsyntax: show legend\n";
     public static final String PICK_MARBLES_HELP = "pick marbles\n" +
             "\tpick marbles from the ones picked from market. The selected marbles will be converted to resources\n\tand stored in warehouse depots\n" +
             "\tsyntax: pick marbles color\n" +

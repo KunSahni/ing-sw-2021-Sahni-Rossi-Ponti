@@ -38,20 +38,6 @@ public class Lobby {
             JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/server/maxID.json"));
             maxGameId = new Gson().fromJson(reader, int.class);
             reader.close();
-        } catch (FileNotFoundException e) {
-            maxGameId = 1;
-            try {
-                File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/server");
-                if(!rootDir.exists())
-                    rootDir.mkdirs();
-                Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
-                Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-                gson.toJson(maxGameId, writer);
-                writer.flush();
-                writer.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,6 +125,7 @@ public class Lobby {
             File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/server");
             if(!rootDir.exists())
                 rootDir.mkdirs();
+            this.maxGameId++;
             Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
             Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
             gson.toJson(maxGameId, writer);
@@ -147,7 +134,6 @@ public class Lobby {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.maxGameId++;
         clear();
     }
 

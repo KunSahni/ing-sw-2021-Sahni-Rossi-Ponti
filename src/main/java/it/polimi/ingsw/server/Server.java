@@ -81,20 +81,6 @@ public class Server implements Flow.Subscriber<Integer> {
             JsonReader reader = new JsonReader(new FileReader(ChangesHandler.getWorkingDirectory() + "/server/maxID.json"));
             maxId = new Gson().fromJson(reader, int.class);
             reader.close();
-        } catch (FileNotFoundException e) {
-            maxId = 1;
-            try {
-                File rootDir = new File(ChangesHandler.getWorkingDirectory() + "/server");
-                if(!rootDir.exists())
-                    rootDir.mkdirs();
-                Writer writer = new FileWriter(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
-                Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-                gson.toJson(maxId, writer);
-                writer.flush();
-                writer.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -211,6 +197,7 @@ public class Server implements Flow.Subscriber<Integer> {
     }
 
     private void createDefaultGameDir() throws IOException {
+        //Create default dir
         InputStream resFolder = this.getClass().getResourceAsStream("/default.zip");
         File destDir = new File(ChangesHandler.getWorkingDirectory() + "/server/games/default");
         byte[] buffer = new byte[1024];
@@ -241,6 +228,15 @@ public class Server implements Flow.Subscriber<Integer> {
         }
         zis.closeEntry();
         zis.close();
+        //Create gameID.json
+        if(!Files.exists(Paths.get(ChangesHandler.getWorkingDirectory() + "/server/maxID.json"))){
+            File gameIDFile = new File(ChangesHandler.getWorkingDirectory() + "/server/maxID.json");
+            Writer writer = new FileWriter(gameIDFile);
+            Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+            gson.toJson(1, writer);
+            writer.flush();
+            writer.close();
+        }
     }
 
     private File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
