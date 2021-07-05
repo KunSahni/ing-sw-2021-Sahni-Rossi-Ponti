@@ -358,8 +358,8 @@ public class CommandExecutor {
             throw new WrongCommandArgsException();
 
         if(commandArgs.peek() != null && commandArgs.peek().equals("-developmentcards")){
+            commandArgs.remove();
              while(commandArgs.peek() != null && !commandArgs.peek().equals("-strongbox") && !commandArgs.peek().equals("-depots")){
-                commandArgs.remove();
                 hasSelectedAtLeastOneProduction = true;
 
                 //parse index of development card
