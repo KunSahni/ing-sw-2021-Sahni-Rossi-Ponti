@@ -41,6 +41,11 @@ public class ResourceManager {
                                 x, newResources.get(x) + Optional.ofNullable(storedResources.get(x)).orElse(0)
                         )
                 );
+        List<Resource> toRemove = storedResources.entrySet().stream()
+                .filter(entry -> entry.getValue() == 0)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        toRemove.forEach(storedResources::remove);
     }
 
     /**
