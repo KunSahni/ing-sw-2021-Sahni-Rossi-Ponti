@@ -11,6 +11,8 @@
 - Alessandro Ponti (immatriculation number: 910336)
 - Vittorio Rossi (immatriculation number: 911631)
 
+**Final Score**: 30/30 cum laude
+
 ## Implemented features
 
 | Feature | Implemented |
