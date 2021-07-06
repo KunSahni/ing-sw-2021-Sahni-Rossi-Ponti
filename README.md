@@ -70,6 +70,8 @@ java -jar MastersOfRenaissance.jar
 ```
 2. Select the option based on output (0 for server, 1 for CLI, 2 for GUI)
 
+Keep in mind that by default the server will use the machine's IP address and will be on port 8080. Use this information to connect from CLI or GUI.
+
 Warning: keep in mind that CLI was implemented to function on Linux, in order to run it on Windows you should use WSL (https://github.com/ingconti/W10JavaCLI)
 A minimum size of 126 columns and 25 lines is required in order to correctly view the CLI.
 
